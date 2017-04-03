@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="Appcues Editor - Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.css" rel="stylesheet">
+    <style type="text/css">
+      .container {
+        width: 700px;
+        margin: 20px auto 100px auto;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Appcues Editor</h1>
+
+      <h3>Simple Editor</h3>
+      <div id="simple"></div>
+      
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="/assets/index.js"></script>
+
+    <script type="text/babel">
+      (function(Canvas) {
+
+        // Render Simple Editor
+        ReactDOM.render(<Canvas name="World!!" />, document.getElementById('simple'))
+
+      }(Canvas.default));
+    </script>
+
+
+  </body>
+</html>
