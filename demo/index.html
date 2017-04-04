@@ -3,41 +3,103 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
+    <title>Appcues Editor Demo</title>
     <meta name="description" content="Appcues Editor - Demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/vs.min.css" rel="stylesheet">
+    <link href="canvas.css" rel="stylesheet">
+    
+    <!-- These styles are only for the purpose of the demo page. Nothing is required for the editor -->
     <style type="text/css">
       .container {
         width: 700px;
         margin: 20px auto 100px auto;
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
       }
+      .editor {
+        border: 1px solid #D0D0D0;
+        height: 100%;
+      }
+      pre {
+        border: 1px solid #D0D0D0;
+      }
+      code {
+        background-color: #F0F0F0 !important;
+      }
+      hr {
+        height: 1px;
+        color: #D0D0D0;;
+        background: #D0D0D0;;
+        font-size: 0;
+        border: 0;
+      }
+      .example {
+        margin: 3em 0
+      }
     </style>
+
   </head>
   <body>
     <div class="container">
-      <h1>Appcues Editor</h1>
+      <h1>Appcues Editor Demo</h1>
 
-      <h3>Simple Editor</h3>
-      <div id="simple"></div>
+      <hr />
+
+      <div class="content">
+        
+        <div class="example">
+          <h3>Editor Spike</h3>
+          <div id="simple" class="editor"></div>
+          <div class="output"><pre><code class="json" id="simple-json">{}</pre></code></div>
+          <div class="output"><pre><code class="html" id="simple-html">&lt;&gt;</pre></code></div>
+        </div>
+
+      </div>
       
     </div>
 
+    <!-- The webpack build excludes bundling React so it can be loaded separately here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+
+    <!-- Babel Standalone is just on here to allow us to use JSX natively on this demo page without compiling with webpack -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Webpack Dev Server dynamically compiles and serves the Canvas component from this path -->
     <script src="/assets/index.js"></script>
 
     <script type="text/babel">
       (function(Canvas) {
 
-        // Render Simple Editor
-        ReactDOM.render(<Canvas name="World!!" />, document.getElementById('simple'))
+        function displayOutput(elemId, objOutput) {
+          var jsonOutput = document.getElementById(elemId + '-json');
+          var htmlOutput = document.getElementById(elemId + '-html')
+          var objCopy = Object.assign({}, objOutput);
+          delete objCopy.html;
+          jsonOutput.textContent = JSON.stringify(objCopy, null, '  ');
+          htmlOutput.textContent = html_beautify(objOutput.html, { indent_size: 2 });
+          hljs.highlightBlock(jsonOutput);
+          hljs.highlightBlock(htmlOutput);
+        }
+
+        // Render Editor Spike
+        ReactDOM.render(
+          <Canvas
+            width="100%"
+            height="300px"
+            onSave={(content) => displayOutput('simple', content) }
+          />, document.getElementById('simple')
+        )
 
       }(Canvas.default));
     </script>
 
+    <!-- Syntax highligting for output of data -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/languages/json.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
   </body>
 </html>

@@ -4,8 +4,8 @@
   "description": "Appcues Editor",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc mocha --compilers js:babel-register --require test/setup.js  --recursive test",
-    "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --compilers js:babel-register --require test/setup.js  --recursive test",
+    "test": "NODE_ENV=test nyc mocha --recursive test",
+    "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --recursive test",
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --content-base demo/"
@@ -13,8 +13,10 @@
   "author": "Michael Cox",
   "license": "UNLICENSED",
   "dependencies": {
+    "html-parse-stringify2": "^1.2.1",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.24.0",

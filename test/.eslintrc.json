@@ -1,21 +1,14 @@
 {
+  "extends": ["plugin:react/recommended"],
   "env": {
     "browser": true,
     "node": true,
     "mocha": true
   },
-  "ecmaFeatures": {
-    "jsx": true
-  },
-  "rules": {
-    "react/jsx-uses-vars": 2,
-    "react/jsx-no-undef": 2,
-    "react/jsx-uses-react": 2,
-    "react/react-in-jsx-scope": 2
-  },
-  "settings": {
-    "react": {
-      "pragma": "html"
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true
     }
   },
   "plugins":[
