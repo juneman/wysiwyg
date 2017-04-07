@@ -21,8 +21,11 @@
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
       }
       .editor {
+        background-color: #FFFFFF;
         border: 1px solid #D0D0D0;
-        height: 100%;
+        width: 680px;
+        height: 300px;
+        padding: 9px;
       }
       pre {
         border: 1px solid #D0D0D0;
@@ -58,12 +61,14 @@
           <div class="output"><pre><code class="html" id="simple-html">&lt;&gt;</pre></code></div>
         </div>
 
+        <!--
         <div class="example">
           <h3>Loading Existing Data</h3>
           <div id="existing" class="editor"></div>
           <div class="output"><pre><code class="json" id="existing-json">{}</pre></code></div>
           <div class="output"><pre><code class="html" id="existing-html">&lt;&gt;</pre></code></div>
         </div>
+        -->
 
       </div>
       
@@ -97,17 +102,18 @@
         // Render Editor Spike
         ReactDOM.render(
           <Canvas
-            width="100%"
-            height="300px"
+            width={674}
+            height={294}
             onSave={(content) => displayOutput('simple', content) }
           />, document.getElementById('simple')
         )
 
+        /*
         // Render Editor With Existing Data
         ReactDOM.render(
           <Canvas
-            width="100%"
-            height="300px"
+            width={674}
+            height={294}
             onSave={(content) => displayOutput('existing', content) }
             rows={
               [
@@ -117,12 +123,16 @@
                     {
                       "id": "1515a32c-49ba-4219-baca-4972e9efec50",
                       "type": "PlainText",
-                      "content": "Top Left Text"
+                      "value": {
+                        "content": "Top Left Text"
+                      }
                     },
                     {
                       "id": "a1f35283-d18d-450e-a739-ef7300249279",
                       "type": "Button",
-                      "content": "Top Right Button"
+                      "value": {
+                        "content": "Top Right Button"
+                      }
                     }
                   ]
                 },
@@ -132,19 +142,24 @@
                     {
                       "id": "57d72c28-1f8d-4e97-b734-2532f18afcdd",
                       "type": "Button",
-                      "content": "Bottom Left Button"
+                      "value": {
+                        "content": "Bottom Left Button"
+                      }
                     },
                     {
                       "id": "a95cac65-e119-4c88-9871-6e6dae340f82",
                       "type": "PlainText",
-                      "content": "Bottom Right Text"
+                      "value": {
+                        "content": "Bottom Right Text"
+                      }
                     }
                   ]
                 }
               ]
             }
           />, document.getElementById('existing')
-        )
+        );
+        */
 
       }(Canvas.default));
     </script>

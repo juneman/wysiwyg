@@ -2,7 +2,9 @@
   These styles would need to be shared across
   both the editor and the client render
 */
-
+a { 
+  text-decoration: none;
+}
 .canvas {
   background-color: white;
 }

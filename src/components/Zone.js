@@ -1,27 +1,29 @@
 import React from 'react';
+import isEqual from 'lodash.isequal';
 
-import PlainText from '../editors/PlainText';
+import RichText from '../editors/RichText';
 import Button from '../editors/Button';
+import EditorWrapper from './EditorWrapper';
 
 export default class Zone extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      active: false,
-      hover: false,
-      content: props.content || '',
-      draftContent: '',
+      isEditing: false,
+      isHover: false,
+      value: props.value || {},
+      draftValue: {},
       html: '',
       draftHtml: '',
       type: props.type || null
     };
 
     this.baseHoverStateStyle = {
-      border: '1px dashed #C0C0C0'
+      border: '2px dotted #f4ad42'
     };
     this.baseActiveStateStyle = {
-      border: '1px dashed #008800'
+      border: '2px dotted #008800'
     };
     this.containerStyle = {
       width: '99%',
@@ -29,14 +31,14 @@ export default class Zone extends React.Component {
     };
     this.zoneStyle = {
       padding: '1em',
-      border: '1px solid #FFFFFF'
+      border: '2px solid #FFFFFF'
     };
   }
 
   componentDidMount() {
     // Force the underlying editor component to resave with the old data
     if (this.activeEditor) {
-      this.activeEditor.saveChanges(this.state.content);
+      this.activeEditor.saveChanges(this.state.value);
       setTimeout(() => {
         this.save();
       });
@@ -44,67 +46,51 @@ export default class Zone extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.content && nextProps.content !== this.props.content) {
-      this.setState({
-        content: nextProps.content
-      });
+    if (!isEqual(nextProps.value, this.props.value)) {
+      this.setState({value: nextProps.value});
     }
   }
 
   render() {
-    const { active, hover, type, content } = this.state;
-    const { column } = this.props;
+    const { isEditing, isHover, type, value } = this.state;
+    const { columnIndex } = this.props;
 
-    const hoverStateStyle = (hover) ? this.baseHoverStateStyle : null;
-    const activeStateStyle = (active) ? this.baseActiveStateStyle : null;
+    const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
+    const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
 
     // Common props across all editors
     let editorNode;
     const editorProps = {
-      content,
-      isActive: active,
-      onChange: (content) => this.saveDraft(content),
+      value,
+      isEditing,
+      onChange: (value) => this.saveDraft(value),
       ref: (editor) => { this.activeEditor = editor; }
     };
 
     switch (type) {
-      case 'PlainText':
-        editorNode = (<PlainText {...editorProps} />);
+      case 'RichText':
+        editorNode = (<RichText {...editorProps} />);
         break;
       case 'Button':
         editorNode = (<Button {...editorProps} />);
         break;
     }
 
-    const editor = (
-      <div>
-        <div className="edit">
-          {editorNode}
-        </div>
-        { (active ) ? (
-          <div>
-            <button onClick={(e) => this.save(e)}>Save</button>
-            <button onClick={(e) => this.cancel(e)}>Cancel</button>
-          </div>
-        ) : null}
-      </div>
-    );
-
-    const editorSelector = (
-      <div>
-        <div className="editor-selector" style={{color: '#000088', textAlign: 'center'}}>
-          <a href="#" onClick={(e) => this.setType(e, 'PlainText')}>Plain Text</a> &nbsp; | &nbsp; 
-          <a href="#" onClick={(e) => this.setType(e, 'Button')}>Button</a>
-        </div>
-      </div>
-    );
-
-    const main = (type) ? editor : editorSelector;
+    const main = (type) ? (
+      <EditorWrapper
+        isEditing={isEditing}
+        isHover={isHover}
+        onEdit={() => this.setState({isEditing: true})}
+        onSave={() => this.save()}
+        onCancel={() => this.cancel()}
+        onRemove={() => this.remove()}
+      >{editorNode}</EditorWrapper>
+    ) : null;
 
     return (
       <div
-        className={`zone-container zone-${column}`}
+        className={`zone-container zone-${columnIndex}`}
         style={this.containerStyle}
         onMouseEnter={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
@@ -118,81 +104,98 @@ export default class Zone extends React.Component {
   }
 
   toggleHover(active) {
-    this.setState({
-      hover: active
-    });
+    const { isCanvasInEditMode } = this.props;
+    if (!isCanvasInEditMode) {
+      this.setState({
+        isHover: active
+      });
+    }
   }
 
   toggleEditMode(e) {
     e.preventDefault();
-    const { active } = this.state;
-    if (active) {
+    const { isEditing } = this.state;
+    const { onToggleEditMode } = this.props;
+    if (isEditing) {
       return;
     }
     this.setState({
-      active: true
+      isEditing: true
     });
+    onToggleEditMode(true);
   }
 
-  setType(e, type) {
-    e.preventDefault();
+  setType(type) {
     this.setState({type});
   }
 
   saveDraft(editor) {
     this.setState({
-      draftContent: editor.content,
+      draftValue: editor.value,
       html: editor.html
     });
   }
 
-  save(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const { draftContent, html, type } = this.state;
-    const { id } = this.props;
+  save() {
+    const { draftValue, html, type } = this.state;
+    const { id, onToggleEditMode } = this.props;
     this.props.onSave({
       id,
       type,
-      content: draftContent,
+      value: draftValue,
       html: `
         <div class="zone-container">
           <div class="zone">
             <div class="content">
-              ${html}
+              ${html || ''}
             </div>
           </div>
         </div>
       `
     });
     this.setState({
-      active: false
+      isEditing: false,
+      isHover: false
     });
+    onToggleEditMode(false);
   }
 
-  cancel(e) {
-    e.preventDefault();
-    const { content } = this.state;
-
+  cancel() {
+    const { value } = this.state;
+    const { onToggleEditMode } = this.props;
     this.setState({
-      active: false,
-      content,
-      draftContent: content,
+      isEditing: false,
+      isHover: false,
+      value,
+      draftValue: value,
       html: ''
     });
+    onToggleEditMode(false);
+  }
 
-    // Force the underlying editor component to resave with the old data
-    if (this.activeEditor) {
-      this.activeEditor.saveChanges(content);
-    }
+  remove() {
+    const { onToggleEditMode } = this.props;
+    this.setState({
+      isEditing: false,
+      isHover: false,
+      value: {},
+      draftValue: {},
+      html: '',
+      draftHtml: '',
+      type: null
+    });
+    this.props.onRemove();
+    onToggleEditMode(false);
   }
 }
 
 Zone.propTypes = {
   id: React.PropTypes.string.isRequired,
+  isCanvasInEditMode: React.PropTypes.bool.isRequired,
   onSave: React.PropTypes.func.isRequired,
-  column: React.PropTypes.number.isRequired,
-  content: React.PropTypes.string,
+  onRemove: React.PropTypes.func.isRequired,
+  onToggleEditMode: React.PropTypes.func.isRequired,
+  columnIndex: React.PropTypes.number.isRequired,
+  value: React.PropTypes.object,
   type: React.PropTypes.string
 };

@@ -5,11 +5,19 @@ import Zone from './Zone';
 export default class Row extends React.Component {
 
   render() {
-    const { zones } = this.props;
+    const { zones, onToggleEditMode, isCanvasInEditMode } = this.props;
 
     const zoneNodes = zones.map((zone, i) => {
       return (
-        <Zone key={zone.id} column={i} onSave={(zone) => this.save(i, zone)} {...zone} />
+        <Zone
+          key={zone.id}
+          columnIndex={i}
+          onSave={(zone) => this.save(i, zone)}
+          onRemove={() => this.remove()}
+          onToggleEditMode={(isEnabled) => onToggleEditMode(isEnabled)}
+          isCanvasInEditMode={isCanvasInEditMode}
+          {...zone}
+        />
       );
     });
 
@@ -35,10 +43,17 @@ export default class Row extends React.Component {
     });
   }
 
+  remove() {
+    this.props.onRemoveRow();
+  }
+
 }
 
 Row.propTypes = {
   id: React.PropTypes.string.isRequired,
+  isCanvasInEditMode: React.PropTypes.bool.isRequired,
   onSave: React.PropTypes.func.isRequired,
+  onRemoveRow: React.PropTypes.func.isRequired,
+  onToggleEditMode: React.PropTypes.func.isRequired,
   zones: React.PropTypes.array
 };

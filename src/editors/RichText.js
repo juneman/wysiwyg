@@ -2,7 +2,7 @@ import React from 'react';
 
 import EditorBase from './EditorBase';
 
-export default class ButtonEditor extends EditorBase {
+export default class RichTextEditor extends EditorBase {
 
   shouldComponentUpdate(nextProps) {
     if (this.props.isEditing === true && nextProps.isEditing === true) {
@@ -14,12 +14,12 @@ export default class ButtonEditor extends EditorBase {
   render() {
     const { isEditing, value } = this.props;
 
-    const content = (value && value.content) || 'Button Text';
+    const content = (value && value.content) || 'Edit This Text';
 
     return (
-      <button className="button" disabled>
+      <div>
         { (isEditing) ? (
-          <span
+          <div
             contentEditable={true}
             onKeyUp={(e) => this.handleKeyUp(e)}
             dangerouslySetInnerHTML={{
@@ -27,9 +27,9 @@ export default class ButtonEditor extends EditorBase {
             }}
           />
         ) : (
-          <span>{content}</span>
+          <div>{content}</div>
         )}
-      </button>
+      </div>
     );
   }
 
@@ -41,7 +41,7 @@ export default class ButtonEditor extends EditorBase {
   saveChanges(value) {
     this.props.onChange({
       value,
-      html: `<button class="button"><span>${value.content}</span></button>`
+      html: `<div><div>${value.content}</div></div>`
     });
   }
 }
