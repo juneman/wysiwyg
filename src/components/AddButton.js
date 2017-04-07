@@ -13,7 +13,7 @@ const wrapperStyle = {
   color: '#008800',
   fontSize: '30pt',
   textAlign: 'center'
-}
+};
 
 export default class AddButton extends React.Component {
   render() {

@@ -10,7 +10,7 @@ const mockEvent = {
 
 describe('<Zone />', () => {
 
-  it('should render an editor selector if active', () => {
+  it.skip('should render an editor selector if active', () => {
     const wrapper = mount(
       <Zone
         id='10'
@@ -24,7 +24,7 @@ describe('<Zone />', () => {
     expect(wrapper.find('.editor-selector')).to.have.length(1);
   });
 
-  it('should go back to rendering the content if cancelled', () => {
+  it.skip('should go back to rendering the content if cancelled', () => {
     const wrapper = shallow(
       <Zone
         id='10'
@@ -40,7 +40,7 @@ describe('<Zone />', () => {
     expect(wrapper.find('.editor-selector')).to.have.length(0);
   });
 
-  it('should revert any content changes if cancelled', () => {
+  it.skip('should revert any content changes if cancelled', () => {
     const wrapper = shallow(
       <Zone
         id='10'

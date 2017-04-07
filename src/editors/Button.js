@@ -7,17 +7,18 @@ export default class ButtonEditor extends EditorBase {
     super(props);
 
     this.state = {
-      content: 'Button Text'
+      content: props.content || 'Button Text'
     };
   }
 
   render() {
     let { content } = this.state;
+    const { isActive } = this.props;
 
     return (
       <button className="button" disabled>
         <span
-          contentEditable={true}
+          contentEditable={(isActive ? true : false)}
           onKeyUp={(e) => this.handleKeyUp(e)}
           dangerouslySetInnerHTML={{
             __html: content

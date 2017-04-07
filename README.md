@@ -20,16 +20,54 @@ To see what the demo is doing in order to get example usage of the component, op
 
 ## Usage
 
-The main export of this library is a `<Canvas />` react component.
+The main export of this library is a `<Canvas />` react component. You can see some example usage by opening up the `/demo/index.html` file.
 
-```
+In addition, there is currently a `/demo/canvas.css` file with some basic styles that would need to be shared between both this editor and the client rendering.
+
+### Sample Component
+```jsx
 <Canvas
   width="100%"
-  height="400px"
+  height="300px"
+  onSave={(content) => { // do something } }
+  rows={
+    [
+      {
+        "id": "17477d46-de5c-4bce-80c7-913eba1cbb3b",
+        "zones": [
+          {
+            "id": "1515a32c-49ba-4219-baca-4972e9efec50",
+            "type": "PlainText",
+            "content": "Top Left Text"
+          },
+          {
+            "id": "a1f35283-d18d-450e-a739-ef7300249279",
+            "type": "Button",
+            "content": "Top Right Button"
+          }
+        ]
+      },
+      {
+        "id": "836951fd-de87-40c0-9050-7394fdc945b2",
+        "zones": [
+          {
+            "id": "57d72c28-1f8d-4e97-b734-2532f18afcdd",
+            "type": "Button",
+            "content": "Bottom Left Button"
+          },
+          {
+            "id": "a95cac65-e119-4c88-9871-6e6dae340f82",
+            "type": "PlainText",
+            "content": "Bottom Right Text"
+          }
+        ]
+      }
+    ]
+  }
 />
 ```
 
-More details coming later on usage.
+More details coming later as APIs start to become more finalized.
 
 ## Development
 

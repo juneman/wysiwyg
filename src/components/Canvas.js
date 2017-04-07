@@ -10,7 +10,7 @@ export default class Canvas extends React.Component {
     super(props);
 
     this.state = {
-      rows: []
+      rows: this.props.rows || []
     };
   }
 
@@ -101,7 +101,8 @@ export default class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
+  onSave: React.PropTypes.func,
   height: React.PropTypes.string,
   width: React.PropTypes.string,
-  onSave: React.PropTypes.func
+  rows: React.PropTypes.array
 };

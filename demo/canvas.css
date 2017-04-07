@@ -3,13 +3,15 @@
   both the editor and the client render
 */
 
+.canvas {
+  background-color: white;
+}
 .canvas .button {
   padding: 1em;
   color: #008800;
 }
 .canvas .row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
 }
 .canvas .zone-0 {
   grid-column: 1;
@@ -17,6 +19,9 @@
 .canvas .zone-1 {
   grid-column: 2;
 }
-.canvas .zone-3 {
+.canvas .zone-2 {
   grid-column: 3;
+}
+.canvas .zone-3 {
+  grid-column: 4;
 }

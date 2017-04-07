@@ -33,6 +33,16 @@ export default class Zone extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // Force the underlying editor component to resave with the old data
+    if (this.activeEditor) {
+      this.activeEditor.saveChanges(this.state.content);
+      setTimeout(() => {
+        this.save();
+      });
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.content && nextProps.content !== this.props.content) {
       this.setState({
@@ -42,7 +52,7 @@ export default class Zone extends React.Component {
   }
 
   render() {
-    const { active, hover, type, content, html } = this.state;
+    const { active, hover, type, content } = this.state;
     const { column } = this.props;
 
     const hoverStateStyle = (hover) ? this.baseHoverStateStyle : null;
@@ -53,6 +63,7 @@ export default class Zone extends React.Component {
     let editorNode;
     const editorProps = {
       content,
+      isActive: active,
       onChange: (content) => this.saveDraft(content),
       ref: (editor) => { this.activeEditor = editor; }
     };
@@ -71,17 +82,12 @@ export default class Zone extends React.Component {
         <div className="edit">
           {editorNode}
         </div>
-        <button onClick={(e) => this.save(e)}>Save</button>
-        <button onClick={(e) => this.cancel(e)}>Cancel</button>
-      </div>
-    );
-
-    const preview = (
-      <div
-        className="content"
-        dangerouslySetInnerHTML={{
-          __html: html
-        }}>
+        { (active ) ? (
+          <div>
+            <button onClick={(e) => this.save(e)}>Save</button>
+            <button onClick={(e) => this.cancel(e)}>Cancel</button>
+          </div>
+        ) : null}
       </div>
     );
 
@@ -94,14 +100,7 @@ export default class Zone extends React.Component {
       </div>
     );
 
-    let main;
-    if (active && type) {
-      main = editor;
-    } else if (active) {
-      main = editorSelector;
-    } else {
-      main = preview;
-    }
+    const main = (type) ? editor : editorSelector;
 
     return (
       <div
@@ -148,7 +147,9 @@ export default class Zone extends React.Component {
   }
 
   save(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const { draftContent, html, type } = this.state;
     const { id } = this.props;
     this.props.onSave({

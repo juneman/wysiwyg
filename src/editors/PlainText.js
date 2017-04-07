@@ -7,16 +7,17 @@ export default class PlainTextEditor extends EditorBase {
     super(props);
 
     this.state = {
-      content: 'Edit this text'
+      content: props.content || 'Edit this text'
     };
   }
 
   render() {
     let { content } = this.state;
+    const { isActive } = this.props;
 
     return (
       <div
-        contentEditable={true}
+        contentEditable={(isActive ? true : false)}
         onKeyUp={(e) => this.handleKeyUp(e)}
         dangerouslySetInnerHTML={{
           __html: content

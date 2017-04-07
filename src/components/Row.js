@@ -13,8 +13,12 @@ export default class Row extends React.Component {
       );
     });
 
+    const gridStyle = {
+      gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
+    };
+
     return (
-      <div className="row">
+      <div className="row" style={gridStyle}>
         {zoneNodes}
       </div>
     );
