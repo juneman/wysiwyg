@@ -1,6 +1,6 @@
 export function convertBoundingBox(boundingBox) {
   if (!boundingBox || !boundingBox.height) {
-    return;
+    return {};
   }
   let { bottom, height, left, right, top, width } = boundingBox;
   return {

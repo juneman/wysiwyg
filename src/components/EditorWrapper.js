@@ -1,6 +1,7 @@
 import React from 'react';
 import isEqual from 'lodash.isequal';
 
+import { convertBoundingBox } from '../helpers/domHelpers';
 import OkButton from '../icons/OkButton';
 import EditButton from '../icons/EditButton';
 import CancelButton from '../icons/CancelButton';
@@ -25,19 +26,41 @@ export default class EditorWrapper extends React.Component {
   }
 
   render() {
-    const { isEditing, isHover, children } = this.props;
+    const { position } = this.state;
+    const { isEditing, isHover, children, zonePosition, toolbarNode, secondaryToolbarNode } = this.props;
 
     const hoverButtonStyles = {
       textAlign: 'center',
       position: 'absolute',
-      width: this.state.position.width || 100,
-      top: this.state.position.top - 10
+      width: position.width || 100,
+      top: position.top - 10
     };
 
     const editingButtonStyles = {
       position: 'absolute',
-      left: this.state.position.left + this.state.position.width - 130,
-      top: this.state.position.top + 40
+      left: zonePosition.right - 150,
+      top: zonePosition.bottom + 5
+    };
+
+    const toolbarStyles = {
+      position: 'absolute',
+      left: zonePosition.left,
+      top: zonePosition.bottom + 5,
+      backgroundColor: '#F6F6F6',
+      borderRadius: 5,
+      width: 300,
+      border: '1px solid #D0D0D0',
+      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
+    };
+
+    const secondaryToolbarStyles = {
+      position: 'absolute',
+      left: zonePosition.left,
+      top: zonePosition.bottom + 50,
+      backgroundColor: '#F6F6F6',
+      borderRadius: 5,
+      border: '1px solid #D0D0D0',
+      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
     };
 
     let buttons;
@@ -51,6 +74,16 @@ export default class EditorWrapper extends React.Component {
             <a href="#" onClick={(e) => this.handleCancel(e)}><CancelButton shadow={true} color="#C0C0C0" /></a>
             <a href="#" onClick={(e) => this.handleRemove(e)}><DeleteButton shadow={true} color="#FF0000" /></a>
           </div>
+          { (toolbarNode) ? (
+            <div style={toolbarStyles}>
+              { toolbarNode }
+            </div>
+          ) : null}
+          { (secondaryToolbarNode) ? (
+            <div style={secondaryToolbarStyles}>
+              { secondaryToolbarNode }
+            </div>
+          ): null}
         </div>
       );
     } else if (isHover) {
@@ -76,17 +109,7 @@ export default class EditorWrapper extends React.Component {
     if (!this.wrapper) {
       return;
     }
-    const box = this.wrapper.getBoundingClientRect();
-
-    let { bottom, height, left, right, top, width } = box;
-    const position = {
-      bottom,
-      height,
-      left,
-      right,
-      top,
-      width
-    };
+    const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
     if (!isEqual(position, this.state.position)) {
       this.setState({position});
     }
@@ -115,5 +138,8 @@ EditorWrapper.propTypes = {
   children: React.PropTypes.element.isRequired,
   onSave: React.PropTypes.func.isRequired,
   onCancel: React.PropTypes.func.isRequired,
-  onRemove: React.PropTypes.func.isRequired
+  onRemove: React.PropTypes.func.isRequired,
+  zonePosition: React.PropTypes.object.isRequired,
+  toolbarNode: React.PropTypes.node,
+  secondaryToolbarNode: React.PropTypes.node
 };

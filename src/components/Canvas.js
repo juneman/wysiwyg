@@ -1,10 +1,10 @@
 import React from 'react';
-import AddButton from '../icons/AddButton';
-import SvgIcons from '../icons/SvgIcons';
 import Row from './Row';
 import HTMLParser from 'html-parse-stringify2';
 import uuid from 'uuid/v4';
 import isEqual from 'lodash.isequal';
+
+import AddButton from '../icons/AddButton';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 
@@ -98,7 +98,6 @@ export default class Canvas extends React.Component {
         { rowNodes }
         { fullScreenAdd }
         { addNewRow }
-        <SvgIcons />
       </div>
     );
   }

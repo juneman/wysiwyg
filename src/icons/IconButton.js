@@ -11,15 +11,15 @@ const iconStyle = {
 
 const wrapperStyle = {
   fontSize: '20pt',
-  height: 42,
-  width: 42,
+  height: 35,
+  width: 35,
   margin: '0 5px'
 };
 
 export default class IconButton extends React.Component {
 
   render() {
-    const { iconId, color, text, shadow } = this.props;
+    const { title, pathNode, color, text, shadow, hideBackground } = this.props;
 
     const iconWrapperStyle = Object.assign({}, {
       textAlign: 'center',
@@ -27,11 +27,11 @@ export default class IconButton extends React.Component {
       color: '#FFF',
       display: 'inline-block',
       borderRadius: '50%',
-      height: 30,
-      width: 30,
+      height: 25,
+      width: 26,
       padding: 5
     }, {
-      boxShadow: (shadow) ? '2px 3px 3px rgba(0,0,0,0.3)' : null
+      boxShadow: (shadow) ? '1px 1px 4px rgba(0,0,0,0.4)' : null
     });
 
     const textStyle = {
@@ -46,10 +46,22 @@ export default class IconButton extends React.Component {
       iconWrapperStyle.backgroundColor = color;
       textStyle.color = color;
     }
+    if (hideBackground) {
+      delete iconWrapperStyle.backgroundColor;
+      delete iconWrapperStyle.boxShadow;
+      if (color) {
+        iconWrapperStyle.color = color;
+      }
+    }
 
     return (
       <span style={wrapperStyle}>
-        <span style={iconWrapperStyle}><svg style={iconStyle} className={iconId}><use xlinkHref={`#${iconId}`}></use></svg></span>
+        <span style={iconWrapperStyle}>
+          <svg style={iconStyle}>
+            <title>{title}</title>
+            {pathNode}
+          </svg>
+        </span>
         { (text) ? (<span style={textStyle}>{text}</span>) : null }
       </span>
     );
@@ -57,8 +69,10 @@ export default class IconButton extends React.Component {
 }
 
 IconButton.propTypes = {
-  iconId: React.PropTypes.string.isRequired,
+  title: React.PropTypes.string.isRequired,
+  pathNode: React.PropTypes.node.isRequired,
   text: React.PropTypes.string,
   color: React.PropTypes.string,
-  shadow: React.PropTypes.bool
+  shadow: React.PropTypes.bool,
+  hideBackground: React.PropTypes.bool
 };

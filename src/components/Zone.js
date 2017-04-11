@@ -1,8 +1,8 @@
 import React from 'react';
 import isEqual from 'lodash.isequal';
 
-import RichText from '../editors/RichText';
-import Button from '../editors/Button';
+import { convertBoundingBox } from '../helpers/domHelpers';
+import { RichTextEditor, RichTextToolbar } from '../editors/RichText';
 import EditorWrapper from './EditorWrapper';
 
 export default class Zone extends React.Component {
@@ -10,13 +10,16 @@ export default class Zone extends React.Component {
     super(props);
 
     this.state = {
+      position: {},
       isEditing: false,
       isHover: false,
       value: props.value || {},
       draftValue: {},
+      editorState: {},
       html: '',
       draftHtml: '',
-      type: props.type || null
+      type: props.type || null,
+      secondaryToolbarNode: null
     };
 
     this.baseHoverStateStyle = {
@@ -43,6 +46,11 @@ export default class Zone extends React.Component {
         this.save();
       });
     }
+    this.setBoundingBox();
+  }
+
+  componentDidUpdate() {
+    this.setBoundingBox();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,7 +60,7 @@ export default class Zone extends React.Component {
   }
 
   render() {
-    const { isEditing, isHover, type, value } = this.state;
+    const { isEditing, isHover, type, value, position, editorState, secondaryToolbarNode } = this.state;
     const { columnIndex } = this.props;
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
@@ -64,28 +72,55 @@ export default class Zone extends React.Component {
     const editorProps = {
       value,
       isEditing,
+      editorState,
       onChange: (value) => this.saveDraft(value),
       ref: (editor) => { this.activeEditor = editor; }
     };
 
+    const toolbarProps = {
+      editorState,
+      onChange: (editorState) => this.setState({editorState}),
+      onShowSecondaryToolbar: (Toolbar) => {
+        const secondaryToolbarNode = (
+          <Toolbar
+            onSave={(state) => {
+              const v = Object.assign({}, value, state);
+              this.setState({
+                value: v,
+                secondaryToolbarNode: null
+              });
+            }}
+            {...value}
+          />
+        );
+        this.setState({secondaryToolbarNode});
+      }
+    };
+
+    let toolbarNode;
+
     switch (type) {
       case 'RichText':
-        editorNode = (<RichText {...editorProps} />);
-        break;
-      case 'Button':
-        editorNode = (<Button {...editorProps} />);
+        editorNode = (<RichTextEditor {...editorProps} />);
+        toolbarNode = (<RichTextToolbar {...toolbarProps} />);
         break;
     }
 
     const main = (type) ? (
       <EditorWrapper
+        zonePosition={position}
         isEditing={isEditing}
         isHover={isHover}
         onEdit={() => this.setState({isEditing: true})}
         onSave={() => this.save()}
         onCancel={() => this.cancel()}
         onRemove={() => this.remove()}
-      >{editorNode}</EditorWrapper>
+        toolbarNode={toolbarNode}
+        secondaryToolbarNode={secondaryToolbarNode}
+        editorState={editorState}
+      >
+        {editorNode}
+      </EditorWrapper>
     ) : null;
 
     return (
@@ -95,6 +130,7 @@ export default class Zone extends React.Component {
         onMouseEnter={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
         onClick={(e) => this.toggleEditMode(e)}
+        ref={(el) => this.wrapper = el}
       >
         <div className="zone" style={zoneStyle}>
           {main}
@@ -131,6 +167,7 @@ export default class Zone extends React.Component {
 
   saveDraft(editor) {
     this.setState({
+      editorState: editor.editorState,
       draftValue: editor.value,
       html: editor.html
     });
@@ -155,7 +192,8 @@ export default class Zone extends React.Component {
     });
     this.setState({
       isEditing: false,
-      isHover: false
+      isHover: false,
+      editorState: null
     });
     onToggleEditMode(false);
   }
@@ -168,7 +206,8 @@ export default class Zone extends React.Component {
       isHover: false,
       value,
       draftValue: value,
-      html: ''
+      html: '',
+      editorState: null
     });
     onToggleEditMode(false);
   }
@@ -187,6 +226,17 @@ export default class Zone extends React.Component {
     this.props.onRemove();
     onToggleEditMode(false);
   }
+
+  setBoundingBox() {
+    if (!this.wrapper) {
+      return;
+    }
+    const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+    if (!isEqual(position, this.state.position)) {
+      this.setState({position});
+    }
+  }
+
 }
 
 Zone.propTypes = {

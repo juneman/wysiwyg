@@ -20,8 +20,10 @@ export default class FullAddElement extends React.Component {
       <a href="#" id="addBtn" onClick={(e) => this.handleSelect(e)}>
         <div style={fullScreenStyles}>
           <AddButton shadow={true} />
-          <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
-          <div>or drag and drop an image</div>
+          <div style={{color: '#00b84f'}}>
+            <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
+            <div>or drag and drop an image</div>
+          </div>
         </div>
       </a>
     );
