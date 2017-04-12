@@ -1,6 +1,8 @@
 import React from 'react';
-import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
+import { convertBoundingBox } from '../helpers/domHelpers';
 import AddButton from '../icons/AddButton';
 import CancelButton from '../icons/CancelButton';
 import TextButton from '../icons/TextButton';
@@ -44,7 +46,7 @@ export default class EditorSelector extends React.Component {
     super(props);
 
     this.state = {
-      position: {}
+      position: Map()
     };
   }
 
@@ -69,8 +71,8 @@ export default class EditorSelector extends React.Component {
       backgroundColor: '#F8F8F8',
       border: '2px dotted #0bdc66',
       padding: 10,
-      top: setPosition.top,
-      left: setPosition.left,
+      top: setPosition.get('top'),
+      left: setPosition.get('left'),
       width: 550
     };
 
@@ -83,8 +85,8 @@ export default class EditorSelector extends React.Component {
 
     const closeBtnStyle = {
       position: 'absolute',
-      left: (position.width || 0) - 48,
-      top: (position.height || 0) + 7,
+      left: (position.get('width') || 0) - 48,
+      top: (position.get('height') || 0) + 7,
       zIndex: 100
     };
 
@@ -116,7 +118,11 @@ export default class EditorSelector extends React.Component {
           }))
         }
         <div style={closeBtnStyle}>
-          <a href="#" onClick={(e) => this.handleCancel(e)}><CancelButton color="#C0C0C0" shadow={true} /></a>
+          <CancelButton
+            color="#C0C0C0"
+            shadow={true}
+            onClick={() => this.props.onCancel()}
+          />
         </div>
       </div>
     );
@@ -126,18 +132,8 @@ export default class EditorSelector extends React.Component {
     if (!this.wrapper) {
       return;
     }
-    const box = this.wrapper.getBoundingClientRect();
-
-    let { bottom, height, left, right, top, width } = box;
-    const position = {
-      bottom,
-      height,
-      left,
-      right,
-      top,
-      width
-    };
-    if (!isEqual(position, this.state.position)) {
+    const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+    if (!position.equals(this.state.position)) {
       this.setState({position});
     }
   }
@@ -146,17 +142,9 @@ export default class EditorSelector extends React.Component {
     e.preventDefault();
     this.props.onSelect(type);
   }
-
-  handleCancel(e) {
-    e.preventDefault();
-    this.props.onCancel();
-  }
 }
 EditorSelector.propTypes = {
-  onSelect: React.PropTypes.func.isRequired,
-  onCancel: React.PropTypes.func.isRequired,
-  setPosition: React.PropTypes.shape({
-    top: React.PropTypes.number.isRequired,
-    left: React.PropTypes.number.isRequired
-  }).isRequired
+  onSelect: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  setPosition: PropTypes.instanceOf(Map).isRequired,
 };

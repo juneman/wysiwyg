@@ -1,12 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Row from './Row';
 import HTMLParser from 'html-parse-stringify2';
 import uuid from 'uuid/v4';
-import isEqual from 'lodash.isequal';
+import { Map, List, fromJS } from 'immutable';
 
 import AddButton from '../icons/AddButton';
 
-import { convertBoundingBox } from '../helpers/domHelpers';
+import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
 
 import EditorSelector from './EditorSelector';
 import FullAddElement from './FullAddElement';
@@ -16,11 +18,11 @@ export default class Canvas extends React.Component {
     super(props);
 
     this.state = {
-      rows: this.props.rows || [],
+      rows: fromJS(props.rows) || List(),
       showEditorSelector: false,
       isEditing: false,
-      position: {},
-      addButtonPosition: {}
+      position: Map(),
+      addButtonPosition: Map()
     };
   }
 
@@ -39,23 +41,23 @@ export default class Canvas extends React.Component {
     const canvasStyles = {
       height,
       width,
-      padding: (rows && rows.length) ? '3px 0' : null
+      padding: (rows.size) ? '3px 0' : null
     };
 
-    const rowNodes = (rows && rows.length) ? rows.map((row, i) => {
+    const rowNodes = (rows.size) ? rows.map((row, i) => {
       return (
         <Row 
-          key={row.id}
+          key={row.get('id')}
+          row={row}
           onSave={(row) => this.save(i, row)}
           onRemoveRow={() => this.removeRow(row.id)}
           onToggleEditMode={(isEditing) => this.setState({isEditing})}
           isCanvasInEditMode={isEditing}
-          {...row}
         />
       );
     }) : null;
 
-    const fullScreenAdd = (!showEditorSelector && (!rows || !rows.length)) ? (
+    const fullScreenAdd = (!showEditorSelector && !rows.size) ? (
       <div ref={(el) => this.fullScreenAdd = el}>
         <FullAddElement
           height={height}
@@ -68,10 +70,8 @@ export default class Canvas extends React.Component {
 
     let addNewRow;
     if (showEditorSelector) {
-
-      const editorSelectorPosition = Object.assign({}, addButtonPosition, {
-        left: position.left + ((position.width - 550) / 2)
-      });
+      const editorSelectorPosition = addButtonPosition.set('left',
+        position.get('left') + ((position.get('width') - 550) / 2));
 
       addNewRow = (
         <EditorSelector
@@ -80,7 +80,7 @@ export default class Canvas extends React.Component {
           onCancel={() => this.setState({showEditorSelector: false})}
         />
       );
-    } else if (!isEditing && rows && rows.length) {
+    } else if (!isEditing && rows.size) {
       addNewRow = (
         <div style={{textAlign: 'center'}}>
           <a
@@ -110,14 +110,14 @@ export default class Canvas extends React.Component {
       addButtonPosition = convertBoundingBox(this.addButton.getBoundingClientRect());
     } else if (this.fullScreenAdd) {
       addButtonPosition = convertBoundingBox(this.fullScreenAdd.getBoundingClientRect());
-      addButtonPosition.top = addButtonPosition.top + (addButtonPosition.height / 4);
+      addButtonPosition = addButtonPosition.set('top', addButtonPosition.get('top') + (addButtonPosition.get('height') / 4));
     }
-    if (addButtonPosition && !isEqual(addButtonPosition, this.state.addButtonPosition)) {
+    if (addButtonPosition && !addButtonPosition.equals(this.state.addButtonPosition)) {
       update.addButtonPosition = addButtonPosition;
     }
     if (this.wrapper) {
       const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-      if (!isEqual(position, this.state.position)) {
+      if (!position.equals(this.state.position)) {
         update.position = position;
       }
     }
@@ -135,18 +135,18 @@ export default class Canvas extends React.Component {
 
   addRow(type) {
     const { rows } = this.state;
-    rows.push({
+    const updatedRows = rows.push(fromJS({
       id: uuid(),
       zones: [
         {
           id: uuid(),
           type,
-          value: {}
+          persistedState: {}
         }
       ]
-    });
+    }));
     this.setState({
-      rows,
+      rows: updatedRows,
       showEditorSelector: false
     });
   }
@@ -166,32 +166,31 @@ export default class Canvas extends React.Component {
     const { rows } = this.state;
     const { onSave } = this.props;
 
+    let updatedRows = rows;
+
     if (row) {
-      rows[index] = Object.assign({}, row);
+      updatedRows = rows.set(index, row);
       this.setState({
-        rows
+        rows: updatedRows
       });
     }
     if (onSave) {
-      const rowsHtml = rows.map(row => row.html);      
-      const html = (`<div class="canvas">${rowsHtml}</div>`)
-        .replace(/ {2}/g, '')
-        .replace(/(\r\n|\r|\n)/g, '');
+      const rowsHtml = updatedRows.toJS().map(row => row.html);      
+      const html = flattenHTML(`<div class="canvas">${rowsHtml}</div>`);
 
       const ast = HTMLParser.parse(html);
 
-      // Trim HTML out of what we perist up to the API
-      const rowsWithoutHtml = rows.map(zone => {
-        const r = Object.assign({}, zone);
-        delete r.html;
-        if (r.zones && r.zones.length) {
-          r.zones = r.zones.map(zone => {
-            const z = Object.assign({}, zone);
-            delete z.html;
-            return z;
+      // Flatten the Immutable object before pushing it up to the public API
+      const rowsWithoutHtml = updatedRows.toJS().map(row => {
+        // HTML shouldn't be persisted
+        delete row.html;
+        if (row.zones.length) {
+          row.zones = row.zones.map(zone => {
+            delete zone.html;
+            return zone;
           });
         }
-        return r;
+        return row;
       });
 
       onSave({
@@ -205,8 +204,8 @@ export default class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  height: React.PropTypes.number.isRequired,
-  width: React.PropTypes.number.isRequired,
-  onSave: React.PropTypes.func,
-  rows: React.PropTypes.array
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  onSave: PropTypes.func,
+  rows: PropTypes.array
 };

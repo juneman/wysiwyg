@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const iconStyle = {
   display: 'inline-block',
@@ -17,9 +18,24 @@ const wrapperStyle = {
 };
 
 export default class IconButton extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      colorOverride: null
+    };
+  }
 
   render() {
-    const { title, pathNode, color, text, shadow, hideBackground } = this.props;
+    const { title, pathNode, color, text, shadow, hideBackground, onClick, isActive, activeColor } = this.props;
+    const { colorOverride } = this.state;
+
+    let finalColor = color;
+    if (isActive && activeColor) {
+      finalColor = activeColor;
+    } else if (colorOverride) {
+      finalColor = colorOverride;
+    }
 
     const iconWrapperStyle = Object.assign({}, {
       textAlign: 'center',
@@ -42,19 +58,19 @@ export default class IconButton extends React.Component {
       left: 10
     };
 
-    if (color) {
-      iconWrapperStyle.backgroundColor = color;
-      textStyle.color = color;
+    if (finalColor) {
+      iconWrapperStyle.backgroundColor = finalColor;
+      textStyle.color = finalColor;
     }
     if (hideBackground) {
       delete iconWrapperStyle.backgroundColor;
       delete iconWrapperStyle.boxShadow;
-      if (color) {
-        iconWrapperStyle.color = color;
+      if (finalColor) {
+        iconWrapperStyle.color = finalColor;
       }
     }
 
-    return (
+    const iconNodes = (
       <span style={wrapperStyle}>
         <span style={iconWrapperStyle}>
           <svg style={iconStyle}>
@@ -65,14 +81,56 @@ export default class IconButton extends React.Component {
         { (text) ? (<span style={textStyle}>{text}</span>) : null }
       </span>
     );
+
+    return (onClick) ? (
+      <a href="#"
+        onClick={(e) => this.handleClick(e)}
+        onMouseDown={() => this.handleMouseDown()}
+        onMouseUp={() => this.handleMouseUp()}
+      >
+        {iconNodes}
+      </a>
+    ) : iconNodes ;
   }
+
+  handleClick(e) {
+    e.preventDefault();
+    const { onClick } = this.props;
+    if (onClick) {
+      onClick();
+    }
+  }
+
+  handleMouseDown() {
+    const { clickColor } = this.props;
+
+    if (clickColor) {
+      this.setState({
+        colorOverride: clickColor
+      });
+    }
+  }
+
+  handleMouseUp() {
+    const { clickColor } = this.props;
+    if (clickColor) {
+      this.setState({
+        colorOverride: null
+      });
+    }
+  }
+
 }
 
 IconButton.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  pathNode: React.PropTypes.node.isRequired,
-  text: React.PropTypes.string,
-  color: React.PropTypes.string,
-  shadow: React.PropTypes.bool,
-  hideBackground: React.PropTypes.bool
+  title: PropTypes.string.isRequired,
+  pathNode: PropTypes.node.isRequired,
+  text: PropTypes.string,
+  color: PropTypes.string,
+  clickColor: PropTypes.string,
+  activeColor: PropTypes.string,
+  shadow: PropTypes.bool,
+  hideBackground: PropTypes.bool,
+  onClick: PropTypes.func,
+  isActive: PropTypes.bool
 };

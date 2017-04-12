@@ -1,5 +1,6 @@
 import React from 'react';
-import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 import OkButton from '../icons/OkButton';
@@ -13,7 +14,7 @@ export default class EditorWrapper extends React.Component {
     super(props);
 
     this.state = {
-      position: {}
+      position: Map()
     };
   }
 
@@ -32,20 +33,20 @@ export default class EditorWrapper extends React.Component {
     const hoverButtonStyles = {
       textAlign: 'center',
       position: 'absolute',
-      width: position.width || 100,
-      top: position.top - 10
+      width: position.get('width') || 100,
+      top: position.get('top') - 10
     };
 
     const editingButtonStyles = {
       position: 'absolute',
-      left: zonePosition.right - 150,
-      top: zonePosition.bottom + 5
+      left: zonePosition.get('right') - 150,
+      top: zonePosition.get('bottom') + 5
     };
 
     const toolbarStyles = {
       position: 'absolute',
-      left: zonePosition.left,
-      top: zonePosition.bottom + 5,
+      left: zonePosition.get('left'),
+      top: zonePosition.get('bottom') + 5,
       backgroundColor: '#F6F6F6',
       borderRadius: 5,
       width: 300,
@@ -55,8 +56,8 @@ export default class EditorWrapper extends React.Component {
 
     const secondaryToolbarStyles = {
       position: 'absolute',
-      left: zonePosition.left,
-      top: zonePosition.bottom + 50,
+      left: zonePosition.get('left'),
+      top: zonePosition.get('bottom') + 50,
       backgroundColor: '#F6F6F6',
       borderRadius: 5,
       border: '1px solid #D0D0D0',
@@ -70,9 +71,9 @@ export default class EditorWrapper extends React.Component {
         <div>
           {children}
           <div style={editingButtonStyles}>
-            <a href="#" onClick={(e) => this.handleSave(e)}><OkButton shadow={true} color="#0bdc66" /></a>
-            <a href="#" onClick={(e) => this.handleCancel(e)}><CancelButton shadow={true} color="#C0C0C0" /></a>
-            <a href="#" onClick={(e) => this.handleRemove(e)}><DeleteButton shadow={true} color="#FF0000" /></a>
+            <OkButton shadow={true} color="#0bdc66" onClick={() => this.props.onSave()} />
+            <CancelButton shadow={true} color="#C0C0C0" onClick={() => this.props.onCancel()} />
+            <DeleteButton shadow={true} color="#FF0000" onClick={() => this.props.onRemove()} />
           </div>
           { (toolbarNode) ? (
             <div style={toolbarStyles}>
@@ -90,8 +91,8 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="edit">
           <div style={hoverButtonStyles}>
-            <a href="#"><MoveVertButton shadow={true} color="#cebea5" /></a>
-            <a href="#"><EditButton shadow={true} color="#f4ad42" /></a>
+            <MoveVertButton shadow={true} color="#cebea5" />
+            <EditButton shadow={true} color="#f4ad42" onClick={() => this.props.onEdit()} />
           </div>
           {children}
         </div>
@@ -110,36 +111,21 @@ export default class EditorWrapper extends React.Component {
       return;
     }
     const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-    if (!isEqual(position, this.state.position)) {
+    if (!position.equals(this.state.position)) {
       this.setState({position});
     }
   }
-
-  handleSave(e) {
-    e.preventDefault();
-    this.props.onSave();
-  }
-
-  handleCancel(e) {
-    e.preventDefault();
-    this.props.onCancel();
-  }
-
-  handleRemove(e) {
-    e.preventDefault();
-    this.props.onRemove();
-  }
-
 }
 
 EditorWrapper.propTypes = {
-  isEditing: React.PropTypes.bool.isRequired,
-  isHover: React.PropTypes.bool.isRequired,
-  children: React.PropTypes.element.isRequired,
-  onSave: React.PropTypes.func.isRequired,
-  onCancel: React.PropTypes.func.isRequired,
-  onRemove: React.PropTypes.func.isRequired,
-  zonePosition: React.PropTypes.object.isRequired,
-  toolbarNode: React.PropTypes.node,
-  secondaryToolbarNode: React.PropTypes.node
+  isEditing: PropTypes.bool.isRequired,
+  isHover: PropTypes.bool.isRequired,
+  children: PropTypes.element.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  zonePosition: PropTypes.instanceOf(Map).isRequired,
+  toolbarNode: PropTypes.node,
+  secondaryToolbarNode: PropTypes.node
 };

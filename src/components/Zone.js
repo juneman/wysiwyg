@@ -1,5 +1,6 @@
 import React from 'react';
-import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 import { RichTextEditor, RichTextToolbar } from '../editors/RichText';
@@ -10,16 +11,14 @@ export default class Zone extends React.Component {
     super(props);
 
     this.state = {
-      position: {},
+      position: Map(),
       isEditing: false,
       isHover: false,
-      value: props.value || {},
-      draftValue: {},
-      editorState: {},
+      localState: Map(),
+      draftPersistedState: Map(),
       html: '',
       draftHtml: '',
-      type: props.type || null,
-      secondaryToolbarNode: null
+      SecondaryToolbar: null
     };
 
     this.baseHoverStateStyle = {
@@ -39,9 +38,15 @@ export default class Zone extends React.Component {
   }
 
   componentDidMount() {
+    const { zone } = this.props;
+    const persistedState = zone.get('persistedState');
     // Force the underlying editor component to resave with the old data
     if (this.activeEditor) {
-      this.activeEditor.saveChanges(this.state.value);
+      const htmlContent = this.activeEditor.generateHTML(persistedState);
+      this.setState({
+        html: htmlContent
+      });
+      // setState is async, so we need to wait a loop before saving
       setTimeout(() => {
         this.save();
       });
@@ -54,49 +59,62 @@ export default class Zone extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.value, this.props.value)) {
-      this.setState({value: nextProps.value});
+    if (nextProps.zone.get('persistedState') !== this.props.zone.get('persistedState')) {
+      this.setState({persistedState: nextProps.zone.get('persistedState')});
     }
   }
 
   render() {
-    const { isEditing, isHover, type, value, position, editorState, secondaryToolbarNode } = this.state;
-    const { columnIndex } = this.props;
+    const { isEditing, isHover, localState, draftPersistedState, position, SecondaryToolbar } = this.state;
+    const { columnIndex, zone } = this.props;
+    const type = zone.get('type');
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
 
-    // Common props across all editors
-    let editorNode;
+    // Common props across all editors    
     const editorProps = {
-      value,
+      persistedState: draftPersistedState,
+      localState,
       isEditing,
-      editorState,
-      onChange: (value) => this.saveDraft(value),
+      onChange: (update) => this.setState({
+        localState: update.localState,
+        draftPersistedState: update.persistedState,
+        html: update.html
+      }),
       ref: (editor) => { this.activeEditor = editor; }
     };
 
+    // Common props across all toolbars
     const toolbarProps = {
-      editorState,
-      onChange: (editorState) => this.setState({editorState}),
-      onShowSecondaryToolbar: (Toolbar) => {
-        const secondaryToolbarNode = (
-          <Toolbar
-            onSave={(state) => {
-              const v = Object.assign({}, value, state);
-              this.setState({
-                value: v,
-                secondaryToolbarNode: null
-              });
-            }}
-            {...value}
-          />
-        );
-        this.setState({secondaryToolbarNode});
+      persistedState: draftPersistedState,
+      localState,
+      onChange: (update) => {
+        this.setState({
+          localState: update.localState,
+          draftPersistedState: update.persistedState
+        });
+      },
+      onShowSecondaryToolbar: (Toolbar) => this.setState({SecondaryToolbar: Toolbar})
+    };
+
+    // Common props across all secondary toolbars
+    const secondaryToolbarProps = {
+      persistedState: draftPersistedState,
+      localState,
+      onSave: (update) => {
+        const html = this.activeEditor.generateHTML(update.persistedState);
+        this.setState({
+          localState: update.localState,
+          draftPersistedState: update.persistedState,
+          html,
+          SecondaryToolbar: null
+        });
       }
     };
 
+    let editorNode;
     let toolbarNode;
 
     switch (type) {
@@ -106,50 +124,48 @@ export default class Zone extends React.Component {
         break;
     }
 
-    const main = (type) ? (
-      <EditorWrapper
-        zonePosition={position}
-        isEditing={isEditing}
-        isHover={isHover}
-        onEdit={() => this.setState({isEditing: true})}
-        onSave={() => this.save()}
-        onCancel={() => this.cancel()}
-        onRemove={() => this.remove()}
-        toolbarNode={toolbarNode}
-        secondaryToolbarNode={secondaryToolbarNode}
-        editorState={editorState}
-      >
-        {editorNode}
-      </EditorWrapper>
-    ) : null;
+    const secondaryToolbarNode = (SecondaryToolbar)
+      ? (<SecondaryToolbar {...secondaryToolbarProps} />)
+      : null;
 
     return (
       <div
         className={`zone-container zone-${columnIndex}`}
         style={this.containerStyle}
-        onMouseEnter={() => this.toggleHover(true)}
+        onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
-        onClick={(e) => this.toggleEditMode(e)}
         ref={(el) => this.wrapper = el}
       >
         <div className="zone" style={zoneStyle}>
-          {main}
+          <EditorWrapper
+            zonePosition={position}
+            isEditing={isEditing}
+            isHover={isHover}
+            onEdit={() => this.toggleEditMode()}
+            onSave={() => this.save()}
+            onCancel={() => this.cancel()}
+            onRemove={() => this.remove()}
+            toolbarNode={toolbarNode}
+            secondaryToolbarNode={secondaryToolbarNode}
+          >
+            {editorNode}
+          </EditorWrapper>
         </div>
       </div>
     );
   }
 
   toggleHover(active) {
+    const { isHover } = this.state;
     const { isCanvasInEditMode } = this.props;
-    if (!isCanvasInEditMode) {
+    if (!isCanvasInEditMode && isHover !== active) {
       this.setState({
         isHover: active
       });
     }
   }
 
-  toggleEditMode(e) {
-    e.preventDefault();
+  toggleEditMode() {
     const { isEditing } = this.state;
     const { onToggleEditMode } = this.props;
     if (isEditing) {
@@ -161,68 +177,50 @@ export default class Zone extends React.Component {
     onToggleEditMode(true);
   }
 
-  setType(type) {
-    this.setState({type});
-  }
-
-  saveDraft(editor) {
-    this.setState({
-      editorState: editor.editorState,
-      draftValue: editor.value,
-      html: editor.html
-    });
-  }
-
   save() {
-    const { draftValue, html, type } = this.state;
-    const { id, onToggleEditMode } = this.props;
-    this.props.onSave({
-      id,
-      type,
-      value: draftValue,
-      html: `
-        <div class="zone-container">
-          <div class="zone">
-            <div class="content">
-              ${html || ''}
-            </div>
+    const { draftPersistedState, html } = this.state;
+    const { zone, onToggleEditMode } = this.props;
+
+    const zoneHtml = `
+      <div class="zone-container">
+        <div class="zone">
+          <div class="content">
+            ${html || ''}
           </div>
         </div>
-      `
-    });
+      </div>
+    `;
+
+    const updatedZone = zone
+      .set('persistedState', draftPersistedState)
+      .set('html', zoneHtml);
+
+    this.props.onSave(updatedZone);
+
     this.setState({
       isEditing: false,
       isHover: false,
-      editorState: null
+      localState: Map()
     });
     onToggleEditMode(false);
   }
 
   cancel() {
-    const { value } = this.state;
-    const { onToggleEditMode } = this.props;
+    const { onToggleEditMode, zone } = this.props;
+    const persistedState = zone.get('persistedState');
     this.setState({
       isEditing: false,
       isHover: false,
-      value,
-      draftValue: value,
+      localState: Map(),
+      draftPersistedState: persistedState,
       html: '',
-      editorState: null
+      SecondaryToolbar: null
     });
     onToggleEditMode(false);
   }
 
   remove() {
     const { onToggleEditMode } = this.props;
-    this.setState({
-      isEditing: false,
-      isHover: false,
-      value: {},
-      draftValue: {},
-      html: '',
-      draftHtml: '',
-      type: null
-    });
     this.props.onRemove();
     onToggleEditMode(false);
   }
@@ -232,7 +230,7 @@ export default class Zone extends React.Component {
       return;
     }
     const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-    if (!isEqual(position, this.state.position)) {
+    if (!position.equals(this.state.position)) {
       this.setState({position});
     }
   }
@@ -240,12 +238,10 @@ export default class Zone extends React.Component {
 }
 
 Zone.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  isCanvasInEditMode: React.PropTypes.bool.isRequired,
-  onSave: React.PropTypes.func.isRequired,
-  onRemove: React.PropTypes.func.isRequired,
-  onToggleEditMode: React.PropTypes.func.isRequired,
-  columnIndex: React.PropTypes.number.isRequired,
-  value: React.PropTypes.object,
-  type: React.PropTypes.string
+  zone: PropTypes.instanceOf(Map).isRequired,
+  isCanvasInEditMode: PropTypes.bool.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onToggleEditMode: PropTypes.func.isRequired,
+  columnIndex: PropTypes.number.isRequired
 };

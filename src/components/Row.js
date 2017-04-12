@@ -1,22 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
 import Zone from './Zone';
 
 export default class Row extends React.Component {
 
   render() {
-    const { zones, onToggleEditMode, isCanvasInEditMode } = this.props;
+    const { row, onToggleEditMode, isCanvasInEditMode } = this.props;
 
-    const zoneNodes = zones.map((zone, i) => {
+    const zoneNodes = row.get('zones').map((zone, i) => {
       return (
         <Zone
-          key={zone.id}
+          key={zone.get('id')}
+          zone={zone}
           columnIndex={i}
           onSave={(zone) => this.save(i, zone)}
           onRemove={() => this.remove()}
           onToggleEditMode={(isEnabled) => onToggleEditMode(isEnabled)}
           isCanvasInEditMode={isCanvasInEditMode}
-          {...zone}
         />
       );
     });
@@ -33,14 +35,13 @@ export default class Row extends React.Component {
   }
 
   save(index, zone) {
-    const { zones, onSave, id } = this.props;
-    zones[index] = Object.assign({}, zone);
-    const zonesHtml = zones.map(zone => zone.html).join('\n');
-    onSave({
-      id,
-      zones: zones,
-      html: `<div class="row">${zonesHtml}</div>`
-    });
+    const { row, onSave } = this.props;
+    const updatedZones = row.get('zones').set(index, zone);
+    const zonesHtml = updatedZones.toJS().map(zone => zone.html).join('\n');
+    const updatedRow = row
+      .set('zones', updatedZones)
+      .set('html', `<div class="row">${zonesHtml}</div>`);
+    onSave(updatedRow);
   }
 
   remove() {
@@ -50,10 +51,9 @@ export default class Row extends React.Component {
 }
 
 Row.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  isCanvasInEditMode: React.PropTypes.bool.isRequired,
-  onSave: React.PropTypes.func.isRequired,
-  onRemoveRow: React.PropTypes.func.isRequired,
-  onToggleEditMode: React.PropTypes.func.isRequired,
-  zones: React.PropTypes.array
+  row: PropTypes.instanceOf(Map).isRequired,
+  isCanvasInEditMode: PropTypes.bool.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onRemoveRow: PropTypes.func.isRequired,
+  onToggleEditMode: PropTypes.func.isRequired
 };

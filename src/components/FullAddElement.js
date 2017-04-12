@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import AddButton from '../icons/AddButton';
 
@@ -36,8 +37,8 @@ export default class FullAddElement extends React.Component {
 }
 
 FullAddElement.propTypes = {
-  onClick: React.PropTypes.func.isRequired,
-  onDragImage: React.PropTypes.func.isRequired,
-  width: React.PropTypes.number.isRequired,
-  height: React.PropTypes.number.isRequired
+  onClick: PropTypes.func.isRequired,
+  onDragImage: PropTypes.func.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired
 };

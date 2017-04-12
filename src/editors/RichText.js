@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { convertToHTML, convertFromHTML } from 'draft-convert';
 
@@ -10,25 +12,40 @@ import SelectSizeButton from '../icons/SelectSizeButton';
 export class RichTextEditor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
-    const { value, editorState } = this.props;
-    const content = (value && value.content) || '<p>Edit This Text</p>';
-    if (nextProps.isEditing && !editorState && !nextProps.editorState) {
-      const initialEditorState = EditorState.createWithContent(convertFromHTML(content));
+    const { persistedState } = this.props;
+
+    const htmlContent = persistedState.get('content') || '<p>Edit This Text</p>';
+
+    if (nextProps.isEditing && nextProps.localState.isEmpty()) {
+      // If there is no editorState, create a new blank one
+      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
       this.handleEditorStateChange(initialEditorState);
+    } else if (nextProps.isEditing) {
+      // If editorState changes from the toolbar, push any changes up the chain
+      const oldEditorState = this.props.localState.get('editorState');
+      const newEditorState = nextProps.localState.get('editorState');
+      if (oldEditorState !== newEditorState) {
+        this.handleEditorStateChange(newEditorState);
+      }
     }
   }
 
   render() {
-    const { isEditing, value, editorState } = this.props;
+    const { isEditing, persistedState, localState } = this.props;
+    const editorState = localState.get('editorState');
 
-    const content = (value && value.content) || '<p>Edit This Text</p>';
+    const content = (persistedState.get('content')) || '<p>Edit This Text</p>';
 
     const wrapperStyle = {};
-    if (value.height) {
-      wrapperStyle.height = value.height;
+    const height = persistedState.get('height');
+    const width = persistedState.get('width');
+    if (height) {
+      wrapperStyle.height = height;
+    } else {
+      wrapperStyle.minHeight = 50;
     }
-    if (value.width) {
-      wrapperStyle.width = value.width;
+    if (width) {
+      wrapperStyle.width = width;
     }
 
     return (
@@ -38,7 +55,7 @@ export class RichTextEditor extends React.Component {
             <Editor
               ref={(editor) => this.editor = editor}
               editorState={editorState}
-              onChange={(s) => this.handleEditorStateChange(s)}
+              onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
           ) : null
         ) : (
@@ -53,80 +70,105 @@ export class RichTextEditor extends React.Component {
   }
 
   handleEditorStateChange(editorState) {
-    const { height, width } = this.props && this.props.value;
-    const html = convertToHTML(editorState.getCurrentContent());
-    this.saveChanges({
-      editorState,
-      content: html,
-      height,
-      width
+    const { persistedState, localState } = this.props;
+    const htmlContent = convertToHTML(editorState.getCurrentContent());
+
+    const newPersistedState = persistedState.set('content', htmlContent);
+    const newLocalState = localState.set('editorState', editorState);
+
+    this.props.onChange({
+      persistedState: newPersistedState,
+      localState: newLocalState,
+      html: this.generateHTML(newPersistedState)
     });
   }
 
-  saveChanges(value) {
-    const content = value.content || '';
+  generateHTML(persistedState) {
+    const height = persistedState.get('height');
+    const width = persistedState.get('width');
+    const content = persistedState.get('content') || '';
+
     let styles = '';
-    if (value.height) {
-      styles += `height:${value.height};`;
+    if (height) {
+      styles += `height:${height};`;
     }
-    if (value.width) {
-      styles += `width:${value.width};`;
+    if (width) {
+      styles += `width:${width};`;
     }
-    const stylesTag = (styles && styles.length) ? `style="${styles}"` : null;
-    this.props.onChange({
-      value: {
-        content
-      },
-      editorState: value.editorState,
-      html: `<div ${stylesTag}><div>${content}</div></div>`
-    });
+    const stylesTag = (styles && styles.length) ? ` style="${styles}"` : '';
+
+    const html = `<div${stylesTag}><div>${content}</div></div>`;
+    return html;
   }
+
 }
 
 RichTextEditor.propTypes = {
-  editorState: React.PropTypes.any,
-  isEditing: React.PropTypes.bool.isRequired,
-  onChange: React.PropTypes.func.isRequired,
-  value: React.PropTypes.object.isRequired
+  isEditing: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired,
+  localState: PropTypes.instanceOf(Map).isRequired
 };
 
 export class RichTextToolbar extends React.Component {
+
   render() {
+    const { localState } = this.props;
+    const selectedToolbar = localState.get('selectedToolbar');
+
+    const buttonProps = {
+      hideBackground: true,
+      color: '#808080',
+      clickColor: '#333',
+      activeColor: '#5e9bff'
+    };
+
     return (
       <div>
-        <a href="#" onClick={(e) => this.handleFormat(e, 'BOLD')}><BoldButton hideBackground={true} color="#808080" /></a>
-        <a href="#" onClick={(e) => this.handleFormat(e, 'ITALIC')}><ItalicButton hideBackground={true} color="#808080" /></a>
-        <a href="#" onClick={(e) => this.handleFormat(e, 'UNDERLINE')}><UnderlineButton hideBackground={true} color="#808080" /></a>
-        <a href="#" onClick={(e) => this.showToolbar(e, SizeToolbar)}><SelectSizeButton hideBackground={true} color="#808080" /></a>
+        <BoldButton onClick={() => this.handleFormat('BOLD')} {...buttonProps} />
+        <ItalicButton onClick={() => this.handleFormat('ITALIC')} {...buttonProps} />
+        <UnderlineButton onClick={() => this.handleFormat('UNDERLINE')} {...buttonProps} />
+        <SelectSizeButton onClick={() => this.showToolbar(SizeToolbar)} isActive={(selectedToolbar === 'selectSize')} {...buttonProps} />
       </div>
     );
   }
 
-  handleFormat(e, type) {
-    const { editorState, onChange } = this.props;
-    e.preventDefault();
-    onChange(RichUtils.toggleInlineStyle(editorState, type));
+  handleFormat(type) {
+    const { localState, persistedState, onChange } = this.props;
+    const newLocalState = localState.set('editorState', RichUtils.toggleInlineStyle(localState.get('editorState'), type));
+    onChange({
+      localState: newLocalState,
+      persistedState
+    });
   }
 
-  showToolbar(e, Toolbar) {
-    e.preventDefault();
-    this.props.onShowSecondaryToolbar(Toolbar);
+  showToolbar(Toolbar) {
+    const { onShowSecondaryToolbar, onChange, localState, persistedState } = this.props;
+    const newLocalState = localState.set('selectedToolbar', 'selectSize');
+    onChange({
+      localState: newLocalState,
+      persistedState
+    });
+    onShowSecondaryToolbar(Toolbar);
   }
 }
 
 RichTextToolbar.propTypes = {
-  editorState: React.PropTypes.any,
-  onChange: React.PropTypes.func.isRequired,
-  onShowSecondaryToolbar: React.PropTypes.func
+  localState: PropTypes.instanceOf(Map).isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired,
+  onChange: PropTypes.func.isRequired,
+  onShowSecondaryToolbar: PropTypes.func.isRequired
 };
 
 export class SizeToolbar extends React.Component {
   constructor(props) {
     super(props);
 
+    const { persistedState } = props;
+
     this.state = {
-      height: props.height || '',
-      width: props.width || ''
+      height: persistedState.get('height') || '',
+      width: persistedState.get('width') || ''
     };
   }
 
@@ -174,11 +216,23 @@ export class SizeToolbar extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    this.props.onSave(this.state);
+    const { localState, persistedState } = this.props;
+    const { height, width } = this.state;
+    
+    const newPersistedState = persistedState
+      .set('height', height)
+      .set('width', width);
+
+    const newLocalState = localState.delete('selectedToolbar');
+      
+    this.props.onSave({
+      localState: newLocalState,
+      persistedState: newPersistedState
+    });
   }
 }
 SizeToolbar.propTypes = {
-  onSave: React.PropTypes.func.isRequired,
-  height: React.PropTypes.number,
-  width: React.PropTypes.number
+  onSave: PropTypes.func.isRequired,
+  localState: PropTypes.instanceOf(Map).isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired
 };
