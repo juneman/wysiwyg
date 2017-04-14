@@ -1,12 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import uuid from 'uuid/v4';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 import AddButton from '../icons/AddButton';
 import CancelButton from '../icons/CancelButton';
 import TextButton from '../icons/TextButton';
 import ImageButton from '../icons/ImageButton';
+import VideoButton from '../icons/VideoButton';
+import CodeButton from '../icons/CodeButton';
+import FormButton from '../icons/FormButton';
+import HeroButton from '../icons/HeroButton';
+import ButtonButton from '../icons/ButtonButton';
+import RatingButton from '../icons/RatingButton';
 
 const MAX_COLUMNS = 3;
 
@@ -20,24 +27,96 @@ const editors = [
     type: 'Image'
   },
   {
-    node: <TextButton text="Hero" />,
+    node: <HeroButton text="Hero" />,
     type: 'Hero'
   },
   {
-    node: <TextButton text="Form" />,
-    type: 'Form'
+    node: <FormButton text="Text Input" />,
+    type: 'TextInput'
   },
   {
-    node: <TextButton text="Video" />,
+    node: <FormButton text="Textarea" />,
+    type: 'TextAreaInput'
+  },
+  {
+    node: <FormButton text="Multiselect" />,
+    type: 'MultiselectInput'
+  },
+  {
+    node: <VideoButton text="Video" />,
     type: 'Video'
   },
   {
-    node: <TextButton text="HTML" />,
+    node: <CodeButton text="HTML" />,
     type: 'HTML'
   },
   {
-    node: <TextButton text="Button" />,
+    node: <ButtonButton text="Button" />,
     type: 'Button'
+  },
+  {
+    node: <RatingButton text="Rating" />,
+    type: 'Rating',
+    rows: [
+      {
+        id: uuid(),
+        zones: [
+          {
+            id: uuid(),
+            type: 'RichText',
+            persistedState: {
+              content: 'Add Your Label...',
+              height: 20
+            }
+          }
+        ]
+      },
+      {
+        id: uuid(),
+        zones: [
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '1',
+              textAlign: 'center'
+            }
+          },
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '2',
+              textAlign: 'center'
+            }
+          },
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '3',
+              textAlign: 'center'
+            }
+          },
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '4',
+              textAlign: 'center'
+            }
+          },
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '5',
+              textAlign: 'center'
+            }
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -102,7 +181,7 @@ export default class EditorSelector extends React.Component {
           (editors.map((editor) => {
             const node = (
               <div key={editor.type} style={{gridColumn: column, gridRow: row, marginLeft: 20}}>
-                <a href="#" onClick={(e) => this.handleSelect(e, editor.type)}>
+                <a href="#" onClick={(e) => this.handleSelect(e, editor.type, editor.rows)}>
                   {editor.node}
                 </a>
               </div>
@@ -138,9 +217,9 @@ export default class EditorSelector extends React.Component {
     }
   }
 
-  handleSelect(e, type) {
+  handleSelect(e, type, rowsToAdd) {
     e.preventDefault();
-    this.props.onSelect(type);
+    this.props.onSelect(type, rowsToAdd);
   }
 }
 EditorSelector.propTypes = {

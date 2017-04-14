@@ -21,6 +21,7 @@ export class Row extends React.Component {
       onToggleEditMode,
       isCanvasInEditMode,
       connectDragSource,
+      canvasPosition
     } = this.props;
 
     const { isMovable } = this.state;
@@ -37,6 +38,7 @@ export class Row extends React.Component {
           onMoveRowStart={() => this.setState({isMovable: true})}
           onMoveRowEnd={() => this.setState({isMovable: false})}
           isCanvasInEditMode={isCanvasInEditMode}
+          canvasPosition={canvasPosition}
         />
       );
     });
@@ -76,6 +78,7 @@ export class Row extends React.Component {
 
 Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
+  canvasPosition: PropTypes.instanceOf(Map).isRequired,
   isCanvasInEditMode: PropTypes.bool.isRequired,
   onSave: PropTypes.func.isRequired,
   onRemoveRow: PropTypes.func.isRequired,

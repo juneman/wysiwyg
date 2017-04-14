@@ -31,6 +31,12 @@ export class Canvas extends React.Component {
     };
   }
 
+  getChildContext() {
+    return {
+      cloudinary: this.props.cloudinary
+    };
+  }
+
   componentDidMount() {
     this.setBoundingBox();
   }
@@ -66,10 +72,11 @@ export class Canvas extends React.Component {
           row={row}
           rowIndex={i}
           onSave={(row) => this.save(i, row)}
-          onRemoveRow={() => this.removeRow(row.id)}
+          onRemoveRow={() => this.removeRow(row.get('id'))}
           onToggleEditMode={(isEditing) => this.setState({isEditing})}
           onDrop={(sourceIndex, targetIndex) => this.moveRows(sourceIndex, targetIndex)}
           isCanvasInEditMode={isEditing}
+          canvasPosition={position}
         />
       );
     }) : null;
@@ -80,6 +87,7 @@ export class Canvas extends React.Component {
           height={height}
           width={width}
           onClick={() => this.handleAddNew()}
+          onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
           onDragImage={() => {}}
         />
       </div>
@@ -93,7 +101,7 @@ export class Canvas extends React.Component {
       addNewRow = (
         <EditorSelector
           setPosition={editorSelectorPosition}
-          onSelect={(type) => this.addRow(type)}
+          onSelect={(type, zones) => this.addRow(type, zones)}
           onCancel={() => this.setState({showEditorSelector: false})}
         />
       );
@@ -150,9 +158,41 @@ export class Canvas extends React.Component {
     });
   }
 
-  addRow(type) {
+  handleAddImage(imageDetails) {
+    // Trim what we save from Cloudinary down to just these fields
+    const { url, height, width } = imageDetails;
+    const { position } = this.state;
+
+    // Make sure the uploaded image does not have a larger size than the canvas
+    let heightOverride = (height > position.get('height')) ? position.get('height') : undefined;
+    let widthOverride = (width > position.get('width')) ? position.get('width') : undefined;
+
+    const rowsToAdd = [
+      {
+        id: uuid(),
+        zones: [
+          {
+            id: uuid(),
+            type: 'Image',
+            persistedState: {
+              url,
+              width,
+              height,
+              heightOverride,
+              widthOverride
+            }
+          }
+        ]
+      }
+    ];
+
+    this.addRow('Image', rowsToAdd);
+  }
+
+  addRow(type, rowsToAdd) {
     const { rows } = this.state;
-    const updatedRows = rows.push(fromJS({
+
+    rowsToAdd = rowsToAdd || [{
       id: uuid(),
       zones: [
         {
@@ -161,7 +201,13 @@ export class Canvas extends React.Component {
           persistedState: {}
         }
       ]
-    }));
+    }];
+
+    let updatedRows = rows;
+    rowsToAdd.forEach((row) => {
+      updatedRows = updatedRows.push(fromJS(row));
+    });
+    
     this.setState({
       rows: updatedRows,
       showEditorSelector: false
@@ -170,13 +216,15 @@ export class Canvas extends React.Component {
 
   removeRow(id) {
     const { rows } = this.state;
-    const updatedRows = rows.splice(
-      rows.findIndex((row) => row.id === id), 1
-    );
+    const rowIndex = rows.findIndex((row) => row.get('id') === id);
+    if (rowIndex === -1) {
+      return;
+    }
+    const updatedRows = rows.splice(rowIndex, 1);
     this.setState({
       rows: updatedRows
     });
-    this.save();
+    this.save(updatedRows);
   }
 
   moveRows(sourceIndex, targetIndex) {
@@ -191,14 +239,17 @@ export class Canvas extends React.Component {
     this.setState({
       rows: updatedRows
     });
-    this.save();
+    this.save(updatedRows);
   }
 
   save(index, row) {
-    const { rows, originalRows } = this.state;
+    const { rows, originalRows, position } = this.state;
     const { onSave } = this.props;
+    const width = position.get('width');
+    const height = position.get('height');
 
-    let updatedRows = rows;
+    // In v4 of Immutable, switch to isImmutable()
+    let updatedRows = (index && !row) ? index : rows;
 
     if (row) {
       updatedRows = rows.set(index, row);
@@ -213,7 +264,11 @@ export class Canvas extends React.Component {
 
     if (onSave && shouldCallSave) {
       const rowsHtml = updatedRows.toJS().map(row => row.html);      
-      const html = flattenHTML(`<div class="canvas">${rowsHtml}</div>`);
+      const html = flattenHTML(`
+        <div class="canvas" style="width:${width};height:${height};">
+          ${rowsHtml}
+        </div>
+      `);
 
       const ast = HTMLParser.parse(html);
 
@@ -244,7 +299,22 @@ Canvas.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   onSave: PropTypes.func,
-  rows: PropTypes.array
+  rows: PropTypes.array,
+  cloudinary: PropTypes.shape({
+    accountId: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    uploadUrl: PropTypes.string.isRequired,
+    apiKey: PropTypes.string.isRequired
+  })
+};
+
+Canvas.childContextTypes = {
+  cloudinary: PropTypes.shape({
+    accountId: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    uploadUrl: PropTypes.string.isRequired,
+    apiKey: PropTypes.string.isRequired
+  })
 };
 
 export default DragDropContext(HTML5Backend)(Canvas);

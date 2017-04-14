@@ -27,7 +27,25 @@ a {
 .canvas .zone-3 {
   grid-column: 4;
 }
-input.form-control {
+.canvas .zone-4 {
+  grid-column: 5;
+}
+.canvas .zone-5 {
+  grid-column: 6;
+}
+.canvas .zone-6 {
+  grid-column: 7;
+}
+.canvas .zone-7 {
+  grid-column: 8;
+}
+.canvas .zone-8 {
+  grid-column: 9;
+}
+.canvas .zone-9 {
+  grid-column: 10;
+}
+input.form-control, textarea.form-control {
   display: block;
   margin: 0;
   width: 100%;
@@ -36,6 +54,7 @@ input.form-control {
   appearance: none;
   box-shadow: none;
   border-radius: none;
+  padding: 4px
 }
 input.form-control:focus {
   outline: none;
@@ -68,6 +87,19 @@ input.form-control:focus {
   text-decoration: none;
 }
 
+input[type="checkbox"], input[type="radio"] {
+  margin-right: 10px;
+}
+label {
+  font-weight: bold;
+}
+div.placeholder {
+  text-align: center;
+  color: #808080;
+  font-size: smaller;
+  text-transform: uppercase;
+}
 p {
-  margin: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }

@@ -6,11 +6,11 @@ export function convertBoundingBox(boundingBox) {
   }
   let { bottom, height, left, right, top, width } = boundingBox;
   return Map({
-    bottom,
-    height,
+    bottom: window.scrollY + bottom,
     left: window.scrollX + left,
-    right,
+    right: window.scrollX + right,
     top: window.scrollY + top,
+    height,
     width
   });
 }

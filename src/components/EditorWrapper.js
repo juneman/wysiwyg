@@ -34,7 +34,8 @@ export default class EditorWrapper extends React.Component {
       textAlign: 'center',
       position: 'absolute',
       width: position.get('width') || 100,
-      top: position.get('top')
+      top: position.get('top'),
+      zIndex: 100
     };
 
     const editingButtonStyles = {

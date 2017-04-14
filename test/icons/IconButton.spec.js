@@ -8,6 +8,7 @@ import BoldButton from '../../src/icons/BoldButton';
 import CancelButton from '../../src/icons/CancelButton';
 import DeleteButton from '../../src/icons/DeleteButton';
 import EditButton from '../../src/icons/EditButton';
+import FileUploadButton from '../../src/icons/FileUploadButton';
 import ImageButton from '../../src/icons/ImageButton';
 import ItalicButton from '../../src/icons/ItalicButton';
 import MoveVertButton from '../../src/icons/MoveVertButton';
@@ -40,6 +41,7 @@ describe('<IconButton />', () => {
       CancelButton,
       DeleteButton,
       EditButton,
+      FileUploadButton,
       ImageButton,
       ItalicButton,
       MoveVertButton,

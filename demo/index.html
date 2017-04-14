@@ -87,6 +87,13 @@
     <script type="text/babel">
       (function(Canvas) {
 
+        const CLOUDINARY = {
+          accountId: '22',
+          userId: '12356',
+          uploadUrl: 'https://api.cloudinary.com/v1_1/dnjrorsut/upload',
+          apiKey: '528868488473782'
+        }
+
         // A simple helper function for rendering code to this demo page
         function displayOutput(elemId, objOutput) {
           var jsonOutput = document.getElementById(elemId + '-json');
@@ -105,6 +112,7 @@
             width={674}
             height={294}
             onSave={(content) => displayOutput('simple', content) }
+            cloudinary={CLOUDINARY}
           />, document.getElementById('simple')
         )
 
