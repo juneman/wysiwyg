@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-import Row from './Row';
+import RowContainer from './RowContainer';
 import HTMLParser from 'html-parse-stringify2';
 import uuid from 'uuid/v4';
 import { Map, List, fromJS } from 'immutable';
@@ -13,12 +15,15 @@ import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
 import EditorSelector from './EditorSelector';
 import FullAddElement from './FullAddElement';
 
-export default class Canvas extends React.Component {
+export class Canvas extends React.Component {
   constructor(props) {
     super(props);
 
+    const rows = fromJS(props.rows) || List();
+
     this.state = {
-      rows: fromJS(props.rows) || List(),
+      originalRows: rows,
+      rows,
       showEditorSelector: false,
       isEditing: false,
       position: Map(),
@@ -34,6 +39,16 @@ export default class Canvas extends React.Component {
     this.setBoundingBox();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.rows) {
+      const rows = fromJS(nextProps.rows) || List();
+      this.setState({
+        originalRows: rows,
+        rows
+      });
+    }
+  }
+
   render() {
     const { rows, showEditorSelector, isEditing, addButtonPosition, position } = this.state;
     const { height, width } = this.props;
@@ -46,12 +61,14 @@ export default class Canvas extends React.Component {
 
     const rowNodes = (rows.size) ? rows.map((row, i) => {
       return (
-        <Row 
+        <RowContainer 
           key={row.get('id')}
           row={row}
+          rowIndex={i}
           onSave={(row) => this.save(i, row)}
           onRemoveRow={() => this.removeRow(row.id)}
           onToggleEditMode={(isEditing) => this.setState({isEditing})}
+          onDrop={(sourceIndex, targetIndex) => this.moveRows(sourceIndex, targetIndex)}
           isCanvasInEditMode={isEditing}
         />
       );
@@ -153,17 +170,32 @@ export default class Canvas extends React.Component {
 
   removeRow(id) {
     const { rows } = this.state;
-    rows.splice(
+    const updatedRows = rows.splice(
       rows.findIndex((row) => row.id === id), 1
     );
     this.setState({
-      rows
+      rows: updatedRows
+    });
+    this.save();
+  }
+
+  moveRows(sourceIndex, targetIndex) {
+    if (sourceIndex === targetIndex) {
+      return;
+    }
+    const { rows } = this.state;
+    const sourceRow = rows.get(sourceIndex);
+    const updatedRows = rows.delete(sourceIndex)
+      .insert(targetIndex, sourceRow);
+
+    this.setState({
+      rows: updatedRows
     });
     this.save();
   }
 
   save(index, row) {
-    const { rows } = this.state;
+    const { rows, originalRows } = this.state;
     const { onSave } = this.props;
 
     let updatedRows = rows;
@@ -174,7 +206,12 @@ export default class Canvas extends React.Component {
         rows: updatedRows
       });
     }
-    if (onSave) {
+
+    // Compare against what the component originally received
+    // as inbound props to see if we should bubble up a Save event
+    const shouldCallSave = rows.equals(originalRows) ? false : true;
+
+    if (onSave && shouldCallSave) {
       const rowsHtml = updatedRows.toJS().map(row => row.html);      
       const html = flattenHTML(`<div class="canvas">${rowsHtml}</div>`);
 
@@ -209,3 +246,6 @@ Canvas.propTypes = {
   onSave: PropTypes.func,
   rows: PropTypes.array
 };
+
+export default DragDropContext(HTML5Backend)(Canvas);
+

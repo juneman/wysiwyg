@@ -34,7 +34,7 @@ export default class EditorWrapper extends React.Component {
       textAlign: 'center',
       position: 'absolute',
       width: position.get('width') || 100,
-      top: position.get('top') - 10
+      top: position.get('top')
     };
 
     const editingButtonStyles = {
@@ -91,8 +91,18 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="edit">
           <div style={hoverButtonStyles}>
-            <MoveVertButton shadow={true} color="#cebea5" />
-            <EditButton shadow={true} color="#f4ad42" onClick={() => this.props.onEdit()} />
+            <MoveVertButton
+              shadow={true}
+              color="#cebea5"
+              cursor="ns-resize"
+              onMouseDown={() => this.props.onMoveRowStart()}
+              onMouseUp={() => this.props.onMoveRowEnd()}
+            />
+            <EditButton
+              shadow={true}
+              color="#f4ad42"
+              onClick={() => this.props.onEdit()}
+            />
           </div>
           {children}
         </div>
@@ -125,6 +135,8 @@ EditorWrapper.propTypes = {
   onSave: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
+  onMoveRowStart: PropTypes.func.isRequired,
+  onMoveRowEnd: PropTypes.func.isRequired,
   zonePosition: PropTypes.instanceOf(Map).isRequired,
   toolbarNode: PropTypes.node,
   secondaryToolbarNode: PropTypes.node

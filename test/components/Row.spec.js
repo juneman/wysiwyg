@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import Row from '../../src/components/Row';
+import { Row } from '../../src/components/Row';
 
 describe('<Row />', () => {
 

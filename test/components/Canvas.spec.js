@@ -1,9 +1,9 @@
 import React from 'react';
 import { Map, fromJS } from 'immutable';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
-import Canvas from '../../src/components/Canvas';
+import CanvasWithDrag, { Canvas } from '../../src/components/Canvas';
 
 describe('<Canvas />', () => {
 
@@ -87,20 +87,65 @@ describe('<Canvas />', () => {
       />
     );
 
-    const row = fromJS({
-      id: '20',
-      zones: [
-        {
-          id: '10',
-          type: 'RichText',
-          persistedState: Map()
-        }
-      ]
-    });
+    const type = 'RichText';
 
-    expect(wrapper.find('Row')).to.have.length(0);
-    wrapper.instance().addRow(row);
-    expect(wrapper.find('Row')).to.have.length(1);
+    expect(wrapper.state('rows').size).to.equal(0);
+    wrapper.instance().addRow(type);
+    expect(wrapper.state('rows').size).to.equal(1);
+    expect(wrapper.state('rows').get(0).get('zones').get(0).get('type')).to.equal('RichText');
+  });
+
+  it('should have the ability to remove an existing row and call onSave()', (done) => {
+    const wrapper = shallow(
+      <Canvas
+        height={100}
+        width={300}
+        onSave={(update) => {
+          expect(update.rows).to.have.length(0);
+          done();
+        }}
+        rows={[
+          {
+            id: '123',
+            zones: []
+          }
+        ]}
+      />
+    );
+
+    expect(wrapper.state('rows').size).to.equal(1);
+    wrapper.instance().removeRow('123');
+    expect(wrapper.state('rows').size).to.equal(0);
+  });
+
+  it('should not call onSave if the data has not changed', (done) => {
+    mount(
+      <CanvasWithDrag
+        height={100}
+        width={300}
+        onSave={() => {
+          throw new Error('Should not have called onSave()');
+        }}
+        rows={[
+          {
+            id: '123',
+            zones: [{
+              id: '456',
+              type: 'RichText',
+              persistedState: {
+                content: 'This is some content'
+              }
+            }]
+          }
+        ]}
+      />
+    );
+
+    // Give everything a chance to mount and render
+    setTimeout(() => {
+      done();
+    }, 500);
+
   });
 
 });

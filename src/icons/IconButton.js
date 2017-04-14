@@ -27,7 +27,21 @@ export default class IconButton extends React.Component {
   }
 
   render() {
-    const { title, pathNode, color, text, shadow, hideBackground, onClick, isActive, activeColor } = this.props;
+    const {
+      title,
+      pathNode,
+      color,
+      text,
+      shadow,
+      hideBackground,
+      onClick,
+      onMouseDown,
+      onMouseUp,
+      isActive,
+      activeColor,
+      cursor
+    } = this.props;
+
     const { colorOverride } = this.state;
 
     let finalColor = color;
@@ -82,8 +96,12 @@ export default class IconButton extends React.Component {
       </span>
     );
 
-    return (onClick) ? (
+    const linkStyle = {};
+    if (cursor) linkStyle.cursor = cursor;
+
+    return (onClick || onMouseDown || onMouseUp) ? (
       <a href="#"
+        style={linkStyle}
         onClick={(e) => this.handleClick(e)}
         onMouseDown={() => this.handleMouseDown()}
         onMouseUp={() => this.handleMouseUp()}
@@ -102,21 +120,27 @@ export default class IconButton extends React.Component {
   }
 
   handleMouseDown() {
-    const { clickColor } = this.props;
+    const { clickColor, onMouseDown } = this.props;
 
     if (clickColor) {
       this.setState({
         colorOverride: clickColor
       });
     }
+    if (onMouseDown) {
+      onMouseDown();
+    }
   }
 
   handleMouseUp() {
-    const { clickColor } = this.props;
+    const { clickColor, onMouseUp } = this.props;
     if (clickColor) {
       this.setState({
         colorOverride: null
       });
+    }
+    if (onMouseUp) {
+      onMouseUp();
     }
   }
 
@@ -127,10 +151,13 @@ IconButton.propTypes = {
   pathNode: PropTypes.node.isRequired,
   text: PropTypes.string,
   color: PropTypes.string,
+  cursor: PropTypes.string,
   clickColor: PropTypes.string,
   activeColor: PropTypes.string,
   shadow: PropTypes.bool,
   hideBackground: PropTypes.bool,
   onClick: PropTypes.func,
+  onMouseDown: PropTypes.func,
+  onMouseUp: PropTypes.func,
   isActive: PropTypes.bool
 };

@@ -1,13 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { DragSource } from 'react-dnd';
 
+import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Zone from './Zone';
 
-export default class Row extends React.Component {
+export class Row extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isMovable: false
+    };
+  }
 
   render() {
-    const { row, onToggleEditMode, isCanvasInEditMode } = this.props;
+    const {
+      row,
+      onToggleEditMode,
+      isCanvasInEditMode,
+      connectDragSource,
+    } = this.props;
+
+    const { isMovable } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
       return (
@@ -18,6 +34,8 @@ export default class Row extends React.Component {
           onSave={(zone) => this.save(i, zone)}
           onRemove={() => this.remove()}
           onToggleEditMode={(isEnabled) => onToggleEditMode(isEnabled)}
+          onMoveRowStart={() => this.setState({isMovable: true})}
+          onMoveRowEnd={() => this.setState({isMovable: false})}
           isCanvasInEditMode={isCanvasInEditMode}
         />
       );
@@ -27,7 +45,13 @@ export default class Row extends React.Component {
       gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
     };
 
-    return (
+    return (isMovable) ? (
+      connectDragSource(
+        <div className="row" style={gridStyle}>
+          {zoneNodes}
+        </div>
+      )
+    ) : (
       <div className="row" style={gridStyle}>
         {zoneNodes}
       </div>
@@ -55,5 +79,25 @@ Row.propTypes = {
   isCanvasInEditMode: PropTypes.bool.isRequired,
   onSave: PropTypes.func.isRequired,
   onRemoveRow: PropTypes.func.isRequired,
-  onToggleEditMode: PropTypes.func.isRequired
+  onToggleEditMode: PropTypes.func.isRequired,
+  connectDragSource: PropTypes.func,
+  isDragging: PropTypes.bool
 };
+
+const rowSource = {
+  beginDrag(props) {
+    return {
+      row: props.row,
+      rowIndex: props.rowIndex
+    };
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+export default DragSource(DRAGABLE_ITEMS.ROW, rowSource, collect)(Row);

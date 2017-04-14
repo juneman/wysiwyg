@@ -27,8 +27,8 @@ In addition, there is currently a `/demo/canvas.css` file with some basic styles
 ### Sample Component
 ```jsx
 <Canvas
-  width="100%"
-  height="300px"
+  width={100}
+  height={300}
   onSave={(content) => { // do something } }
   rows={
     [
@@ -37,13 +37,10 @@ In addition, there is currently a `/demo/canvas.css` file with some basic styles
         "zones": [
           {
             "id": "1515a32c-49ba-4219-baca-4972e9efec50",
-            "type": "PlainText",
-            "content": "Top Left Text"
-          },
-          {
-            "id": "a1f35283-d18d-450e-a739-ef7300249279",
-            "type": "Button",
-            "content": "Top Right Button"
+            "type": "RichText",
+            "persistedState": {
+              "content": "<p>Top Text</p>"
+            }
           }
         ]
       },
@@ -51,14 +48,11 @@ In addition, there is currently a `/demo/canvas.css` file with some basic styles
         "id": "836951fd-de87-40c0-9050-7394fdc945b2",
         "zones": [
           {
-            "id": "57d72c28-1f8d-4e97-b734-2532f18afcdd",
-            "type": "Button",
-            "content": "Bottom Left Button"
-          },
-          {
             "id": "a95cac65-e119-4c88-9871-6e6dae340f82",
-            "type": "PlainText",
-            "content": "Bottom Right Text"
+            "type": "RichText",
+            "persistedState": {
+              "content": "<p>Bottom Text</p>"
+            }
           }
         ]
       }
@@ -66,8 +60,6 @@ In addition, there is currently a `/demo/canvas.css` file with some basic styles
   }
 />
 ```
-
-More details coming later as APIs start to become more finalized.
 
 ## Development
 
@@ -103,3 +95,7 @@ To run the lint:
  * `npm run lint`
 
 This will also be done at the completion of running the unit tests.
+
+## Data Migration
+
+[Data Migration Guide](DataMigration.md)

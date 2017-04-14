@@ -20,6 +20,8 @@ describe('<Zone />', () => {
         onSave={() => {}}
         onRemove={() => {}}
         onToggleEditMode={() => {}}
+        onMoveRowStart={() => {}}
+        onMoveRowEnd={() => {}}
         columnIndex={1}
         isCanvasInEditMode={false}
       />
@@ -46,6 +48,8 @@ describe('<Zone />', () => {
         }}
         onRemove={() => {}}
         onToggleEditMode={() => {}}
+        onMoveRowStart={() => {}}
+        onMoveRowEnd={() => {}}
         columnIndex={1}
         isCanvasInEditMode={false}
       />
@@ -76,6 +80,8 @@ describe('<Zone />', () => {
         }}
         onRemove={() => {}}
         onToggleEditMode={() => {}}
+        onMoveRowStart={() => {}}
+        onMoveRowEnd={() => {}}
         columnIndex={1}
         isCanvasInEditMode={false}
       />

@@ -32,7 +32,6 @@ export default class Zone extends React.Component {
       margin: '0 auto 3px auto'
     };
     this.zoneStyle = {
-      padding: '1em',
       border: '2px solid #FFFFFF'
     };
   }
@@ -145,6 +144,8 @@ export default class Zone extends React.Component {
             onSave={() => this.save()}
             onCancel={() => this.cancel()}
             onRemove={() => this.remove()}
+            onMoveRowStart={() => this.props.onMoveRowStart()}
+            onMoveRowEnd={() => this.props.onMoveRowEnd()}
             toolbarNode={toolbarNode}
             secondaryToolbarNode={secondaryToolbarNode}
           >
@@ -243,5 +244,7 @@ Zone.propTypes = {
   onSave: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onToggleEditMode: PropTypes.func.isRequired,
+  onMoveRowStart: PropTypes.func.isRequired,
+  onMoveRowEnd: PropTypes.func.isRequired,
   columnIndex: PropTypes.number.isRequired
 };

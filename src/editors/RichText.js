@@ -42,7 +42,7 @@ export class RichTextEditor extends React.Component {
     if (height) {
       wrapperStyle.height = height;
     } else {
-      wrapperStyle.minHeight = 50;
+      wrapperStyle.minHeight = 40;
     }
     if (width) {
       wrapperStyle.width = width;
