@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
 import Toolbar from '../../components/Toolbar';
-import Code from '../../editor-actions/Code';
+import InputFieldOptions from '../../editor-actions/InputFieldOptions';
 
-export default class HtmlEditorToolbar extends React.Component {
+export default class TextAreaInputToolbar extends React.Component {
 
   render() {
     const { localState, persistedState, onChange } = this.props;
@@ -18,14 +18,13 @@ export default class HtmlEditorToolbar extends React.Component {
 
     return (
       <Toolbar>
-        <Code title="Enter your Custom HTML Below" {...toolbarProps} />
+        <InputFieldOptions {...toolbarProps} />
       </Toolbar>
     );
   }
-
 }
 
-HtmlEditorToolbar.propTypes = {
+TextAreaInputToolbar.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired

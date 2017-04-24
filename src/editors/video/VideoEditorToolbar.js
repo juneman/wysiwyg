@@ -1,22 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
-import HtmlEditorToolbar from '../html/HtmlEditorToolbar';
-import HtmlEditorCodeToolbar from '../html/HtmlEditorCodeToolbar';
+import Toolbar from '../../components/Toolbar';
+import Code from '../../editor-actions/Code';
 
-export default class VideoEditorToolbar extends React.Component {
+export default class HtmlEditorToolbar extends React.Component {
 
   render() {
-    // Render the normal HTML toolbars with different text
+    const { localState, persistedState, onChange } = this.props;
+
+    const toolbarProps = {
+      localState,
+      persistedState,
+      onChange
+    };
+
     return (
-      <HtmlEditorToolbar
-        CodeToolbarElement={
-          <HtmlEditorCodeToolbar
-            title="Paste in the script for your Video below"
-          />
-        }
-        {...this.props}
-      />
+      <Toolbar>
+        <Code title="Paste in your Video Script Below" {...toolbarProps} />
+      </Toolbar>
     );
   }
 
 }
+
+HtmlEditorToolbar.propTypes = {
+  localState: PropTypes.instanceOf(Map).isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired,
+  onChange: PropTypes.func.isRequired
+};

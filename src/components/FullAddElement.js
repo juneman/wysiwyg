@@ -28,7 +28,7 @@ export default class FullAddElement extends React.Component {
             <AddButton shadow={true} />
             <div style={{color: '#00b84f'}}>
               <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
-              <div>or drag and drop an image</div>
+              <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
             </div>
           </div>
         </a>

@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 export default class HtmlEditor extends React.Component {
 
   render() {
-    const { persistedState, placeholder } = this.props;
+    const { persistedState } = this.props;
 
     const content = persistedState.get('content');
 
@@ -20,7 +20,7 @@ export default class HtmlEditor extends React.Component {
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
     ) : (
-      <div className="placeholder">{placeholder || 'Click to add your HTML'}</div>
+      <div className="placeholder">Click to add your HTML</div>
     );
   }
 
@@ -50,6 +50,5 @@ HtmlEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  localState: PropTypes.instanceOf(Map).isRequired,
-  placeholder: PropTypes.string
+  localState: PropTypes.instanceOf(Map).isRequired
 };

@@ -6,21 +6,30 @@ import { convertBoundingBox } from '../helpers/domHelpers';
 
 import RichTextEditor from '../editors/richtext/RichTextEditor';
 import RichTextToolbar from '../editors/richtext/RichTextToolbar';
+
 import ImageEditor from '../editors/image/ImageEditor';
 import ImageToolbar from '../editors/image/ImageToolbar';
+
 import ButtonEditor from '../editors/button/ButtonEditor';
 import ButtonToolbar from '../editors/button/ButtonToolbar';
+
 import HtmlEditor from '../editors/html/HtmlEditor';
 import HtmlEditorToolbar from '../editors/html/HtmlEditorToolbar';
+
 import VideoEditor from '../editors/video/VideoEditor';
 import VideoEditorToolbar from '../editors/video/VideoEditorToolbar';
+
 import HeroEditor from '../editors/hero/HeroEditor';
 import HeroToolbar from '../editors/hero/HeroToolbar';
-import TextInputEditor from '../editors/form/TextInputEditor';
-import TextAreaInputEditor from '../editors/form/TextAreaInputEditor';
-import MultiselectEditor from '../editors/form/MultiselectEditor';
-import MultiselectToolbar from '../editors/form/MultiselectToolbar';
-import InputOptionsToolbar from '../editors/form/InputOptionsToolbar';
+
+import TextInputEditor from '../editors/form-text/TextInputEditor';
+import TextInputToolbar from '../editors/form-text/TextInputToolbar';
+
+import TextAreaInputEditor from '../editors/form-textarea/TextAreaInputEditor';
+import TextAreaInputToolbar from '../editors/form-textarea/TextAreaInputToolbar';
+
+import SelectionEditor from '../editors/form-select/SelectionEditor';
+import SelectionToolbar from '../editors/form-select/SelectionToolbar';
 
 import EditorWrapper from './EditorWrapper';
 
@@ -37,8 +46,7 @@ export default class Zone extends React.Component {
       localState: Map(),
       draftPersistedState: (zone) ? zone.get('persistedState') : Map(),
       html: '',
-      draftHtml: '',
-      SecondaryToolbarElement: null
+      draftHtml: ''
     };
 
     this.baseHoverStateStyle = {
@@ -87,7 +95,7 @@ export default class Zone extends React.Component {
   }
 
   render() {
-    const { isEditing, isHover, localState, draftPersistedState, position, SecondaryToolbarElement } = this.state;
+    const { isEditing, isHover, localState, draftPersistedState, position } = this.state;
     const { columnIndex, zone, canvasPosition } = this.props;
     const type = zone.get('type');
 
@@ -123,24 +131,6 @@ export default class Zone extends React.Component {
           draftPersistedState: update.persistedState,
           html
         });
-      },
-      onShowSecondaryToolbar: (Toolbar) => this.setState({SecondaryToolbarElement: Toolbar})
-    };
-
-    // Common props across all secondary toolbars
-    const secondaryToolbarProps = {
-      persistedState: draftPersistedState,
-      localState,
-      canvasPosition,
-      zonePosition: position,
-      onSave: (update) => {
-        const html = this.activeEditor.generateHTML(update.persistedState);
-        this.setState({
-          localState: update.localState,
-          draftPersistedState: update.persistedState,
-          html,
-          SecondaryToolbarElement: null
-        });
       }
     };
 
@@ -174,21 +164,17 @@ export default class Zone extends React.Component {
         break;
       case 'TextInput':
         editorNode = (<TextInputEditor {...editorProps} />);
-        toolbarNode = (<InputOptionsToolbar {...toolbarProps} />);
+        toolbarNode = (<TextInputToolbar {...toolbarProps} />);
         break;
       case 'TextAreaInput':
         editorNode = (<TextAreaInputEditor {...editorProps} />);
-        toolbarNode = (<InputOptionsToolbar {...toolbarProps} />);
+        toolbarNode = (<TextAreaInputToolbar {...toolbarProps} />);
         break;
-      case 'MultiselectInput':
-        editorNode = (<MultiselectEditor {...editorProps} />);
-        toolbarNode = (<MultiselectToolbar {...toolbarProps} />);
+      case 'SelectionField':
+        editorNode = (<SelectionEditor {...editorProps} />);
+        toolbarNode = (<SelectionToolbar {...toolbarProps} />);
         break;
     }
-
-    const secondaryToolbarNode = (SecondaryToolbarElement)
-      ? React.cloneElement(SecondaryToolbarElement, secondaryToolbarProps)
-      : null;
 
     return (
       <div
@@ -210,7 +196,6 @@ export default class Zone extends React.Component {
             onMoveRowStart={() => this.props.onMoveRowStart()}
             onMoveRowEnd={() => this.props.onMoveRowEnd()}
             toolbarNode={toolbarNode}
-            secondaryToolbarNode={secondaryToolbarNode}
           >
             {editorNode}
           </EditorWrapper>
@@ -277,8 +262,7 @@ export default class Zone extends React.Component {
       isHover: false,
       localState: Map(),
       draftPersistedState: persistedState,
-      html: '',
-      SecondaryToolbarElement: null
+      html: ''
     });
     onToggleEditMode(false);
   }

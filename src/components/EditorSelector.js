@@ -39,8 +39,8 @@ const editors = [
     type: 'TextAreaInput'
   },
   {
-    node: <FormButton text="Multiselect" />,
-    type: 'MultiselectInput'
+    node: <FormButton text="Selection" />,
+    type: 'SelectionField'
   },
   {
     node: <VideoButton text="Video" />,

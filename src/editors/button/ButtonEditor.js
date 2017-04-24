@@ -1,25 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState, ContentState } from 'draft-js';
+import { Editor, EditorState } from 'draft-js';
+import { convertToHTML, convertFromHTML } from 'draft-convert';
 
 export default class ButtonEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const content = persistedState.get('content') || 'Button Text';
-    const initialEditorState = EditorState.createWithContent(ContentState.createFromText(content));
+    const htmlContent = persistedState.get('content') || '<span>Button Text</span>';
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
     this.handleEditorStateChange(initialEditorState);
   }
 
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const content = persistedState.get('content') || 'Button Text';
+    const htmlContent = persistedState.get('content') || '<span>Button Text</span>';
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
-      const initialEditorState = EditorState.createWithContent(ContentState.createFromText(content));
+      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
       this.handleEditorStateChange(initialEditorState);
     } else if (nextProps.isEditing) {
       // If editorState changes from the toolbar, push any changes up the chain
@@ -36,18 +37,25 @@ export default class ButtonEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const content = (persistedState.get('content')) || 'Button Text';
-    const textAlign = persistedState.get('textAlign');
+    const { textAlign, className } = persistedState.toJS();
+    const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
 
     const containerStyle = {};
     if (textAlign) {
       containerStyle.textAlign = textAlign;
     }
+    const buttonStyle = {};
+    buttonStyleProps.forEach((key) => {
+      if (persistedState.get(key)) {
+        buttonStyle[key] = persistedState.get(key);
+      }
+    });
 
     return (
-      <div className="button" style={containerStyle}>
+      <div className="button-wrapper" style={containerStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <div className="btn" style={{display: 'inline-block'}}>
+            <div className="btn" style={{display: 'inline-block', ...buttonStyle}}>
             <Editor
               editorState={editorState}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
@@ -55,8 +63,10 @@ export default class ButtonEditor extends React.Component {
             </div>
           ) : null
         ) : (
-          <button className="btn" disabled>
-            <span>{content}</span>
+          <button className={`btn ${className}`} style={buttonStyle} disabled>
+            <span
+              dangerouslySetInnerHTML={{__html: content}}
+            />
           </button>
         )}
       </div>
@@ -65,9 +75,9 @@ export default class ButtonEditor extends React.Component {
 
   handleEditorStateChange(editorState) {
     const { persistedState, localState, onChange } = this.props;
-    const content = editorState.getCurrentContent().getPlainText();
+    const htmlContent = convertToHTML(editorState.getCurrentContent());
 
-    const newPersistedState = persistedState.set('content', content);
+    const newPersistedState = persistedState.set('content', htmlContent);
     const newLocalState = localState.set('editorState', editorState);
 
     onChange({
@@ -80,10 +90,18 @@ export default class ButtonEditor extends React.Component {
   generateHTML(persistedState) {
     const content = persistedState.get('content') || '';
     const textAlign = persistedState.get('textAlign');
+    const backgroundColor = persistedState.get('backgroundColor');
 
-    const style = (textAlign) ? ` style="text-align:${textAlign}"` : '';
+    const wrapperStyle = (textAlign) ? ` style="text-align:${textAlign}"` : '';
+    const buttonStyle = (backgroundColor) ? `style="background-color:${backgroundColor};"` : '';
 
-    return `<div class="button"${style}><button class="btn"><span>${content}</span></button></div>`;
+    return `
+      <div class="button-wrapper"${wrapperStyle}>
+        <button class="btn"${buttonStyle}>
+          <span>${content}</span>
+        </button>
+      </div>
+    `;
   }
 
 }

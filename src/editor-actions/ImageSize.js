@@ -2,33 +2,51 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-export default class RichTextResizeToolbar extends React.Component {
+import Toolbar from '../components/Toolbar';
+
+import SelectSizeButton from '../icons/SelectSizeButton';
+
+export default class ImageSize extends React.Component {
+
   constructor(props) {
     super(props);
 
     const { persistedState } = props;
 
     this.state = {
+      showDropdown: false,
       height: persistedState.get('height') || '',
       width: persistedState.get('width') || ''
     };
   }
 
   render() {
-    const { height, width } = this.state;
+    const { height, width, showDropdown } = this.state;
 
-    const formStyles = {
-      width: 500,
-      margin: 20
+    const buttonProps = {
+      hideBackground: true,
+      color: '#303030',
+      clickColor: '#333',
+      activeColor: '#C0C0C0'
     };
+
+    const dropdownStyles = {
+      position: 'absolute',
+      top: 45,
+      left: 0,
+      padding: 10,
+      width: 300
+    };
+
     const titleStyles = {
       textTransform: 'uppercase',
       fontSize: 'smaller',
-      color: '#808080'
+      color: '#808080',
+      marginBottom: 20
     };
 
-    return (
-      <div style={formStyles}>
+    const dropdownNodes = showDropdown ? (
+      <Toolbar style={dropdownStyles}>
         <div style={titleStyles}>Set Width and Height</div>
         <div style={{marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: 20}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
@@ -43,8 +61,22 @@ export default class RichTextResizeToolbar extends React.Component {
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
+      </Toolbar>
+    ) : null;
+
+    return (
+      <div>
+        <a href="#" onClick={() => this.toggleDropdown()}><SelectSizeButton {...buttonProps} /></a>
+        { dropdownNodes }
       </div>
     );
+  }
+
+  toggleDropdown() {
+    const { showDropdown } = this.state;
+    this.setState({
+      showDropdown: !showDropdown
+    });
   }
 
   handleInputChange(e, name) {
@@ -58,24 +90,23 @@ export default class RichTextResizeToolbar extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onSave } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { height, width } = this.state;
     
     const newPersistedState = persistedState
       .set('height', height)
       .set('width', width);
 
-    const newLocalState = localState.delete('selectedToolbar');
-      
-    onSave({
-      localState: newLocalState,
+    onChange({
+      localState,
       persistedState: newPersistedState
     });
   }
+
 }
 
-RichTextResizeToolbar.propTypes = {
-  onSave: PropTypes.func,
-  localState: PropTypes.instanceOf(Map),
-  persistedState: PropTypes.instanceOf(Map)
+ImageSize.propTypes = {
+  localState: PropTypes.instanceOf(Map).isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired,
+  onChange: PropTypes.func.isRequired
 };

@@ -92,7 +92,18 @@
           userId: '12356',
           uploadUrl: 'https://api.cloudinary.com/v1_1/dnjrorsut/upload',
           apiKey: '528868488473782'
-        }
+        };
+
+        const USER_PROPERTIES = [
+          {
+            name: 'First Name',
+            value: 'firstname'
+          },
+          {
+            name: 'Last Name',
+            value: 'lastname'
+          }
+        ];
 
         // A simple helper function for rendering code to this demo page
         function displayOutput(elemId, objOutput) {
@@ -113,6 +124,7 @@
             height={294}
             onSave={(content) => displayOutput('simple', content) }
             cloudinary={CLOUDINARY}
+            userProperties={USER_PROPERTIES}
           />, document.getElementById('simple')
         )
 

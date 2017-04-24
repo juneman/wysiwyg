@@ -32,8 +32,10 @@ export class Canvas extends React.Component {
   }
 
   getChildContext() {
+    const { cloudinary, userProperties } = this.props;
     return {
-      cloudinary: this.props.cloudinary
+      cloudinary,
+      userProperties
     };
   }
 
@@ -305,7 +307,11 @@ Canvas.propTypes = {
     userId: PropTypes.string.isRequired,
     uploadUrl: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired
-  })
+  }),
+  userProperties: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+  }))
 };
 
 Canvas.childContextTypes = {
@@ -314,7 +320,11 @@ Canvas.childContextTypes = {
     userId: PropTypes.string.isRequired,
     uploadUrl: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired
-  })
+  }),
+  userProperties: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+  }))
 };
 
 export default DragDropContext(HTML5Backend)(Canvas);

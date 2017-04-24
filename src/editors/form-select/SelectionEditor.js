@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
-export default class TextInputEditor extends React.Component {
+export default class SelectionEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
@@ -36,12 +36,19 @@ export default class TextInputEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
-    const placeholder = (persistedState.get('placeholder')) || 'Add Placeholder Text';
+    const options = persistedState.get('options') || [];
+    const optionString = (localState.get('options')) || options.join('\n') || '';
+    const isMultiselect = persistedState.get('isMultiselect') || false;
 
-    const containerStyle = {};
+    const placeholder = (`Place each option on a new line, e.g.
+      Apples
+      Oranges
+      Pineapples`).split('\n').map((row) => row.trim()).join('\n');
+
+    const inputType = (isMultiselect) ? 'checkbox' : 'radio';
 
     return (
-      <div style={containerStyle}>
+      <div>
         { isEditing ? (
           <div>
             <label>
@@ -52,12 +59,19 @@ export default class TextInputEditor extends React.Component {
                 />
               ) : null }
             </label>
-            <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} />
+            <textarea type="text" rows={5} className="form-control" placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
           </div>
         ) : (
           <div>
             <label>{label}</label>
-            <input type="text" className="form-control" placeholder={placeholder} disabled={true} />
+            { options.map((option) => {
+              return (
+                <div key={option}>
+                  <input type={inputType} />
+                  <label>{option}</label>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -79,36 +93,53 @@ export default class TextInputEditor extends React.Component {
   }
 
   handleInputChange(e) {
-    const label = e.currentTarget.value;
+    const options = e.currentTarget.value;
     const { persistedState, localState, onChange } = this.props;
 
-    const newPersistedState = persistedState.set('placeholder', label);
+    const optionsArray = options
+      .split('\n')
+      .map(option => option.trim())
+      .filter(option => option && option.length);
+
+    const newLocalState = localState.set('options', options);
+    const newPersistedState = persistedState.set('options', optionsArray);
 
     onChange({
       persistedState: newPersistedState,
-      localState,
+      localState: newLocalState,
       html: this.generateHTML(newPersistedState)
     });
   }
 
   generateHTML(persistedState) {
     const label = persistedState.get('label') || '';
-    const placeholder = persistedState.get('placeholder') || '';
+    const options = persistedState.get('options') || [];
     const isRequired = persistedState.get('isRequired') || false;
+    const isMultiselect = persistedState.get('isMultiselect') || false;
 
+    const inputType = (isMultiselect) ? 'checkbox' : 'radio';
     const requiredAttr = (isRequired) ? 'required="required"' : '';
+
+    const optionsHtml = options.map((option) => {
+      return `
+        <div>
+          <input type="${inputType}" ${requiredAttr} />
+          <label>${option}</label>
+        </div>
+      `;
+    }).join('\n');
 
     return `
       <div>
         <label>${label}</label>
-        <input type="text" class="form-control" ${requiredAttr} placeholder="${placeholder}" />
+        ${optionsHtml}
       </div>
     `;
   }
 
 }
 
-TextInputEditor.propTypes = {
+SelectionEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,

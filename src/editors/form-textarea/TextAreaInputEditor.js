@@ -37,6 +37,8 @@ export default class TextAreaInputEditor extends React.Component {
 
     const label = (persistedState.get('label')) || 'Add Label...';
     const placeholder = (persistedState.get('placeholder')) || 'Add Placeholder Text';
+    const maxLength = (persistedState.get('maxLength')) || '';
+    const isRequired = (persistedState.get('isRequired')) || false;
 
     const containerStyle = {};
 
@@ -56,8 +58,8 @@ export default class TextAreaInputEditor extends React.Component {
           </div>
         ) : (
           <div>
-            <label>{label}</label>
-            <textarea type="text" className="form-control" placeholder={placeholder} disabled={true} />
+            <label>{(isRequired) ? '*' : ''} {label}</label>
+            <textarea type="text" className="form-control" placeholder={placeholder} disabled={true} maxLength={maxLength} />
           </div>
         )}
       </div>
@@ -95,13 +97,15 @@ export default class TextAreaInputEditor extends React.Component {
     const label = persistedState.get('label') || '';
     const placeholder = persistedState.get('placeholder') || '';
     const isRequired = persistedState.get('isRequired') || false;
+    const maxLength = persistedState.get('maxLength');
 
     const requiredAttr = (isRequired) ? 'required="required"' : '';
+    const maxLengthAttr = (maxLength) ? `max-length="${maxLength}"` : '';
 
     return `
       <div>
         <label>${label}</label>
-        <textarea type="text" class="form-control" ${requiredAttr} placeholder="${placeholder}"></textarea>
+        <textarea type="text" class="form-control" ${maxLengthAttr} ${requiredAttr} placeholder="${placeholder}"></textarea>
       </div>
     `;
   }

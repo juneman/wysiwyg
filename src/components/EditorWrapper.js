@@ -28,7 +28,7 @@ export default class EditorWrapper extends React.Component {
 
   render() {
     const { position } = this.state;
-    const { isEditing, isHover, children, zonePosition, toolbarNode, secondaryToolbarNode } = this.props;
+    const { isEditing, isHover, children, zonePosition, toolbarNode } = this.props;
 
     const hoverButtonStyles = {
       textAlign: 'center',
@@ -47,22 +47,7 @@ export default class EditorWrapper extends React.Component {
     const toolbarStyles = {
       position: 'absolute',
       left: zonePosition.get('left'),
-      top: zonePosition.get('bottom') + 5,
-      backgroundColor: '#F6F6F6',
-      borderRadius: 5,
-      width: 300,
-      border: '1px solid #D0D0D0',
-      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
-    };
-
-    const secondaryToolbarStyles = {
-      position: 'absolute',
-      left: zonePosition.get('left'),
-      top: zonePosition.get('bottom') + 50,
-      backgroundColor: '#F6F6F6',
-      borderRadius: 5,
-      border: '1px solid #D0D0D0',
-      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
+      top: zonePosition.get('bottom')
     };
 
     let buttons;
@@ -81,11 +66,6 @@ export default class EditorWrapper extends React.Component {
               { toolbarNode }
             </div>
           ) : null}
-          { (secondaryToolbarNode) ? (
-            <div style={secondaryToolbarStyles}>
-              { secondaryToolbarNode }
-            </div>
-          ): null}
         </div>
       );
     } else if (isHover) {
@@ -139,6 +119,5 @@ EditorWrapper.propTypes = {
   onMoveRowStart: PropTypes.func.isRequired,
   onMoveRowEnd: PropTypes.func.isRequired,
   zonePosition: PropTypes.instanceOf(Map).isRequired,
-  toolbarNode: PropTypes.node,
-  secondaryToolbarNode: PropTypes.node
+  toolbarNode: PropTypes.node
 };
