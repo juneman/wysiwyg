@@ -3,29 +3,61 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { RichUtils } from 'draft-js';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import TextButton from '../icons/TextButton';
+
+// https://draftjs.org/docs/advanced-topics-custom-block-render-map.html
+const styleOptions = ([
+  {
+    name: 'Normal',
+    value: 'unstyled'
+  },
+  {
+    name: 'Header 1',
+    value: 'header-one'
+  },
+  {
+    name: 'Header 2',
+    value: 'header-two'
+  },
+  {
+    name: 'Header 3',
+    value: 'header-three'
+  },
+  {
+    name: 'Header 4',
+    value: 'header-four'
+  }
+]);
 
 export default class TextStyle extends React.Component {
 
   constructor(props) {
     super(props);
 
+    const currentBlockType = this.findCurrentBlockType(props.localState);
+
     this.state = {
-      showDropdown: false
+      blockType: currentBlockType
     };
   }
 
-  render() {
-    const { showDropdown } = this.state;
+  componentWillReceiveProps(nextProps) {
+    const currentBlockType = this.findCurrentBlockType(nextProps.localState);
+    if (currentBlockType !== this.state.blockType) {
+      this.setState({
+        blockType: currentBlockType
+      });
+    }
+  }
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+  render() {
+    const { blockType } = this.state;
+    const { isActive } = this.props;
+
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -35,49 +67,19 @@ export default class TextStyle extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
-    const styleOptions = ([
-      {
-        name: 'Header 1',
-        value: 'h1'
-      },
-      {
-        name: 'Header 2',
-        value: 'h2'
-      },
-      {
-        name: 'Header 3',
-        value: 'h3'
-      },
-      {
-        name: 'Header 4',
-        value: 'h4'
-      },
-      {
-        name: 'paragraph',
-        value: 'p'
-      }
-    ]).map((textStyle) => {
-      return textStyle;
-    });
-
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Text Style</div>
-        <select className="form-control" onChange={(e) => this.handleSave(e)}>
+        <select className="form-control" onChange={(e) => this.handleSave(e)} value={blockType}>
           { styleOptions.map((styleOption) => {
             return (
               <option key={styleOption.value} value={styleOption.value}>{styleOption.name}</option>
             );
           })}
         </select>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -88,23 +90,35 @@ export default class TextStyle extends React.Component {
     );
   }
 
+  findCurrentBlockType(localState) {
+    const editorState = localState.get('editorState');
+    let currentBlockType = 'unstyled';
+    if (editorState) {
+      currentBlockType = RichUtils.getCurrentBlockType(editorState);
+    }
+    return currentBlockType;
+  }
+
   toggleDropdown() {
-    const { showDropdown } = this.state;
+    const { onToggleActive, isActive } = this.props;
     this.setState({
-      showDropdown: !showDropdown
+      blockType: 'unstyled'
     });
+    onToggleActive(!isActive);
   }
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange } = this.props;
+    const selectedValue = e.target.value;
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
 
-    // TODO: This sets italic. Should set the font style
-    const newLocalState = localState.set('editorState', RichUtils.toggleInlineStyle(localState.get('editorState'), 'ITALIC'));
+    const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), selectedValue));
 
     this.setState({
-      showDropdown: false
+      blockType: 'unstyled'
     });
+
+    onToggleActive(false);
 
     onChange({
       localState: newLocalState,
@@ -117,5 +131,7 @@ export default class TextStyle extends React.Component {
 TextStyle.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

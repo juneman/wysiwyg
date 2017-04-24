@@ -2,26 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 import InputFieldOptions from '../../editor-actions/InputFieldOptions';
 
-export default class TextAreaInputToolbar extends React.Component {
-
-  render() {
-    const { localState, persistedState, onChange } = this.props;
-
-    const toolbarProps = {
-      localState,
-      persistedState,
-      onChange
-    };
-
-    return (
-      <Toolbar>
-        <InputFieldOptions {...toolbarProps} />
-      </Toolbar>
-    );
+const editorActions = [
+  {
+    Component: InputFieldOptions,
+    name: 'inputfield-options'
   }
+];
+
+export default function TextAreaInputToolbar(props) {
+  return (
+    <Menu>
+      <Toolbar
+        editorActions={editorActions}
+        {...props}
+      />
+    </Menu>
+  );
 }
 
 TextAreaInputToolbar.propTypes = {

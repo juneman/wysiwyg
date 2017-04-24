@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState } from 'draft-js';
-import { convertToHTML, convertFromHTML } from 'draft-convert';
+import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 
 export default class RichTextEditor extends React.Component {
 
@@ -13,7 +13,7 @@ export default class RichTextEditor extends React.Component {
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
-      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
+      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
       this.handleEditorStateChange(initialEditorState);
     } else if (nextProps.isEditing) {
       // If editorState changes from the toolbar, push any changes up the chain
@@ -32,20 +32,10 @@ export default class RichTextEditor extends React.Component {
     const content = (persistedState.get('content')) || '<p>Edit This Text</p>';
 
     const wrapperStyle = {};
-    const height = persistedState.get('height');
-    const width = persistedState.get('width');
-    if (height) {
-      wrapperStyle.height = height;
-    } else {
-      wrapperStyle.minHeight = 40;
-    }
-    if (width) {
-      wrapperStyle.width = width;
-    }
 
+    // The draft editor needs a little breathing room
     if (isEditing) {
       wrapperStyle.minHeight = 50;
-      delete wrapperStyle.height;
     }
 
     return (
@@ -54,6 +44,8 @@ export default class RichTextEditor extends React.Component {
           (editorState) ? (
             <Editor
               editorState={editorState}
+              customStyleFn={customStyleFn}
+              blockStyleFn={blockStyleFn}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
           ) : null
@@ -70,7 +62,8 @@ export default class RichTextEditor extends React.Component {
 
   handleEditorStateChange(editorState) {
     const { persistedState, localState } = this.props;
-    const htmlContent = convertToHTML(editorState.getCurrentContent());
+
+    const htmlContent = convertToHTML(editorState);
 
     const newPersistedState = persistedState.set('content', htmlContent);
     const newLocalState = localState.set('editorState', editorState);

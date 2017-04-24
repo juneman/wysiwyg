@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { RichUtils } from 'draft-js';
 
+import { getButtonProps } from '../helpers/styles/editor';
 import ItalicButton from '../icons/ItalicButton';
 
-export default class Bold extends React.Component {
+export default class Italic extends React.Component {
 
   render() {
-    const buttonProps = {
-      hideBackground: true,
-      color: '#808080',
-      clickColor: '#333',
-      activeColor: '#5e9bff'
-    };
+    const buttonProps = getButtonProps(false);
 
     return (
       <ItalicButton onClick={() => this.handleFormat()} {...buttonProps} />
@@ -31,7 +27,7 @@ export default class Bold extends React.Component {
 
 }
 
-Bold.propTypes = {
+Italic.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired

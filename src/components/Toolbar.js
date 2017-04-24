@@ -1,21 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Map } from 'immutable';
 
 export default class Toolbar extends React.Component {
 
-  render() {
-    const { style, children } = this.props;
+  constructor(props) {
+    super(props);
 
-    const toolbarStyles = Object.assign({}, {
-      backgroundColor: '#F6F6F6',
-      borderRadius: 5,
-      border: '1px solid #D0D0D0',
-      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
-    }, style);
+    this.state = {
+      selectedAction: null
+    };
+  }
+
+  render() {
+    const { localState, persistedState, onChange, editorActions } = this.props;
+    const { selectedAction } = this.state;
 
     return (
-      <div style={toolbarStyles}>
-        { children }
+      <div style={{display: 'grid'}}>
+        { editorActions.map((editorAction, index) => {
+          const toolbarProps = {
+            localState,
+            persistedState,
+            onChange,
+            isActive: (selectedAction === editorAction.name),
+            onToggleActive: (isActive) => {
+              this.setState({
+                selectedAction: (isActive) ? editorAction.name : null
+              });
+            }
+          };
+          return (<div key={editorAction.name} style={{gridColumn: index + 1, gridRow: 1}}><editorAction.Component {...editorAction.props} {...toolbarProps} /></div>);
+        })}
       </div>
     );
   }
@@ -23,9 +39,8 @@ export default class Toolbar extends React.Component {
 }
 
 Toolbar.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.element
-  ]).isRequired,
-  style: PropTypes.object
+  localState: PropTypes.instanceOf(Map).isRequired,
+  persistedState: PropTypes.instanceOf(Map).isRequired,
+  onChange: PropTypes.func.isRequired,
+  editorActions: PropTypes.array.isRequired
 };

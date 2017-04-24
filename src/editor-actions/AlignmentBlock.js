@@ -5,17 +5,14 @@ import { Map } from 'immutable';
 import Alignment from './Alignment';
 
 export default class AlignmentBlock extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    return (<Alignment onChange={(type) => this.handleAlignment(type)} />);
+    const { onToggleActive, isActive } = this.props;
+    return (
+      <Alignment
+        onChange={(type) => this.handleAlignment(type)}
+        onToggleActive={onToggleActive}
+        isActive={isActive}
+      />);
   }
 
   handleAlignment(type) {
@@ -34,5 +31,7 @@ export default class AlignmentBlock extends React.Component {
 AlignmentBlock.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

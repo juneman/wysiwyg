@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
 
@@ -14,21 +15,16 @@ export default class ImageSize extends React.Component {
     const { persistedState } = props;
 
     this.state = {
-      showDropdown: false,
       height: persistedState.get('height') || '',
       width: persistedState.get('width') || ''
     };
   }
 
   render() {
-    const { height, width, showDropdown } = this.state;
+    const { height, width } = this.state;
+    const { isActive } = this.props;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -38,15 +34,10 @@ export default class ImageSize extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Set Width and Height</div>
         <div style={{marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: 20}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
@@ -61,7 +52,7 @@ export default class ImageSize extends React.Component {
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -73,10 +64,8 @@ export default class ImageSize extends React.Component {
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleInputChange(e, name) {
@@ -108,5 +97,7 @@ export default class ImageSize extends React.Component {
 ImageSize.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

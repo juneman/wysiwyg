@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
 import { Editor, EditorState } from 'draft-js';
-import { convertToHTML, convertFromHTML } from 'draft-convert';
+import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 
 const defaultContent = '<h1>Title Text</h1><h2>Subtitle Text</h2>';
 
@@ -12,7 +12,7 @@ export default class HeroEditor extends React.Component {
   componentWillMount() {
     const { persistedState } = this.props;
     const htmlContent = persistedState.get('content') || defaultContent;
-    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
     this.handleEditorStateChange(initialEditorState);
   }
 
@@ -26,7 +26,7 @@ export default class HeroEditor extends React.Component {
       if (oldEditorState !== newEditorState) {
         this.handleEditorStateChange(newEditorState);
       } else if (!newEditorState) {
-        const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent));
+        const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
         this.handleEditorStateChange(initialEditorState);
       }
     }
@@ -58,6 +58,8 @@ export default class HeroEditor extends React.Component {
             <div style={textStyle}>
               <Editor
                 editorState={editorState}
+                customStyleFn={customStyleFn}
+                blockStyleFn={blockStyleFn}
                 onChange={(editorState) => this.handleEditorStateChange(editorState)}
               />
             </div>
@@ -90,7 +92,7 @@ export default class HeroEditor extends React.Component {
 
   handleEditorStateChange(editorState) {
     const { persistedState, localState, onChange } = this.props;
-    const htmlContent = convertToHTML(editorState.getCurrentContent());
+    const htmlContent = convertToHTML(editorState);
 
     const newPersistedState = persistedState.set('content', htmlContent);
     const newLocalState = localState.set('editorState', editorState);

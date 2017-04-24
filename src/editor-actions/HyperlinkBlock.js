@@ -6,28 +6,23 @@ import Hyperlink from './Hyperlink';
 
 export default class HyperlinkBlock extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    const { persistedState } = this.props;
+    const { persistedState, isActive, onToggleActive } = this.props;
+    const { href, isNewWindow } = persistedState.toJS();
 
     return (
       <Hyperlink
+        href={href}
+        isNewWindow={isNewWindow}
+        isActive={isActive}
+        onToggleActive={onToggleActive}
         onChange={(href, isNewWindow) => this.handleLink(href, isNewWindow)}
-        persistedState={persistedState}
       />);
   }
 
   handleLink(href, isNewWindow) {
     const { localState, persistedState, onChange } = this.props;
-    
-    // TODO: use editorState to modify based on the alignment selected
+
     const newPersistedState = persistedState
       .set('href', href)
       .set('isNewWindow', isNewWindow || false)
@@ -44,5 +39,7 @@ export default class HyperlinkBlock extends React.Component {
 HyperlinkBlock.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

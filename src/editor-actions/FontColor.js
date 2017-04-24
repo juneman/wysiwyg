@@ -2,57 +2,66 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
-import { RichUtils, EditorState } from 'draft-js';
+import { RichUtils } from 'draft-js';
+import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 
-import Toolbar from '../components/Toolbar';
+import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
-import ImageButton from '../icons/ImageButton';
+import SquareButton from '../icons/SquareButton';
 
 export default class FontColor extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    const { showDropdown } = this.state;
+    const { isActive } = this.props;
 
+    const selectedColor = this.getCurrentInlineColor();
     const buttonProps = {
       hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
+      color: selectedColor
     };
 
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
-      left: 0
+      left: 0,
+      padding: 5
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
-        <CompactPicker onChangeComplete={(color) => this.handleColor(color)} />
-      </Toolbar>
+    const titleStyles = secondaryMenuTitleStyle;
+
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
+        <div style={titleStyles}>Select a Font Color</div>
+        <CompactPicker
+          color={selectedColor}
+          onChangeComplete={(color) => this.handleColor(color)}
+        />
+      </Menu>
     ) : null;
 
     return (
       <div>
-        <ImageButton onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <SquareButton onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
+  }
+
+  getCurrentInlineColor() {
+    const { localState } = this.props;
+    const editorState = localState.get('editorState');
+    if (editorState) {
+      const styles = editorState.getCurrentInlineStyle().toJS();
+      if (styles.length && styles[0].indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0) {
+        return styles[0].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+      }
+    }
+    return '#000';
   }
 
   handleColor(color) {
@@ -60,39 +69,17 @@ export default class FontColor extends React.Component {
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
 
-    const selection = editorState.getSelection();
+    const styles = editorState.getCurrentInlineStyle().toJS();
+    let nextEditorState = styles.reduce((state, styleKey) => {
+      if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
+        return RichUtils.toggleInlineStyle(state, styleKey);
+      }
+      return state;
+    }, editorState);
 
-    // Let's just allow one color at a time. Turn off all active colors.
-    const nextContentState = editorState.getCurrentContent();
-
-    let nextEditorState = EditorState.push(
-      editorState,
-      nextContentState,
-      'change-inline-style'
-    );
-
-    const currentStyle = editorState.getCurrentInlineStyle();
-
-    // Unset style override for current color.
-    if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, color) => {
-        return RichUtils.toggleInlineStyle(state, color);
-      }, nextEditorState);
-    }
-
-    // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledColor)) {
-      nextEditorState = RichUtils.toggleInlineStyle(
-        nextEditorState,
-        toggledColor
-      );
-    }
+    nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
 
     const newLocalState = localState.set('editorState', nextEditorState);
-
-    this.setState({
-      showDropdown: false
-    });
 
     onChange({
       localState: newLocalState,
@@ -105,5 +92,7 @@ export default class FontColor extends React.Component {
 FontColor.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

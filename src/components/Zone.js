@@ -96,7 +96,7 @@ export default class Zone extends React.Component {
 
   render() {
     const { isEditing, isHover, localState, draftPersistedState, position } = this.state;
-    const { columnIndex, zone, canvasPosition } = this.props;
+    const { columnIndex, zone, canvasPosition, onMoveRowStart, onMoveRowEnd } = this.props;
     const type = zone.get('type');
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
@@ -193,8 +193,8 @@ export default class Zone extends React.Component {
             onSave={() => this.save()}
             onCancel={() => this.cancel()}
             onRemove={() => this.remove()}
-            onMoveRowStart={() => this.props.onMoveRowStart()}
-            onMoveRowEnd={() => this.props.onMoveRowEnd()}
+            onMoveRowStart={() => onMoveRowStart()}
+            onMoveRowEnd={() => onMoveRowEnd()}
             toolbarNode={toolbarNode}
           >
             {editorNode}

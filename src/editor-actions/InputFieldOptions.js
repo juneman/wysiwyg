@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
 
@@ -12,21 +13,16 @@ export default class InputFieldOptions extends React.Component {
     super(props);
 
     this.state = {
-      showDropdown: false,
       isRequired: props.persistedState.get('isRequired') || false,
       maxLength: props.persistedState.get('maxLength') || ''
     };
   }
 
   render() {
-    const { showDropdown, isRequired, maxLength } = this.state;
+    const { isRequired, maxLength } = this.state;
+    const { isActive } = this.props;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -36,19 +32,14 @@ export default class InputFieldOptions extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
     const row = {
       marginTop: 20
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Text Field Options</div>
         <div>
           <div style={row}>
@@ -63,23 +54,23 @@ export default class InputFieldOptions extends React.Component {
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
       <div>
-        <a href="#" onClick={(e) => this.toggleDropdown(e)}><SettingsButton {...buttonProps} /> Field Options</a>
+        <SettingsButton
+          onClick={() => this.toggleDropdown()}
+          text="Field Options"
+          {...buttonProps}  />
         { dropdownNodes }
       </div>
     );
   }
 
-  toggleDropdown(e) {
-    e.preventDefault();
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+  toggleDropdown() {
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleIsRequired(e) {
@@ -98,16 +89,14 @@ export default class InputFieldOptions extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange } = this.props;
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isRequired, maxLength } = this.state;
 
     const newPersistedState = persistedState
       .set('isRequired', isRequired)
       .set('maxLength', maxLength);
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
       
     onChange({
       localState,
@@ -120,5 +109,7 @@ export default class InputFieldOptions extends React.Component {
 InputFieldOptions.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

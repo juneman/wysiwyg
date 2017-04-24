@@ -2,31 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import TextButton from '../icons/TextButton';
 
 export default class ButtonAction extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    const { showDropdown } = this.state;
-    const { persistedState } = this.props;
+    const { persistedState, isActive } = this.props;
     const buttonAction = persistedState.get('buttonAction') || '';
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -36,12 +23,7 @@ export default class ButtonAction extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
     const actionOption = ([
       {
@@ -58,8 +40,8 @@ export default class ButtonAction extends React.Component {
       }
     ]);
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Button Action</div>
         <select value={buttonAction} className="form-control" onChange={(e) => this.handleSave(e)}>
           { actionOption.map((styleOption) => {
@@ -68,7 +50,7 @@ export default class ButtonAction extends React.Component {
             );
           })}
         </select>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -80,14 +62,12 @@ export default class ButtonAction extends React.Component {
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleSave(e) {
-    const { localState, persistedState, onChange } = this.props;
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
     const value = (e.target.value.length) ? e.target.value : null;
 
     const newPersistedState = persistedState
@@ -95,9 +75,7 @@ export default class ButtonAction extends React.Component {
       .delete('href')
       .delete('isNewWindow');
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
 
     onChange({
       localState,
@@ -110,5 +88,7 @@ export default class ButtonAction extends React.Component {
 ButtonAction.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

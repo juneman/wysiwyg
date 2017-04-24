@@ -28,7 +28,19 @@ export default class EditorWrapper extends React.Component {
 
   render() {
     const { position } = this.state;
-    const { isEditing, isHover, children, zonePosition, toolbarNode } = this.props;
+    const {
+      isEditing,
+      isHover,
+      children,
+      zonePosition,
+      toolbarNode,
+      onSave,
+      onCancel,
+      onRemove,
+      onMoveRowStart,
+      onMoveRowEnd,
+      onEdit
+    } = this.props;
 
     const hoverButtonStyles = {
       textAlign: 'center',
@@ -57,9 +69,9 @@ export default class EditorWrapper extends React.Component {
         <div>
           {children}
           <div style={editingButtonStyles}>
-            <OkButton shadow={true} color="#0bdc66" onClick={() => this.props.onSave()} />
-            <CancelButton shadow={true} color="#C0C0C0" onClick={() => this.props.onCancel()} />
-            <DeleteButton shadow={true} color="#FF0000" onClick={() => this.props.onRemove()} />
+            <OkButton shadow={true} color="#0bdc66" onClick={() => onSave()} />
+            <CancelButton shadow={true} color="#C0C0C0" onClick={() => onCancel()} />
+            <DeleteButton shadow={true} color="#FF0000" onClick={() => onRemove()} />
           </div>
           { (toolbarNode) ? (
             <div style={toolbarStyles}>
@@ -76,13 +88,13 @@ export default class EditorWrapper extends React.Component {
               shadow={true}
               color="#cebea5"
               cursor="ns-resize"
-              onMouseDown={() => this.props.onMoveRowStart()}
-              onMouseUp={() => this.props.onMoveRowEnd()}
+              onMouseDown={() => onMoveRowStart()}
+              onMouseUp={() => onMoveRowEnd()}
             />
             <EditButton
               shadow={true}
               color="#f4ad42"
-              onClick={() => this.props.onEdit()}
+              onClick={() => onEdit()}
             />
           </div>
           {children}

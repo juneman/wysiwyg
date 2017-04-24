@@ -1,32 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { RichUtils } from 'draft-js';
+import { EditorState, Modifier } from 'draft-js';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import UserPropertyButton from '../icons/UserPropertyButton';
 
 export default class UserProperty extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    const { showDropdown } = this.state;
+    const { isActive } = this.props;
     const { userProperties } = this.context;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -36,12 +24,7 @@ export default class UserProperty extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
     // Leave blank if nothing
     if (!userProperties || !userProperties.length) {
@@ -52,17 +35,18 @@ export default class UserProperty extends React.Component {
       return userProperty;
     });
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Insert a User Property</div>
         <select className="form-control" onChange={(e) => this.handleSave(e)}>
+          <option value="">Select Property...</option>
           { userPropertiesDropdown.map((userProperty) => {
             return (
               <option key={userProperty.value} value={userProperty.value}>{userProperty.name}</option>
             );
           })}
         </select>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -74,22 +58,30 @@ export default class UserProperty extends React.Component {
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange } = this.props;
+    const value = e.target.value;
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
 
-    // TODO: This sets italic. Should insert a custom user property
-    const newLocalState = localState.set('editorState', RichUtils.toggleInlineStyle(localState.get('editorState'), 'ITALIC'));
+    const editorState = localState.get('editorState');
+    const selectionState = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    
+    const newContentState = (selectionState.isCollapsed())
+      ? Modifier.insertText(contentState, selectionState, value)
+      : Modifier.replaceText(contentState, selectionState, value);
+    
+    const newLocalState = localState.set('editorState', EditorState.push(
+      editorState,
+      newContentState,
+      'insert-characters'
+    ));
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
 
     onChange({
       localState: newLocalState,
@@ -102,7 +94,9 @@ export default class UserProperty extends React.Component {
 UserProperty.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };
 
 UserProperty.contextTypes = {

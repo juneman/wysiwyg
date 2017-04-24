@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const iconStyle = {
+const baseIconStyle = {
   display: 'inline-block',
-  width: '1em',
-  height: '1em',
+  width: 16,
+  height: 16,
   strokeWidth: 0,
   stroke: 'currentColor',
-  fill: 'currentColor'
+  fill: 'currentColor',
+  position: 'relative',
+  top: -4
 };
 
 const wrapperStyle = {
@@ -30,7 +32,10 @@ export default class IconButton extends React.Component {
     const {
       title,
       pathNode,
+      iconStyle,
+      viewBox,
       color,
+      textColor,
       text,
       shadow,
       hideBackground,
@@ -65,16 +70,21 @@ export default class IconButton extends React.Component {
     });
 
     const textStyle = {
-      fontSize: '14pt',
+      fontSize: 16,
       position: 'relative',
       color: '#0bdc66',
-      top: -3,
-      left: 10
+      top: -6,
+      left: 3
     };
 
     if (finalColor) {
       iconWrapperStyle.backgroundColor = finalColor;
       textStyle.color = finalColor;
+    }
+    if (textColor && !colorOverride) {
+      textStyle.color = textColor;
+    } else if (textColor && colorOverride) {
+      textStyle.color = colorOverride;
     }
     if (hideBackground) {
       delete iconWrapperStyle.backgroundColor;
@@ -83,11 +93,12 @@ export default class IconButton extends React.Component {
         iconWrapperStyle.color = finalColor;
       }
     }
+    const finalIconStyle = Object.assign({}, baseIconStyle, iconStyle);
 
     const iconNodes = (
       <span style={wrapperStyle}>
         <span style={iconWrapperStyle}>
-          <svg style={iconStyle} viewBox="0 0 26 28">
+          <svg style={finalIconStyle} viewBox={viewBox}>
             <title>{title}</title>
             {pathNode}
           </svg>
@@ -105,6 +116,8 @@ export default class IconButton extends React.Component {
         onClick={(e) => this.handleClick(e)}
         onMouseDown={() => this.handleMouseDown()}
         onMouseUp={() => this.handleMouseUp()}
+        onMouseOver={() => this.handleMouseOver()}
+        onMouseOut={() => this.handleMouseOut()}
       >
         {iconNodes}
       </a>
@@ -116,6 +129,35 @@ export default class IconButton extends React.Component {
     const { onClick } = this.props;
     if (onClick) {
       onClick();
+    }
+  }
+
+  handleMouseOver() {
+    const { hoverColor, onMouseOver } = this.props;
+
+    if (hoverColor) {
+      this.setState({
+        colorOverride: hoverColor
+      });
+    }
+    if (onMouseOver) {
+      onMouseOver();
+    }
+  }
+
+  handleMouseOut() {
+    const { hoverColor, onMouseOut, onMouseUp } = this.props;
+
+    if (hoverColor) {
+      this.setState({
+        colorOverride: null
+      });
+    }
+    if (onMouseOut) {
+      onMouseOut();
+    }
+    if (onMouseUp) {
+      onMouseUp();
     }
   }
 
@@ -149,15 +191,21 @@ export default class IconButton extends React.Component {
 IconButton.propTypes = {
   title: PropTypes.string.isRequired,
   pathNode: PropTypes.node.isRequired,
+  viewBox: PropTypes.string.isRequired,
+  iconStyle: PropTypes.object,
   text: PropTypes.string,
   color: PropTypes.string,
+  textColor: PropTypes.string,
   cursor: PropTypes.string,
   clickColor: PropTypes.string,
   activeColor: PropTypes.string,
+  hoverColor: PropTypes.string,
   shadow: PropTypes.bool,
   hideBackground: PropTypes.bool,
   onClick: PropTypes.func,
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  onMouseOut: PropTypes.func,
   isActive: PropTypes.bool
 };

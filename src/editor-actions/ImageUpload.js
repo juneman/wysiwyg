@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import { getButtonProps } from '../helpers/styles/editor';
 import ImageUploader from '../components/ImageUploader';
 
 import FileUploadButton from '../icons/FileUploadButton';
@@ -9,12 +10,7 @@ import FileUploadButton from '../icons/FileUploadButton';
 export default class ImageUpload extends React.Component {
 
   render() {
-    const buttonProps = {
-      hideBackground: true,
-      color: '#808080',
-      clickColor: '#333',
-      activeColor: '#5e9bff'
-    };
+    const buttonProps = getButtonProps(false);
 
     return (
       <ImageUploader

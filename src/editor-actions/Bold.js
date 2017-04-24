@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { RichUtils } from 'draft-js';
 
+import { getButtonProps } from '../helpers/styles/editor';
 import BoldButton from '../icons/BoldButton';
 
 export default class Bold extends React.Component {
 
   render() {
-    const buttonProps = {
-      hideBackground: true,
-      color: '#808080',
-      clickColor: '#333',
-      activeColor: '#5e9bff'
-    };
+    const buttonProps = getButtonProps(false);
 
     return (
       <BoldButton onClick={() => this.handleFormat()} {...buttonProps} />

@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { RichUtils } from 'draft-js';
 
-import Toolbar from '../components/Toolbar';
+import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
+import { getButtonProps } from '../helpers/styles/editor';
 
 import ListBullet from '../icons/ListBullet';
 import ListNumbered from '../icons/ListNumbered';
@@ -14,7 +16,6 @@ export default class List extends React.Component {
     super(props);
 
     this.state = {
-      showDropdown: false,
       position: Map()
     };
   }
@@ -28,14 +29,11 @@ export default class List extends React.Component {
   }
 
   render() {
-    const { showDropdown, position } = this.state;
+    const { position } = this.state;
+    const { isActive } = this.props;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const primaryButtonProps = getButtonProps(isActive);
+    const secondaryButtonProps = getButtonProps(false);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -43,43 +41,36 @@ export default class List extends React.Component {
       left: position.left
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
-        <div style={{display: 'grid'}}>
-          <div style={{gridRow: 1, gridColumn: 1}}><ListBullet onClick={() => this.handleList('ul')} {...buttonProps} /></div>
-          <div style={{gridRow: 2, gridColumn: 1}}><ListNumbered onClick={() => this.handleList('ol')} {...buttonProps} /></div>
-        </div>
-      </Toolbar>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
+        <div><ListBullet onClick={() => this.handleList('unordered-list-item')} {...secondaryButtonProps} /></div>
+        <div><ListNumbered onClick={() => this.handleList('ordered-list-item')} {...secondaryButtonProps} /></div>
+      </Menu>
     ) : null;
 
     return (
       <div ref={(el) => this.wrapper = el}>
-        <ListBullet onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <ListBullet onClick={() => this.toggleDropdown()} {...primaryButtonProps} />
         { dropdownNodes }
       </div>
     );
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
-  handleList(type) {
-    const { localState, persistedState, onChange } = this.props;
+  handleList(listType) {
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
     
-    // TODO: use editorState to modify based on the alignment selected
-    const newPersistedState = persistedState.set('textAlign', type);
+    const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), listType));
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
 
     onChange({
-      localState,
-      persistedState: newPersistedState
+      localState: newLocalState,
+      persistedState
     });
   }
 
@@ -97,5 +88,7 @@ export default class List extends React.Component {
 List.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

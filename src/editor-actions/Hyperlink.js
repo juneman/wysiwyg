@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
 
@@ -12,21 +12,29 @@ export default class Hyperlink extends React.Component {
     super(props);
 
     this.state = {
-      showDropdown: false,
-      href: props.persistedState.get('href') || '',
-      isNewWindow: props.persistedState.get('isNewWindow') || false
+      href: props.href || '',
+      isNewWindow: props.isNewWindow || false
     };
   }
 
-  render() {
-    const { showDropdown, href, isNewWindow } = this.state;
+  componentWillReceiveProps(nextProps) {
+    const update = {};
+    if (nextProps.href !== this.props.href) {
+      update.href = nextProps.href;
+    }
+    if (nextProps.isNewWindow !== this.props.isNewWindow) {
+      update.isNewWindow = nextProps.isNewWindow;
+    }
+    if (Object.keys(update).length) {
+      this.setState(update);
+    }
+  }
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+  render() {
+    const { isActive } = this.props;
+    const { href, isNewWindow } = this.state;
+
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -36,19 +44,14 @@ export default class Hyperlink extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
     const row = {
       marginTop: 20
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Create a Link</div>
         <div>
           <div style={row}>
@@ -63,7 +66,7 @@ export default class Hyperlink extends React.Component {
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -75,10 +78,8 @@ export default class Hyperlink extends React.Component {
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleIsNewWindow(e) {
@@ -97,12 +98,10 @@ export default class Hyperlink extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { onChange } = this.props;
+    const { onChange, onToggleActive } = this.props;
     const { isNewWindow, href } = this.state;
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
 
     onChange(href, isNewWindow);
   }
@@ -110,6 +109,9 @@ export default class Hyperlink extends React.Component {
 }
 
 Hyperlink.propTypes = {
-  persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  href: PropTypes.string,
+  isNewWindow: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

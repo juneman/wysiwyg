@@ -2,27 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 import Code from '../../editor-actions/Code';
 
-export default class HtmlEditorToolbar extends React.Component {
 
-  render() {
-    const { localState, persistedState, onChange } = this.props;
-
-    const toolbarProps = {
-      localState,
-      persistedState,
-      onChange
-    };
-
-    return (
-      <Toolbar>
-        <Code title="Enter your Custom HTML Below" {...toolbarProps} />
-      </Toolbar>
-    );
+const editorActions = [
+  {
+    Component: Code,
+    props: {
+      title: 'Enter your custom html below'
+    },
+    name: 'code'
   }
+];
 
+export default function HtmlEditorToolbar(props) {
+  return (
+    <Menu>
+      <Toolbar
+        editorActions={editorActions}
+        {...props}
+      />
+    </Menu>
+  );
 }
 
 HtmlEditorToolbar.propTypes = {

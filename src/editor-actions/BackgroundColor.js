@@ -3,40 +3,32 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
 
-import Toolbar from '../components/Toolbar';
+import Menu from '../components/Menu';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 
 export default class BackgroundColor extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showDropdown: false
-    };
-  }
-
   render() {
-    const { showDropdown } = this.state;
+    const { isActive } = this.props;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
-      left: 0
+      left: 0,
+      padding: 5
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const titleStyles = secondaryMenuTitleStyle;
+
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
+        <div style={titleStyles}>Select a Background Color</div>
         <CompactPicker onChangeComplete={(color) => this.handleColor(color)} />
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -48,10 +40,8 @@ export default class BackgroundColor extends React.Component {
   }
 
   toggleDropdown() {
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleColor(color) {
@@ -59,10 +49,6 @@ export default class BackgroundColor extends React.Component {
     const toggledColor = color.hex;
 
     const newPersistedState = persistedState.set('backgroundColor', toggledColor);
-
-    this.setState({
-      showDropdown: false
-    });
 
     onChange({
       localState,
@@ -75,5 +61,7 @@ export default class BackgroundColor extends React.Component {
 BackgroundColor.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };

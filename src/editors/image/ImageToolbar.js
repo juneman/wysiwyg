@@ -2,33 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 import ImageUpload from '../../editor-actions/ImageUpload';
+import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
-export default class ImageToolbar extends React.Component {
-  
-  render() {
-    const { localState, persistedState, onChange, canvasPosition } = this.props;
+export default function ImageToolbar(props) {
+  const editorActions = [
+    {
+      Component: ImageUpload,
+      props: {
+        canvasPosition: props.canvasPosition
+      },
+      name: 'image-upload'
+    },
+    {
+      Component: ImageSize,
+      name: 'image-size'
+    },
+    {
+      Component: AlignmentBlock,
+      name: 'alignment-block'
+    },
+    {
+      Component: HyperlinkBlock,
+      name: 'hyperlink-block'
+    }
+  ];
 
-    const toolbarProps = {
-      localState,
-      persistedState,
-      onChange,
-      canvasPosition
-    };
-
-    return (
-      <Toolbar>
-        <div style={{display: 'grid'}}>
-          <div style={{gridColumn: 1, gridRow: 1}}><ImageUpload {...toolbarProps} /></div>
-          <div style={{gridColumn: 2, gridRow: 1}}><ImageSize {...toolbarProps} /></div>
-          <div style={{gridColumn: 3, gridRow: 1}}><HyperlinkBlock {...toolbarProps} /></div>
-        </div>
-      </Toolbar>
-    );
-  }
+  return (
+    <Menu>
+      <Toolbar
+        editorActions={editorActions}
+        {...props}
+      />
+    </Menu>
+  );
 }
 
 ImageToolbar.propTypes = {

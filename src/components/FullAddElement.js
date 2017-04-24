@@ -12,7 +12,7 @@ export default class FullAddElement extends React.Component {
       height: height - (height / 3),
       width: width || '100%',
       paddingTop: height / 3,
-      backgroundColor: '#bce2d8',
+      backgroundColor: '#dafeea',
       color: '#0bdc66',
       textAlign: 'center',
       border: '2px dotted #0bdc66'

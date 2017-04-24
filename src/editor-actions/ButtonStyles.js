@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import Toolbar from '../components/Toolbar';
+import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
 
@@ -12,7 +13,6 @@ export default class ButtonStyles extends React.Component {
     super(props);
 
     this.state = {
-      showDropdown: false,
       borderRadius: props.persistedState.get('borderRadius') || '',
       padding: props.persistedState.get('padding') || '',
       fontSize: props.persistedState.get('fontSize') || '',
@@ -22,14 +22,10 @@ export default class ButtonStyles extends React.Component {
   }
 
   render() {
-    const { showDropdown, borderRadius, padding, fontSize, width, className } = this.state;
+    const { borderRadius, padding, fontSize, width, className } = this.state;
+    const { isActive } = this.props;
 
-    const buttonProps = {
-      hideBackground: true,
-      color: '#303030',
-      clickColor: '#333',
-      activeColor: '#C0C0C0'
-    };
+    const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       position: 'absolute',
@@ -39,19 +35,14 @@ export default class ButtonStyles extends React.Component {
       width: 300
     };
 
-    const titleStyles = {
-      textTransform: 'uppercase',
-      fontSize: 'smaller',
-      color: '#808080',
-      marginBottom: 20
-    };
+    const titleStyles = secondaryMenuTitleStyle;
 
     const row = {
       marginTop: 20
     };
 
-    const dropdownNodes = showDropdown ? (
-      <Toolbar style={dropdownStyles}>
+    const dropdownNodes = isActive ? (
+      <Menu style={dropdownStyles}>
         <div style={titleStyles}>Advanced Button Options</div>
         <div>
           <div style={row}>
@@ -78,7 +69,7 @@ export default class ButtonStyles extends React.Component {
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
-      </Toolbar>
+      </Menu>
     ) : null;
 
     return (
@@ -89,12 +80,9 @@ export default class ButtonStyles extends React.Component {
     );
   }
 
-  toggleDropdown(e) {
-    e.preventDefault();
-    const { showDropdown } = this.state;
-    this.setState({
-      showDropdown: !showDropdown
-    });
+  toggleDropdown() {
+    const { onToggleActive, isActive } = this.props;
+    onToggleActive(!isActive);
   }
 
   handleChange(e, field) {
@@ -106,7 +94,7 @@ export default class ButtonStyles extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange } = this.props;
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     let newPersistedState = persistedState;
     
@@ -119,9 +107,7 @@ export default class ButtonStyles extends React.Component {
       }
     });
 
-    this.setState({
-      showDropdown: false
-    });
+    onToggleActive(false);
       
     onChange({
       localState,
@@ -134,5 +120,7 @@ export default class ButtonStyles extends React.Component {
 ButtonStyles.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onToggleActive: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired
 };
