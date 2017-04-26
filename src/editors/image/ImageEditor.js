@@ -14,7 +14,7 @@ export default class ImageEditor extends React.Component {
       height: 70,
       paddingTop: 30,
       width: '100%',
-      backgroundColor: '#bce2d8',
+      backgroundColor: '#dafeea',
       color: '#0bdc66',
       textAlign: 'center'
     };

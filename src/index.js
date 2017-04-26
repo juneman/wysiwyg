@@ -1,2 +1,2 @@
-import Canvas from './components/Canvas';
-export default Canvas;
+import WysiwygEditor from './WysiwygEditor';
+export default WysiwygEditor;

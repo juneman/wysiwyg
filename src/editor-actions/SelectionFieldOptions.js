@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, dropdownStyle, buttonStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
@@ -12,15 +12,32 @@ export default class SelectFieldOptions extends React.Component {
   constructor(props) {
     super(props);
 
+    const { isRequired, fieldType } = props.persistedState.toJS();
+
     this.state = {
-      isRequired: false,
-      isMultiselect: false,
-      maxLength: null
+      isRequired: isRequired || false,
+      fieldType: fieldType || 'radio'
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const update = {};
+    const { isRequired, fieldType } = this.props.persistedState.toJS();
+    const { isRequired: isRequiredNew, fieldType: fieldTypeNew } = nextProps.persistedState.toJS();
+
+    if (isRequired !== isRequiredNew) {
+      update.isRequired = isRequiredNew;
+    }
+    if (fieldType !== fieldTypeNew) {
+      update.fieldType = fieldTypeNew;
+    }
+    if (Object.keys(update).length) {
+      this.setState(update);
+    }
+  }
+
   render() {
-    const { isRequired, isMultiselect } = this.state;
+    const { isRequired, fieldType } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -41,25 +58,29 @@ export default class SelectFieldOptions extends React.Component {
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Text Field Options</div>
+        <div style={titleStyles}>Select Field Options</div>
         <div>
           <div style={row}>
-            <input type="checkbox" checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
+            <input type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label>Required Field</label>
           </div>
           <div style={row}>
-            <input type="checkbox" checked={isMultiselect} onChange={(e) => this.handleIsMultiselect(e)} />
             <label>Allow Multiple Selections</label>
+            <select style={dropdownStyle} value={fieldType} onChange={(e) => this.handleChangeFieldType(e)}>
+              <option value="radio">Radio Buttons</option>
+              <option value="checkbox">Checkboxes</option>
+              <option value="dropdown">Dropdown List</option>
+            </select>
           </div>
           <div style={{textAlign: 'right', ...row}}>
-            <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+            <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
       </Menu>
     ) : null;
 
     return (
-      <div>
+      <div style={{marginRight: 10}}>
         <SettingsButton
           onClick={() => this.toggleDropdown()}
           text="Field Options"
@@ -81,21 +102,21 @@ export default class SelectFieldOptions extends React.Component {
     });
   }
 
-  handleIsMultiselect(e) {
-    const isMultiselect = e.target.checked;
+  handleChangeFieldType(e) {
+    const fieldType = e.target.value;
     this.setState({
-      isMultiselect
+      fieldType
     });
   }
 
   handleSave(e) {
     e.preventDefault();
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isRequired, isMultiselect } = this.state;
+    const { isRequired, fieldType } = this.state;
 
     const newPersistedState = persistedState
       .set('isRequired', isRequired)
-      .set('isMultiselect', isMultiselect);
+      .set('fieldType', fieldType);
 
     onToggleActive(false);
       

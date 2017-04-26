@@ -8,22 +8,25 @@ import Toolbar from '../../components/Toolbar';
 import ImageUpload from '../../editor-actions/ImageUpload';
 import FontColor from '../../editor-actions/FontColor';
 
-const editorActions = [
-  {
-    Component: ImageUpload,
-    name: 'image-upload'
-  },
-  {
-    Component: FontColor,
-    name: 'font-color'
-  }
-];
-
 export default function HeroToolbar(props) {
+  const actions = [
+    {
+      Component: ImageUpload,
+      props: {
+        canvasPosition: props.canvasPosition
+      },
+      name: 'image-upload'
+    },
+    {
+      Component: FontColor,
+      name: 'font-color'
+    }
+  ];
+
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

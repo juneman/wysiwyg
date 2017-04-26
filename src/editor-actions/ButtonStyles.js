@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
-import SettingsButton from '../icons/SettingsButton';
+import AdvancedStylingButton from '../icons/AdvancedStylingButton';
 
 export default class ButtonStyles extends React.Component {
 
@@ -74,7 +74,7 @@ export default class ButtonStyles extends React.Component {
 
     return (
       <div>
-        <a href="#" onClick={(e) => this.toggleDropdown(e)}><SettingsButton {...buttonProps} /> Field Options</a>
+        <AdvancedStylingButton onClick={() => this.toggleDropdown() } {...buttonProps} />
         { dropdownNodes }
       </div>
     );

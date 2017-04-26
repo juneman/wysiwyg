@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import { placeholderStyle } from '../../helpers/styles/editor';
+
 export default class HtmlEditor extends React.Component {
 
   render() {
@@ -20,7 +22,7 @@ export default class HtmlEditor extends React.Component {
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
     ) : (
-      <div className="placeholder">Click to add your HTML</div>
+      <div style={placeholderStyle}>Add your HTML</div>
     );
   }
 

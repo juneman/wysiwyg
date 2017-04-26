@@ -6,7 +6,7 @@ module.exports = {
     path: path.resolve('dist'),
     publicPath: '/assets/',
     filename: 'index.js',
-    library: 'Canvas',
+    library: 'WysiwygEditor',
     libraryTarget: 'var'
   },
   externals: {

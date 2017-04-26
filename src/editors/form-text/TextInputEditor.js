@@ -36,7 +36,7 @@ export default class TextInputEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
-    const placeholder = (persistedState.get('placeholder')) || 'Add Placeholder Text';
+    const placeholder = (persistedState.get('placeholder'));
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
 
@@ -52,7 +52,7 @@ export default class TextInputEditor extends React.Component {
                 />
               ) : null }
             </div>
-            <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} />
+            <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
           </div>
         ) : (
           <div>
@@ -79,10 +79,10 @@ export default class TextInputEditor extends React.Component {
   }
 
   handleInputChange(e) {
-    const label = e.currentTarget.value;
+    const placeholder = e.currentTarget.value;
     const { persistedState, localState, onChange } = this.props;
 
-    const newPersistedState = persistedState.set('placeholder', label);
+    const newPersistedState = persistedState.set('placeholder', placeholder);
 
     onChange({
       persistedState: newPersistedState,

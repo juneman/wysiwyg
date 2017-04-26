@@ -6,7 +6,7 @@ import { RichUtils } from 'draft-js';
 import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
-import TextButton from '../icons/TextButton';
+import FontStyleButton from '../icons/FontStyleButton';
 
 // https://draftjs.org/docs/advanced-topics-custom-block-render-map.html
 const styleOptions = ([
@@ -84,7 +84,7 @@ export default class TextStyle extends React.Component {
 
     return (
       <div>
-        <TextButton onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <FontStyleButton onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );

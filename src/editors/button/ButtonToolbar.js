@@ -14,7 +14,7 @@ import ButtonAction from '../../editor-actions/ButtonAction';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 import ButtonStyles from '../../editor-actions/ButtonStyles';
 
-const editorActions = [
+const actions = [
   {
     Component: Bold,
     name: 'bold' 
@@ -28,6 +28,9 @@ const editorActions = [
     name: 'alignment-block'
   },
   {
+    separator: true
+  },
+  {
     Component: FontColor,
     name: 'font-color'
   },
@@ -36,16 +39,19 @@ const editorActions = [
     name: 'background-color'
   },
   {
+    Component: ButtonStyles,
+    name: 'button-styles'
+  },
+  {
+    separator: true
+  },
+  {
     Component: ButtonAction,
     name: 'button-action'
   },
   {
     Component: HyperlinkBlock,
     name: 'hyperlink-block'
-  },
-  {
-    Component: ButtonStyles,
-    name: 'button-styles'
   }
 ];
 
@@ -53,7 +59,7 @@ export default function ButtonToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

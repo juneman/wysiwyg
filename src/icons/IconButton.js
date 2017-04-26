@@ -9,14 +9,16 @@ const baseIconStyle = {
   stroke: 'currentColor',
   fill: 'currentColor',
   position: 'relative',
-  top: -4
+  top: -4,
+  zIndex: 10
 };
 
 const wrapperStyle = {
   fontSize: '20pt',
   height: 35,
   width: 35,
-  margin: '0 5px'
+  margin: '0 5px',
+  zIndex: 10
 };
 
 export default class IconButton extends React.Component {
@@ -57,6 +59,7 @@ export default class IconButton extends React.Component {
     }
 
     const iconWrapperStyle = Object.assign({}, {
+      position: 'relative',
       textAlign: 'center',
       backgroundColor: '#0bdc66',
       color: '#FFF',
@@ -64,7 +67,8 @@ export default class IconButton extends React.Component {
       borderRadius: '50%',
       height: 25,
       width: 26,
-      padding: 5
+      padding: 5,
+      zIndex: 10
     }, {
       boxShadow: (shadow) ? '1px 1px 4px rgba(0,0,0,0.4)' : null
     });
@@ -74,7 +78,8 @@ export default class IconButton extends React.Component {
       position: 'relative',
       color: '#0bdc66',
       top: -6,
-      left: 3
+      left: 3,
+      zIndex: 10
     };
 
     if (finalColor) {
@@ -107,7 +112,9 @@ export default class IconButton extends React.Component {
       </span>
     );
 
-    const linkStyle = {};
+    const linkStyle = {
+      textDecoration: 'none'
+    };
     if (cursor) linkStyle.cursor = cursor;
 
     return (onClick || onMouseDown || onMouseUp) ? (
@@ -146,7 +153,7 @@ export default class IconButton extends React.Component {
   }
 
   handleMouseOut() {
-    const { hoverColor, onMouseOut, onMouseUp } = this.props;
+    const { hoverColor, onMouseOut } = this.props;
 
     if (hoverColor) {
       this.setState({
@@ -156,9 +163,14 @@ export default class IconButton extends React.Component {
     if (onMouseOut) {
       onMouseOut();
     }
+
+    /*
+    This was necessary at one point.
+    Leaving it commented as a reminder
     if (onMouseUp) {
       onMouseUp();
     }
+    */
   }
 
   handleMouseDown() {

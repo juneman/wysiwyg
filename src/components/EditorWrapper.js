@@ -7,7 +7,6 @@ import OkButton from '../icons/OkButton';
 import EditButton from '../icons/EditButton';
 import CancelButton from '../icons/CancelButton';
 import DeleteButton from '../icons/DeleteButton';
-import MoveVertButton from '../icons/MoveVertButton';
 
 export default class EditorWrapper extends React.Component {
   constructor(props) {
@@ -32,13 +31,11 @@ export default class EditorWrapper extends React.Component {
       isEditing,
       isHover,
       children,
-      zonePosition,
+      rowPosition,
       toolbarNode,
       onSave,
       onCancel,
       onRemove,
-      onMoveRowStart,
-      onMoveRowEnd,
       onEdit
     } = this.props;
 
@@ -52,14 +49,14 @@ export default class EditorWrapper extends React.Component {
 
     const editingButtonStyles = {
       position: 'absolute',
-      left: zonePosition.get('right') - 150,
-      top: zonePosition.get('bottom') + 5
+      left: (rowPosition && rowPosition.get('right')) ? rowPosition.get('right') - 150 : 0,
+      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') + 5 : 0
     };
 
     const toolbarStyles = {
       position: 'absolute',
-      left: zonePosition.get('left'),
-      top: zonePosition.get('bottom')
+      left: (rowPosition && rowPosition.get('left')) ? rowPosition.get('left') : 0,
+      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') : 0
     };
 
     let buttons;
@@ -84,13 +81,6 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="edit">
           <div style={hoverButtonStyles}>
-            <MoveVertButton
-              shadow={true}
-              color="#cebea5"
-              cursor="ns-resize"
-              onMouseDown={() => onMoveRowStart()}
-              onMouseUp={() => onMoveRowEnd()}
-            />
             <EditButton
               shadow={true}
               color="#f4ad42"
@@ -128,8 +118,6 @@ EditorWrapper.propTypes = {
   onSave: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
-  onMoveRowStart: PropTypes.func.isRequired,
-  onMoveRowEnd: PropTypes.func.isRequired,
-  zonePosition: PropTypes.instanceOf(Map).isRequired,
+  rowPosition: PropTypes.instanceOf(Map).isRequired,
   toolbarNode: PropTypes.node
 };

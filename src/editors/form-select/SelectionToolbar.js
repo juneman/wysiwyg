@@ -7,7 +7,7 @@ import Toolbar from '../../components/Toolbar';
 
 import SelectionFieldOptions from '../../editor-actions/SelectionFieldOptions';
 
-const editorActions = [
+const actions = [
   {
     Component: SelectionFieldOptions,
     name: 'selectionfield-options'
@@ -18,7 +18,7 @@ export default function SelectionToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

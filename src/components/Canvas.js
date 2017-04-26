@@ -2,42 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { connect } from 'react-redux';
 
 import RowContainer from './RowContainer';
 import HTMLParser from 'html-parse-stringify2';
 import uuid from 'uuid/v4';
-import { Map, List, fromJS } from 'immutable';
-
-import AddButton from '../icons/AddButton';
+import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
 
 import EditorSelector from './EditorSelector';
 import FullAddElement from './FullAddElement';
+import AddButtonHorizRule from './AddButtonHorizRule';
+
+import * as rowActions from '../actions/rowActions';
+import * as editorSelectorActions from '../actions/editorSelectorActions';
+import * as editorActions from '../actions/editorActions';
 
 export class Canvas extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const rows = fromJS(props.rows) || List();
-
-    this.state = {
-      originalRows: rows,
-      rows,
-      showEditorSelector: false,
-      isEditing: false,
-      position: Map(),
-      addButtonPosition: Map()
-    };
-  }
-
-  getChildContext() {
-    const { cloudinary, userProperties } = this.props;
-    return {
-      cloudinary,
-      userProperties
-    };
-  }
 
   componentDidMount() {
     this.setBoundingBox();
@@ -48,128 +30,108 @@ export class Canvas extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.rows) {
-      const rows = fromJS(nextProps.rows) || List();
-      this.setState({
-        originalRows: rows,
-        rows
-      });
+    if (nextProps.internalRows !== this.props.internalRows) {
+      this.save(nextProps.internalRows);
+    }
+    if (!nextProps.rows.isEmpty() && this.props.internalRows.isEmpty()) {
+      this.props.dispatch(rowActions.replaceRows(nextProps.rows));
+    }
+    if (!is(nextProps.rows, this.props.rows)) {
+      this.props.dispatch(rowActions.replaceRows(nextProps.rows));
+    }
+    if (!is(nextProps.cloudinary, this.props.internalCloudinary)) {
+      this.props.dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
+    }
+    if (!is(nextProps.userProperties, this.props.internalUserProperties)) {
+      this.props.dispatch(editorActions.setUserProperties(nextProps.userProperties));
     }
   }
 
   render() {
-    const { rows, showEditorSelector, isEditing, addButtonPosition, position } = this.state;
-    const { height, width } = this.props;
+    const { height, width, internalRows, showAddButton, showEditorSelector, addButtonPosition } = this.props;
 
     const canvasStyles = {
       height,
       width,
-      padding: (rows.size) ? '3px 0' : null
+      padding: (internalRows.size) ? '3px 0' : null
     };
 
-    const rowNodes = (rows.size) ? rows.map((row, i) => {
-      return (
+    const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
+      return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer 
           key={row.get('id')}
           row={row}
           rowIndex={i}
-          onSave={(row) => this.save(i, row)}
-          onRemoveRow={() => this.removeRow(row.get('id'))}
-          onToggleEditMode={(isEditing) => this.setState({isEditing})}
-          onDrop={(sourceIndex, targetIndex) => this.moveRows(sourceIndex, targetIndex)}
-          isCanvasInEditMode={isEditing}
-          canvasPosition={position}
+          onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
+        />
+      ): (
+        <FullAddElement
+          key={row.get('id')}
+          width={width}
+          onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+          onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         />
       );
     }) : null;
 
-    const fullScreenAdd = (!showEditorSelector && !rows.size) ? (
-      <div ref={(el) => this.fullScreenAdd = el}>
-        <FullAddElement
-          height={height}
-          width={width}
-          onClick={() => this.handleAddNew()}
-          onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
-          onDragImage={() => {}}
-        />
-      </div>
+    const fullScreenAddNode = (!internalRows.size) ? (
+      <FullAddElement
+        height={height}
+        width={width}
+        onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+        onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
+      />
     ) : null;
 
-    let addNewRow;
-    if (showEditorSelector) {
-      const editorSelectorPosition = addButtonPosition.set('left',
-        position.get('left') + ((position.get('width') - 550) / 2));
+    const editorSelectorNode = showEditorSelector ? (
+      <EditorSelector
+        addButtonPosition={addButtonPosition}
+        onSelect={(type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction)}
+      />
+    ) : null;
 
-      addNewRow = (
-        <EditorSelector
-          setPosition={editorSelectorPosition}
-          onSelect={(type, zones) => this.addRow(type, zones)}
-          onCancel={() => this.setState({showEditorSelector: false})}
-        />
-      );
-    } else if (!isEditing && rows.size) {
-      addNewRow = (
-        <div style={{textAlign: 'center'}}>
-          <a
-            href="#"
-            id="addBtn"
-            onClick={(e) => this.handleAddNew(e)}
-            ref={(el) => this.addButton = el}
-          ><AddButton shadow={true} /></a>
-        </div>
-      );
-    }
+    const addButtonNode = (showAddButton) ? (
+      <AddButtonHorizRule
+        onClick={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+      />
+    ) : null;
 
     return (
       <div className="canvas" style={canvasStyles} ref={(el) => this.wrapper = el}>
         { rowNodes }
-        { fullScreenAdd }
-        { addNewRow }
+        { fullScreenAddNode }
+        { addButtonNode }
+        { editorSelectorNode }
       </div>
     );
   }
 
   setBoundingBox() {
-    // Find the position of the AddButton to overlay the EditorSelector
-    const update = {};
-    let addButtonPosition;
-    if (this.addButton) {
-      addButtonPosition = convertBoundingBox(this.addButton.getBoundingClientRect());
-    } else if (this.fullScreenAdd) {
-      addButtonPosition = convertBoundingBox(this.fullScreenAdd.getBoundingClientRect());
-      addButtonPosition = addButtonPosition.set('top', addButtonPosition.get('top') + (addButtonPosition.get('height') / 4));
-    }
-    if (addButtonPosition && !addButtonPosition.equals(this.state.addButtonPosition)) {
-      update.addButtonPosition = addButtonPosition;
-    }
+    const { dispatch, canvasPosition } = this.props;
     if (this.wrapper) {
       const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-      if (!position.equals(this.state.position)) {
-        update.position = position;
+      if (!position.equals(canvasPosition)) {
+        dispatch(editorActions.setCanvasPosition(position));
       }
-    }
-    if (Object.keys(update).length) {
-      this.setState(update);
     }
   }
 
   handleAddNew(e) {
     if (e) e.preventDefault();
-    this.setState({
-      showEditorSelector: true
-    });
+    const { dispatch, canvasPosition } = this.props;
+    dispatch(editorSelectorActions.show(canvasPosition));
   }
 
   handleAddImage(imageDetails) {
     // Trim what we save from Cloudinary down to just these fields
     const { url, height, width } = imageDetails;
-    const { position } = this.state;
+    const { canvasPosition } = this.props;
 
     // Make sure the uploaded image does not have a larger size than the canvas
-    let heightOverride = (height > position.get('height')) ? position.get('height') : undefined;
-    let widthOverride = (width > position.get('width')) ? position.get('width') : undefined;
+    let heightOverride = (height > canvasPosition.get('height')) ? canvasPosition.get('height') : undefined;
+    let widthOverride = (width > canvasPosition.get('width')) ? canvasPosition.get('width') : undefined;
 
-    const rowsToAdd = [
+    const rowsToAdd = fromJS([
       {
         id: uuid(),
         zones: [
@@ -186,15 +148,15 @@ export class Canvas extends React.Component {
           }
         ]
       }
-    ];
+    ]);
 
     this.addRow('Image', rowsToAdd);
   }
 
-  addRow(type, rowsToAdd) {
-    const { rows } = this.state;
+  addRow(type, rowsToAdd, defaultAction) {
+    const { dispatch } = this.props;
 
-    rowsToAdd = rowsToAdd || [{
+    rowsToAdd = rowsToAdd || fromJS([{
       id: uuid(),
       zones: [
         {
@@ -203,69 +165,63 @@ export class Canvas extends React.Component {
           persistedState: {}
         }
       ]
-    }];
+    }]);
 
-    let updatedRows = rows;
-    rowsToAdd.forEach((row) => {
-      updatedRows = updatedRows.push(fromJS(row));
-    });
-    
-    this.setState({
-      rows: updatedRows,
-      showEditorSelector: false
-    });
+    dispatch(rowActions.addRows(rowsToAdd));
+
+    // If only one element is added, let's start editing immediately
+    if (rowsToAdd.size === 1) {
+      const activeZone = rowsToAdd.get(0).get('zones').get(0);
+      dispatch(editorActions.startEditing(activeZone));
+      if (defaultAction) {
+        dispatch(editorActions.toggleEditorAction(defaultAction, true));
+      }
+    }
   }
 
   removeRow(id) {
-    const { rows } = this.state;
-    const rowIndex = rows.findIndex((row) => row.get('id') === id);
-    if (rowIndex === -1) {
-      return;
-    }
-    const updatedRows = rows.splice(rowIndex, 1);
-    this.setState({
-      rows: updatedRows
-    });
-    this.save(updatedRows);
+    this.props.dispatch(rowActions.removeRow(id));
+  }
+
+  showEditorSelector(addButtonPosition) {
+    this.props.dispatch(editorSelectorActions.show(addButtonPosition));
   }
 
   moveRows(sourceIndex, targetIndex) {
     if (sourceIndex === targetIndex) {
       return;
     }
-    const { rows } = this.state;
-    const sourceRow = rows.get(sourceIndex);
-    const updatedRows = rows.delete(sourceIndex)
-      .insert(targetIndex, sourceRow);
-
-    this.setState({
-      rows: updatedRows
-    });
-    this.save(updatedRows);
+    this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
   }
 
-  save(index, row) {
-    const { rows, originalRows, position } = this.state;
-    const { onSave } = this.props;
-    const width = position.get('width');
-    const height = position.get('height');
+  buildHtml(rows) {
+    let html = '';
+    rows.forEach((row) => {
+      const zones = row.get('zones');
+      let zoneBlocks = [];
+      if (zones && zones.size) {
+        zoneBlocks = zones.map(zone => zone.get('html'));
+      }
+      html += `
+        <div class="row-container">
+          <div class="row">
+            ${zoneBlocks.join('\n')}
+          </div>
+        </div>
+      `;
+    });
+    return html;
+  }
 
-    // In v4 of Immutable, switch to isImmutable()
-    let updatedRows = (index && !row) ? index : rows;
+  save(internalRows) {
+    const { onSave, canvasPosition } = this.props;
+    const width = canvasPosition.get('width');
+    const height = canvasPosition.get('height');
 
-    if (row) {
-      updatedRows = rows.set(index, row);
-      this.setState({
-        rows: updatedRows
-      });
-    }
+    if (onSave) {
+      // Build the final HTML
+      const rowsHtml = this.buildHtml(internalRows);
 
-    // Compare against what the component originally received
-    // as inbound props to see if we should bubble up a Save event
-    const shouldCallSave = rows.equals(originalRows) ? false : true;
-
-    if (onSave && shouldCallSave) {
-      const rowsHtml = updatedRows.toJS().map(row => row.html);      
       const html = flattenHTML(`
         <div class="canvas" style="width:${width};height:${height};">
           ${rowsHtml}
@@ -275,10 +231,10 @@ export class Canvas extends React.Component {
       const ast = HTMLParser.parse(html);
 
       // Flatten the Immutable object before pushing it up to the public API
-      const rowsWithoutHtml = updatedRows.toJS().map(row => {
+      const rowsWithoutHtml = internalRows.toJS().map(row => {
         // HTML shouldn't be persisted
         delete row.html;
-        if (row.zones.length) {
+        if (row.zones && row.zones.length) {
           row.zones = row.zones.map(zone => {
             delete zone.html;
             return zone;
@@ -301,31 +257,39 @@ Canvas.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   onSave: PropTypes.func,
-  rows: PropTypes.array,
-  cloudinary: PropTypes.shape({
-    accountId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
-    uploadUrl: PropTypes.string.isRequired,
-    apiKey: PropTypes.string.isRequired
-  }),
-  userProperties: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired
-  }))
+  dispatch: PropTypes.func.isRequired,
+  rows: PropTypes.instanceOf(List),
+  internalRows: PropTypes.instanceOf(List).isRequired,
+  cloudinary: PropTypes.instanceOf(Map).isRequired,
+  internalCloudinary: PropTypes.instanceOf(Map).isRequired,
+  userProperties: PropTypes.instanceOf(List).isRequired,
+  internalUserProperties: PropTypes.instanceOf(List).isRequired,
+  showEditorSelector: PropTypes.bool.isRequired,
+  addButtonPosition: PropTypes.instanceOf(Map).isRequired,
+  canvasPosition: PropTypes.instanceOf(Map).isRequired,
+  showAddButton: PropTypes.bool.isRequired
 };
 
-Canvas.childContextTypes = {
-  cloudinary: PropTypes.shape({
-    accountId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
-    uploadUrl: PropTypes.string.isRequired,
-    apiKey: PropTypes.string.isRequired
-  }),
-  userProperties: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired
-  }))
-};
+function mapStateToProps(state, ownProps) {
+  return {
+    // Convert these to immutable if they're passed in from the public API
+    rows: (ownProps.rows) ? fromJS(ownProps.rows) : List(),
+    cloudinary: (ownProps.cloudinary) ? fromJS(ownProps.cloudinary) : Map(),
+    userProperties: (ownProps.userProperties && ownProps.userProperties.length) ? fromJS(ownProps.userProperties) : List(),
+    
+    internalCloudinary: state.editor.get('cloudinary'),
+    internalUserProperties: state.editor.get('userProperties'),
+    internalRows: state.rows,
+    showEditorSelector: state.editorSelector.get('isOpen'),
+    canvasPosition: state.editor.get('canvasPosition'),
+    addButtonPosition: state.editorSelector.get('addButtonPosition'),
 
-export default DragDropContext(HTML5Backend)(Canvas);
+    showAddButton: !state.editor.get('isCanvasInEditMode')
+     && state.rows.size
+     && (state.rows.every((row) => row.get('zones') && row.get('zones').size))
+     ? true : false
+  };
+}
+
+export default connect(mapStateToProps)(DragDropContext(HTML5Backend)(Canvas));
 

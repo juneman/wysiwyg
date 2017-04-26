@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/vs.min.css" rel="stylesheet">
-    <link href="canvas.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
     
     <!-- These styles are only for the purpose of the demo page. Nothing is required for the editor -->
     <style type="text/css">
@@ -85,7 +86,7 @@
     <script src="/assets/index.js"></script>
 
     <script type="text/babel">
-      (function(Canvas) {
+      (function(WysiwygEditor) {
 
         const CLOUDINARY = {
           accountId: '22',
@@ -119,7 +120,7 @@
 
         // Render Editor Spike
         ReactDOM.render(
-          <Canvas
+          <WysiwygEditor
             width={674}
             height={294}
             onSave={(content) => displayOutput('simple', content) }
@@ -128,60 +129,7 @@
           />, document.getElementById('simple')
         )
 
-        /*
-        // Render Editor With Existing Data
-        ReactDOM.render(
-          <Canvas
-            width={674}
-            height={294}
-            onSave={(content) => displayOutput('existing', content) }
-            rows={
-              [
-                {
-                  "id": "17477d46-de5c-4bce-80c7-913eba1cbb3b",
-                  "zones": [
-                    {
-                      "id": "1515a32c-49ba-4219-baca-4972e9efec50",
-                      "type": "PlainText",
-                      "value": {
-                        "content": "Top Left Text"
-                      }
-                    },
-                    {
-                      "id": "a1f35283-d18d-450e-a739-ef7300249279",
-                      "type": "Button",
-                      "value": {
-                        "content": "Top Right Button"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "id": "836951fd-de87-40c0-9050-7394fdc945b2",
-                  "zones": [
-                    {
-                      "id": "57d72c28-1f8d-4e97-b734-2532f18afcdd",
-                      "type": "Button",
-                      "value": {
-                        "content": "Bottom Left Button"
-                      }
-                    },
-                    {
-                      "id": "a95cac65-e119-4c88-9871-6e6dae340f82",
-                      "type": "PlainText",
-                      "value": {
-                        "content": "Bottom Right Text"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          />, document.getElementById('existing')
-        );
-        */
-
-      }(Canvas.default));
+      }(WysiwygEditor.default));
     </script>
 
     <!-- Syntax highligting for output of data -->

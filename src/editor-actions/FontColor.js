@@ -57,8 +57,11 @@ export default class FontColor extends React.Component {
     const editorState = localState.get('editorState');
     if (editorState) {
       const styles = editorState.getCurrentInlineStyle().toJS();
-      if (styles.length && styles[0].indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0) {
-        return styles[0].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+      if (styles.length) {
+        const styleIndex = styles.findIndex((style) => style.indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0);
+        if (styleIndex !== -1) {
+          return styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+        }
       }
     }
     return '#000';

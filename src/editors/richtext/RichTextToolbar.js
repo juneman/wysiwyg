@@ -13,7 +13,7 @@ import HyperlinkInline from '../../editor-actions/HyperlinkInline';
 import List from '../../editor-actions/List';
 import UserProperty from '../../editor-actions/UserProperty';
 
-const editorActions = [
+const actions = [
   {
     Component: Bold,
     name: 'bold' 
@@ -27,8 +27,11 @@ const editorActions = [
     name: 'text-style' 
   },
   {
-    Component: HyperlinkInline,
-    name: 'hyperlink-inline' 
+    Component: FontColor,
+    name: 'font-color'
+  },
+  {
+    separator: true
   },
   {
     Component: List,
@@ -39,8 +42,11 @@ const editorActions = [
     name: 'alignment-inline'
   },
   {
-    Component: FontColor,
-    name: 'font-color'
+    separator: true
+  },
+  {
+    Component: HyperlinkInline,
+    name: 'hyperlink-inline' 
   },
   {
     Component: UserProperty,
@@ -52,7 +58,7 @@ export default function RichTextToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { DragSource } from 'react-dnd';
+import { connect } from 'react-redux';
 
+import MoveVertButton from '../icons/MoveVertButton';
+import { convertBoundingBox } from '../helpers/domHelpers';
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Zone from './Zone';
 
@@ -11,37 +14,48 @@ export class Row extends React.Component {
     super(props);
 
     this.state = {
-      isMovable: false
+      position: Map()
     };
   }
 
-  render() {
-    const {
-      row,
-      onToggleEditMode,
-      isCanvasInEditMode,
-      connectDragSource,
-      canvasPosition
-    } = this.props;
+  componentDidMount() {
+    this.setBoundingBox();
+  }
 
-    const { isMovable } = this.state;
+  componentDidUpdate() {
+    this.setBoundingBox();
+  }
+
+  render() {
+    const { row, connectDragSource, isMovable, showMoveButton } = this.props;
+    const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
       return (
         <Zone
           key={zone.get('id')}
           zone={zone}
+          row={row}
+          rowPosition={position}
           columnIndex={i}
-          onSave={(zone) => this.save(i, zone)}
-          onRemove={() => this.remove()}
-          onToggleEditMode={(isEnabled) => onToggleEditMode(isEnabled)}
-          onMoveRowStart={() => this.setState({isMovable: true})}
-          onMoveRowEnd={() => this.setState({isMovable: false})}
-          isCanvasInEditMode={isCanvasInEditMode}
-          canvasPosition={canvasPosition}
         />
       );
     });
+
+    const moveButtonStyle = {
+      position: 'absolute',
+      left: (position.get('left')) ? position.get('left') - 30 : null
+    };
+
+    const moveButton = (showMoveButton) ? (
+      <div style={moveButtonStyle}>
+        <MoveVertButton
+          shadow={true}
+          color="#cebea5"
+          cursor="ns-resize"
+        />
+      </div>
+    ) : null;
 
     const gridStyle = {
       gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
@@ -49,42 +63,42 @@ export class Row extends React.Component {
 
     return (isMovable) ? (
       connectDragSource(
-        <div className="row" style={gridStyle}>
+        <div className="row" style={gridStyle} ref={(el) => this.wrapper = el}>
+          {moveButton}
           {zoneNodes}
         </div>
       )
     ) : (
-      <div className="row" style={gridStyle}>
+      <div
+        className="row"
+        style={gridStyle}
+        ref={(el) => this.wrapper = el}
+      >
+        {moveButton}
         {zoneNodes}
       </div>
     );
   }
 
-  save(index, zone) {
-    const { row, onSave } = this.props;
-    const updatedZones = row.get('zones').set(index, zone);
-    const zonesHtml = updatedZones.toJS().map(zone => zone.html).join('\n');
-    const updatedRow = row
-      .set('zones', updatedZones)
-      .set('html', `<div class="row">${zonesHtml}</div>`);
-    onSave(updatedRow);
-  }
-
-  remove() {
-    this.props.onRemoveRow();
+  setBoundingBox() {
+    if (!this.wrapper) {
+      return;
+    }
+    const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+    if (!position.equals(this.state.position)) {
+      this.setState({position});
+    }
   }
 
 }
 
 Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
-  canvasPosition: PropTypes.instanceOf(Map).isRequired,
-  isCanvasInEditMode: PropTypes.bool.isRequired,
-  onSave: PropTypes.func.isRequired,
-  onRemoveRow: PropTypes.func.isRequired,
-  onToggleEditMode: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   connectDragSource: PropTypes.func,
-  isDragging: PropTypes.bool
+  isDragging: PropTypes.bool,
+  isMovable: PropTypes.bool.isRequired,
+  showMoveButton: PropTypes.bool.isRequired
 };
 
 const rowSource = {
@@ -103,4 +117,17 @@ function collect(connect, monitor) {
   };
 }
 
-export default DragSource(DRAGABLE_ITEMS.ROW, rowSource, collect)(Row);
+function mapStateToProps(state, ownProps) {
+  const showMoveButton = (
+    !state.editor.get('isCanvasInEditMode')
+    && (state.editor.get('hoverRowId') === ownProps.row.get('id'))
+    && state.rows.size > 1
+  ) ? true : false;
+
+  return {
+    showMoveButton,
+    isMovable: (!state.editor.get('isCanvasInEditMode') && state.rows.size > 1) ? true : false
+  };
+}
+
+export default connect(mapStateToProps)(DragSource(DRAGABLE_ITEMS.ROW, rowSource, collect)(Row));

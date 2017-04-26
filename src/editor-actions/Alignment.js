@@ -38,20 +38,21 @@ export default class Alignment extends React.Component {
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
-      left: position.left
+      left: position.left,
+      width: 120
     };
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div><AlignLeft onClick={() => this.handleAlignment(null, 'left')} text="Left" {...secondaryButtonProps} /></div>
-        <div><AlignLeft onClick={() => this.handleAlignment(null, 'center')} text="Center" {...secondaryButtonProps} /></div>
-        <div><AlignLeft onClick={() => this.handleAlignment(null, 'right')} text="Right" {...secondaryButtonProps} /></div>
+        <div><AlignCenter onClick={() => this.handleAlignment(null, 'center')} text="Center" {...secondaryButtonProps} /></div>
+        <div><AlignRight onClick={() => this.handleAlignment(null, 'right')} text="Right" {...secondaryButtonProps} /></div>
       </Menu>
     ) : null;
 
     return (
       <div ref={(el) => this.wrapper = el}>
-        <AlignLeft onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <AlignCenter onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );

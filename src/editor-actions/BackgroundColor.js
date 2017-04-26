@@ -4,16 +4,20 @@ import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
 
 import Menu from '../components/Menu';
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 
-import ImageButton from '../icons/ImageButton';
+import SquareButton from '../icons/SquareButton';
 
 export default class BackgroundColor extends React.Component {
 
   render() {
-    const { isActive } = this.props;
+    const { isActive, persistedState } = this.props;
 
-    const buttonProps = getButtonProps(isActive);
+    const selectedColor = persistedState.get('backgroundColor') || '#C0C0C0';
+    const buttonProps = {
+      hideBackground: true,
+      color: selectedColor
+    };
 
     const dropdownStyles = {
       position: 'absolute',
@@ -27,13 +31,16 @@ export default class BackgroundColor extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Select a Background Color</div>
-        <CompactPicker onChangeComplete={(color) => this.handleColor(color)} />
+        <CompactPicker
+          onChangeComplete={(color) => this.handleColor(color)}
+          color={selectedColor}
+        />
       </Menu>
     ) : null;
 
     return (
       <div>
-        <ImageButton onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <SquareButton onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );

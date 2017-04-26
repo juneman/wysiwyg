@@ -10,7 +10,7 @@ import ImageSize from '../../editor-actions/ImageSize';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
 export default function ImageToolbar(props) {
-  const editorActions = [
+  const actions = [
     {
       Component: ImageUpload,
       props: {
@@ -35,7 +35,7 @@ export default function ImageToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

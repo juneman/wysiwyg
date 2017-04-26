@@ -6,7 +6,7 @@ import AceEditor from 'react-ace';
 import 'brace/mode/html';
 import 'brace/theme/github';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, buttonStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import CodeButton from '../icons/CodeButton';
@@ -70,7 +70,7 @@ export default class Code extends React.Component {
         />
 
         <div style={{textAlign: 'right', marginTop: 10}}>
-          <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+          <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
         </div>
       </Menu>
     ) : null;

@@ -6,6 +6,13 @@ import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn 
 
 export default class RichTextEditor extends React.Component {
 
+  componentWillMount() {
+    const { persistedState } = this.props;
+    const htmlContent = persistedState.get('content') || '<p>Edit This Text</p>';
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+    this.handleEditorStateChange(initialEditorState);
+  }
+
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
@@ -35,7 +42,7 @@ export default class RichTextEditor extends React.Component {
 
     // The draft editor needs a little breathing room
     if (isEditing) {
-      wrapperStyle.minHeight = 50;
+      wrapperStyle.minHeight = 60;
     }
 
     return (

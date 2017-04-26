@@ -20,7 +20,7 @@ export default class HtmlEditor extends React.Component {
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
     ) : (
-      <div className="placeholder">Click to add your Video Script</div>
+      <div className="placeholder">Add your Video Script</div>
     );
   }
 

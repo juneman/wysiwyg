@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
-import TextButton from '../icons/TextButton';
+import ActionButton from '../icons/ActionButton';
 
 export default class ButtonAction extends React.Component {
 
@@ -55,7 +55,7 @@ export default class ButtonAction extends React.Component {
 
     return (
       <div>
-        <TextButton onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <ActionButton onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { EditorState, Modifier } from 'draft-js';
 
 import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
@@ -11,8 +11,7 @@ import UserPropertyButton from '../icons/UserPropertyButton';
 export default class UserProperty extends React.Component {
 
   render() {
-    const { isActive } = this.props;
-    const { userProperties } = this.context;
+    const { isActive, userProperties } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -27,12 +26,12 @@ export default class UserProperty extends React.Component {
     const titleStyles = secondaryMenuTitleStyle;
 
     // Leave blank if nothing
-    if (!userProperties || !userProperties.length) {
+    if (!userProperties || !userProperties.size) {
       return (<div></div>);
     }
 
     const userPropertiesDropdown = (userProperties).map((userProperty) => {
-      return userProperty;
+      return userProperty.toJS();
     });
 
     const dropdownNodes = isActive ? (
@@ -96,12 +95,7 @@ UserProperty.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  userProperties: PropTypes.instanceOf(List).isRequired
 };
 
-UserProperty.contextTypes = {
-  userProperties: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired
-  }))
-};

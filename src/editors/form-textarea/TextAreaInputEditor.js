@@ -36,7 +36,7 @@ export default class TextAreaInputEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
-    const placeholder = (persistedState.get('placeholder')) || 'Add Placeholder Text';
+    const placeholder = (persistedState.get('placeholder'));
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
 
@@ -54,12 +54,12 @@ export default class TextAreaInputEditor extends React.Component {
                 />
               ) : null }
             </label>
-            <textarea type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} />
+            <textarea type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
           </div>
         ) : (
           <div>
             <label>{(isRequired) ? '*' : ''} {label}</label>
-            <textarea type="text" className="form-control" placeholder={placeholder} disabled={true} maxLength={maxLength} />
+            <textarea type="text" className="form-control" value={placeholder} disabled={true} maxLength={maxLength} />
           </div>
         )}
       </div>

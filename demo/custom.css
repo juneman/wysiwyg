@@ -1,0 +1,28 @@
+/*
+  Let's pretend that the customer had this as the
+  global custom styling that gets applied
+*/
+
+input.form-control, textarea.form-control, select.form-control {
+  display: block;
+  margin: 0;
+  width: 95%;
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  padding: 4px
+}
+input.form-control:focus {
+  outline: none;
+}
+.btn {
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  font-family: Arial;
+  font-size: 18px;
+  padding: 5px 30px;
+  text-decoration: none;
+}

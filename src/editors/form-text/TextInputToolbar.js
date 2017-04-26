@@ -6,7 +6,7 @@ import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 import InputFieldOptions from '../../editor-actions/InputFieldOptions';
 
-const editorActions = [
+const actions = [
   {
     Component: InputFieldOptions,
     name: 'inputfield-options'
@@ -17,7 +17,7 @@ export default function TextInputToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

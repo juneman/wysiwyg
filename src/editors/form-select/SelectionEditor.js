@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
+import { textInputStyle } from '../../helpers/styles/editor';
+
 export default class SelectionEditor extends React.Component {
 
   componentWillMount() {
@@ -38,14 +40,37 @@ export default class SelectionEditor extends React.Component {
     const label = (persistedState.get('label')) || 'Add Label...';
     const options = persistedState.get('options') || [];
     const optionString = (localState.get('options')) || options.join('\n') || '';
-    const isMultiselect = persistedState.get('isMultiselect') || false;
+    const fieldType = persistedState.get('fieldType') || 'radio';
 
     const placeholder = (`Place each option on a new line, e.g.
       Apples
       Oranges
       Pineapples`).split('\n').map((row) => row.trim()).join('\n');
 
-    const inputType = (isMultiselect) ? 'checkbox' : 'radio';
+    const dropdownNodes = (
+      <div>
+        <select className="form-control">
+          { options.map((option) => {
+            return (
+              <option key={option}>{option}</option>
+            );
+          })}
+        </select>
+      </div>
+    );
+
+    const buttonListNodes = (
+      <div>
+        { options.map((option) => {
+          return (
+            <div key={option}>
+              <input type={fieldType} />
+              <label>{option}</label>
+            </div>
+          );
+        })}
+      </div>
+    );
 
     return (
       <div>
@@ -59,19 +84,12 @@ export default class SelectionEditor extends React.Component {
                 />
               ) : null }
             </label>
-            <textarea type="text" rows={5} className="form-control" placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
+            <textarea type="text" rows={5} style={textInputStyle} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
           </div>
         ) : (
           <div>
             <label>{label}</label>
-            { options.map((option) => {
-              return (
-                <div key={option}>
-                  <input type={inputType} />
-                  <label>{option}</label>
-                </div>
-              );
-            })}
+            { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
           </div>
         )}
       </div>

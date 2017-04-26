@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
+import { connect } from 'react-redux';
+import { Map } from 'immutable';
 
-export default class ImageUploader extends React.Component {
+export class ImageUploader extends React.Component {
   render() {
     const { children, disableClick, preventDropOnDocument } = this.props;
 
@@ -31,7 +33,7 @@ export default class ImageUploader extends React.Component {
 
   uploadImageFile(file) {
     const { onUpload } = this.props;
-    const { uploadUrl, apiKey, accountId, userId } = this.context.cloudinary;
+    const { uploadUrl, apiKey, accountId, userId } = this.props.cloudinary.toJS();
 
     var data = new FormData();
     data.append('file', file);
@@ -66,14 +68,14 @@ ImageUploader.propTypes = {
   onUpload: PropTypes.func.isRequired,
   disableClick: PropTypes.bool,
   preventDropOnDocument: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  cloudinary: PropTypes.instanceOf(Map).isRequired
 };
 
-ImageUploader.contextTypes = {
-  cloudinary: PropTypes.shape({
-    accountId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
-    uploadUrl: PropTypes.string.isRequired,
-    apiKey: PropTypes.string.isRequired
-  })
-};
+function mapStateToProps(state) {
+  return {
+    cloudinary: state.editor.get('cloudinary')
+  };
+}
+
+export default connect(mapStateToProps)(ImageUploader);

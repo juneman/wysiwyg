@@ -1,0 +1,62 @@
+/*
+  These styles would need to be shared across
+  both the editor and the client render
+*/
+
+.canvas .row {
+  display: grid;
+}
+.canvas .zone-0 {
+  grid-column: 1;
+}
+.canvas .zone-1 {
+  grid-column: 2;
+}
+.canvas .zone-2 {
+  grid-column: 3;
+}
+.canvas .zone-3 {
+  grid-column: 4;
+}
+.canvas .zone-4 {
+  grid-column: 5;
+}
+.canvas .zone-5 {
+  grid-column: 6;
+}
+.canvas .zone-6 {
+  grid-column: 7;
+}
+.canvas .zone-7 {
+  grid-column: 8;
+}
+.canvas .zone-8 {
+  grid-column: 9;
+}
+.canvas .zone-9 {
+  grid-column: 10;
+}
+
+.canvas .align-left {
+  text-align: left;
+}
+.canvas .align-center {
+  text-align: center;
+}
+.canvas .align-right {
+  text-align: right;
+}
+
+.btn {
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  text-decoration: none;
+}
+
+.btn p {
+  margin: 0
+}

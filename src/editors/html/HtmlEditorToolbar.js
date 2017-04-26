@@ -7,7 +7,7 @@ import Toolbar from '../../components/Toolbar';
 import Code from '../../editor-actions/Code';
 
 
-const editorActions = [
+const actions = [
   {
     Component: Code,
     props: {
@@ -21,7 +21,7 @@ export default function HtmlEditorToolbar(props) {
   return (
     <Menu>
       <Toolbar
-        editorActions={editorActions}
+        actions={actions}
         {...props}
       />
     </Menu>

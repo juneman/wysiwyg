@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, checkboxStyle, buttonStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
@@ -43,22 +43,22 @@ export default class InputFieldOptions extends React.Component {
         <div style={titleStyles}>Text Field Options</div>
         <div>
           <div style={row}>
-            <input type="checkbox" checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
+            <input style={checkboxStyle} type="checkbox" checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label>Required Field</label>
           </div>
           <div style={row}>
             <label>Maximum Length</label>
-            <input type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} />
+            <input style={textInputStyle} type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} />
           </div>
           <div style={{textAlign: 'right', ...row}}>
-            <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+            <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
       </Menu>
     ) : null;
 
     return (
-      <div>
+      <div style={{marginRight: 10}}>
         <SettingsButton
           onClick={() => this.toggleDropdown()}
           text="Field Options"

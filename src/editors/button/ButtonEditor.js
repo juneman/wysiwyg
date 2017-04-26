@@ -39,6 +39,7 @@ export default class ButtonEditor extends React.Component {
     const content = (persistedState.get('content')) || 'Button Text';
     const { textAlign, className } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
+    const classNameString = (className && className.length) ? className : '';
 
     const containerStyle = {};
     if (textAlign) {
@@ -65,7 +66,7 @@ export default class ButtonEditor extends React.Component {
             </div>
           ) : null
         ) : (
-          <button className={`btn ${className}`} style={buttonStyle} disabled>
+          <button className={`btn ${classNameString}`} style={buttonStyle} disabled>
             <span
               dangerouslySetInnerHTML={{__html: content}}
             />
