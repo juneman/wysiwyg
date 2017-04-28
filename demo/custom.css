@@ -26,3 +26,14 @@ input.form-control:focus {
   padding: 5px 30px;
   text-decoration: none;
 }
+
+.hero {
+  padding: 1em 0
+}
+.hero h1 {
+  margin: 0;
+  margin-bottom: 1em;
+}
+.hero h2 {
+  margin: 0;
+}

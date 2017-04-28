@@ -10,11 +10,15 @@ import ImageSize from '../../editor-actions/ImageSize';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
 export default function ImageToolbar(props) {
+
+  const { height: maxHeight, width: maxWidth } = props.canvasPosition.toJS();
+
   const actions = [
     {
       Component: ImageUpload,
       props: {
-        canvasPosition: props.canvasPosition
+        maxWidth,
+        maxHeight
       },
       name: 'image-upload'
     },

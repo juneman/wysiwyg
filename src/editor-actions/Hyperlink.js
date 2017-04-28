@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, textInputStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
@@ -56,10 +56,10 @@ export default class Hyperlink extends React.Component {
         <div>
           <div style={row}>
             <label>URL</label>
-            <input type="text" value={href} className="form-control" onChange={(e) => this.handleHref(e)} />
+            <input type="text" style={textInputStyle} value={href} onChange={(e) => this.handleHref(e)} />
           </div>
           <div style={row}>
-            <input type="checkbox" checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+            <input type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
             <label>Open In New Window</label>
           </div>
           <div style={{textAlign: 'right', ...row}}>

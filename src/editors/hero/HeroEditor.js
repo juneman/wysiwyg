@@ -34,25 +34,24 @@ export default class HeroEditor extends React.Component {
 
   render() {
     const { isEditing, persistedState, localState, zonePosition } = this.props;
-    const { url, height, width, heightOverride, widthOverride } = persistedState.toJS();
+    const { url } = persistedState.toJS();
 
     const editorState = localState.get('editorState');
-
     const content = (persistedState.get('content')) || defaultContent;
 
     const wrapperStyle = {
-      minHeight: 200
+      minHeight: 120,
+      backgroundImage: (url) ? `url(${url})` : null,
+      backgroundSize: 'cover',
+      textAlign: 'center'
     };
 
     const textStyle = {
-      position: 'absolute',
-      width: zonePosition.get('width'),
-      textAlign: 'center',
-      zIndex: 5
+      width: zonePosition.get('width')
     };
 
     return (
-      <div ref={(el) => this.wrapper = el} style={wrapperStyle}>
+      <div className="hero" style={wrapperStyle}>
         { (isEditing) ? (
           (editorState) ? (
             <div style={textStyle}>
@@ -66,25 +65,24 @@ export default class HeroEditor extends React.Component {
           ) : null
         ) : (
           <div
+            className="hero-content"
             style={textStyle}
             dangerouslySetInnerHTML={{
               __html: content
             }}
           />
         )}
-        <img src={url} height={heightOverride || height} width={widthOverride || width} />
       </div>
     );
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride, content } = persistedState.toJS();
-    const zoneWidth = Math.floor(this.props.zonePosition.get('width'));
+    const { url, content } = persistedState.toJS();
+    const urlStyle = (url) ? `background-image:url(${url});background-size:cover;` : '';
 
     const html = `
-      <div>
-        <div style="position:absolute;z-index:5,text-align:center,width:${zoneWidth}">${content}</div>
-        <img src="${url}" height="${heightOverride || height}" width="${widthOverride || width}" />
+      <div class="hero" style="min-height:120px;text-align:center;${urlStyle}">
+        <div class="hero-content">${content}</div>
       </div>
     `;
     return html;

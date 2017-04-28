@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import { placeholderStyle } from '../../helpers/styles/editor';
 import ImageUploader from '../../components/ImageUploader';
 
 export default class ImageEditor extends React.Component {
 
   render() {
     const { persistedState, isEditing } = this.props;
-    const { url, height, width, heightOverride, widthOverride } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, textAlign } = persistedState.toJS();
 
     const dropzoneStyle = {
       height: 70,
@@ -19,7 +20,12 @@ export default class ImageEditor extends React.Component {
       textAlign: 'center'
     };
 
-    let node = (<div className="placeholder" style={{height: 100}}>Click to add your Image</div>);
+    const wrapperStyle = {};
+    if (textAlign) {
+      wrapperStyle.textAlign = textAlign;
+    }
+
+    let node = (<div style={{height: 100, ...placeholderStyle}} >Click to add your Image</div>);
     if (url) {
       node = (<img src={url} height={heightOverride || height} width={widthOverride || width} />);
     } else if (isEditing) {
@@ -36,16 +42,28 @@ export default class ImageEditor extends React.Component {
     }
 
     return (
-      <div>
+      <div className="image" style={wrapperStyle}>
         { node }
       </div>
     );
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign } = persistedState.toJS();
 
-    const html = `<img src="${url}" height="${heightOverride || height}" width="${widthOverride || width}" />`;
+    if (!url) {
+      return '';
+    }
+
+    const style = (textAlign) ? ` style="text-align:${textAlign}"` : '';
+
+    const html = `
+      <div class="image"${style}>
+        ${(href) ? `<a href="${href}" target="${(isNewWindow) ? '_blank' : '_self'}">` : ''}
+        <img src="${url}" height="${heightOverride || height}" width="${widthOverride || width}" />
+        ${(href) ? '</a>' : ''}
+      </div>
+    `;
     return html;
   }
 

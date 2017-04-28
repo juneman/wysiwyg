@@ -19,7 +19,7 @@ class RowContainer extends React.Component {
     };
 
     return connectDropTarget(
-      <div style={style}>
+      <div className="row-container" style={style}>
         <Row
           {...this.props}
         />

@@ -23,19 +23,19 @@ export default class ImageUpload extends React.Component {
 
   handleUpload(imageDetails) {
     const { url, height, width } = imageDetails;
-    const { localState, persistedState, onChange, canvasPosition } = this.props;
+    const { localState, persistedState, onChange, maxWidth, maxHeight } = this.props;
     
     let newPersistedState = persistedState
       .set('url', url)
       .set('height', height)
       .set('width', width);
 
-    // Make sure the uploaded image does not have a larger size than the canvas
-    if (height > canvasPosition.get('height')) {
-      newPersistedState = newPersistedState.set('heightOverride', canvasPosition.get('height'));
+    // Make sure the uploaded image does not have a larger size than available
+    if (maxHeight && height > maxHeight) {
+      newPersistedState = newPersistedState.set('heightOverride', maxHeight);
     }
-    if (width > canvasPosition.get('width')) {
-      newPersistedState = newPersistedState.set('widthOverride', canvasPosition.get('width'));
+    if (maxWidth && width > maxWidth) {
+      newPersistedState = newPersistedState.set('widthOverride', maxWidth);
     }
 
     onChange({
@@ -50,5 +50,6 @@ ImageUpload.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
-  canvasPosition: PropTypes.instanceOf(Map).isRequired
+  maxWidth: PropTypes.number,
+  maxHeight: PropTypes.number
 };

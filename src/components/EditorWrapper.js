@@ -63,7 +63,7 @@ export default class EditorWrapper extends React.Component {
     
     if (isEditing) {
       buttons = (
-        <div>
+        <div className="editing">
           {children}
           <div style={editingButtonStyles}>
             <OkButton shadow={true} color="#0bdc66" onClick={() => onSave()} />
@@ -79,8 +79,8 @@ export default class EditorWrapper extends React.Component {
       );
     } else if (isHover) {
       buttons = (
-        <div className="edit">
-          <div style={hoverButtonStyles}>
+        <div className="hover">
+          <div key="edit" style={hoverButtonStyles}>
             <EditButton
               shadow={true}
               color="#f4ad42"
@@ -93,7 +93,7 @@ export default class EditorWrapper extends React.Component {
     }
 
     return (
-      <div ref={(el) => this.wrapper = el}>
+      <div className="content" ref={(el) => this.wrapper = el}>
         {(buttons) ? buttons : children}
       </div>
     );

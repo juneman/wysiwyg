@@ -37,35 +37,31 @@ export default class ButtonStyles extends React.Component {
 
     const titleStyles = secondaryMenuTitleStyle;
 
-    const row = {
-      marginTop: 20
-    };
-
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Advanced Button Options</div>
-        <div>
-          <div style={row}>
+        <div style={{display: 'grid', gridGap: 10}}>
+          <div style={{gridColumn: 1, gridRow: 1}}>
             <label>Border Radius</label>
             <input type="text" value={borderRadius} className="form-control" onChange={(e) => this.handleChange(e, 'borderRadius')} />
           </div>
-          <div style={row}>
+          <div style={{gridColumn: 2, gridRow: 1}}>
             <label>Padding</label>
             <input type="text" value={padding} className="form-control" onChange={(e) => this.handleChange(e, 'padding')} />
           </div>
-          <div style={row}>
+          <div style={{gridColumn: 1, gridRow: 2}}>
             <label>Font Size</label>
             <input type="text" value={fontSize} className="form-control" onChange={(e) => this.handleChange(e, 'fontSize')} />
           </div>
-          <div style={row}>
+          <div style={{gridColumn: 2, gridRow: 2}}>
             <label>Width</label>
             <input type="text" value={width} className="form-control" onChange={(e) => this.handleChange(e, 'width')} />
           </div>
-          <div style={row}>
-            <label>Class Name</label>
+          <div style={{gridColumn: '1 / 3', gridRow: 3}}>
+            <label>Class Names (sparate by space)</label>
             <input type="text" value={className} className="form-control" onChange={(e) => this.handleChange(e, 'className')} />
           </div>
-          <div style={{textAlign: 'right', ...row}}>
+          <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right'}}>
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>

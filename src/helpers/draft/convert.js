@@ -30,15 +30,32 @@ export function convertFromHTML(htmlContent) {
     },
     htmlToBlock: (nodeName, node) => {
       // TODO: needs to handle all entity types, not just div
-      if (nodeName === 'div') {
-        if (node.style.textAlign) {
-          return {
-            type: 'unstyled',
-            data: {
-              textAlign: node.style.textAlign
-            }
-          };
-        }
+      let nodeType = 'unstyled';
+      switch(nodeName) {
+        case 'h1':
+          nodeType = 'header-one';
+          break;
+        case 'h2':
+          nodeType = 'header-two';
+          break;
+        case 'h3':
+          nodeType = 'header-three';
+          break;
+        case 'h4':
+          nodeType = 'header-four';
+          break;
+        case 'h5':
+          nodeType = 'header-five';
+          break;
+      }
+
+      if (node.style.textAlign) {
+        return {
+          type: nodeType,
+          data: {
+            textAlign: node.style.textAlign
+          }
+        };
       }
     }
   })(htmlContent);
@@ -52,9 +69,25 @@ export function convertToHTML(editorState) {
       }
     },
     blockToHTML: (block) => {
-      // TODO: needs to handle all entity types, not just div
       if (block.data && Object.keys(block.data).length) {
-        return <div style={block.data} />;
+        const styleProps = {
+          style: block.data
+        };
+
+        switch(block.type) {
+          case 'header-one':
+            return <h1 {...styleProps} />;
+          case 'header-two':
+            return <h2 {...styleProps} />;
+          case 'header-three':
+            return <h3 {...styleProps} />;
+          case 'header-four':
+            return <h4 {...styleProps} />;
+          case 'header-five':
+            return <h5 {...styleProps} />;
+          default:
+            return <div {...styleProps} />;
+        }
       }
     },
     entityToHTML: (entity, originalText) => {

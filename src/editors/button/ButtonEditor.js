@@ -8,7 +8,7 @@ export default class ButtonEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const htmlContent = persistedState.get('content') || '<span>Button Text</span>';
+    const htmlContent = persistedState.get('content') || '<p>Button Text</p>';
     const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
     this.handleEditorStateChange(initialEditorState);
   }
@@ -16,7 +16,7 @@ export default class ButtonEditor extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const htmlContent = persistedState.get('content') || '<span>Button Text</span>';
+    const htmlContent = persistedState.get('content') || '<p>Button Text</p>';
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
@@ -36,7 +36,7 @@ export default class ButtonEditor extends React.Component {
     const { isEditing, persistedState, localState } = this.props;
     const editorState = localState.get('editorState');
 
-    const content = (persistedState.get('content')) || 'Button Text';
+    const content = (persistedState.get('content')) || '<p>Button Text</p>';
     const { textAlign, className } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? className : '';
@@ -91,18 +91,16 @@ export default class ButtonEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const content = persistedState.get('content') || '';
-    const textAlign = persistedState.get('textAlign');
-    const backgroundColor = persistedState.get('backgroundColor');
+    const { content = '', textAlign, backgroundColor, href, isNewWindow } = persistedState.toJS();
 
     const wrapperStyle = (textAlign) ? ` style="text-align:${textAlign}"` : '';
     const buttonStyle = (backgroundColor) ? `style="background-color:${backgroundColor};"` : '';
 
     return `
       <div class="button-wrapper"${wrapperStyle}>
-        <button class="btn"${buttonStyle}>
+        <${(href) ? `a href="${href}" target="${(isNewWindow) ? '_blank' : '_self'}"` : 'button'} class="btn"${buttonStyle}>
           <span>${content}</span>
-        </button>
+        </${(href) ? 'a' : 'button'}>
       </div>
     `;
   }

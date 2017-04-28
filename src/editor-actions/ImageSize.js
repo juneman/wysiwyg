@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, buttonStyle, textInputStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
@@ -15,13 +15,12 @@ export default class ImageSize extends React.Component {
     const { persistedState } = props;
 
     this.state = {
-      height: persistedState.get('height') || '',
       width: persistedState.get('width') || ''
     };
   }
 
   render() {
-    const { height, width } = this.state;
+    const { width } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -38,18 +37,14 @@ export default class ImageSize extends React.Component {
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Set Width and Height</div>
-        <div style={{marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: 20}}>
-          <div style={{gridColumn: 1, gridRow: 1}}>
+        <div style={titleStyles}>Set Image Width</div>
+        <div style={{marginTop: 20}}>
+          <div>
             <label>Width:</label><br/>
-            <input className="form-control" type="number" step="1" min="10" max="1000" value={width} onChange={(e) => this.handleInputChange(e, 'width')} />
+            <input style={textInputStyle} type="number" step="1" min="10" max="1000" value={width} onChange={(e) => this.handleInputChange(e, 'width')} />
           </div>
-          <div style={{gridColumn: 2, gridRow: 1}}>
-            <label>Height:</label><br/>
-            <input className="form-control" type="number" step="1" min="10" max="1000" value={height} onChange={(e) => this.handleInputChange(e, 'height')} />
-          </div>
-          <div style={{gridColumn: 2, gridRow: 2, textAlign: 'right'}}>
-            <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+          <div style={{textAlign: 'right', marginTop: 20}}>
+            <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
       </Menu>
@@ -79,12 +74,25 @@ export default class ImageSize extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange } = this.props;
-    const { height, width } = this.state;
-    
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { width } = this.state;
+
+    // Auto scale the height based on the width selected
+    const { width: imageWidth, height: imageHeight } = persistedState.toJS();
+    if (!imageHeight) {
+      return;
+    }
+
+    const scaleRatio = width / imageWidth;
+    const height = imageHeight * scaleRatio;
+
     const newPersistedState = persistedState
       .set('height', height)
-      .set('width', width);
+      .set('width', width)
+      .delete('widthOverride')
+      .delete('heightOverride');
+
+    onToggleActive(false);
 
     onChange({
       localState,
