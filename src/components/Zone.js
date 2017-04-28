@@ -36,6 +36,11 @@ import SelectionToolbar from '../editors/form-select/SelectionToolbar';
 
 import EditorWrapper from './EditorWrapper';
 
+/**
+ * A React component that holds the rendered content
+ * or an editable area if the Zone is active
+ * @class
+ */
 export class Zone extends React.Component {
   constructor(props) {
     super(props);
@@ -60,11 +65,9 @@ export class Zone extends React.Component {
   }
 
   componentDidMount() {
-    // Force the underlying editor component to resave with the old data
+    // Force the underlying editor component to resave/regenerate the HTML with the old data
     if (this.activeEditor) {
-      setTimeout(() => {
-        this.save();
-      });
+      this.save();
     }
     this.setBoundingBox();
   }
@@ -85,11 +88,12 @@ export class Zone extends React.Component {
       isEditing,
       localState,
       isHover,
+      disableAddButton,
       persistedState,
       cloudinary,
       userProperties
     } = this.props;
-    
+ 
     const type = zone.get('type');
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
@@ -101,6 +105,7 @@ export class Zone extends React.Component {
       persistedState,
       localState,
       canvasPosition,
+      zone,
       zonePosition: position,
       isEditing,
       cloudinary,
@@ -123,6 +128,7 @@ export class Zone extends React.Component {
       persistedState,
       localState,
       canvasPosition,
+      zone,
       zonePosition: position,
       cloudinary,
       userProperties,
@@ -194,6 +200,7 @@ export class Zone extends React.Component {
             rowPosition={rowPosition}
             isEditing={isEditing}
             isHover={isHover}
+            disableDeleteButton={disableAddButton}
             onEdit={() => this.startEditing()}
             onSave={() => {
               this.save();
@@ -223,7 +230,13 @@ export class Zone extends React.Component {
   }
 
   save() {
-    const { dispatch, zone, persistedState, html, row } = this.props;
+    const { dispatch, zone, persistedState, row } = this.props;
+    let { html } = this.props;
+
+    // Handles first mounting of a typed zone
+    if (this.activeEditor && (!html || !html.length)) {
+      html = this.activeEditor.generateHTML(persistedState);
+    }
 
     const zoneHtml = `
       <div class="zone-container">
@@ -281,6 +294,7 @@ Zone.propTypes = {
   html: PropTypes.string.isRequired,
   isEditing: PropTypes.bool.isRequired,
   isHover: PropTypes.bool.isRequired,
+  disableAddButton: PropTypes.bool.isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
 };
@@ -289,7 +303,7 @@ function mapStateToProps(state, ownProps) {
 
   // PersistedState is either a draft if we're actively editing
   // or the persistedState from the zone data if we're not in edit mode
-  const isEditing = (state.editor.get('activeZoneId') === ownProps.zone.get('id')) ? true : false;
+  const isEditing = state.editor.get('isCanvasInEditMode') && (state.editor.get('activeZoneId') === ownProps.zone.get('id')) ? true : false;
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
   const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === ownProps.zone.get('id'))) ? true : false;
 
@@ -299,6 +313,7 @@ function mapStateToProps(state, ownProps) {
     html: state.editor.get('draftHtml'),
     isEditing,
     isHover,
+    disableAddButton: state.editor.get('disableAddButton'),
     canvasPosition: state.editor.get('canvasPosition'),
     userProperties: state.editor.get('userProperties'),
     cloudinary: state.editor.get('cloudinary')

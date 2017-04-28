@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { applyMiddleware, createStore, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
+import * as editorActions from './actions/editorActions';
 
 import Canvas from './components/Canvas';
 
@@ -18,26 +18,34 @@ const reducer = combineReducers({
   editor
 });
 
-const finalCreateStore = composeWithDevTools(
+const finalCreateStore = compose(
   applyMiddleware(
     thunkMiddleware,
   )
 )(createStore);
 
-const store = finalCreateStore(reducer);
-
 export default class WysiwygEditor extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // The store is created in the contructor so it's scoped to this instance of the WysiwygEditor
+    this.store = finalCreateStore(reducer);
+    this.store.dispatch(editorActions.screenResize(window.innerWidth, window.innerHeight));
+    window.addEventListener('resize', () => {
+      this.store.dispatch(editorActions.screenResize(window.innerWidth, window.innerHeight));
+    });
+  }
   render() {
     return (
-      <Provider store={store}>
+      <Provider store={this.store}>
         <Canvas {...this.props} />
       </Provider>
     );
   }
 }
 WysiwygEditor.propTypes = {
-  height: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
+  height: PropTypes.number,
+  width: PropTypes.number,
   onSave: PropTypes.func,
   rows: PropTypes.array,
   cloudinary: PropTypes.shape({
@@ -49,5 +57,8 @@ WysiwygEditor.propTypes = {
   userProperties: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
-  }))
+  })),
+  startEditable: PropTypes.bool,
+  disableAddButton: PropTypes.bool,
+  allowedEditorTypes: PropTypes.array
 };

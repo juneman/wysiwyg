@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * A React component that gives a light wrapper
+ * around toolbars and menus in a consistent format
+ * @class
+ */
 export default class Menu extends React.Component {
 
   render() {

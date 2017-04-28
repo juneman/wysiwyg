@@ -6,6 +6,12 @@ import { convertBoundingBox } from '../helpers/domHelpers';
 import ImageUploader from './ImageUploader';
 import AddButton from '../icons/AddButton';
 
+/**
+ * A React component with an image drop or a click
+ * to show the Editor selector. This is the main component
+ * that renders when the Canvas is empty
+ * @class
+ */
 export default class FullAddElement extends React.Component {
   constructor(props) {
     super(props);
@@ -24,25 +30,22 @@ export default class FullAddElement extends React.Component {
   }
 
   render() {
-    const { width } = this.props;
-    let { height } = this.props;
-    height = height || 150;
+    const { height } = this.props;
 
     const fullScreenStyles = {
-      width,
-      height,
       backgroundColor: '#dafeea',
       color: '#0bdc66',
       textAlign: 'center',
       border: '2px dotted #0bdc66',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      height: height - 4
     };
 
     const centeredContainer = {
+      height,
       position: 'relative',
-      height: height - 4,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center'
@@ -91,6 +94,5 @@ export default class FullAddElement extends React.Component {
 FullAddElement.propTypes = {
   onClickAdd: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
-  width: PropTypes.number.isRequired,
   height: PropTypes.number
 };

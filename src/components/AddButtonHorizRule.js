@@ -5,6 +5,11 @@ import { Map } from 'immutable';
 import { convertBoundingBox } from '../helpers/domHelpers';
 import AddButton from '../icons/AddButton';
 
+/**
+ * A React component renders an Add button to
+ * add a new row to the Canvas
+ * @class
+ */
 export default class AddButtonHorizRule extends React.Component {
   constructor(props) {
     super(props);

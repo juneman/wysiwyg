@@ -6,7 +6,7 @@ import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Row from './Row';
 
 /**
- * A wrapper around the Row component to provide
+ * A React component wrapper around the Row component to provide
  * a dropzone for resorting rows
  * @class
  */

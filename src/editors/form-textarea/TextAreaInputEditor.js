@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
 export default class TextAreaInputEditor extends React.Component {
@@ -94,20 +95,50 @@ export default class TextAreaInputEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const label = persistedState.get('label') || '';
-    const placeholder = persistedState.get('placeholder') || '';
-    const isRequired = persistedState.get('isRequired') || false;
-    const maxLength = persistedState.get('maxLength');
+    const { zone } = this.props;
+    const { label, placeholder, isRequired = false, maxLength } = persistedState.toJS();
 
-    const requiredAttr = (isRequired) ? 'required="required"' : '';
-    const maxLengthAttr = (maxLength) ? `max-length="${maxLength}"` : '';
+    const inputAttrs = {
+      class: 'form-control',
+      ['data-field-id']: zone.get('id')
+    };
+    if (isRequired) {
+      inputAttrs.required = 'required';
+    }
+    if (maxLength) {
+      inputAttrs['max-length'] = maxLength;
+    }
+    if (placeholder && placeholder.length) {
+      inputAttrs.placeholder = placeholder;
+    }
 
-    return `
-      <div>
-        <label>${label}</label>
-        <textarea type="text" class="form-control" ${maxLengthAttr} ${requiredAttr} placeholder="${placeholder}"></textarea>
-      </div>
-    `;
+    const ast = [];
+    ast.push({
+      type: 'tag',
+      name: 'div',
+      voidElement: false,
+      children: [
+        {
+          type: 'tag',
+          name: 'div',
+          voidElement: false,
+          attrs: {
+            class: 'field-label'
+          },
+          children: [{
+            type: 'text',
+            content: label
+          }]
+        }, {
+          type: 'tag',
+          name: 'textarea',
+          attrs: inputAttrs,
+          voidElement: true
+        }
+      ]
+    });
+
+    return HTMLParser.stringify(ast);
   }
 
 }
@@ -116,5 +147,6 @@ TextAreaInputEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  localState: PropTypes.instanceOf(Map).isRequired
+  localState: PropTypes.instanceOf(Map).isRequired,
+  zone: PropTypes.instanceOf(Map).isRequired
 };

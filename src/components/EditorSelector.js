@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 
 import Menu from './Menu';
@@ -17,6 +17,7 @@ import FormDropdownButton from '../icons/FormDropdownButton';
 import FormRadioButton from '../icons/FormRadioButton';
 import FormTextInputButton from '../icons/FormTextInputButton';
 import FormRatingButton from '../icons/FormRatingButton';
+import PrevNextButton from '../icons/PrevNextButton';
 
 const editors = [
   {
@@ -149,7 +150,7 @@ const formEditors = [
             id: uuid(),
             type: 'Button',
             persistedState: {
-              content: '1',
+              content: '<p>1</p>',
               textAlign: 'center'
             }
           },
@@ -157,7 +158,7 @@ const formEditors = [
             id: uuid(),
             type: 'Button',
             persistedState: {
-              content: '2',
+              content: '<p>2</p>',
               textAlign: 'center'
             }
           },
@@ -165,7 +166,7 @@ const formEditors = [
             id: uuid(),
             type: 'Button',
             persistedState: {
-              content: '3',
+              content: '<p>3</p>',
               textAlign: 'center'
             }
           },
@@ -173,7 +174,7 @@ const formEditors = [
             id: uuid(),
             type: 'Button',
             persistedState: {
-              content: '4',
+              content: '<p>4</p>',
               textAlign: 'center'
             }
           },
@@ -181,8 +182,37 @@ const formEditors = [
             id: uuid(),
             type: 'Button',
             persistedState: {
-              content: '5',
+              content: '<p>5</p>',
               textAlign: 'center'
+            }
+          }
+        ]
+      }
+    ])
+  },
+  {
+    Button: PrevNextButton,
+    text: 'Prev/Next',
+    rows: fromJS([
+      {
+        id: uuid(),
+        zones: [
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '<p>Previous</p>',
+              textAlign: 'left',
+              buttonAction: 'prev'
+            }
+          },
+          {
+            id: uuid(),
+            type: 'Button',
+            persistedState: {
+              content: '<p>Next</p>',
+              textAlign: 'right',
+              buttonAction: 'next'
             }
           }
         ]
@@ -191,12 +221,19 @@ const formEditors = [
   }
 ];
 
+/**
+ * A React component that displays the dropdown menu
+ * for selecting which editor type to add to the Canvas
+ * @class
+ */
 export default class EditorSelector extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      position: Map(),
       formPosition: Map(),
+      secondaryMenuPosition: Map(),
       showForm: false,
       primaryHoverMenu: '',
       secondaryMenuHover: ''
@@ -212,57 +249,52 @@ export default class EditorSelector extends React.Component {
   }
 
   render() {
-    const { addButtonPosition, onSelect } = this.props;
-    const { formPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
+    const { addButtonPosition, onSelect, screenSize, allowedEditorTypes } = this.props;
+    const { position, formPosition, secondaryMenuPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
-    const menuStyle = {
-      zIndex: 11,
-      position: 'absolute',
+    const positionBelowAddBtn = {
       top: addButtonPosition.get('top') + 10,
       left: addButtonPosition.get('left') - 50,
-      width: 160
     };
 
-    const secondaryMenyStyle = {
+    const positionAboveAddBtn = {
+      top: addButtonPosition.get('top') - position.get('height'),
+      left: addButtonPosition.get('left') - 50,
+    };
+
+    const hasRoomToRenderBelow = (addButtonPosition.get('top') + 300 < screenSize.get('height')) ? true : false;
+
+    const menuPosition = hasRoomToRenderBelow
+      ? positionBelowAddBtn
+      : positionAboveAddBtn;
+
+    const menuStyle = (position.get('height')) ? {
       zIndex: 11,
       position: 'absolute',
-      top: (formPosition.get('top')) ? formPosition.get('top') : null,
+      width: 160
+    } : {};
+
+    const secondaryMenuStyle = (secondaryMenuPosition.get('height')) ? {
+      zIndex: 11,
+      position: 'absolute',
+      width: 180,
+      top: (formPosition.get('top')) ? formPosition.get('top') - secondaryMenuPosition.get('height') + 20 : null,
       left: (formPosition.get('right')) ? formPosition.get('right') - 20 : null,
-      width: 180
-    };
+    } : {};
+
+    const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
+      return (allowedEditorTypes.includes(editor.text));
+    });
+    const trimmedFormEditors = (allowedEditorTypes.isEmpty()) ? formEditors : formEditors.filter((editor) => {
+      return (allowedEditorTypes.includes(editor.text));
+    });
 
     return (
-      <div>
-        <Menu style={menuStyle}>
-          { editors.map((editor) => {
-            const isHover = (editor.text === primaryHoverMenu) ? true : false;
-            const style = {
-              backgroundColor: isHover ? '#3498db' : null
-            };
-            return (
-              <div
-                style={style}
-                key={editor.text}
-                ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
-                onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
-                onMouseOver={() => this.setHover(editor.text, true)}
-                onMouseOut={() => this.setHover(editor.text, false)}
-              >
-                <editor.Button
-                  hideBackground={true}
-                  color={isHover ? '#fff' : '#C0C0C0'}
-                  textColor={isHover ? '#fff' : '#606060'}
-                  text={editor.text}
-                  onClick={(editor.type === 'Form') ? null : () => onSelect(editor.type, editor.rows, editor.defaultAction)}
-                />
-              </div>
-            );
-          })}
-        </Menu>
-        { (showForm) ? (
-          <Menu style={secondaryMenyStyle}>
-            { formEditors.map((editor) => {
-              const isHover = (editor.text === secondaryMenuHover) ? true : false;
+      <div style={{position: 'absolute', ...menuPosition}}>
+        <div ref={(el) => this.wrapper = el} style={menuStyle}>
+          <Menu>
+            { trimmedEditors.map((editor) => {
+              const isHover = (editor.text === primaryHoverMenu) ? true : false;
               const style = {
                 backgroundColor: isHover ? '#3498db' : null
               };
@@ -270,21 +302,51 @@ export default class EditorSelector extends React.Component {
                 <div
                   style={style}
                   key={editor.text}
-                  onMouseOver={() => this.setHover('Form', true, editor.text)}
-                  onMouseOut={() => this.setHover('Form', false, editor.text)}
+                  ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
+                  onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
+                  onMouseOver={() => this.setHover(editor.text, true)}
+                  onMouseOut={() => this.setHover(editor.text, false)}
                 >
                   <editor.Button
                     hideBackground={true}
                     color={isHover ? '#fff' : '#C0C0C0'}
                     textColor={isHover ? '#fff' : '#606060'}
                     text={editor.text}
-                    onClick={() => onSelect(editor.type, editor.rows, editor.defaultAction)}
+                    onClick={(editor.type === 'Form') ? null : () => onSelect(editor.type, editor.rows, editor.defaultAction)}
                   />
                 </div>
               );
             })}
           </Menu>
-        ) : null}
+        </div>
+        <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
+          { (showForm) ? (
+            <Menu>
+              { trimmedFormEditors.map((editor) => {
+                const isHover = (editor.text === secondaryMenuHover) ? true : false;
+                const style = {
+                  backgroundColor: isHover ? '#3498db' : null
+                };
+                return (
+                  <div
+                    style={style}
+                    key={editor.text}
+                    onMouseOver={() => this.setHover('Form', true, editor.text)}
+                    onMouseOut={() => this.setHover('Form', false, editor.text)}
+                  >
+                    <editor.Button
+                      hideBackground={true}
+                      color={isHover ? '#fff' : '#C0C0C0'}
+                      textColor={isHover ? '#fff' : '#606060'}
+                      text={editor.text}
+                      onClick={() => onSelect(editor.type, editor.rows, editor.defaultAction)}
+                    />
+                  </div>
+                );
+              })}
+            </Menu>
+          ) : null}
+        </div>
       </div>
     ); 
   }
@@ -303,12 +365,27 @@ export default class EditorSelector extends React.Component {
   }
 
   setBoundingBox() {
-    if (!this.wrapperForm) {
-      return;
+    const update = {};
+    if (this.wrapper) {
+      const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+      if (!position.equals(this.state.position)) {
+        update.position = position;
+      }
     }
-    const formPosition = convertBoundingBox(this.wrapperForm.getBoundingClientRect());
-    if (!formPosition.equals(this.state.formPosition)) {
-      this.setState({formPosition});
+    if (this.secondaryMenu) {
+      const secondaryMenuPosition = convertBoundingBox(this.secondaryMenu.getBoundingClientRect());
+      if (!secondaryMenuPosition.equals(this.state.secondaryMenuPosition)) {
+        update.secondaryMenuPosition = secondaryMenuPosition;
+      }
+    }
+    if (this.wrapperForm) {
+      const formPosition = convertBoundingBox(this.wrapperForm.getBoundingClientRect());
+      if (!formPosition.equals(this.state.formPosition)) {
+        update.formPosition = formPosition;
+      }
+    }
+    if (Object.keys(update).length) {
+      this.setState(update);
     }
   }
 
@@ -316,4 +393,6 @@ export default class EditorSelector extends React.Component {
 EditorSelector.propTypes = {
   onSelect: PropTypes.func.isRequired,
   addButtonPosition: PropTypes.instanceOf(Map).isRequired,
+  screenSize: PropTypes.instanceOf(Map).isRequired,
+  allowedEditorTypes: PropTypes.instanceOf(List)
 };

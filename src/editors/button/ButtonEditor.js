@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState } from 'draft-js';
+import HTMLParser from 'html-parse-stringify2';
+import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 
 export default class ButtonEditor extends React.Component {
@@ -91,18 +93,51 @@ export default class ButtonEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { content = '', textAlign, backgroundColor, href, isNewWindow } = persistedState.toJS();
+    const { zone } = this.props;
+    const { content = '<p></p>', textAlign, backgroundColor, href, isNewWindow, buttonAction } = persistedState.toJS();
 
-    const wrapperStyle = (textAlign) ? ` style="text-align:${textAlign}"` : '';
-    const buttonStyle = (backgroundColor) ? `style="background-color:${backgroundColor};"` : '';
+    const wrapperAttrs = {
+      class: 'button-wrapper'
+    };
+    if (textAlign) {
+      wrapperAttrs.style = `text-align:${textAlign};`;
+    }
 
-    return `
-      <div class="button-wrapper"${wrapperStyle}>
-        <${(href) ? `a href="${href}" target="${(isNewWindow) ? '_blank' : '_self'}"` : 'button'} class="btn"${buttonStyle}>
-          <span>${content}</span>
-        </${(href) ? 'a' : 'button'}>
-      </div>
-    `;
+    const buttonAttrs = {
+      class: 'btn',
+      ['data-field-id']: zone.get('id'),
+      value: striptags(content)
+    };
+    if (backgroundColor) {
+      buttonAttrs.style = `background-color:${backgroundColor};`;
+    }
+    if (href) {
+      buttonAttrs.href = href;
+      buttonAttrs.target = (isNewWindow) ? '_target' : '_self';
+    } else if (buttonAction) {
+      buttonAttrs['data-step'] = buttonAction;
+    }
+
+    const contentAst = HTMLParser.parse(content);
+
+    const ast = [];
+    ast.push({
+      type: 'tag',
+      name: 'div',
+      voidElement: false,
+      attrs: wrapperAttrs,
+      children: [
+        {
+          type: 'tag',
+          name: (href) ? 'a' : 'button',
+          voidElement: false,
+          attrs: buttonAttrs,
+          children: contentAst
+        }
+      ]
+    });
+
+    return HTMLParser.stringify(ast);
   }
 
 }
@@ -111,5 +146,6 @@ ButtonEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  localState: PropTypes.instanceOf(Map).isRequired
+  localState: PropTypes.instanceOf(Map).isRequired,
+  zone: PropTypes.instanceOf(Map).isRequired
 };

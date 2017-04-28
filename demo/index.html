@@ -56,7 +56,7 @@
       <div class="content">
         
         <div class="example">
-          <h3>Sample Editor</h3>
+          <h3>Sample Modal Editor</h3>
           <div id="simple" class="editor"></div>
 
           <h4>Output</h4>
@@ -64,14 +64,12 @@
           <div class="output"><pre><code class="html" id="simple-html">&lt;&gt;</pre></code></div>
         </div>
 
-        <!--
         <div class="example">
-          <h3>Loading Existing Data</h3>
-          <div id="existing" class="editor"></div>
-          <div class="output"><pre><code class="json" id="existing-json">{}</pre></code></div>
-          <div class="output"><pre><code class="html" id="existing-html">&lt;&gt;</pre></code></div>
+          <h3>Tooltip</h3>
+          <div id="tooltip" class="editor"></div>
+          <div class="output"><pre><code class="json" id="tooltip-json">{}</pre></code></div>
+          <div class="output"><pre><code class="html" id="tooltip-html">&lt;&gt;</pre></code></div>
         </div>
-        -->
 
       </div>
       
@@ -120,15 +118,46 @@
           hljs.highlightBlock(htmlOutput);
         }
 
-        // Render Editor Spike
+        // Render Editor Modal
         ReactDOM.render(
           <WysiwygEditor
-            width={674}
-            height={294}
             onSave={(content) => displayOutput('simple', content) }
             cloudinary={CLOUDINARY}
             userProperties={USER_PROPERTIES}
+            style={{
+              minHeight: 250
+            }}
           />, document.getElementById('simple')
+        )
+
+        // Render Editor Tooltip
+        ReactDOM.render(
+          <WysiwygEditor
+            onSave={(content) => displayOutput('tooltip', content) }
+            style={{
+              width: 150,
+              height: 50
+            }}
+            cloudinary={CLOUDINARY}
+            userProperties={USER_PROPERTIES}
+            startEditable={true}
+            disableAddButton={true}
+            allowedEditorTypes={["Text"]}
+            rows={
+              [{
+                id: '123',
+                zones: [
+                  {
+                    id: '234',
+                    type: 'RichText',
+                    persistedState: {
+                      content: 'Tooltip'
+                    }
+                  }
+                ]
+              }]
+            }
+          />, document.getElementById('tooltip')
         )
 
       }(WysiwygEditor.default));

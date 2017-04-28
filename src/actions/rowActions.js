@@ -21,10 +21,11 @@ export function updateRow(row) {
   };
 }
 
-export function replaceRows(rows) {
+export function replaceRows(rows, activeZoneId) {
   return {
     type: Actions.ROWS_REPLACE_ALL,
-    rows
+    rows,
+    activeZoneId
   };
 }
 

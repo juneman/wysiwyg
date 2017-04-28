@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import sanitizeHtml from 'sanitize-html';
 
 import AceEditor from 'react-ace';
 import 'brace/mode/html';
@@ -90,10 +91,11 @@ export default class Code extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange, onToggleActive, sanitizeHtmlConfig } = this.props;
     const { content } = this.state;
-    
-    const newPersistedState = persistedState.set('content', content);
+
+    const cleanHtml = sanitizeHtml(content, sanitizeHtmlConfig.toJS());
+    const newPersistedState = persistedState.set('content', cleanHtml);
     
     onToggleActive(false);
 
@@ -111,5 +113,6 @@ Code.propTypes = {
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  sanitizeHtmlConfig: PropTypes.instanceOf(Map)
 };

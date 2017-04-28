@@ -18,49 +18,6 @@ To see what the demo is doing in order to get example usage of the component, op
  * React and React-DOM are loaded as scripts from a CDN, so the webpack build does not need to compile them constantly.
  * [Babel Standalone](https://github.com/babel/babel-standalone) is used so that we can use JSX within the demo HTML page and not have to include a separate build process just for the demo page.
 
-## Usage
-
-The main export of this library is a `<Canvas />` react component. You can see some example usage by opening up the `/demo/index.html` file.
-
-In addition, there is currently a `/demo/canvas.css` file with some basic styles that would need to be shared between both this editor and the client rendering.
-
-### Sample Component
-```jsx
-<Canvas
-  width={100}
-  height={300}
-  onSave={(content) => { // do something } }
-  rows={
-    [
-      {
-        "id": "17477d46-de5c-4bce-80c7-913eba1cbb3b",
-        "zones": [
-          {
-            "id": "1515a32c-49ba-4219-baca-4972e9efec50",
-            "type": "RichText",
-            "persistedState": {
-              "content": "<p>Top Text</p>"
-            }
-          }
-        ]
-      },
-      {
-        "id": "836951fd-de87-40c0-9050-7394fdc945b2",
-        "zones": [
-          {
-            "id": "a95cac65-e119-4c88-9871-6e6dae340f82",
-            "type": "RichText",
-            "persistedState": {
-              "content": "<p>Bottom Text</p>"
-            }
-          }
-        ]
-      }
-    ]
-  }
-/>
-```
-
 ## Development
 
 ### Installation
@@ -96,6 +53,10 @@ To run the lint:
 
 This will also be done at the completion of running the unit tests.
 
+## Usage
+
+[Usage Guide](docs/Usage.md)
+
 ## Data Migration
 
-[Data Migration Guide](DataMigration.md)
+[Data Migration Guide](docs/DataMigration.md)

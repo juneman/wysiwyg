@@ -5,8 +5,23 @@ import { Map, List } from 'immutable';
 
 import * as editorActions from '../actions/editorActions';
 
+/**
+ * A React component renders a grid of toolbar actions
+ * such as Bold, Italic, etc.
+ * @class
+ */
 export function Toolbar(props) {
-  const { localState, persistedState, onChange, actions, selectedAction, dispatch, cloudinary, userProperties } = props;
+  const {
+    localState,
+    persistedState,
+    onChange,
+    actions,
+    selectedAction,
+    dispatch,
+    cloudinary,
+    userProperties,
+    sanitizeHtmlConfig
+  } = props;
 
   const vertLine = {
     width: 1,
@@ -34,6 +49,7 @@ export function Toolbar(props) {
           onChange,
           cloudinary,
           userProperties,
+          sanitizeHtmlConfig,
           isActive: (selectedAction === editorAction.name),
           onToggleActive: (isActive) => {
             dispatch(editorActions.toggleEditorAction(editorAction.name, isActive));
@@ -56,14 +72,16 @@ Toolbar.propTypes = {
   actions: PropTypes.array.isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
-  selectedAction: PropTypes.string
+  selectedAction: PropTypes.string,
+  sanitizeHtmlConfig: PropTypes.instanceOf(Map).isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     selectedAction: state.editor.get('activeEditorAction'),
     cloudinary: state.editor.get('cloudinary'),
-    userProperties: state.editor.get('userProperties')
+    userProperties: state.editor.get('userProperties'),
+    sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig')
   };
 }
 

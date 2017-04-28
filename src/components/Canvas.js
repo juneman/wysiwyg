@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -19,10 +20,45 @@ import * as rowActions from '../actions/rowActions';
 import * as editorSelectorActions from '../actions/editorSelectorActions';
 import * as editorActions from '../actions/editorActions';
 
+/**
+ * A React component that acts as the main
+ * wrapper around the other components of the WYSIWYG editor
+ * @class
+ */
 export class Canvas extends React.Component {
 
   componentDidMount() {
+    const {
+      dispatch,
+      cloudinary,
+      rows,
+      startEditable,
+      userProperties,
+      allowedEditorTypes,
+      sanitizeHtml,
+      disableAddButton
+    } = this.props;
+
     this.setBoundingBox();
+    if (rows && !rows.isEmpty()) {
+      const activeZoneId = (startEditable) ? rows.get(0).get('zones').get(0) : null;
+      dispatch(rowActions.replaceRows(rows, activeZoneId));
+    }
+    if (cloudinary) {
+      dispatch(editorActions.setCloudinarySettings(cloudinary));
+    }
+    if (userProperties && !userProperties.isEmpty()) {
+      this.props.dispatch(editorActions.setUserProperties(userProperties));
+    }
+    if (allowedEditorTypes && !allowedEditorTypes.isEmpty()) {
+      dispatch(editorActions.setAllowedEditorTypes(allowedEditorTypes));
+    }
+    if (disableAddButton !== undefined) {
+      dispatch(editorActions.setDisableAddButton(disableAddButton));
+    }
+    if (sanitizeHtml && !sanitizeHtml.isEmpty()) {
+      dispatch(editorActions.setSanitizeHtmlConfig(sanitizeHtml));
+    }
   }
 
   componentDidUpdate() {
@@ -30,31 +66,46 @@ export class Canvas extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { dispatch } = this.props;
     if (nextProps.internalRows !== this.props.internalRows) {
       this.save(nextProps.internalRows);
     }
-    if (!nextProps.rows.isEmpty() && this.props.internalRows.isEmpty()) {
-      this.props.dispatch(rowActions.replaceRows(nextProps.rows));
-    }
     if (!is(nextProps.rows, this.props.rows)) {
-      this.props.dispatch(rowActions.replaceRows(nextProps.rows));
+      const activeZoneId = (nextProps.startEditable) ? nextProps.rows.get(0).get('zones').get(0) : null;
+      dispatch(rowActions.replaceRows(nextProps.rows, activeZoneId));
     }
-    if (!is(nextProps.cloudinary, this.props.internalCloudinary)) {
-      this.props.dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
+    if (!is(nextProps.cloudinary, this.props.cloudinary)) {
+      dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
     }
-    if (!is(nextProps.userProperties, this.props.internalUserProperties)) {
-      this.props.dispatch(editorActions.setUserProperties(nextProps.userProperties));
+    if (!is(nextProps.userProperties, this.props.userProperties)) {
+      dispatch(editorActions.setUserProperties(nextProps.userProperties));
+    }
+    if (!is(nextProps.allowedEditorTypes, this.props.allowedEditorTypes)) {
+      dispatch(editorActions.setAllowedEditorTypes(nextProps.allowedEditorTypes));
+    }
+    if (nextProps.disableAddButton !== this.props.disableAddButton) {
+      dispatch(editorActions.setDisableAddButton(nextProps.disableAddButton));
+    }
+    if (!nextProps.sanitizeHtml.isEmpty() && !is(nextProps.sanitizeHtml, this.props.sanitizeHtml)) {
+      dispatch(editorActions.setSanitizeHtmlConfig(nextProps.sanitizeHtml));
     }
   }
 
   render() {
-    const { height, width, internalRows, showAddButton, showEditorSelector, addButtonPosition } = this.props;
+    const {
+      internalRows,
+      showAddButton,
+      showEditorSelector,
+      addButtonPosition,
+      screenSize,
+      canvasPosition,
+      style,
+      internalAllowedEditorTypes
+    } = this.props;
 
-    const canvasStyles = {
-      height,
-      width,
+    const canvasStyles = Object.assign({}, {
       padding: (internalRows.size) ? '3px 0' : null
-    };
+    }, style);
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
@@ -67,7 +118,6 @@ export class Canvas extends React.Component {
       ): (
         <FullAddElement
           key={row.get('id')}
-          width={width}
           onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         />
@@ -76,8 +126,7 @@ export class Canvas extends React.Component {
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
-        height={height}
-        width={width}
+        height={(canvasPosition.get('height') ? canvasPosition.get('height') : null)}
         onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
       />
@@ -86,6 +135,8 @@ export class Canvas extends React.Component {
     const editorSelectorNode = showEditorSelector ? (
       <EditorSelector
         addButtonPosition={addButtonPosition}
+        screenSize={screenSize}
+        allowedEditorTypes={internalAllowedEditorTypes}
         onSelect={(type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction)}
       />
     ) : null;
@@ -170,7 +221,7 @@ export class Canvas extends React.Component {
     dispatch(rowActions.addRows(rowsToAdd));
 
     // If only one element is added, let's start editing immediately
-    if (rowsToAdd.size === 1) {
+    if (rowsToAdd.size === 1 && rowsToAdd.get(0).get('zones').size === 1) {
       const activeZone = rowsToAdd.get(0).get('zones').get(0);
       dispatch(editorActions.startEditing(activeZone));
       if (defaultAction) {
@@ -214,19 +265,19 @@ export class Canvas extends React.Component {
   }
 
   save(internalRows) {
-    const { onSave, canvasPosition } = this.props;
-    const width = canvasPosition.get('width');
-    const height = canvasPosition.get('height');
+    const { onSave, style } = this.props;
 
     if (onSave) {
       // Build the final HTML
       const rowsHtml = this.buildHtml(internalRows);
 
-      const html = flattenHTML(`
-        <div class="canvas" style="width:${width};height:${height};">
-          ${rowsHtml}
-        </div>
-      `);
+      // Rendering here with ReactDOMServer to convert the optional style object to CSS
+      const html = flattenHTML(
+        ReactDOMServer.renderToStaticMarkup(
+          <div className="canvas" style={style}>|ROWS|</div>
+        )
+        .replace('|ROWS|', rowsHtml)
+      );
 
       const ast = HTMLParser.parse(html);
 
@@ -254,8 +305,7 @@ export class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  height: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
+  style: PropTypes.object,
   onSave: PropTypes.func,
   dispatch: PropTypes.func.isRequired,
   rows: PropTypes.instanceOf(List),
@@ -264,10 +314,17 @@ Canvas.propTypes = {
   internalCloudinary: PropTypes.instanceOf(Map).isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   internalUserProperties: PropTypes.instanceOf(List).isRequired,
+  sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
+  internalSanitizeHtml: PropTypes.instanceOf(Map).isRequired,
+  allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
+  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   showEditorSelector: PropTypes.bool.isRequired,
   addButtonPosition: PropTypes.instanceOf(Map).isRequired,
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
-  showAddButton: PropTypes.bool.isRequired
+  screenSize: PropTypes.instanceOf(Map).isRequired,
+  showAddButton: PropTypes.bool.isRequired,
+  startEditable: PropTypes.bool,
+  disableAddButton: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {
@@ -276,15 +333,23 @@ function mapStateToProps(state, ownProps) {
     rows: (ownProps.rows) ? fromJS(ownProps.rows) : List(),
     cloudinary: (ownProps.cloudinary) ? fromJS(ownProps.cloudinary) : Map(),
     userProperties: (ownProps.userProperties && ownProps.userProperties.length) ? fromJS(ownProps.userProperties) : List(),
+    sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
+    allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
     
+    // Internal mappings of the above properties
     internalCloudinary: state.editor.get('cloudinary'),
     internalUserProperties: state.editor.get('userProperties'),
     internalRows: state.rows,
+    internalSanitizeHtml: state.editor.get('sanitizeHtmlConfig'),
+    internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
+    
     showEditorSelector: state.editorSelector.get('isOpen'),
     canvasPosition: state.editor.get('canvasPosition'),
+    screenSize: state.editor.get('screenSize'),
     addButtonPosition: state.editorSelector.get('addButtonPosition'),
 
-    showAddButton: !state.editor.get('isCanvasInEditMode')
+    showAddButton: !state.editor.get('disableAddButton')
+     && !state.editor.get('isCanvasInEditMode')
      && state.rows.size
      && (state.rows.every((row) => row.get('zones') && row.get('zones').size))
      ? true : false

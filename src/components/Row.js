@@ -9,6 +9,10 @@ import { convertBoundingBox } from '../helpers/domHelpers';
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Zone from './Zone';
 
+/**
+ * A React component for each row of the WYSIWYG editor
+ * @class
+ */
 export class Row extends React.Component {
   constructor(props) {
     super(props);

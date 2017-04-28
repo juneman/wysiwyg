@@ -8,12 +8,18 @@ import EditButton from '../icons/EditButton';
 import CancelButton from '../icons/CancelButton';
 import DeleteButton from '../icons/DeleteButton';
 
+/**
+ * A React component that wraps a Zone component when
+ * editing is active. It provides the toolbars for Save/Cancel/etc
+ * @class
+ */
 export default class EditorWrapper extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      position: Map()
+      position: Map(),
+      toolbarPosition: Map()
     };
   }
 
@@ -26,7 +32,7 @@ export default class EditorWrapper extends React.Component {
   }
 
   render() {
-    const { position } = this.state;
+    const { position, toolbarPosition } = this.state;
     const {
       isEditing,
       isHover,
@@ -36,7 +42,8 @@ export default class EditorWrapper extends React.Component {
       onSave,
       onCancel,
       onRemove,
-      onEdit
+      onEdit,
+      disableDeleteButton
     } = this.props;
 
     const hoverButtonStyles = {
@@ -50,8 +57,13 @@ export default class EditorWrapper extends React.Component {
     const editingButtonStyles = {
       position: 'absolute',
       left: (rowPosition && rowPosition.get('right')) ? rowPosition.get('right') - 150 : 0,
-      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') + 5 : 0
+      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') : 0
     };
+    
+    // If the canvas is really small, make sure the buttons don't overlap the toolbar
+    if (toolbarPosition.get('left') && editingButtonStyles.left < (toolbarPosition.get('left') + toolbarPosition.get('width'))) {
+      editingButtonStyles.left = toolbarPosition.get('left') + toolbarPosition.get('width') + 20;
+    }
 
     const toolbarStyles = {
       position: 'absolute',
@@ -68,10 +80,10 @@ export default class EditorWrapper extends React.Component {
           <div style={editingButtonStyles}>
             <OkButton shadow={true} color="#0bdc66" onClick={() => onSave()} />
             <CancelButton shadow={true} color="#C0C0C0" onClick={() => onCancel()} />
-            <DeleteButton shadow={true} color="#FF0000" onClick={() => onRemove()} />
+            { (disableDeleteButton) ? null : <DeleteButton shadow={true} color="#FF0000" onClick={() => onRemove()} /> }
           </div>
           { (toolbarNode) ? (
-            <div style={toolbarStyles}>
+            <div style={toolbarStyles} ref={(el) => this.toolbar = el}>
               { toolbarNode }
             </div>
           ) : null}
@@ -100,12 +112,21 @@ export default class EditorWrapper extends React.Component {
   }
 
   setBoundingBox() {
-    if (!this.wrapper) {
-      return;
+    const update = {};
+    if (this.wrapper) {
+      const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+      if (!position.equals(this.state.position)) {
+        update.position = position;
+      }
     }
-    const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-    if (!position.equals(this.state.position)) {
-      this.setState({position});
+    if (this.toolbar) {
+      const toolbarPosition = convertBoundingBox(this.toolbar.getBoundingClientRect());
+      if (!toolbarPosition.equals(this.state.toolbarPosition)) {
+        update.toolbarPosition = toolbarPosition;
+      }
+    }
+    if (Object.keys(update).length) {
+      this.setState(update);
     }
   }
 }
@@ -119,5 +140,6 @@ EditorWrapper.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   rowPosition: PropTypes.instanceOf(Map).isRequired,
-  toolbarNode: PropTypes.node
+  toolbarNode: PropTypes.node,
+  disableDeleteButton: PropTypes.bool
 };

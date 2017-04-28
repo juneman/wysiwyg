@@ -37,6 +37,14 @@ export default class ButtonAction extends React.Component {
       {
         name: 'Previous',
         value: 'previous'
+      },
+      {
+        name: 'Skip',
+        value: 'skip'
+      },
+      {
+        name: 'End',
+        value: 'end'
       }
     ]);
 

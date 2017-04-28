@@ -35,7 +35,7 @@ This is how the same thing would be output using this new library:
       "zones": [
         {
           "id": "2be64035-0523-448e-94bb-ce0ea5abde16",
-          "componentType": "RichText",
+          "type": "RichText",
           "persistedState": {
             "content": "<h1 style=\"text-align: center;\">Try this Out!</h1>"
           }
@@ -47,7 +47,7 @@ This is how the same thing would be output using this new library:
       "zones": [
         {
           "id": "111127fe-273d-4460-bd8a-ccc2a30ef253",
-          "componentType": "Image",
+          "type": "Image",
           "persistedState": {
             "src": "https://res.cloudinary.com/dnjrorsut/image/upload/123.jpg"
           }
@@ -63,37 +63,31 @@ This is how the same thing would be output using this new library:
 The HTML outputted from the library would look like this:
 
 ```html
-<div class="canvas">
-  <div class="row">
-    <div class="zone-container">
-      <div class="zone">
-        <div class="content">
-          <div>
-            <div>
-              <h1 style=\"text-align: center;\">Try this Out!</h1>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>,
-  <div class="row">
-    <div class="zone-container">
-      <div class="zone">
-        <div class="content">
-          <div>
-            <div>
-              <img src=\"https://res.cloudinary.com/dnjrorsut/image/upload/123.jpg\" />
+<div class="canvas" style="width:674;height:300;">
+  <div class="row-container">
+    <div class="row">
+      <div class="zone-container">
+        <div class="zone">
+          <div class="content">
+            <div class="rich-text">
+              <div>
+                <h1 style="text-align:center;">Try This Out!</h1>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="row-container">
+    <div class="row">
+      <div class="zone-container">
+        <div class="zone">
+          <div class="content"><img src="https://res.cloudinary.com/dnjrorsut/image/upload/123.jpg" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 ```
-
-## Component Types
-
-** Coming Soon **
 

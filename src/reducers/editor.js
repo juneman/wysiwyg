@@ -1,7 +1,9 @@
 import Actions from '../helpers/actionConstants';
 import { fromJS, Map } from 'immutable';
+import sanitizeHtml from 'sanitize-html';
 
 const initialState = fromJS({
+  screenSize: {},
   canvasPosition: {},
   activeZoneId: null,
   hoverZoneId: null,
@@ -9,17 +11,29 @@ const initialState = fromJS({
   hoverRowId: null,
   activeEditorAction: null,
   isCanvasInEditMode: false,
+  disableAddButton: false,
   draftHtml: '',
   draftPersistedState: {},
   localState: {},
   cloudinary: {},
-  userProperties: []
+  userProperties: [],
+  allowedEditorTypes: [],
+  sanitizeHtmlConfig: {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+    allowedAttributes: false
+  }
 });
 
 export default function editorSelector(state = initialState, action) {
   let newState = state;
 
   switch(action.type) {
+    case Actions.EDITOR_BROWSER_RESIZE:
+      newState = newState.set('screenSize', Map({
+        width: action.browserWidth,
+        height: action.browserHeight
+      }));
+      break;
     case Actions.EDITOR_EDITING_START:
       newState = newState
         .set('isCanvasInEditMode', true)
@@ -70,6 +84,25 @@ export default function editorSelector(state = initialState, action) {
       break;
     case Actions.EDITOR_SETTINGS_USER_PROPERTIES:
       newState = newState.set('userProperties', action.userProperties);
+      break;
+    case Actions.EDITOR_SETTINGS_SANITIZE_HTML:
+      newState = newState.set('sanitizeHtmlConfig', action.sanitizeHtmlConfig);
+      break;
+    case Actions.EDITOR_SETTINGS_ALLOWED_EDITOR_TYPES:
+      newState = newState.set('allowedEditorTypes', action.allowedEditorTypes);
+      break;
+    case Actions.EDITOR_SETTINGS_DISABLE_ADD_BUTTON:
+      newState = newState.set('disableAddButton', action.disableAddButton);
+      break;
+    case Actions.ROWS_REPLACE_ALL:
+      if (action.activeZoneId) {
+        newState = newState
+          .set('isCanvasInEditMode', true)
+          .set('activeZoneId', action.activeZoneId.get('id'))
+          .set('draftPersistedState', action.activeZoneId.get('persistedState') || Map())
+          .set('draftHtml', '')
+          .set('localState', Map());
+      }
       break;
   }
 
