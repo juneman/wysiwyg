@@ -33,7 +33,7 @@ export default class TextAreaInputEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState } = this.props;
+    const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
@@ -56,12 +56,12 @@ export default class TextAreaInputEditor extends React.Component {
                 />
               ) : null }
             </label>
-            <textarea type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
+            <textarea className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
           </div>
         ) : (
           <div>
             <label>{(isRequired) ? '*' : ''} {label}</label>
-            <textarea type="text" className="form-control" value={placeholder} disabled={true} maxLength={maxLength} />
+            <textarea className="form-control" data-field-id={zone.get('id')} required={isRequired} maxLength={maxLength} placeholder={placeholder} />
           </div>
         )}
       </div>
@@ -114,10 +114,10 @@ export default class TextAreaInputEditor extends React.Component {
       ['data-field-id']: zone.get('id')
     };
     if (isRequired) {
-      inputAttrs.required = 'required';
+      inputAttrs.required = '';
     }
     if (maxLength) {
-      inputAttrs['max-length'] = maxLength;
+      inputAttrs['maxlength'] = maxLength;
     }
     if (placeholder && placeholder.length) {
       inputAttrs.placeholder = placeholder;
@@ -133,18 +133,26 @@ export default class TextAreaInputEditor extends React.Component {
           type: 'tag',
           name: 'div',
           voidElement: false,
-          attrs: {
-            class: 'field-label'
-          },
-          children: [{
-            type: 'text',
-            content: label
-          }]
-        }, {
-          type: 'tag',
-          name: 'textarea',
-          attrs: inputAttrs,
-          voidElement: true
+          children: [
+            {
+              type: 'tag',
+              name: 'label',
+              voidElement: false,
+              children: [{
+                type: 'text',
+                content: (isRequired) ? `* ${label}` : label
+              }]
+            }, {
+              type: 'tag',
+              name: 'textarea',
+              attrs: inputAttrs,
+              voidElement: false,
+              children: [{
+                type: 'text',
+                content: ''
+              }]
+            }
+          ]
         }
       ]
     });

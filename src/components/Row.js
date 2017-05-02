@@ -10,7 +10,7 @@ import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Zone from './Zone';
 
 /**
- * A React component for each row of the WYSIWYG editor
+ * A React component for each row of the editor
  * @class
  */
 export class Row extends React.Component {
@@ -100,7 +100,6 @@ export class Row extends React.Component {
 
 Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
-  dispatch: PropTypes.func.isRequired,
   connectDragSource: PropTypes.func,
   isDragging: PropTypes.bool,
   isMovable: PropTypes.bool.isRequired,

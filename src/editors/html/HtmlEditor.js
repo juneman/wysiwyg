@@ -11,14 +11,9 @@ export default class HtmlEditor extends React.Component {
 
     const content = persistedState.get('content');
 
-    const wrapperStyle = {
-      minHeight: 50
-    };
-
     return (content) ? (
       <div
         className="html"
-        style={wrapperStyle}
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
     ) : (

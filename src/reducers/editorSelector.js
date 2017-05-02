@@ -10,6 +10,10 @@ const initialState = fromJS({
 export default function editorSelector(state = initialState, action) {
   let newState = state;
 
+  if (!action || !action.type) {
+    return newState;
+  }
+
   switch (action.type) {
     case Actions.ROWS_ADD_ONE:
     case Actions.ROWS_ADD_MANY:

@@ -13,7 +13,12 @@ describe('<Row />', () => {
         {
           id: '10',
           type: 'RichText',
-          persistedState: Map()
+          persistedState: {}
+        },
+        {
+          id: '11',
+          type: 'RichText',
+          persistedState: {}
         }
       ])
     });
@@ -21,47 +26,13 @@ describe('<Row />', () => {
     const wrapper = shallow(
       <Row
         row={row}
-        onSave={() => {}}
-        onRemoveRow={() => {}}
-        onToggleEditMode={() => {}}
-        isCanvasInEditMode={false}
+        isDragging={false}
+        isMovable={false}
+        showMoveButton={false}
       />
     );
-    expect(wrapper.find('Zone')).to.have.length(1);
-  });
-
-  it('should take an onSave callback that passes a full HTML render and zone array', () => {
-    const row = fromJS({
-      zones: [
-        {
-          id: '10',
-          type: 'RichText',
-          persistedState: Map()
-        }
-      ]
-    });
-
-    const wrapper = shallow(
-      <Row
-        row={row}
-        onRemoveRow={() => {}}
-        onToggleEditMode={() => {}}
-        isCanvasInEditMode={false}
-        onSave={(updatedRow) => {
-          updatedRow = updatedRow.toJS();
-          expect(updatedRow.zones).to.have.length(1);
-          expect(updatedRow.zones[0]).to.have.property('id', '10');
-          expect(updatedRow.html).to.equal('<div class="row"><div class="zone"></div></div>');
-        }}
-      />
-    );
-
-    const updatedZone = Map({
-      id: '10',
-      html: '<div class="zone"></div>'
-    });
-
-    wrapper.instance().save(0, updatedZone);
+    expect(wrapper.find('.row')).to.have.length(1);
+    expect(wrapper.find('.row').children()).to.have.length(2);
   });
 
 });

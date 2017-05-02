@@ -15,9 +15,18 @@ Object.keys(document.defaultView).forEach((property) => {
 });
 
 global.navigator = {
-  userAgent: 'node.js'
+  platform: 'mac',
+  userAgent: 'node.js',
+  appName: ''
 };
 
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
+import sinonChai from 'sinon-chai';
+import chaiImmutable from 'chai-immutable';
+chai.use(chaiImmutable);
+chai.use(sinonChai);
 chai.use(chaiEnzyme());
+
+global.HTMLElement = window.HTMLElement;
+global.TextNode = window.TextNode;

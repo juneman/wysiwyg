@@ -109,7 +109,10 @@ export default class TextStyle extends React.Component {
 
   handleSave(e) {
     e.preventDefault();
-    const selectedValue = e.target.value;
+    this.handleFormat(e.target.value);
+  }
+
+  handleFormat(selectedValue) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), selectedValue));

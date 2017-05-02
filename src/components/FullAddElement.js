@@ -53,7 +53,7 @@ export default class FullAddElement extends React.Component {
     };
 
     return (
-      <div style={centeredContainer}>
+      <div className="full-add" style={centeredContainer}>
         <ImageUploader
           disableClick={true}
           onUpload={(imageDetails) => this.props.onUpload(imageDetails)}

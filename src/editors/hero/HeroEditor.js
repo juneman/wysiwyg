@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import HTMLParser from 'html-parse-stringify2';
 
 import { Editor, EditorState } from 'draft-js';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
@@ -78,15 +79,46 @@ export default class HeroEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
+    const { zonePosition } = this.props;
     const { url, content } = persistedState.toJS();
-    const urlStyle = (url) ? `background-image:url(${url});background-size:cover;` : '';
+    const contentAst = HTMLParser.parse(content);
+    const wrapperStyles = [];
+    wrapperStyles.push('min-height:120px');
+    wrapperStyles.push('background-size:cover');
+    wrapperStyles.push('text-align:center');
+    if (url) {
+      wrapperStyles.push(`background-image:url(${url})`);
+    }
+    const textAttrs = {};
+    if (zonePosition.get('width')) {
+      textAttrs.style = `width:${zonePosition.get('width')}px;`;
+    }
 
-    const html = `
-      <div class="hero" style="min-height:120px;text-align:center;${urlStyle}">
-        <div class="hero-content">${content}</div>
-      </div>
-    `;
-    return html;
+    const ast = [
+      {
+        type: 'tag',
+        name: 'div',
+        voidElement: false,
+        attrs: {
+          class: 'hero',
+          style: wrapperStyles.join(';') + ';'
+        },
+        children: [
+          {
+            type: 'tag',
+            name: 'div',
+            voidElement: false,
+            attrs: {
+              class: 'hero-content',
+              ...textAttrs
+            },
+            children: contentAst
+          }
+        ]
+      }
+    ];
+
+    return HTMLParser.stringify(ast);
   }
 
   // Instance Method

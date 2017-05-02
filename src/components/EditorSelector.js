@@ -305,14 +305,15 @@ export default class EditorSelector extends React.Component {
               };
               return (
                 <a href="#"
+                  key={editor.text}
                   style={{textDecoration: 'none'}}
                   onClick={(editor.type === 'Form') ? (e) => e.preventDefault() : (e) => {
                     e.preventDefault();
                     onSelect(editor.type, editor.rows, editor.defaultAction);
                   }}
-                  key={editor.text}
                 >
                   <div
+                    className="menuItem"
                     style={style}
                     ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
                     onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
@@ -343,6 +344,7 @@ export default class EditorSelector extends React.Component {
                 };
                 return (
                   <div
+                    className="secondaryMenuItem"
                     style={style}
                     key={editor.text}
                     onMouseOver={() => this.setHover('Form', true, editor.text)}

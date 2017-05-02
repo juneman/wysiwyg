@@ -33,7 +33,7 @@ export default class TextInputEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState } = this.props;
+    const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
@@ -59,7 +59,7 @@ export default class TextInputEditor extends React.Component {
         ) : (
           <div>
             <div className="field-label">{(isRequired) ? '*' : ''} {label}</div>
-            <input type="text" className="form-control" placeholder={placeholder} disabled={true} maxLength={maxLength} />
+            <input type="text" className="form-control" data-field-id={zone.get('id')} required={isRequired} maxLength={maxLength} placeholder={placeholder} />
           </div>
         )}
       </div>
@@ -113,10 +113,10 @@ export default class TextInputEditor extends React.Component {
       ['data-field-id']: zone.get('id')
     };
     if (isRequired) {
-      inputAttrs.required = 'required';
+      inputAttrs.required = '';
     }
     if (maxLength) {
-      inputAttrs['max-length'] = maxLength;
+      inputAttrs['maxlength'] = maxLength;
     }
     if (placeholder && placeholder.length) {
       inputAttrs.placeholder = placeholder;
@@ -132,18 +132,25 @@ export default class TextInputEditor extends React.Component {
           type: 'tag',
           name: 'div',
           voidElement: false,
-          attrs: {
-            class: 'field-label'
-          },
-          children: [{
-            type: 'text',
-            content: label
-          }]
-        }, {
-          type: 'tag',
-          name: 'input',
-          attrs: inputAttrs,
-          voidElement: true
+          children: [
+            {
+              type: 'tag',
+              name: 'div',
+              voidElement: false,
+              attrs: {
+                class: 'field-label'
+              },
+              children: [{
+                type: 'text',
+                content: (isRequired) ? `* ${label}` : label
+              }]
+            }, {
+              type: 'tag',
+              name: 'input',
+              attrs: inputAttrs,
+              voidElement: true
+            }
+          ]
         }
       ]
     });

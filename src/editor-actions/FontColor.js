@@ -8,7 +8,7 @@ import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
-import SquareButton from '../icons/SquareButton';
+import FontColorButton from '../icons/FontColorButton';
 
 export default class FontColor extends React.Component {
   render() {
@@ -41,7 +41,7 @@ export default class FontColor extends React.Component {
 
     return (
       <div>
-        <SquareButton onClick={() => this.toggleDropdown()} {...buttonProps} />
+        <FontColorButton onClick={() => this.toggleDropdown()} {...buttonProps} />
         { dropdownNodes }
       </div>
     );

@@ -46,7 +46,8 @@ export default class IconButton extends React.Component {
       onMouseUp,
       isActive,
       activeColor,
-      cursor
+      cursor,
+      svg
     } = this.props;
 
     const { colorOverride } = this.state;
@@ -219,5 +220,6 @@ IconButton.propTypes = {
   onMouseUp: PropTypes.func,
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
-  isActive: PropTypes.bool
+  isActive: PropTypes.bool,
+  svg: PropTypes.element
 };

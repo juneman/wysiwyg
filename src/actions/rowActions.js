@@ -14,13 +14,6 @@ export function addRows(rows) {
   };
 }
 
-export function updateRow(row) {
-  return {
-    type: Actions.ROWS_UPDATE_ONE,
-    row
-  };
-}
-
 export function replaceRows(rows, activeZoneId) {
   return {
     type: Actions.ROWS_REPLACE_ALL,

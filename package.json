@@ -4,8 +4,9 @@
   "description": "Appcues Editor",
   "main": "lib/index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc mocha --recursive test",
-    "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --recursive test",
+    "test": "NODE_ENV=test nyc mocha --reporter=dot",
+    "test-only": "NODE_ENV=test mocha --reporter=spec",
+    "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --reporter=dot",
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
@@ -49,6 +50,7 @@
     "babel-register": "^6.24.0",
     "chai": "^3.5.0",
     "chai-enzyme": "^0.6.1",
+    "chai-immutable": "^1.6.0",
     "enzyme": "^2.8.1",
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
@@ -60,10 +62,16 @@
     "react-dom": "^15.5.4",
     "react-test-renderer": "^15.5.4",
     "redux-devtools-extension": "^2.13.0",
+    "redux-mock-store": "^1.2.3",
+    "sinon": "^2.2.0",
+    "sinon-chai": "^2.10.0",
     "webpack": "^2.3.3",
     "webpack-dev-server": "^2.4.2"
   },
   "nyc": {
+    "require": [
+      "babel-register"
+    ],
     "sourceMap": false,
     "instrument": false
   }

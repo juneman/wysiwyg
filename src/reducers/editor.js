@@ -28,6 +28,10 @@ const initialState = fromJS({
 export default function editorSelector(state = initialState, action) {
   let newState = state;
 
+  if (!action || !action.type) {
+    return newState;
+  }
+
   switch(action.type) {
     case Actions.EDITOR_BROWSER_RESIZE:
       newState = newState.set('screenSize', Map({

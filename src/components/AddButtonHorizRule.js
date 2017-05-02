@@ -44,7 +44,7 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     return (
-      <div>
+      <div className="add-row">
         <div style={{textAlign: 'center', zIndex: 10}} ref={(el) => this.wrapper = el}>
           <a
             href="#"

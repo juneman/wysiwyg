@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
+import HTMLParser from 'html-parse-stringify2';
 import { placeholderStyle } from '../../helpers/styles/editor';
 import ImageUploader from '../../components/ImageUploader';
 
@@ -55,16 +56,52 @@ export default class ImageEditor extends React.Component {
       return '';
     }
 
-    const style = (textAlign) ? ` style="text-align:${textAlign}"` : '';
+    const wrapperAttrs = {
+      class: 'image'
+    };
+    if (textAlign) {
+      wrapperAttrs.style = `text-align:${textAlign};`;
+    }
+    const imageAttrs = {};
+    if (height || heightOverride) {
+      imageAttrs.height = heightOverride || height;
+    }
+    if (width || widthOverride) {
+      imageAttrs.width = widthOverride || width;
+    }
 
-    const html = `
-      <div class="image"${style}>
-        ${(href) ? `<a href="${href}" target="${(isNewWindow) ? '_blank' : '_self'}">` : ''}
-        <img src="${url}" height="${heightOverride || height}" width="${widthOverride || width}" />
-        ${(href) ? '</a>' : ''}
-      </div>
-    `;
-    return html;
+    const imageAst = {
+      type: 'tag',
+      name: 'img',
+      voidElement: true,
+      attrs: {
+        src: url,
+        ...imageAttrs
+      }
+    };
+
+    const linkAst = {
+      type: 'tag',
+      name: 'a',
+      voidElement: false,
+      attrs: {
+        href,
+        target: (isNewWindow) ? '_blank' : '_self'
+      },
+      children: [imageAst]
+    };
+
+    const ast = [
+      {
+        type: 'tag',
+        name: 'div',
+        attrs: wrapperAttrs,
+        voidElement: false,
+        children: [(href) ? linkAst : imageAst]
+      }
+    ];
+
+    return HTMLParser.stringify(ast);
   }
 
   // Instance Method

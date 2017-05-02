@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
 import { textInputStyle } from '../../helpers/styles/editor';
@@ -41,6 +42,7 @@ export default class SelectionEditor extends React.Component {
     const options = persistedState.get('options') || [];
     const optionString = (localState.get('options')) || options.join('\n') || '';
     const fieldType = persistedState.get('fieldType') || 'radio';
+    const isRequired = persistedState.get('isRequired') || false;
 
     const placeholder = (`Place each option on a new line, e.g.
       Apples
@@ -49,7 +51,7 @@ export default class SelectionEditor extends React.Component {
 
     const dropdownNodes = (
       <div>
-        <select className="form-control">
+        <select className="form-control" required={isRequired}>
           { options.map((option) => {
             return (
               <option key={option}>{option}</option>
@@ -141,29 +143,102 @@ export default class SelectionEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const label = persistedState.get('label') || '';
-    const options = persistedState.get('options') || [];
-    const isRequired = persistedState.get('isRequired') || false;
-    const isMultiselect = persistedState.get('isMultiselect') || false;
+    const { label = '', options = [], isRequired = false, fieldType = 'radio' } = persistedState.toJS();
 
-    const inputType = (isMultiselect) ? 'checkbox' : 'radio';
-    const requiredAttr = (isRequired) ? 'required="required"' : '';
+    const requiredAttr = {};
+    if (isRequired) {
+      requiredAttr.required = '';
+    }
 
-    const optionsHtml = options.map((option) => {
-      return `
-        <div>
-          <input type="${inputType}" ${requiredAttr} />
-          <label>${option}</label>
-        </div>
-      `;
-    }).join('\n');
+    const radioChildren = options.map((option) => {
+      return {
+        type: 'tag',
+        name: 'div',
+        voidElement: false,
+        children: [
+          {
+            type: 'tag',
+            name: 'input',
+            voidElement: true,
+            attrs: {
+              type: fieldType,
+              ...requiredAttr
+            }
+          },
+          {
+            type: 'tag',
+            name: 'label',
+            voidElement: false,
+            children: [{
+              type: 'text',
+              content: option
+            }]
+          }
+        ]
+      };
+    });
 
-    return `
-      <div>
-        <label>${label}</label>
-        ${optionsHtml}
-      </div>
-    `;
+    const dropdownChildren = [
+      {
+        type: 'tag',
+        name: 'select',
+        voidElement: false,
+        attrs: {
+          class: 'form-control',
+          ...requiredAttr
+        },
+        children: options.map((option) => {
+          return {
+            type: 'tag',
+            name: 'option',
+            voidElement: false,
+            children: [
+              {
+                type: 'text',
+                content: option
+              }
+            ]
+          };
+        })
+      }
+    ];
+    
+    const optionsChildren = (fieldType === 'dropdown') ? dropdownChildren : radioChildren;
+
+    const ast = [];
+    ast.push({
+      type: 'tag',
+      name: 'div',
+      voidElement: false,
+      children: [
+        {
+          type: 'tag',
+          name: 'div',
+          voidElement: false,
+          children: [
+            {
+              type: 'tag',
+              name: 'label',
+              voidElement: false,
+              children: [
+                {
+                  type: 'text',
+                  content: label
+                }
+              ]
+            },
+            {
+              type: 'tag',
+              name: 'div',
+              voidElement: false,
+              children: optionsChildren
+            }
+          ]
+        }
+      ]
+    });
+
+    return HTMLParser.stringify(ast);
   }
 
 }

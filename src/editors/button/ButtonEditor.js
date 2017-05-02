@@ -35,13 +35,13 @@ export default class ButtonEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState } = this.props;
+    const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
     const content = (persistedState.get('content')) || '<p>Button Text</p>';
     const { textAlign, className } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
-    const classNameString = (className && className.length) ? className : '';
+    const classNameString = (className && className.length) ? ' ' + className : '';
 
     const containerStyle = {};
     if (textAlign) {
@@ -69,7 +69,13 @@ export default class ButtonEditor extends React.Component {
             </div>
           ) : null
         ) : (
-          <button className={`btn ${classNameString}`} style={buttonStyle} disabled>
+          <button
+            className={`btn${classNameString}`}
+            style={buttonStyle}
+            disabled={true}
+            data-field-id={zone.get('id')}
+            value={striptags(content)}
+          >
             <span
               dangerouslySetInnerHTML={{__html: content}}
             />
@@ -143,7 +149,14 @@ export default class ButtonEditor extends React.Component {
           name: (href) ? 'a' : 'button',
           voidElement: false,
           attrs: buttonAttrs,
-          children: contentAst
+          children: [
+            {
+              type: 'tag',
+              name: 'span',
+              voidElement: false,
+              children: contentAst
+            }
+          ]
         }
       ]
     });

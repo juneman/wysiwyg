@@ -89,7 +89,9 @@ export default class ButtonStyles extends React.Component {
   }
 
   handleSave(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     let newPersistedState = persistedState;

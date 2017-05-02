@@ -97,7 +97,9 @@ export default class Hyperlink extends React.Component {
   }
 
   handleSave(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const { onChange, onToggleActive } = this.props;
     const { isNewWindow, href } = this.state;
 

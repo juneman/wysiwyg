@@ -75,8 +75,11 @@ export default class ButtonAction extends React.Component {
   }
 
   handleSave(e) {
+    this.handleAction(e.target.value && e.target.value.length ? e.target.value : null);
+  }
+
+  handleAction(value) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const value = (e.target.value.length) ? e.target.value : null;
 
     const newPersistedState = persistedState
       .set('buttonAction', value)

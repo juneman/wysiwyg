@@ -6,9 +6,13 @@ export default function rows(state = List(), action) {
   let rowIndex;
   let sourceRow;
 
+  if (!action) {
+    return newState;
+  }
+
   switch (action.type) {
     case Actions.ROWS_ADD_ONE:
-      newState = addManyRows([action.row]);
+      newState = addManyRows(newState, List([action.row]));
       break;
     case Actions.ROWS_ADD_MANY:
       newState = addManyRows(newState, action.rows);
@@ -22,8 +26,6 @@ export default function rows(state = List(), action) {
         break;
       }
       newState = newState.splice(rowIndex, 1);
-      break;
-    case Actions.ROWS_UPDATE_ONE:
       break;
     case Actions.EDITOR_UPDATE_ZONE:
       newState = newState

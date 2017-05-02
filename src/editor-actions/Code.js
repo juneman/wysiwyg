@@ -95,7 +95,9 @@ export default class Code extends React.Component {
   }
 
   handleSave(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const { localState, persistedState, onChange, onToggleActive, sanitizeHtmlConfig } = this.props;
     const { content } = this.state;
 

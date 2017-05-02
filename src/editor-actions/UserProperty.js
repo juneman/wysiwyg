@@ -64,6 +64,10 @@ export default class UserProperty extends React.Component {
   handleSave(e) {
     e.preventDefault();
     const value = e.target.value;
+    this.handleSetValue(value);
+  }
+
+  handleSetValue(value) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     const editorState = localState.get('editorState');

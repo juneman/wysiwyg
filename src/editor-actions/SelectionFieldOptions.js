@@ -110,7 +110,9 @@ export default class SelectFieldOptions extends React.Component {
   }
 
   handleSave(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isRequired, fieldType } = this.state;
 
