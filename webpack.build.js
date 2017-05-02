@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.js',
@@ -8,6 +9,10 @@ module.exports = {
     filename: 'index.js',
     library: 'WysiwygEditor',
     libraryTarget: 'var'
+  },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
   },
   module: {
     loaders: [
