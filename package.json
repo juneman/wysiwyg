@@ -2,7 +2,7 @@
   "name": "appcues-editor",
   "version": "1.0.0",
   "description": "Appcues Editor",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --recursive test",
     "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --recursive test",
