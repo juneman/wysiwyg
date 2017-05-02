@@ -2,13 +2,14 @@
   "name": "appcues-editor",
   "version": "1.0.0",
   "description": "Appcues Editor",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --recursive test",
     "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --recursive test",
     "lint": "eslint .",
     "posttest": "npm run lint",
-    "dev": "webpack-dev-server --content-base demo/"
+    "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
+    "build": "webpack --config webpack.build.js"
   },
   "author": "Michael Cox",
   "license": "UNLICENSED",

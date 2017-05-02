@@ -1,0 +1,18 @@
+{
+  "name": "appcues-editor",
+  "description": "Appcues Editor",
+  "main": "dist/index.js",
+  "authors": [
+    "Michael Cox"
+  ],
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/appcues/wysiwyg",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
