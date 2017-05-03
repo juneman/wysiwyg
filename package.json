@@ -1,15 +1,17 @@
 {
-  "name": "appcues-editor",
+  "name": "wysiwyg",
   "version": "1.0.0",
   "description": "Appcues Editor",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --recursive test",
     "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --recursive test",
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
-    "build": "webpack --config webpack.build.js"
+    "build": "webpack --config webpack.build.js",
+    "clean": "rm -rf lib && mkdir lib",
+    "lib": "npm run clean && babel src -d lib"
   },
   "author": "Michael Cox",
   "license": "UNLICENSED",
@@ -20,12 +22,10 @@
     "html-parse-stringify2": "^1.2.1",
     "immutable": "^3.8.1",
     "prop-types": "^15.5.8",
-    "react": "^15.5.4",
     "react-ace": "^4.2.1",
     "react-color": "^2.11.4",
     "react-dnd": "^2.3.0",
     "react-dnd-html5-backend": "^2.3.0",
-    "react-dom": "^15.5.4",
     "react-dropzone": "^3.12.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
@@ -34,7 +34,12 @@
     "striptags": "^3.0.1",
     "uuid": "^3.0.1"
   },
+  "peerDependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.1",
     "babel-loader": "^6.4.1",
@@ -52,6 +57,8 @@
     "mocha": "^3.2.0",
     "nyc": "^10.2.0",
     "path": "^0.12.7",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "react-test-renderer": "^15.5.4",
     "redux-devtools-extension": "^2.13.0",
     "webpack": "^2.3.3",

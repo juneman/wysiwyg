@@ -9,14 +9,9 @@ module.exports = {
     library: 'WysiwygEditor',
     libraryTarget: 'umd'
   },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
-  },
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-      { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]
   }
 };
