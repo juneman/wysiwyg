@@ -48,7 +48,8 @@ export class Row extends React.Component {
 
     const moveButtonStyle = {
       position: 'absolute',
-      left: (position.get('left')) ? position.get('left') - 30 : null
+      left: -30,
+      top: 0
     };
 
     const moveButton = (showMoveButton) ? (
@@ -62,6 +63,7 @@ export class Row extends React.Component {
     ) : null;
 
     const gridStyle = {
+      position: 'relative',
       gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
     };
 

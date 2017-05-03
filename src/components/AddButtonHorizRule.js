@@ -16,7 +16,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.state = {
       addButtonPosition: Map(),
-      wrapper: Map()
+      position: Map()
     };
   }
 
@@ -29,15 +29,16 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   render() {
-    const { wrapper } = this.state;
-
     const hrStyle = {
-      width: (wrapper.get('width')) ? wrapper.get('width') : 100,
+      width: '100%',
       height: 1,
-      position: 'absolute',
-      top: (wrapper.get('top')) ? wrapper.get('top') + 16 : null,
-      left: (wrapper.get('left')) ? wrapper.get('left') : null,
+      border: 0,
+      position: 'relative',
+      top: -20,
+      left: 0,
       zIndex: 2,
+      padding: 0,
+      margin: 0,
       backgroundColor: '#7cf4b1',
       backgroundImage: 'linear-gradient(to right, #b8f9d5, #7cf4b1, #b8f9d5)'
     };
@@ -51,8 +52,8 @@ export default class AddButtonHorizRule extends React.Component {
             onClick={(e) => this.handleAddNew(e)}
             ref={(el) => this.addButton = el}
           ><AddButton shadow={true} /></a>
+          <hr style={hrStyle} />
         </div>
-        <hr style={hrStyle} />
       </div>
     );
   }
@@ -63,21 +64,11 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   setBoundingBox() {
-    const update = {};
     if (this.addButton) {
       const addButtonPosition = convertBoundingBox(this.addButton.getBoundingClientRect());
       if (!addButtonPosition.equals(this.state.addButtonPosition)) {
-        update.addButtonPosition = addButtonPosition;
+        this.setState({addButtonPosition});
       }
-    }
-    if (this.wrapper) {
-      const wrapper = convertBoundingBox(this.wrapper.getBoundingClientRect());
-      if (!wrapper.equals(this.state.wrapper)) {
-        update.wrapper = wrapper;
-      }
-    }
-    if (Object.keys(update).length) {
-      this.setState(update);
     }
   }
 }

@@ -198,6 +198,7 @@ export class Zone extends React.Component {
         <div className="zone" style={zoneStyle}>
           <EditorWrapper
             rowPosition={rowPosition}
+            zonePosition={position}
             isEditing={isEditing}
             isHover={isHover}
             disableDeleteButton={disableAddButton}

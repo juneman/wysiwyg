@@ -38,6 +38,7 @@ export default class EditorWrapper extends React.Component {
       isHover,
       children,
       rowPosition,
+      zonePosition,
       toolbarNode,
       onSave,
       onCancel,
@@ -46,29 +47,39 @@ export default class EditorWrapper extends React.Component {
       disableDeleteButton
     } = this.props;
 
+    const { height: rowHeight = 0 } = rowPosition.toJS();
+    const { height: zoneHeight = 0 } = zonePosition.toJS();
+    const { width: posWidth = 0 } = position.toJS();
+    const { width: toolbarWidth = 0 } = toolbarPosition.toJS();
+
     const hoverButtonStyles = {
-      textAlign: 'center',
       position: 'absolute',
-      width: position.get('width') || 100,
-      top: position.get('top'),
+      width: posWidth,
+      height: zoneHeight,
+      top: 0,
+      left: 0,
       zIndex: 100
+    };
+
+    const innerButtonStyle = {
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
     };
 
     const editingButtonStyles = {
       position: 'absolute',
-      left: (rowPosition && rowPosition.get('right')) ? rowPosition.get('right') - 150 : 0,
-      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') : 0
+      left: toolbarWidth + 20,
+      top: rowHeight + 10,
+      whiteSpace: 'nowrap'
     };
-    
-    // If the canvas is really small, make sure the buttons don't overlap the toolbar
-    if (toolbarPosition.get('left') && editingButtonStyles.left < (toolbarPosition.get('left') + toolbarPosition.get('width'))) {
-      editingButtonStyles.left = toolbarPosition.get('left') + toolbarPosition.get('width') + 20;
-    }
 
     const toolbarStyles = {
       position: 'absolute',
-      left: (rowPosition && rowPosition.get('left')) ? rowPosition.get('left') : 0,
-      top: (rowPosition && rowPosition.get('bottom')) ? rowPosition.get('bottom') : 0
+      left: 0,
+      top: rowHeight + 10,
+      zIndex: 100
     };
 
     let buttons;
@@ -91,13 +102,15 @@ export default class EditorWrapper extends React.Component {
       );
     } else if (isHover) {
       buttons = (
-        <div className="hover">
-          <div key="edit" style={hoverButtonStyles}>
-            <EditButton
-              shadow={true}
-              color="#f4ad42"
-              onClick={() => onEdit()}
-            />
+        <div className="hover" style={{position: 'relative'}}>
+          <div style={hoverButtonStyles}>
+            <div style={innerButtonStyle}>
+              <EditButton
+                shadow={true}
+                color="#f4ad42"
+                onClick={() => onEdit()}
+              />
+            </div>
           </div>
           {children}
         </div>
@@ -140,6 +153,7 @@ EditorWrapper.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   rowPosition: PropTypes.instanceOf(Map).isRequired,
+  zonePosition: PropTypes.instanceOf(Map).isRequired,
   toolbarNode: PropTypes.node,
   disableDeleteButton: PropTypes.bool
 };

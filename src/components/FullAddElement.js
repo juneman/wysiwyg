@@ -40,7 +40,8 @@ export default class FullAddElement extends React.Component {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      height: height - 4
+      minHeight: (height) ? height - 4 : null,
+      position: 'relative'
     };
 
     const centeredContainer = {

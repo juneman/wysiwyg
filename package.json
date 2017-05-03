@@ -9,9 +9,8 @@
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
-    "build": "webpack --config webpack.build.js",
-    "clean": "rm -rf lib && mkdir lib",
-    "lib": "npm run clean && babel src -d lib"
+    "build": "npm run clean && babel src -d lib && webpack --config webpack.build.js",
+    "clean": "rm -rf lib && mkdir lib"
   },
   "author": "Michael Cox",
   "license": "UNLICENSED",

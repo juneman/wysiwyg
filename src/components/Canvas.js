@@ -104,8 +104,12 @@ export class Canvas extends React.Component {
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
-      padding: (internalRows.size) ? '3px 0' : null
+      position: 'relative',
+      padding: (internalRows.size) ? '3px 0' : null,
+      fontFamily: 'Sans-Serif'
     }, style);
+
+    const { height: canvasHeight } = canvasPosition.toJS();
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
@@ -126,7 +130,7 @@ export class Canvas extends React.Component {
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
-        height={(canvasPosition.get('height') ? canvasPosition.get('height') : null)}
+        height={canvasHeight}
         onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
       />
@@ -134,6 +138,7 @@ export class Canvas extends React.Component {
 
     const editorSelectorNode = showEditorSelector ? (
       <EditorSelector
+        canvasPosition={canvasPosition}
         addButtonPosition={addButtonPosition}
         screenSize={screenSize}
         allowedEditorTypes={internalAllowedEditorTypes}
