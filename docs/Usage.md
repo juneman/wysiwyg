@@ -58,6 +58,7 @@ Styling for the WYSIWYG editor is in 3 separate areas:
 | `userProperties` | `false` | `Array<k,v>` | - |
 | `disableAddButton` | `false` | `Boolean` | `false` |
 | `startEditable` | `false` | `Boolean` | `false` |
+| `maxRows` | `false` | `Number` | Unlimited |
 | `aceEditorConfig` | `false` | `Object` | See below |
 | `allowedEditorTypes` | `false` | `Array<string>` | All Values Allowed |
 

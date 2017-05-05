@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 import ImageUploader from './ImageUploader';
+import AddButtonHorizRule from './AddButtonHorizRule';
 import AddButton from '../icons/AddButton';
 
 /**
@@ -30,7 +31,7 @@ export default class FullAddElement extends React.Component {
   }
 
   render() {
-    const { height } = this.props;
+    const { height, allowedEditorTypes } = this.props;
 
     const fullScreenStyles = {
       backgroundColor: '#dafeea',
@@ -53,25 +54,33 @@ export default class FullAddElement extends React.Component {
     };
 
     return (
-      <div className="full-add" style={centeredContainer}>
-        <ImageUploader
-          disableClick={true}
-          onUpload={(imageDetails) => this.props.onUpload(imageDetails)}
-        >
-          <a href="#" style={{textDecoration: 'none'}} id="addBtn" onClick={(e) => this.handleAddNew(e)}>
-            <div>
-              <div style={fullScreenStyles}>
-                <div style={{textAlign: 'center'}}>
-                  <span style={{width: 30}} ref={(addButton) => this.addButton = addButton}><AddButton shadow={true} /></span>
-                  <div style={{color: '#00b84f'}}>
-                    <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
-                    <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
+      <div>
+        { (allowedEditorTypes.isEmpty() || allowedEditorTypes.includes("Image")) ? (
+          <div className="full-add" style={centeredContainer}>
+            <ImageUploader
+              disableClick={true}
+              onUpload={(imageDetails) => this.props.onUpload(imageDetails)}
+            >
+              <a href="#" style={{textDecoration: 'none'}} id="addBtn" onClick={(e) => this.handleAddNew(e)}>
+                <div>
+                  <div style={fullScreenStyles}>
+                    <div style={{textAlign: 'center'}}>
+                      <span style={{width: 30}} ref={(addButton) => this.addButton = addButton}><AddButton shadow={true} /></span>
+                      <div style={{color: '#00b84f'}}>
+                        <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
+                        <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </a>
-        </ImageUploader>
+              </a>
+            </ImageUploader>
+          </div>
+        ): (
+          <AddButtonHorizRule
+            onClick={(addButtonPosition) => this.props.onClickAdd(addButtonPosition)}
+          />
+        )}
       </div>
     );
   }
@@ -95,5 +104,6 @@ export default class FullAddElement extends React.Component {
 FullAddElement.propTypes = {
   onClickAdd: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
-  height: PropTypes.number
+  height: PropTypes.number,
+  allowedEditorTypes: PropTypes.instanceOf(List).isRequired
 };

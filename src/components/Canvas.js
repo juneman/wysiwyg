@@ -107,7 +107,8 @@ export class Canvas extends React.Component {
       screenSize,
       canvasPosition,
       style,
-      internalAllowedEditorTypes
+      internalAllowedEditorTypes,
+      allowedEditorTypes
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
@@ -129,6 +130,7 @@ export class Canvas extends React.Component {
       ): (
         <FullAddElement
           key={row.get('id')}
+          allowedEditorTypes={allowedEditorTypes}
           onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         />
@@ -138,6 +140,7 @@ export class Canvas extends React.Component {
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
         height={canvasHeight}
+        allowedEditorTypes={allowedEditorTypes}
         onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
       />
@@ -342,7 +345,8 @@ Canvas.propTypes = {
   screenSize: PropTypes.instanceOf(Map).isRequired,
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
-  disableAddButton: PropTypes.bool
+  disableAddButton: PropTypes.bool,
+  maxRows: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
@@ -367,7 +371,8 @@ function mapStateToProps(state, ownProps) {
     screenSize: state.editor.get('screenSize'),
     addButtonPosition: state.editorSelector.get('addButtonPosition'),
 
-    showAddButton: !state.editor.get('disableAddButton')
+    showAddButton: (!ownProps.maxRows || ownProps.maxRows < state.rows.size)
+     && !state.editor.get('disableAddButton')
      && !state.editor.get('isCanvasInEditMode')
      && state.rows.size
      && (state.rows.every((row) => row.get('zones') && row.get('zones').size))

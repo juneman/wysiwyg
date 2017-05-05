@@ -131,7 +131,6 @@
           />, document.getElementById('simple')
         )
 
-        /*
         // Render Editor Tooltip
         ReactDOM.render(
           <WysiwygEditor
@@ -143,8 +142,7 @@
             cloudinary={CLOUDINARY}
             userProperties={USER_PROPERTIES}
             startEditable={true}
-            disableAddButton={true}
-            allowedEditorTypes={["Text"]}
+            allowedEditorTypes={["Text", "HTML"]}
             rows={
               [{
                 id: '123',
@@ -159,9 +157,9 @@
                 ]
               }]
             }
+            maxRows={1}
           />, document.getElementById('tooltip')
         )
-        */
 
       }(WysiwygEditor.default));
     </script>

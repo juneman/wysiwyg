@@ -66,4 +66,5 @@ WysiwygEditor.propTypes = {
   closeAll: PropTypes.bool,
   disableAddButton: PropTypes.bool,
   allowedEditorTypes: PropTypes.array,
+  maxRows: PropTypes.number
 };
