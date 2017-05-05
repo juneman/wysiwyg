@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class FileUploadButton extends React.Component {
+export default class FileUploadButton extends React.PureComponent {
   render() {
     return (
       <IconButton

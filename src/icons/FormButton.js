@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class FormButton extends React.Component {
+export default class FormButton extends React.PureComponent {
   render() {
     return (
       <IconButton

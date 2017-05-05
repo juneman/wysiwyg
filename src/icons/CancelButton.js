@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class CancelButton extends React.Component {
+export default class CancelButton extends React.PureComponent {
   render() {
     return (
       <IconButton

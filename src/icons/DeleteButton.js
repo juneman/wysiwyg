@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class DeleteButton extends React.Component {
+export default class DeleteButton extends React.PureComponent {
   render() {
     return (
       <IconButton

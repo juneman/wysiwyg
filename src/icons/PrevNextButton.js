@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class PrevNextButton extends React.Component {
+export default class PrevNextButton extends React.PureComponent {
   render() {
     return (
       <IconButton

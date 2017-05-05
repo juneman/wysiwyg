@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class VerticalLine extends React.Component {
+export default class VerticalLine extends React.PureComponent {
   render() {
     return (
       <IconButton

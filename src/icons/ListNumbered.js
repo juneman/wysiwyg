@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class ListNumbered extends React.Component {
+export default class ListNumbered extends React.PureComponent {
   render() {
     return (
       <IconButton

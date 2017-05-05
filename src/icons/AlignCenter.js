@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class AlignCenter extends React.Component {
+export default class AlignCenter extends React.PureComponent {
   render() {
     return (
       <IconButton
