@@ -56,6 +56,7 @@ export default class HeroEditor extends React.Component {
           (editorState) ? (
             <div style={textStyle}>
               <Editor
+                ref={(editor) => this.editor = editor}
                 editorState={editorState}
                 customStyleFn={customStyleFn}
                 blockStyleFn={blockStyleFn}
@@ -86,6 +87,16 @@ export default class HeroEditor extends React.Component {
       </div>
     `;
     return html;
+  }
+
+  // Instance Method
+  focus() {
+    // Wait to steal the focus until the next event loop
+    setTimeout(() => {
+      if (this.editor) {
+        this.editor.focus();
+      }
+    }, 0);
   }
 
   handleEditorStateChange(editorState) {

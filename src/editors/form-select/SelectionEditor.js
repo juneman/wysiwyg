@@ -79,6 +79,7 @@ export default class SelectionEditor extends React.Component {
             <label>
               { (editorState) ? (
                 <Editor
+                  ref={(editor) => this.editor = editor}
                   editorState={editorState}
                   onChange={(editorState) => this.handleEditorStateChange(editorState)}
                 />
@@ -94,6 +95,16 @@ export default class SelectionEditor extends React.Component {
         )}
       </div>
     );
+  }
+  
+  // Instance Method
+  focus() {
+    // Wait to steal the focus until the next event loop
+    setTimeout(() => {
+      if (this.editor) {
+        this.editor.focus();
+      }
+    }, 0);
   }
 
   handleEditorStateChange(editorState) {

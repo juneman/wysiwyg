@@ -67,6 +67,11 @@ export default class ImageEditor extends React.Component {
     return html;
   }
 
+  // Instance Method
+  focus() {
+    // Do nothing for this editor
+  }
+
   handleUpload(imageDetails) {
     const { url, height, width } = imageDetails;
     const { localState, persistedState, onChange, canvasPosition } = this.props;

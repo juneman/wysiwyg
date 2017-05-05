@@ -24,6 +24,11 @@ export default class HtmlEditor extends React.Component {
     );
   }
 
+  // Instance Method
+  focus() {
+    // Do nothing for this editor
+  }
+
   handleEditorStateChange(editorState) {
     const { persistedState, localState, onChange } = this.props;
     const content = editorState.getCurrentContent().getPlainText();

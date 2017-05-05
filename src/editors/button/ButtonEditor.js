@@ -60,6 +60,7 @@ export default class ButtonEditor extends React.Component {
           (editorState) ? (
             <div className="btn" style={{display: 'inline-block', ...buttonStyle}}>
             <Editor
+              ref={(editor) => this.editor = editor}
               editorState={editorState}
               customStyleFn={customStyleFn}
               blockStyleFn={blockStyleFn}
@@ -76,6 +77,16 @@ export default class ButtonEditor extends React.Component {
         )}
       </div>
     );
+  }
+
+  // Instance Method
+  focus() {
+    // Wait to steal the focus until the next event loop
+    setTimeout(() => {
+      if (this.editor) {
+        this.editor.focus();
+      }
+    }, 0);
   }
 
   handleEditorStateChange(editorState) {

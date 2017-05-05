@@ -194,6 +194,7 @@ export class Zone extends React.Component {
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
         ref={(el) => this.wrapper = el}
+        onClick={() => this.setFocus()}
       >
         <div className="zone" style={zoneStyle}>
           <EditorWrapper
@@ -222,6 +223,16 @@ export class Zone extends React.Component {
         </div>
       </div>
     );
+  }
+
+  setFocus() {
+    // The idea here is to reset the focus to the Draft Editor in most cases
+    // except when the user has clicked on an input element, which needs to
+    // maintain the focus in order to be usable.
+    const isFocusableElement = ['SELECT', 'INPUT'].includes(document.activeElement.tagName);
+    if(this.activeEditor && !isFocusableElement) {
+      this.activeEditor.focus();
+    }
   }
 
   toggleHover(isOver) {
