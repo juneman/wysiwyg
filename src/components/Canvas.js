@@ -36,7 +36,8 @@ export class Canvas extends React.Component {
       userProperties,
       allowedEditorTypes,
       sanitizeHtml,
-      disableAddButton
+      disableAddButton,
+      aceEditorConfig
     } = this.props;
 
     this.setBoundingBox();
@@ -58,6 +59,9 @@ export class Canvas extends React.Component {
     }
     if (sanitizeHtml && !sanitizeHtml.isEmpty()) {
       dispatch(editorActions.setSanitizeHtmlConfig(sanitizeHtml));
+    }
+    if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
+      dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
   }
 
@@ -88,6 +92,9 @@ export class Canvas extends React.Component {
     }
     if (!nextProps.sanitizeHtml.isEmpty() && !is(nextProps.sanitizeHtml, this.props.sanitizeHtml)) {
       dispatch(editorActions.setSanitizeHtmlConfig(nextProps.sanitizeHtml));
+    }
+    if (!nextProps.aceEditorConfig.isEmpty() && !is(nextProps.aceEditorConfig, this.props.aceEditorConfig)) {
+      dispatch(editorActions.setAceEditorConfig(nextProps.aceEditorConfig));
     }
   }
 
@@ -122,7 +129,7 @@ export class Canvas extends React.Component {
       ): (
         <FullAddElement
           key={row.get('id')}
-          onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+          onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         />
       );
@@ -131,7 +138,7 @@ export class Canvas extends React.Component {
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
         height={canvasHeight}
-        onClickAdd={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+        onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
       />
     ) : null;
@@ -148,7 +155,7 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
-        onClick={(addButtonPosition) => this.showEditorSelector(addButtonPosition)}
+        onClick={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
       />
     ) : null;
 
@@ -239,8 +246,13 @@ export class Canvas extends React.Component {
     this.props.dispatch(rowActions.removeRow(id));
   }
 
-  showEditorSelector(addButtonPosition) {
-    this.props.dispatch(editorSelectorActions.show(addButtonPosition));
+  toggleEditorSelector(addButtonPosition) {
+    const { showEditorSelector } = this.props;
+    if (showEditorSelector) {
+      this.props.dispatch(editorSelectorActions.hide());
+    } else {
+      this.props.dispatch(editorSelectorActions.show(addButtonPosition));
+    }
   }
 
   moveRows(sourceIndex, targetIndex) {
@@ -323,6 +335,7 @@ Canvas.propTypes = {
   internalSanitizeHtml: PropTypes.instanceOf(Map).isRequired,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
+  aceEditorConfig: PropTypes.instanceOf(Map),
   showEditorSelector: PropTypes.bool.isRequired,
   addButtonPosition: PropTypes.instanceOf(Map).isRequired,
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
@@ -340,6 +353,7 @@ function mapStateToProps(state, ownProps) {
     userProperties: (ownProps.userProperties && ownProps.userProperties.length) ? fromJS(ownProps.userProperties) : List(),
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
+    aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
     
     // Internal mappings of the above properties
     internalCloudinary: state.editor.get('cloudinary'),

@@ -37,7 +37,7 @@ export default class Code extends React.Component {
   }
 
   render() {
-    const { persistedState, title, isActive } = this.props;
+    const { persistedState, title, isActive, aceEditorConfig } = this.props;
     const content = persistedState.get('content');
 
     const buttonProps = getButtonProps(isActive);
@@ -46,28 +46,33 @@ export default class Code extends React.Component {
       position: 'absolute',
       top: 45,
       left: 0,
-      width: 600,
-      height: 410,
       padding: 10
     };
 
     const titleStyles = secondaryMenuTitleStyle;
 
+    const aceEditorProps = Object.assign({}, {
+      name: 'code-editor',
+      editorProps: { $blockScrolling: true },
+      showGutter: false,
+      showPrintMargin: false,
+      width: '400px',
+      height: '150px'
+    },
+      aceEditorConfig.toJS(), // Let the user override items above
+    {
+      mode: 'html',
+      theme: 'github',
+      onChange: (content) => this.setState({content}),
+      focus: true,
+      defaultValue: content
+    });
+
     const dropdownNodes = isActive ? (
-      <Menu style={dropdownStyles}>
+      <Menu style={dropdownStyles} className="html-menu">
         <div style={titleStyles}>{title}</div>
         <AceEditor
-          mode="html"
-          onChange={(content) => this.setState({content})}
-          name="code-editor"
-          theme="github"
-          editorProps={{$blockScrolling: true}}
-          width="595px"
-          height="330px"
-          showGutter={false}
-          showPrintMargin={false}
-          focus={true}
-          defaultValue={content}
+          { ...aceEditorProps }
         />
 
         <div style={{textAlign: 'right', marginTop: 10}}>
@@ -114,5 +119,6 @@ Code.propTypes = {
   title: PropTypes.string.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  sanitizeHtmlConfig: PropTypes.instanceOf(Map)
+  sanitizeHtmlConfig: PropTypes.instanceOf(Map),
+  aceEditorConfig: PropTypes.instanceOf(Map).isRequired
 };

@@ -121,6 +121,7 @@
         // Render Editor Modal
         ReactDOM.render(
           <WysiwygEditor
+            ref={(el) => window.wysiwyg = el}
             onSave={(content) => displayOutput('simple', content) }
             cloudinary={CLOUDINARY}
             userProperties={USER_PROPERTIES}

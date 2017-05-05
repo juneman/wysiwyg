@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 export default class Menu extends React.Component {
 
   render() {
-    const { style, children } = this.props;
+    const { style, className, children } = this.props;
 
     const menuStyles = Object.assign({}, {
       backgroundColor: '#F6F6F6',
@@ -19,7 +19,7 @@ export default class Menu extends React.Component {
     }, style);
 
     return (
-      <div style={menuStyles}>
+      <div style={menuStyles} className={className}>
         { children }
       </div>
     );
@@ -32,5 +32,6 @@ Menu.propTypes = {
     PropTypes.array,
     PropTypes.element
   ]).isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  className: PropTypes.string
 };

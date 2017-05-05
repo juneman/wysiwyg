@@ -20,6 +20,7 @@ export default function editorSelector(state = initialState, action) {
         .set('isOpen', true)
         .set('addButtonPosition', action.addButtonPosition);
       break;
+    case Actions.EDITOR_SETTINGS_SET_CLOSE_ALL:
     case Actions.EDITOR_SELECTOR_HIDE:
       newState = newState.set('isOpen', false);
       break;

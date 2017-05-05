@@ -42,6 +42,9 @@ export default class WysiwygEditor extends React.Component {
       </Provider>
     );
   }
+  closeAll() {
+    this.store.dispatch(editorActions.setCloseAll());
+  }
 }
 WysiwygEditor.propTypes = {
   height: PropTypes.number,
@@ -54,11 +57,13 @@ WysiwygEditor.propTypes = {
     uploadUrl: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired
   }),
+  aceEditorConfig: PropTypes.object,
   userProperties: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
   })),
   startEditable: PropTypes.bool,
+  closeAll: PropTypes.bool,
   disableAddButton: PropTypes.bool,
-  allowedEditorTypes: PropTypes.array
+  allowedEditorTypes: PropTypes.array,
 };

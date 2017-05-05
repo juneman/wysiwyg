@@ -58,6 +58,7 @@ Styling for the WYSIWYG editor is in 3 separate areas:
 | `userProperties` | `false` | `Array<k,v>` | - |
 | `disableAddButton` | `false` | `Boolean` | `false` |
 | `startEditable` | `false` | `Boolean` | `false` |
+| `aceEditorConfig` | `false` | `Object` | See below |
 | `allowedEditorTypes` | `false` | `Array<string>` | All Values Allowed |
 
 ### Cloudinary Format
@@ -87,7 +88,7 @@ Row data is passed in through the `rows` property to the `<Wysiwyg />` component
    * A `type` property that is one of the Editor types below
    * A `persistedState` object representing data specific to the `type` of `Zone`
 
-### Editor Types
+### Allowed Editor Types
 
 You can see all the Editor Types in `/components/EditorSelector.js`.
 
@@ -121,4 +122,36 @@ passed to the component. Each array item is a `name` / `value` pair.
     value: '{{lastname}}'
   }
 ];
+```
+
+### Ace Editor Options
+
+See here: [https://github.com/securingsincity/react-ace](https://github.com/securingsincity/react-ace)
+
+You can pass any options from the `react-ace` page into the `aceEditorConfig` property.
+
+Defaults are:
+
+```javascript
+{
+  name: 'code-editor',
+  editorProps: { $blockScrolling: true },
+  showGutter: false,
+  showPrintMargin: false,
+  width: '400px',
+  height: '150px'
+}
+```
+
+### Close All
+
+To trigger a close of the editable zones and the menus, you can call an instance
+method on the `<Wysiwyg />` component. You would do that like this:
+
+```jsx
+let editor;
+ReactDOM.render(
+  <Wysiwyg ref={(el) => editor = el} />
+, document.getElementById('app'));
+editor.closeAll();
 ```

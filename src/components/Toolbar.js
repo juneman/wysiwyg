@@ -20,7 +20,8 @@ export function Toolbar(props) {
     dispatch,
     cloudinary,
     userProperties,
-    sanitizeHtmlConfig
+    sanitizeHtmlConfig,
+    aceEditorConfig
   } = props;
 
   const vertLine = {
@@ -50,6 +51,7 @@ export function Toolbar(props) {
           cloudinary,
           userProperties,
           sanitizeHtmlConfig,
+          aceEditorConfig,
           isActive: (selectedAction === editorAction.name),
           onToggleActive: (isActive) => {
             dispatch(editorActions.toggleEditorAction(editorAction.name, isActive));
@@ -74,6 +76,7 @@ Toolbar.propTypes = {
   userProperties: PropTypes.instanceOf(List).isRequired,
   selectedAction: PropTypes.string,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map).isRequired,
+  aceEditorConfig: PropTypes.instanceOf(Map).isRequired
 };
 
 function mapStateToProps(state) {
@@ -81,7 +84,8 @@ function mapStateToProps(state) {
     selectedAction: state.editor.get('activeEditorAction'),
     cloudinary: state.editor.get('cloudinary'),
     userProperties: state.editor.get('userProperties'),
-    sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig')
+    sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig'),
+    aceEditorConfig: state.editor.get('aceEditorConfig')
   };
 }
 

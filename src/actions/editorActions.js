@@ -124,3 +124,16 @@ export function setDisableAddButton(disableAddButton) {
     disableAddButton
   };
 }
+
+export function setCloseAll() {
+  return {
+    type: Actions.EDITOR_SETTINGS_SET_CLOSE_ALL
+  };
+}
+
+export function setAceEditorConfig(aceEditorConfig) {
+  return {
+    type: Actions.EDITOR_SETTINGS_ACE_EDITOR,
+    aceEditorConfig
+  };
+}
