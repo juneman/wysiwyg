@@ -331,11 +331,8 @@ Canvas.propTypes = {
   rows: PropTypes.instanceOf(List),
   internalRows: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
-  internalCloudinary: PropTypes.instanceOf(Map).isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
-  internalUserProperties: PropTypes.instanceOf(List).isRequired,
   sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
-  internalSanitizeHtml: PropTypes.instanceOf(Map).isRequired,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   aceEditorConfig: PropTypes.instanceOf(Map),
@@ -359,11 +356,8 @@ function mapStateToProps(state, ownProps) {
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
     
-    // Internal mappings of the above properties
-    internalCloudinary: state.editor.get('cloudinary'),
-    internalUserProperties: state.editor.get('userProperties'),
+    // Internal mappings some of the above properties
     internalRows: state.rows,
-    internalSanitizeHtml: state.editor.get('sanitizeHtmlConfig'),
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
     
     showEditorSelector: state.editorSelector.get('isOpen'),

@@ -24,6 +24,12 @@ To see what the demo is doing in order to get example usage of the component, op
 
 Follow the instructions in the Demo section at the top.
 
+### Building for Deployment
+
+  * `npm run build`
+
+Before committing new code, you need to run `npm run build` which will update the ES5 code in `/lib` as well as the packaged script file in `/dist/index.js`.
+
 ### Unit Tests
 
 This library uses the following frameworks for unit testing:
@@ -31,7 +37,7 @@ This library uses the following frameworks for unit testing:
  * [Mocha](https://mochajs.org/)
  * [Chai](http://chaijs.com/) (using the `expect` format)
  * [Enzyme](http://airbnb.io/enzyme/)
- * [Chai-Enzyme](https://github.com/producthunt/chai-enzyme)
+ * [Sinon](http://sinonjs.org/)
  * [Istanbul](https://istanbul.js.org/) for test coverage
 
 To run the unit tests:
@@ -40,8 +46,7 @@ To run the unit tests:
 
 To run test coverage with HTML output:
 
- * `npm run coverage-report`
- * Open the HTML page `/coverage/index.html` in a web browser
+ * `npm run coverage-report && open coverage/index.html`
 
 ### Linting
 
@@ -60,3 +65,7 @@ This will also be done at the completion of running the unit tests.
 ## Data Migration
 
 [Data Migration Guide](docs/DataMigration.md)
+
+## Technical Overview
+
+[Technical Overview](docs/TechnicalOverview.md)
