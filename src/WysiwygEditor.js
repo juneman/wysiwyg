@@ -4,6 +4,8 @@ import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import * as editorActions from './actions/editorActions';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import Canvas from './components/Canvas';
 
@@ -24,7 +26,7 @@ const finalCreateStore = compose(
   )
 )(createStore);
 
-export default class WysiwygEditor extends React.Component {
+export class WysiwygEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -68,3 +70,5 @@ WysiwygEditor.propTypes = {
   allowedEditorTypes: PropTypes.array,
   maxRows: PropTypes.number
 };
+
+export default DragDropContext(HTML5Backend)(WysiwygEditor);

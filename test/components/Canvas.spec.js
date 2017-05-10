@@ -5,11 +5,27 @@ import configureStore from 'redux-mock-store';
 import { List, fromJS } from 'immutable';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import Canvas from '../../src/components/Canvas';
 
+/**
+ * Wraps a component into a DragDropContext that uses the TestBackend.
+ */
+function wrapInTestContext(DecoratedComponent) {
+  return DragDropContext(HTML5Backend)(
+    class TestContextContainer extends React.Component {
+      render() {
+        return <DecoratedComponent {...this.props} />;
+      }
+    }
+  );
+}
+
 describe('<Canvas />', () => {
   let mockStore;
+  let TestCanvas;
   let initialState = {
     editor: fromJS({
       screenSize: {},
@@ -43,13 +59,14 @@ describe('<Canvas />', () => {
 
   beforeEach(() => {
     mockStore = configureStore([thunk]);
+    TestCanvas = wrapInTestContext(Canvas);
   });
 
   it('should apply any passed in styling to the container', () => {
     const store = mockStore(initialState);
     const wrapper = mount(
       <Provider store={store}>
-        <Canvas
+        <TestCanvas
           style={{
             width: 300,
             height: 100
@@ -65,8 +82,7 @@ describe('<Canvas />', () => {
     const store = mockStore(initialState);
     const wrapper = mount(
       <Provider store={store}>
-      <Canvas
-      />
+        <TestCanvas />
       </Provider>
     );
     expect(wrapper.find('.full-add')).to.have.length(1);
@@ -89,9 +105,7 @@ describe('<Canvas />', () => {
 
     const wrapper = mount(
       <Provider store={store}>
-      <Canvas
-
-      />
+        <TestCanvas />
       </Provider>
     );
     expect(wrapper.find('.full-add')).to.have.length(0);

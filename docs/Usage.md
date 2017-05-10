@@ -156,3 +156,18 @@ ReactDOM.render(
 , document.getElementById('app'));
 editor.closeAll();
 ```
+
+### Drag and Drop Context
+
+The wysiwyg uses react-dnd for drag and drop functionality. Since this might conflict
+with the parent page using the same library, the `<Wysiwyg />` component exports an
+instance method `getManager()` so that you can reuse the same backend. More info here:
+[https://react-dnd.github.io/react-dnd/docs-drag-drop-context.html](https://react-dnd.github.io/react-dnd/docs-drag-drop-context.html)
+
+```jsx
+let editor;
+ReactDOM.render(
+  <Wysiwyg ref={(el) => editor = el} />
+, document.getElementById('app'));
+editor.getManger();
+```

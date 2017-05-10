@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import { connect } from 'react-redux';
 
 import RowContainer from './RowContainer';
@@ -374,5 +372,5 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(DragDropContext(HTML5Backend)(Canvas));
+export default connect(mapStateToProps)(Canvas);
 

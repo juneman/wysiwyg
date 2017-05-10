@@ -29,7 +29,6 @@ export function convertFromHTML(htmlContent) {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
-      // TODO: needs to handle all entity types, not just div
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
