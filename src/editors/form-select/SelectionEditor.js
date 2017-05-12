@@ -103,7 +103,7 @@ export default class SelectionEditor extends React.Component {
   focus() {
     // Wait to steal the focus until the next event loop
     setTimeout(() => {
-      if (this.editor) {
+      if (this.editor && this.editor.constructor && this.editor.constructor.name === 'DraftEditor') {
         this.editor.focus();
       }
     }, 0);
