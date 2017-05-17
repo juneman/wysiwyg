@@ -48,7 +48,7 @@ export default class InputFieldOptions extends React.Component {
           </div>
           <div style={row}>
             <label>Maximum Length</label>
-            <input style={textInputStyle} type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} />
+            <input style={textInputStyle} type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
           </div>
           <div style={{textAlign: 'right', ...row}}>
             <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
@@ -78,6 +78,10 @@ export default class InputFieldOptions extends React.Component {
     this.setState({
       isRequired
     });
+  }
+
+  handleClick(e) {
+    e.target.focus();
   }
 
   handleMaxLength(e) {

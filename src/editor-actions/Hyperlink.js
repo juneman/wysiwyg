@@ -56,7 +56,7 @@ export default class Hyperlink extends React.Component {
         <div>
           <div style={row}>
             <label>URL</label>
-            <input type="text" style={textInputStyle} value={href} onChange={(e) => this.handleHref(e)} />
+            <input type="text" style={textInputStyle} value={href} onClick={(e) => this.handleClick(e)} onChange={(e) => this.handleHref(e)} />
           </div>
           <div style={row}>
             <input type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
@@ -87,6 +87,10 @@ export default class Hyperlink extends React.Component {
     this.setState({
       isNewWindow
     });
+  }
+
+  handleClick(e) {
+    e.target.focus();
   }
 
   handleHref(e) {

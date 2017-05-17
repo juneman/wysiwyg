@@ -70,10 +70,12 @@ export class Zone extends React.Component {
       this.save();
     }
     this.setBoundingBox();
+    this.setFocus();
   }
 
   componentDidUpdate() {
     this.setBoundingBox();
+    this.setFocus();
   }
 
   render() {
@@ -194,7 +196,6 @@ export class Zone extends React.Component {
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
         ref={(el) => this.wrapper = el}
-        onClick={() => this.setFocus()}
       >
         <div className="zone" style={zoneStyle}>
           <EditorWrapper

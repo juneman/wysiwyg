@@ -2,14 +2,12 @@
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
 import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { UserPropertyDecorator } from '../../helpers/draft/UserPropertyDecorator';
 import { CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 
 export const decorator = new CompositeDecorator([
-  LinkDecorator,
-  UserPropertyDecorator
+  LinkDecorator
 ]);
 
 export function convertFromHTML(htmlContent) {

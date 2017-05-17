@@ -37,29 +37,34 @@ export default class ButtonStyles extends React.Component {
 
     const titleStyles = secondaryMenuTitleStyle;
 
+    const commonProps = {
+      className: 'form-control',
+      onClick: (e) => this.handleClick(e)
+    };
+
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Advanced Button Options</div>
         <div style={{display: 'grid', gridGap: 10}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
             <label>Border Radius</label>
-            <input type="text" value={borderRadius} className="form-control" onChange={(e) => this.handleChange(e, 'borderRadius')} />
+            <input type="text" value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 1}}>
             <label>Padding</label>
-            <input type="text" value={padding} className="form-control" onChange={(e) => this.handleChange(e, 'padding')} />
+            <input type="text" value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
           </div>
           <div style={{gridColumn: 1, gridRow: 2}}>
             <label>Font Size</label>
-            <input type="text" value={fontSize} className="form-control" onChange={(e) => this.handleChange(e, 'fontSize')} />
+            <input type="text" value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 2}}>
             <label>Width</label>
-            <input type="text" value={width} className="form-control" onChange={(e) => this.handleChange(e, 'width')} />
+            <input type="text" value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 3}}>
             <label>Class Names (sparate by space)</label>
-            <input type="text" value={className} className="form-control" onChange={(e) => this.handleChange(e, 'className')} />
+            <input type="text" value={className} onChange={(e) => this.handleChange(e, 'className')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right'}}>
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
@@ -86,6 +91,10 @@ export default class ButtonStyles extends React.Component {
     const update = {};
     update[field] = value;
     this.setState(update);
+  }
+
+  handleClick(e) {
+    e.target.focus();
   }
 
   handleSave(e) {
