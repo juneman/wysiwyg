@@ -17,8 +17,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "brace": "^0.10.0",
-    "draft-convert": "^1.4.3",
-    "draft-js": "^0.10.0",
+    "draft-convert": "1.4.3",
+    "draft-js": "0.10.1",
     "html-parse-stringify2": "^1.2.1",
     "immutable": "^3.8.1",
     "prop-types": "^15.5.8",

@@ -30,6 +30,8 @@
 
     <!-- Babel Standalone is just on here to allow us to use JSX natively on this demo page without compiling with webpack -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react-dnd@2.4.0/dist/ReactDnD.min.js"></script>
+    <script src="https://unpkg.com/react-dnd-html5-backend@latest/dist/ReactDnDHTML5Backend.min.js"></script>
 
     <!-- Webpack Dev Server dynamically compiles and serves the Canvas component from this path -->
     <script src="/assets/index.js"></script>
@@ -62,9 +64,11 @@
           }
         ];
 
+        const Wysiwyg = ReactDnD.DragDropContext(ReactDnDHTML5Backend)(WysiwygEditor.DecoratedComponent);
+
         // Render Editor Modal
         ReactDOM.render(
-          <WysiwygEditor
+          <Wysiwyg
             cloudinary={CLOUDINARY}
             userProperties={USER_PROPERTIES}
           />, document.getElementById('simple')
