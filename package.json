@@ -14,7 +14,7 @@
     "clean": "rm -rf lib && mkdir lib"
   },
   "author": "Michael Cox",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "brace": "^0.10.0",
     "draft-convert": "1.4.3",
