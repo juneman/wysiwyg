@@ -32,6 +32,10 @@ export default class RichTextEditor extends React.Component {
     }
   }
 
+  componentDidMount() {
+    window.editorShadowRoot = this.wrapper.getRootNode();
+  }
+
   render() {
     const { isEditing, persistedState, localState } = this.props;
     const editorState = localState.get('editorState');
