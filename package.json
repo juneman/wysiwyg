@@ -17,8 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "brace": "^0.10.0",
-    "draft-convert": "appcues/draft-convert",
-    "draft-js": "appcues/draft-js",
+    "draft-convert": "github:appcues/draft-convert",
+    "draft-js": "github:appcues/draft-js",
     "html-parse-stringify2": "^1.2.1",
     "immutable": "^3.8.1",
     "prop-types": "^15.5.8",
