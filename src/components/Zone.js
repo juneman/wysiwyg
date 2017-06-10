@@ -60,7 +60,7 @@ export class Zone extends React.Component {
       margin: '0 auto 3px auto'
     };
     this.zoneStyle = {
-      border: '2px solid #FFFFFF'
+      border: '2px solid transparent'
     };
   }
 
