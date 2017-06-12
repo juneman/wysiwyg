@@ -5,7 +5,7 @@ import { Map, List } from 'immutable';
 import { convertBoundingBox } from '../helpers/domHelpers';
 import ImageUploader from './ImageUploader';
 import AddButtonHorizRule from './AddButtonHorizRule';
-import AddButton from '../icons/AddButton';
+import AddButtonContainer from './AddButtonContainer';
 
 /**
  * A React component with an image drop or a click
@@ -18,35 +18,35 @@ export default class FullAddElement extends React.Component {
     super(props);
 
     this.state = {
-      addButtonPositon: Map()
+      showEditorSelector: false
     };
+
+    this.handleAddNew = this.handleAddNew.bind(this);
   }
 
   componentDidMount() {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
-    const { height, allowedEditorTypes } = this.props;
+    const { allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
+    const { showEditorSelector } = this.state;
 
     const fullScreenStyles = {
-      backgroundColor: '#dafeea',
+      backgroundColor: 'rgba(9,248,113,0.15)',
       color: '#0bdc66',
       textAlign: 'center',
-      border: '2px dotted #0bdc66',
+      border: '2px dashed #0bdc66',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      minHeight: (height) ? height - 4 : null,
-      position: 'relative'
+      minHeight: 'calc(100% - 4px)',
+      position: 'relative',
+      borderRadius: '4px'
     };
 
     const centeredContainer = {
-      height,
+      height: '100%',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
@@ -54,31 +54,37 @@ export default class FullAddElement extends React.Component {
     };
 
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         { (allowedEditorTypes.isEmpty() || allowedEditorTypes.includes("Image")) ? (
           <div className="full-add" style={centeredContainer}>
             <ImageUploader
               disableClick={true}
-              onUpload={(imageDetails) => this.props.onUpload(imageDetails)}
+              onUpload={(imageDetails) => onUpload(imageDetails)}
             >
-              <a href="#" style={{textDecoration: 'none'}} id="addBtn" onClick={(e) => this.handleAddNew(e)}>
-                <div>
-                  <div style={fullScreenStyles}>
-                    <div style={{textAlign: 'center'}}>
-                      <span style={{width: 30}} ref={(addButton) => this.addButton = addButton}><AddButton shadow={true} /></span>
-                      <div style={{color: '#00b84f'}}>
-                        <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
-                        <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
-                      </div>
+              <div style={{ cursor: 'pointer', height: '100%', padding: '20px' }} id="addBtn" onClick={ this.handleAddNew }>
+                <div style={fullScreenStyles}>
+                  <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <span ref={(addButton) => this.addButton = addButton}>
+                      <AddButtonContainer
+                        onSelectEditorType={ onSelectEditorType }
+                        showEditorSelector={ showEditorSelector }
+                        internalAllowedEditorTypes={ internalAllowedEditorTypes }
+                        shadow={false}
+                      />
+                    </span>
+                    <div style={{color: 'hsl(146, 90%, 43%)'}}>
+                      <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
+                      <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
             </ImageUploader>
           </div>
         ): (
           <AddButtonHorizRule
-            onClick={(addButtonPosition) => this.props.onClickAdd(addButtonPosition)}
+            onSelectEditorType={ onSelectEditorType }
+            internalAllowedEditorTypes={ internalAllowedEditorTypes }
           />
         )}
       </div>
@@ -87,23 +93,20 @@ export default class FullAddElement extends React.Component {
 
   handleAddNew(e) {
     e.preventDefault();
-    this.props.onClickAdd(this.state.addButtonPositon);
+    this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
 
   setBoundingBox() {
+    console.log("updated");
     if (!this.addButton) {
       return;
-    }
-    const addButtonPositon = convertBoundingBox(this.addButton.getBoundingClientRect());
-    if (!addButtonPositon.equals(this.state.addButtonPositon)) {
-      this.setState({addButtonPositon});
     }
   }
 }
 
 FullAddElement.propTypes = {
-  onClickAdd: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
-  height: PropTypes.number,
-  allowedEditorTypes: PropTypes.instanceOf(List).isRequired
+  allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
+  onSelectEditorType: PropTypes.func.isRequired,
+  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired
 };

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { List } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
-import AddButton from '../icons/AddButton';
+import AddButtonContainer from './AddButtonContainer';
 
 /**
  * A React component renders an Add button to
@@ -15,20 +15,20 @@ export default class AddButtonHorizRule extends React.Component {
     super(props);
 
     this.state = {
-      addButtonPosition: Map(),
-      position: Map()
+      showEditorSelector: false
     };
+
+    this.handleAddNew = this.handleAddNew.bind(this);
   }
 
   componentDidMount() {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
+    const { onSelectEditorType, internalAllowedEditorTypes } = this.props;
+    const { showEditorSelector } = this.state;
+
     const hrStyle = {
       width: '100%',
       height: 1,
@@ -39,19 +39,26 @@ export default class AddButtonHorizRule extends React.Component {
       zIndex: 2,
       padding: 0,
       margin: 0,
-      backgroundColor: '#7cf4b1',
-      backgroundImage: 'linear-gradient(to right, #b8f9d5, #7cf4b1, #b8f9d5)'
+      backgroundColor: '#09F871'
     };
 
     return (
       <div className="add-row">
-        <div style={{textAlign: 'center', zIndex: 10}} ref={(el) => this.wrapper = el}>
-          <a
-            href="#"
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
+          <div
             id="addBtn"
-            onClick={(e) => this.handleAddNew(e)}
+            style={{ cursor: 'pointer' }}
+            onClick={this.handleAddNew}
             ref={(el) => this.addButton = el}
-          ><AddButton shadow={true} /></a>
+          >
+            <AddButtonContainer
+              onSelectEditorType={ onSelectEditorType }
+              showEditorSelector={ showEditorSelector }
+              internalAllowedEditorTypes={ internalAllowedEditorTypes }
+              shadow={false}
+            />
+
+          </div>
           <hr style={hrStyle} />
         </div>
       </div>
@@ -60,19 +67,16 @@ export default class AddButtonHorizRule extends React.Component {
 
   handleAddNew(e) {
     e.preventDefault();
-    this.props.onClick(this.state.addButtonPosition);
+    this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
-
   setBoundingBox() {
-    if (this.addButton) {
-      const addButtonPosition = convertBoundingBox(this.addButton.getBoundingClientRect());
-      if (!addButtonPosition.equals(this.state.addButtonPosition)) {
-        this.setState({addButtonPosition});
-      }
+    if (!this.addButton) {
+      return;
     }
   }
 }
 
 AddButtonHorizRule.propTypes = {
-  onClick: PropTypes.func.isRequired
+  onSelectEditorType: PropTypes.func.isRequired,
+  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired
 };

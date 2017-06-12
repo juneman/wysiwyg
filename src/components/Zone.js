@@ -74,7 +74,6 @@ export class Zone extends React.Component {
   }
 
   componentDidUpdate() {
-    this.setBoundingBox();
     this.setFocus();
   }
 

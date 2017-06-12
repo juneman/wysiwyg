@@ -10,7 +10,6 @@ import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
 
-import EditorSelector from './EditorSelector';
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
 
@@ -61,10 +60,6 @@ export class Canvas extends React.Component {
     if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
       dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
-  }
-
-  componentDidUpdate() {
-    this.setBoundingBox();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -129,34 +124,26 @@ export class Canvas extends React.Component {
         <FullAddElement
           key={row.get('id')}
           allowedEditorTypes={allowedEditorTypes}
-          onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
+          onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+          internalAllowedEditorTypes={ internalAllowedEditorTypes }
         />
       );
     }) : null;
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
-        height={canvasHeight}
         allowedEditorTypes={allowedEditorTypes}
-        onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
-      />
-    ) : null;
-
-    const editorSelectorNode = showEditorSelector ? (
-      <EditorSelector
-        canvasPosition={canvasPosition}
-        addButtonPosition={addButtonPosition}
-        screenSize={screenSize}
-        allowedEditorTypes={internalAllowedEditorTypes}
-        onSelect={(type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction)}
+        onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+        internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
     ) : null;
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
-        onClick={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
+        onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+        internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
     ) : null;
 
@@ -165,7 +152,6 @@ export class Canvas extends React.Component {
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
-        { editorSelectorNode }
       </div>
     );
   }
@@ -245,15 +231,6 @@ export class Canvas extends React.Component {
 
   removeRow(id) {
     this.props.dispatch(rowActions.removeRow(id));
-  }
-
-  toggleEditorSelector(addButtonPosition) {
-    const { showEditorSelector } = this.props;
-    if (showEditorSelector) {
-      this.props.dispatch(editorSelectorActions.hide());
-    } else {
-      this.props.dispatch(editorSelectorActions.show(addButtonPosition));
-    }
   }
 
   moveRows(sourceIndex, targetIndex) {

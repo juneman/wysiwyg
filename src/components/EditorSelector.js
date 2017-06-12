@@ -244,47 +244,45 @@ export default class EditorSelector extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
-    const { addButtonPosition, onSelect, screenSize, allowedEditorTypes, canvasPosition } = this.props;
+    const { onSelect, allowedEditorTypes } = this.props;
     const { position, formPosition, secondaryMenuPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
-    const { top: addBtnTop = 0, left: addBtnLeft = 0 } = addButtonPosition.toJS();
-    const { top: canvasTop = 0, left: canvasLeft = 0 } = canvasPosition.toJS();
-    const { height: screenHeight = 0 } = screenSize.toJS();
-    const { height: menuHeight = 0, width: menuWidth = 0, top: menuTop = 0 } = position.toJS();
-    const { height: secMenuHeight = 0 } = secondaryMenuPosition.toJS();
-    const { top: formTop = 0 } = formPosition.toJS();
+    // const { top: addBtnTop = 0, left: addBtnLeft = 0 } = addButtonPosition.toJS();
+    // const { top: canvasTop = 0, left: canvasLeft = 0 } = canvasPosition.toJS();
+    // const { height: screenHeight = 0 } = screenSize.toJS();
+    // const { height: menuHeight = 0, width: menuWidth = 0, top: menuTop = 0 } = position.toJS();
+    // const { height: secMenuHeight = 0 } = secondaryMenuPosition.toJS();
+    // const { top: formTop = 0 } = formPosition.toJS();
 
-    const hasRoomToRenderBelow = (addBtnTop + 300 < screenHeight) ? true : false;
+    // const hasRoomToRenderBelow = (addBtnTop + 300 < screenHeight) ? true : false;
 
-    const positionBelowBtn = {
-      top: addBtnTop - canvasTop,
-      left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
-    };
+    // const positionBelowBtn = {
+    //   top: addBtnTop - canvasTop,
+    //   left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
+    // };
 
-    const positionAboveBtn = {
-      top: addBtnTop - canvasTop - menuHeight,
-      left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
-    };
+    // const positionAboveBtn = {
+    //   top: addBtnTop - canvasTop - menuHeight,
+    //   left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
+    // };
 
-    const menuPosition = (hasRoomToRenderBelow) ? positionBelowBtn : positionAboveBtn;
+    // const menuPosition = (hasRoomToRenderBelow) ? positionBelowBtn : positionAboveBtn;
 
-    const menuStyle = (position.get('height')) ? {
+    const menuStyle = {
       zIndex: 11,
       position: 'absolute',
-      width: 160
-    } : {};
+      width: 160,
+      left: 'calc(-80px + 50%)',
+      top: 8
+    };
 
     const secondaryMenuStyle = {
       zIndex: 11,
       width: 180,
       position: 'absolute',
-      top: formTop - menuTop - secMenuHeight + 30,
-      left: 150
+      top: 0,
+      left: 130
     };
 
     const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
@@ -295,8 +293,8 @@ export default class EditorSelector extends React.Component {
     });
 
     return (
-      <div style={{position: 'absolute', ...menuPosition}}>
-        <div ref={(el) => this.wrapper = el} style={menuStyle}>
+      <div style={{position: 'absolute', ...menuStyle}}>
+        <div ref={(el) => this.wrapper = el}>
           <Menu>
             { trimmedEditors.map((editor) => {
               const isHover = (editor.text === primaryHoverMenu) ? true : false;
@@ -388,12 +386,12 @@ export default class EditorSelector extends React.Component {
         update.position = position;
       }
     }
-    if (this.secondaryMenu) {
-      const secondaryMenuPosition = convertBoundingBox(this.secondaryMenu.getBoundingClientRect());
-      if (!secondaryMenuPosition.equals(this.state.secondaryMenuPosition)) {
-        update.secondaryMenuPosition = secondaryMenuPosition;
-      }
-    }
+    // if (this.secondaryMenu) {
+    //   const secondaryMenuPosition = convertBoundingBox(this.secondaryMenu.getBoundingClientRect());
+    //   if (!secondaryMenuPosition.equals(this.state.secondaryMenuPosition)) {
+    //     update.secondaryMenuPosition = secondaryMenuPosition;
+    //   }
+    // }
     if (this.wrapperForm) {
       const formPosition = convertBoundingBox(this.wrapperForm.getBoundingClientRect());
       if (!formPosition.equals(this.state.formPosition)) {
@@ -408,8 +406,5 @@ export default class EditorSelector extends React.Component {
 }
 EditorSelector.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  addButtonPosition: PropTypes.instanceOf(Map).isRequired,
-  screenSize: PropTypes.instanceOf(Map).isRequired,
-  allowedEditorTypes: PropTypes.instanceOf(List),
-  canvasPosition: PropTypes.instanceOf(Map).isRequired
+  allowedEditorTypes: PropTypes.instanceOf(List)
 };

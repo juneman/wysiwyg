@@ -13,9 +13,10 @@ export default class Menu extends React.Component {
 
     const menuStyles = Object.assign({}, {
       backgroundColor: '#F6F6F6',
-      borderRadius: 5,
+      borderRadius: 4,
       border: '1px solid #D0D0D0',
-      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)'
+      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+      overflow: 'hidden'
     }, style);
 
     return (

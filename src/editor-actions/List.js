@@ -24,10 +24,6 @@ export default class List extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
     const { position } = this.state;
     const { isActive } = this.props;

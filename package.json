@@ -2,7 +2,7 @@
   "name": "wysiwyg",
   "version": "1.0.0",
   "description": "Appcues Editor",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --reporter=dot",
     "test-only": "NODE_ENV=test mocha --reporter=spec",
@@ -11,6 +11,8 @@
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
     "build": "npm run clean && babel src -d lib && webpack --config webpack.build.js",
+    "watch": "npm run clean && babel src -d lib && webpack --config webpack.build.js --watch",
+    "start": "webpack-dev-server --config webpack.build.js --hot --inline --colors",
     "clean": "rm -rf lib && mkdir lib"
   },
   "author": "Michael Cox",
@@ -19,8 +21,10 @@
     "brace": "^0.10.0",
     "draft-convert": "github:appcues/draft-convert",
     "draft-js": "github:appcues/draft-js",
+    "hard-source-webpack-plugin": "^0.4.1",
     "html-parse-stringify2": "^1.2.1",
     "immutable": "^3.8.1",
+    "node-object-hash": "^1.2.0",
     "prop-types": "^15.5.8",
     "react-ace": "^4.2.1",
     "react-color": "^2.11.4",

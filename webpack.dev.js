@@ -18,6 +18,7 @@ module.exports = {
   },
   module: {
     loaders: [
+      { test: /wysiwyg\/.*\.js$/, loader: 'babel-loader' },
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]

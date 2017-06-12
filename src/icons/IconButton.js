@@ -8,17 +8,13 @@ const baseIconStyle = {
   strokeWidth: 0,
   stroke: 'currentColor',
   fill: 'currentColor',
-  position: 'relative',
-  top: -4,
   zIndex: 10
 };
 
 const wrapperStyle = {
-  fontSize: '20pt',
-  height: 35,
-  width: 35,
-  margin: '0 5px',
-  zIndex: 10
+  zIndex: 10,
+  display: 'flex',
+  alignItems: 'center'
 };
 
 export default class IconButton extends React.Component {
@@ -64,22 +60,23 @@ export default class IconButton extends React.Component {
       textAlign: 'center',
       backgroundColor: '#0bdc66',
       color: '#FFF',
-      display: 'inline-block',
       borderRadius: '50%',
-      height: 25,
-      width: 26,
+      height: 36,
+      width: 36,
       padding: 5,
-      zIndex: 10
+      zIndex: 10,
+      lineHeight: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: '0'
     }, {
-      boxShadow: (shadow) ? '1px 1px 4px rgba(0,0,0,0.4)' : null
+      boxShadow: (shadow) ? '0 0 10px rgba(0,0,0,0.33)' : null
     });
 
     const textStyle = {
       fontSize: 16,
-      position: 'relative',
       color: '#0bdc66',
-      top: -6,
-      left: 3,
       zIndex: 10
     };
 

@@ -27,10 +27,6 @@ export default class EditorWrapper extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
     const { position, toolbarPosition } = this.state;
     const {

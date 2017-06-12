@@ -26,10 +26,6 @@ export class Row extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
     const { row, connectDragSource, isMovable, showMoveButton } = this.props;
     const { position } = this.state;

@@ -24,9 +24,6 @@ export default class Alignment extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
 
   render() {
     const { position } = this.state;
