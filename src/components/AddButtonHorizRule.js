@@ -30,16 +30,15 @@ export default class AddButtonHorizRule extends React.Component {
     const { showEditorSelector } = this.state;
 
     const hrStyle = {
-      width: '100%',
       height: 1,
       border: 0,
       position: 'relative',
       top: -20,
-      left: 0,
+      width: 'calc(100% + 40px)',
       zIndex: 2,
       padding: 0,
       margin: 0,
-      backgroundColor: '#09F871'
+      backgroundImage: 'linear-gradient(to right, transparent 0%, #00b850 50%, transparent)'
     };
 
     return (

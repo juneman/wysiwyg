@@ -101,7 +101,8 @@ export class Canvas extends React.Component {
       canvasPosition,
       style,
       internalAllowedEditorTypes,
-      allowedEditorTypes
+      allowedEditorTypes,
+      height
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
@@ -109,8 +110,6 @@ export class Canvas extends React.Component {
       padding: (internalRows.size) ? '3px 0' : null,
       fontFamily: 'Sans-Serif'
     }, style);
-
-    const { height: canvasHeight } = canvasPosition.toJS();
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
@@ -122,6 +121,7 @@ export class Canvas extends React.Component {
         />
       ): (
         <FullAddElement
+          minHeight={ height }
           key={row.get('id')}
           allowedEditorTypes={allowedEditorTypes}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
@@ -133,6 +133,7 @@ export class Canvas extends React.Component {
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
+        minHeight={ height }
         allowedEditorTypes={allowedEditorTypes}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
@@ -318,7 +319,8 @@ Canvas.propTypes = {
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
   disableAddButton: PropTypes.bool,
-  maxRows: PropTypes.number
+  maxRows: PropTypes.number,
+  height: PropTypes.string
 };
 
 function mapStateToProps(state, ownProps) {

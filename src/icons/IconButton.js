@@ -43,7 +43,9 @@ export default class IconButton extends React.Component {
       isActive,
       activeColor,
       cursor,
-      svg
+      svg,
+      style,
+      secondary
     } = this.props;
 
     const { colorOverride } = this.state;
@@ -58,8 +60,8 @@ export default class IconButton extends React.Component {
     const iconWrapperStyle = Object.assign({}, {
       position: 'relative',
       textAlign: 'center',
-      backgroundColor: '#0bdc66',
-      color: '#FFF',
+      backgroundColor: 'transparent',
+      color: 'rgba(255, 255, 255, 0.8)',
       borderRadius: '50%',
       height: 36,
       width: 36,
@@ -89,6 +91,13 @@ export default class IconButton extends React.Component {
     } else if (textColor && colorOverride) {
       textStyle.color = colorOverride;
     }
+
+    if (secondary) {
+      iconWrapperStyle.border = `2px solid ${ finalColor }`;
+      iconWrapperStyle.color = finalColor;
+      delete iconWrapperStyle.backgroundColor;
+    }
+
     if (hideBackground) {
       delete iconWrapperStyle.backgroundColor;
       delete iconWrapperStyle.boxShadow;
@@ -111,7 +120,8 @@ export default class IconButton extends React.Component {
     );
 
     const linkStyle = {
-      textDecoration: 'none'
+      textDecoration: 'none',
+      ...style
     };
     if (cursor) linkStyle.cursor = cursor;
 
@@ -198,6 +208,11 @@ export default class IconButton extends React.Component {
 
 }
 
+IconButton.defaultProps = {
+  style: {},
+  secondary: false
+}
+
 IconButton.propTypes = {
   title: PropTypes.string.isRequired,
   pathNode: PropTypes.node.isRequired,
@@ -218,5 +233,7 @@ IconButton.propTypes = {
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
   isActive: PropTypes.bool,
-  svg: PropTypes.element
+  svg: PropTypes.element,
+  style: PropTypes.object,
+  secondary: PropTypes.bool
 };

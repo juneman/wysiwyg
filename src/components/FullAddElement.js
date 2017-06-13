@@ -29,7 +29,7 @@ export default class FullAddElement extends React.Component {
   }
 
   render() {
-    const { allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
+    const { minHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
     const { showEditorSelector } = this.state;
 
     const fullScreenStyles = {
@@ -54,7 +54,7 @@ export default class FullAddElement extends React.Component {
     };
 
     return (
-      <div style={{ height: '100%' }}>
+      <div style={{ height: minHeight }}>
         { (allowedEditorTypes.isEmpty() || allowedEditorTypes.includes("Image")) ? (
           <div className="full-add" style={centeredContainer}>
             <ImageUploader

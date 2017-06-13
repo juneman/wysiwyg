@@ -12,10 +12,9 @@ export default class Menu extends React.Component {
     const { style, className, children } = this.props;
 
     const menuStyles = Object.assign({}, {
-      backgroundColor: '#F6F6F6',
+      backgroundColor: 'white',
       borderRadius: 4,
-      border: '1px solid #D0D0D0',
-      boxShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+      boxShadow: '0 0 10px rgba(0,0,0,0.33)',
       overflow: 'hidden'
     }, style);
 

@@ -44,11 +44,6 @@ export default class RichTextEditor extends React.Component {
 
     const wrapperStyle = {};
 
-    // The draft editor needs a little breathing room
-    if (isEditing) {
-      wrapperStyle.minHeight = 60;
-    }
-
     return (
       <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
         { (isEditing) ? (

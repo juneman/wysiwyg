@@ -50,14 +50,22 @@ export class Zone extends React.Component {
     };
 
     this.baseHoverStateStyle = {
-      border: '2px dotted #f4ad42'
+      border: '2px dotted #FFAA39',
+      backgroundColor: 'rgba(255,186,76,0.13)',
+      margin: '-10px -30px',
+      padding: '10px 30px'
     };
     this.baseActiveStateStyle = {
-      border: '2px dotted #008800'
+      border: '2px dotted transparent',
+      outline: '2px dashed hsla(0, 0%, 100%, 0.6)',
+      boxShadow: '0 0 0 1500px rgba(78,77,76,0.83)',
+      margin: '-10px -30px 5px',
+      padding: '10px 30px'
     };
-    this.containerStyle = {
+    this.baseContainerStyle = {
       width: '99%',
-      margin: '0 auto 3px auto'
+      margin: '0 auto 3px auto',
+      position: 'relative'
     };
     this.zoneStyle = {
       border: '2px solid transparent'
@@ -99,6 +107,7 @@ export class Zone extends React.Component {
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
+    const containerStyle = (isEditing) ? { ...this.baseContainerStyle, zIndex: 10 } : this.baseContainerStyle;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
 
     // Common props across all editors    
@@ -191,7 +200,7 @@ export class Zone extends React.Component {
     return (
       <div
         className={`zone-container zone-${columnIndex}`}
-        style={this.containerStyle}
+        style={containerStyle}
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
         ref={(el) => this.wrapper = el}

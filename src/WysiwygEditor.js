@@ -49,7 +49,7 @@ export class WysiwygEditor extends React.Component {
   }
 }
 WysiwygEditor.propTypes = {
-  height: PropTypes.number,
+  height: PropTypes.string,
   width: PropTypes.number,
   onSave: PropTypes.func,
   rows: PropTypes.array,
