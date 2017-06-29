@@ -5,6 +5,7 @@ import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, textInputStyle 
 import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
+import Button from '../components/Button';
 
 export default class Hyperlink extends React.Component {
 
@@ -31,7 +32,7 @@ export default class Hyperlink extends React.Component {
   }
 
   render() {
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
     const { href, isNewWindow } = this.state;
 
     const buttonProps = getButtonProps(isActive);
@@ -43,6 +44,10 @@ export default class Hyperlink extends React.Component {
       padding: 10,
       width: 300
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -56,14 +61,14 @@ export default class Hyperlink extends React.Component {
         <div>
           <div style={row}>
             <label>URL</label>
-            <input type="text" style={textInputStyle} value={href} onClick={(e) => this.handleClick(e)} onChange={(e) => this.handleHref(e)} />
+            <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
           </div>
           <div style={row}>
-            <input type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
-            <label>Open In New Window</label>
+            <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+            <label htmlFor="link-checkbox">Open In New Window</label>
           </div>
           <div style={{textAlign: 'right', ...row}}>
-            <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
           </div>
         </div>
       </Menu>

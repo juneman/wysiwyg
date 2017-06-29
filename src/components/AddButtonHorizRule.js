@@ -42,16 +42,16 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     return (
-      <div className="add-row">
+      <div className="add-row" style={{ position: 'absolute', left: 0, right: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
             id="addBtn"
             style={{ cursor: 'pointer' }}
-            onClick={this.handleAddNew}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
               onSelectEditorType={ onSelectEditorType }
+              onClick={this.handleAddNew}
               showEditorSelector={ showEditorSelector }
               internalAllowedEditorTypes={ internalAllowedEditorTypes }
               shadow={false}
@@ -65,7 +65,7 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   handleAddNew(e) {
-    e.preventDefault();
+
     this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
   setBoundingBox() {

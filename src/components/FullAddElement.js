@@ -42,7 +42,7 @@ export default class FullAddElement extends React.Component {
       justifyContent: 'center',
       minHeight: 'calc(100% - 4px)',
       position: 'relative',
-      borderRadius: '4px'
+      borderRadius: 4
     };
 
     const centeredContainer = {

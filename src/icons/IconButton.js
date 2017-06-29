@@ -22,7 +22,8 @@ export default class IconButton extends React.Component {
     super(props);
 
     this.state = {
-      colorOverride: null
+      colorOverride: null,
+      shadowOverride: null
     };
   }
 
@@ -48,7 +49,7 @@ export default class IconButton extends React.Component {
       secondary
     } = this.props;
 
-    const { colorOverride } = this.state;
+    const { colorOverride, shadowOverride } = this.state;
 
     let finalColor = color;
     if (isActive && activeColor) {
@@ -73,7 +74,7 @@ export default class IconButton extends React.Component {
       justifyContent: 'center',
       flexShrink: '0'
     }, {
-      boxShadow: (shadow) ? '0 0 10px rgba(0,0,0,0.33)' : null
+      boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px' : null
     });
 
     const textStyle = {
@@ -150,6 +151,8 @@ export default class IconButton extends React.Component {
   handleMouseOver() {
     const { hoverColor, onMouseOver } = this.props;
 
+    this.setState({ shadowOverride: true });
+
     if (hoverColor) {
       this.setState({
         colorOverride: hoverColor
@@ -162,6 +165,8 @@ export default class IconButton extends React.Component {
 
   handleMouseOut() {
     const { hoverColor, onMouseOut } = this.props;
+
+    this.setState({ shadowOverride: false });
 
     if (hoverColor) {
       this.setState({

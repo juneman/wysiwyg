@@ -12,7 +12,7 @@ import FontColorButton from '../icons/FontColorButton';
 
 export default class FontColor extends React.Component {
   render() {
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const selectedColor = this.getCurrentInlineColor();
     const buttonProps = {
@@ -26,6 +26,10 @@ export default class FontColor extends React.Component {
       left: 0,
       padding: 5
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -88,6 +92,13 @@ export default class FontColor extends React.Component {
       localState: newLocalState,
       persistedState
     });
+  }
+
+  setHasRoomToRenderBelow() {
+    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
+      this.setState({ hasRoomToRenderBelow });
+    } 
   }
 
 }

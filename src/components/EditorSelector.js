@@ -19,6 +19,8 @@ import FormTextInputButton from '../icons/FormTextInputButton';
 import FormRatingButton from '../icons/FormRatingButton';
 import PrevNextButton from '../icons/PrevNextButton';
 
+const MENU_HEIGHT_ALLOWANCE = 300;
+
 const editors = [
   {
     Button: TextButton,
@@ -236,17 +238,22 @@ export default class EditorSelector extends React.Component {
       secondaryMenuPosition: Map(),
       showForm: false,
       primaryHoverMenu: '',
-      secondaryMenuHover: ''
+      secondaryMenuHover: '',
+      hasRoomToRenderBelow: true
     };
   }
 
   componentDidMount() {
-    this.setBoundingBox();
+    this.setHasRoomToRenderBelow();
+  }
+
+  componentDidUpdate() {
+    this.setHasRoomToRenderBelow();
   }
 
   render() {
     const { onSelect, allowedEditorTypes } = this.props;
-    const { position, formPosition, secondaryMenuPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
+    const { hasRoomToRenderBelow, position, formPosition, secondaryMenuPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
     // const { top: addBtnTop = 0, left: addBtnLeft = 0 } = addButtonPosition.toJS();
     // const { top: canvasTop = 0, left: canvasLeft = 0 } = canvasPosition.toJS();
@@ -270,15 +277,20 @@ export default class EditorSelector extends React.Component {
     // const menuPosition = (hasRoomToRenderBelow) ? positionBelowBtn : positionAboveBtn;
 
     const menuStyle = {
-      zIndex: 11,
+      zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-80px + 50%)',
-      top: 8
+      left: 'calc(-80px + 50%)'
     };
 
+    if (hasRoomToRenderBelow) {
+      menuStyle.top = 8;
+    } else {
+      menuStyle.bottom = 48;
+    }
+
     const secondaryMenuStyle = {
-      zIndex: 11,
+      zIndex: 101,
       width: 180,
       position: 'absolute',
       top: 0,
@@ -293,45 +305,43 @@ export default class EditorSelector extends React.Component {
     });
 
     return (
-      <div style={{position: 'absolute', ...menuStyle}}>
-        <div ref={(el) => this.wrapper = el}>
-          <Menu>
-            { trimmedEditors.map((editor) => {
-              const isHover = (editor.text === primaryHoverMenu) ? true : false;
-              const style = {
-                backgroundColor: isHover ? '#3498db' : null
-              };
-              return (
-                <a href="#"
-                  key={editor.text}
-                  style={{textDecoration: 'none'}}
-                  onClick={(editor.type === 'Form') ? (e) => e.preventDefault() : (e) => {
-                    e.preventDefault();
-                    onSelect(editor.type, editor.rows, editor.defaultAction);
-                  }}
+      <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
+        <Menu>
+          { trimmedEditors.map((editor) => {
+            const isHover = (editor.text === primaryHoverMenu) ? true : false;
+            const style = {
+              backgroundColor: isHover ? '#3498db' : null
+            };
+            return (
+              <a href="#"
+                key={editor.text}
+                style={{textDecoration: 'none'}}
+                onClick={(editor.type === 'Form') ? (e) => e.preventDefault() : (e) => {
+                  e.preventDefault();
+                  onSelect(editor.type, editor.rows, editor.defaultAction);
+                }}
+              >
+                <div
+                  className="menuItem"
+                  style={style}
+                  ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
+                  onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
+                  onMouseOver={() => this.setHover(editor.text, true)}
+                  onMouseOut={() => this.setHover(editor.text, false)}
                 >
-                  <div
-                    className="menuItem"
-                    style={style}
-                    ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
-                    onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
-                    onMouseOver={() => this.setHover(editor.text, true)}
-                    onMouseOut={() => this.setHover(editor.text, false)}
-                  >
-                    <editor.Button
-                      hideBackground={true}
-                      color={isHover ? '#fff' : '#C0C0C0'}
-                      textColor={isHover ? '#fff' : '#606060'}
-                      text={editor.text}
-                      cursor="pointer"
-                    />
-                  </div>
+                  <editor.Button
+                    hideBackground={true}
+                    color={isHover ? '#fff' : '#C0C0C0'}
+                    textColor={isHover ? '#fff' : '#606060'}
+                    text={editor.text}
+                    cursor="pointer"
+                  />
+                </div>
 
-                </a>
-              );
-            })}
-          </Menu>
-        </div>
+              </a>
+            );
+          })}
+        </Menu>
         <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
           { (showForm) ? (
             <Menu>
@@ -378,29 +388,11 @@ export default class EditorSelector extends React.Component {
     }
   }
 
-  setBoundingBox() {
-    const update = {};
-    if (this.wrapper) {
-      const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-      if (!position.equals(this.state.position)) {
-        update.position = position;
-      }
-    }
-    // if (this.secondaryMenu) {
-    //   const secondaryMenuPosition = convertBoundingBox(this.secondaryMenu.getBoundingClientRect());
-    //   if (!secondaryMenuPosition.equals(this.state.secondaryMenuPosition)) {
-    //     update.secondaryMenuPosition = secondaryMenuPosition;
-    //   }
-    // }
-    if (this.wrapperForm) {
-      const formPosition = convertBoundingBox(this.wrapperForm.getBoundingClientRect());
-      if (!formPosition.equals(this.state.formPosition)) {
-        update.formPosition = formPosition;
-      }
-    }
-    if (Object.keys(update).length) {
-      this.setState(update);
-    }
+  setHasRoomToRenderBelow() {
+    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
+      this.setState({ hasRoomToRenderBelow });
+    } 
   }
 
 }

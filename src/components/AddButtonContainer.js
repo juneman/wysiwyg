@@ -16,8 +16,8 @@ export default class AddButtonContainer extends React.Component {
     ) : null;
 
     return (
-      <div className={className}>
-        <AddButton color="#00b850" shadow={ shadow }/>
+      <div>
+        <AddButton color="#00b850" shadow={ shadow } {...this.props}/>
         <div style={{ position: 'relative' }}>
           { editorSelectorNode }
         </div>

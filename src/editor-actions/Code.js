@@ -5,7 +5,7 @@ import sanitizeHtml from 'sanitize-html';
 
 import AceEditor from 'react-ace';
 import 'brace/mode/html';
-import 'brace/theme/github';
+import 'brace/theme/monokai';
 
 import { getButtonProps, secondaryMenuTitleStyle, buttonStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
@@ -18,7 +18,8 @@ export default class Code extends React.Component {
     super(props);
 
     this.state = {
-      content: ''
+      content: '',
+      isSaved: false
     };
   }
 
@@ -29,25 +30,32 @@ export default class Code extends React.Component {
     });
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (this.props.persistedState !== nextProps.persistedState || (this.props.isActive !== nextProps.isActive)) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.hasRoomToRenderBelow !== nextProps.hasRoomToRenderBelow) {
       return true;
     }
+    if (this.props.persistedState !== nextProps.persistedState) {
+      return true;
+    }
+    if (this.props.localState !== nextProps.localState) { return true; }
+    if (this.state.isSaved !== nextState.isSaved) { return true; }
     return false;
   }
 
   render() {
-    const { persistedState, title, isActive, aceEditorConfig } = this.props;
-    const content = persistedState.get('content');
-
-    const buttonProps = getButtonProps(isActive);
-
+    const { persistedState, title, aceEditorConfig, localState, hasRoomToRenderBelow } = this.props;
+    const { isSaved } = this.state;
+    const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
       left: 0,
       padding: 10
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -55,6 +63,7 @@ export default class Code extends React.Component {
       name: 'code-editor',
       editorProps: { $blockScrolling: true },
       showGutter: false,
+      key: "helloEditor",
       showPrintMargin: false,
       width: '400px',
       height: '150px'
@@ -62,54 +71,52 @@ export default class Code extends React.Component {
       aceEditorConfig.toJS(), // Let the user override items above
     {
       mode: 'html',
-      theme: 'github',
-      onChange: (content) => this.setState({content}),
+      theme: 'monokai',
+      onChange: (content) => {this.setState({content}, this.handleSave);},
       focus: true,
-      defaultValue: content
+      value: content
     });
-
-    const dropdownNodes = isActive ? (
-      <Menu style={dropdownStyles} className="html-menu">
-        <div style={titleStyles}>{title}</div>
-        <AceEditor
-          { ...aceEditorProps }
-        />
-
-        <div style={{textAlign: 'right', marginTop: 10}}>
-          <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
-        </div>
-      </Menu>
-    ) : null;
 
     return (
       <div>
-        <CodeButton onClick={() => this.toggleDropdown()} {...buttonProps} />
-        { dropdownNodes }
+        <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
+          <div style={titleStyles}>{title}</div>
+          <AceEditor
+            { ...aceEditorProps }
+          />
+          <div style={{textAlign: 'right', marginTop: 10}}>
+            <span style={{color:'rgba(255,255,255,0.7)'}}>{ isSaved ? 'Saved' : 'Waiting to save'}</span>
+          </div>
+        </Menu>
       </div>
     );
   }
 
-  toggleDropdown() {
-    const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
-  }
-
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  handleSave() {
     const { localState, persistedState, onChange, onToggleActive, sanitizeHtmlConfig } = this.props;
-    const { content } = this.state;
+    const { content, isSaved } = this.state;
 
     const cleanHtml = sanitizeHtml(content, sanitizeHtmlConfig.toJS());
-    const newPersistedState = persistedState.set('content', cleanHtml);
-    
-    onToggleActive(false);
+    if (cleanHtml != content) {
+      if (isSaved) {
+        const newLocalState = localState.set('content', content);
 
+        onChange({
+          localState: newLocalState,
+          persistedState
+        });
+
+        this.setState({ isSaved: false });
+      }
+      return;
+    }
+    const newPersistedState = persistedState.set('content', cleanHtml);
+    const newLocalState = localState.set('content', cleanHtml);    
     onChange({
-      localState,
+      localState: newLocalState,
       persistedState: newPersistedState
     });
+    this.setState({ isSaved: true });
   }
 
 }

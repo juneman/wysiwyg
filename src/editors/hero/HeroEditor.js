@@ -34,7 +34,7 @@ export default class HeroEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState, zonePosition } = this.props;
+    const { isEditing, persistedState, localState, canvasPosition } = this.props;
     const { url } = persistedState.toJS();
 
     const editorState = localState.get('editorState');
@@ -44,11 +44,17 @@ export default class HeroEditor extends React.Component {
       minHeight: 120,
       backgroundImage: (url) ? `url(${url})` : null,
       backgroundSize: 'cover',
-      textAlign: 'center'
+      textAlign: 'center',
+      marginLeft: -20,
+      marginRight: -20,
+      marginTop: -20,
+      marginBottom: 15,
+      padding: 20,
+      display: 'inline-block'
     };
 
     const textStyle = {
-      width: zonePosition.get('width')
+      width: canvasPosition.get('width')
     };
 
     return (
@@ -69,6 +75,7 @@ export default class HeroEditor extends React.Component {
           <div
             className="hero-content"
             style={textStyle}
+            ref={ (el) => this._heroContent = el }
             dangerouslySetInnerHTML={{
               __html: content
             }}
@@ -79,19 +86,24 @@ export default class HeroEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { zonePosition } = this.props;
+    const { canvasPosition } = this.props;
     const { url, content } = persistedState.toJS();
-    const contentAst = HTMLParser.parse(content);
+    const contentAst = HTMLParser.parse(content || '');
     const wrapperStyles = [];
+    wrapperStyles.push('display:inline-block');
     wrapperStyles.push('min-height:120px');
     wrapperStyles.push('background-size:cover');
     wrapperStyles.push('text-align:center');
+    wrapperStyles.push('margin: -20px -20px 15px');
+    wrapperStyles.push('padding: 20px');
+
     if (url) {
       wrapperStyles.push(`background-image:url(${url})`);
     }
     const textAttrs = {};
-    if (zonePosition.get('width')) {
-      textAttrs.style = `width:${zonePosition.get('width')}px;`;
+    const width = canvasPosition.get('width');
+    if (width) {
+      textAttrs.style = `width:${ width }px;`;
     }
 
     const ast = [

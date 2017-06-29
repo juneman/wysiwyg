@@ -50,25 +50,28 @@ export class Zone extends React.Component {
     };
 
     this.baseHoverStateStyle = {
-      border: '2px dotted #FFAA39',
+      outline: '2px dotted #FFAA39',
       backgroundColor: 'rgba(255,186,76,0.13)',
-      margin: '-10px -30px',
-      padding: '10px 30px'
+      margin: '0 -20px',
+      padding: '0 20px',
+      width: 'calc(100% + 40px)'
     };
     this.baseActiveStateStyle = {
-      border: '2px dotted transparent',
-      outline: '2px dashed hsla(0, 0%, 100%, 0.6)',
-      boxShadow: '0 0 0 1500px rgba(78,77,76,0.83)',
-      margin: '-10px -30px 5px',
-      padding: '10px 30px'
+      boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
+      margin: '0 -20px',
+      padding: '0 20px',
+      width: 'calc(100% + 40px)'
     };
     this.baseContainerStyle = {
-      width: '99%',
-      margin: '0 auto 3px auto',
-      position: 'relative'
+      width: '100%',
+      margin: '0 auto',
+      position: 'relative',
+      display: 'inline-block'
     };
     this.zoneStyle = {
-      border: '2px solid transparent'
+      outline: '2px solid transparent',
+      display: 'inline-block',
+      width: '100%'
     };
   }
 
@@ -107,7 +110,8 @@ export class Zone extends React.Component {
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
-    const containerStyle = (isEditing) ? { ...this.baseContainerStyle, zIndex: 10 } : this.baseContainerStyle;
+    const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
+    const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
 
     // Common props across all editors    
@@ -124,6 +128,8 @@ export class Zone extends React.Component {
         if (!isEditing) {
           return;
         }
+        // const html = update.html || this.activeEditor.generateHTML(update.persistedState);
+
         dispatch(editorActions.updateDraft({
           localState: update.localState,
           draftPersistedState: update.persistedState,
@@ -146,7 +152,9 @@ export class Zone extends React.Component {
         if (!isEditing) {
           return;
         }
+
         const html = this.activeEditor.generateHTML(update.persistedState);
+
         dispatch(editorActions.updateDraft({
           localState: update.localState,
           draftPersistedState: update.persistedState,
@@ -238,7 +246,8 @@ export class Zone extends React.Component {
     // The idea here is to reset the focus to the Draft Editor in most cases
     // except when the user has clicked on an input element, which needs to
     // maintain the focus in order to be usable.
-    const isFocusableElement = ['SELECT', 'INPUT'].includes(document.activeElement.tagName);
+
+    const isFocusableElement = this.wrapper.getRootNode().activeElement && ['SELECT', 'INPUT'].includes(this.wrapper.getRootNode().activeElement.tagName);
     if(this.activeEditor && !isFocusableElement) {
       this.activeEditor.focus();
     }
@@ -259,8 +268,11 @@ export class Zone extends React.Component {
       html = this.activeEditor.generateHTML(persistedState);
     }
 
+
+    const zoneWidth = `${ 100 / row.get('zones').size }%`;
+
     const zoneHtml = `
-      <div class="zone-container">
+      <div class="zone-container" style="display: inline-block; width: ${ zoneWidth }">
         <div class="zone">
           <div class="content">
             ${html || ''}

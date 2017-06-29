@@ -78,13 +78,13 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="editing">
           {children}
-          <div style={{ position: 'absolute', top: rowHeight + 30, left: 0, display: 'flex' }}>
+          <div name="EditorWrapperEditingActionsContainer" style={{ position: 'absolute', bottom: -50, left: -20, marginTop: 10, display: 'flex' }}>
             { toolbarNode &&
-              <div style={toolbarStyles} ref={(el) => this.toolbar = el}>
+              <div name="EditorWrapperEditingToolbar" style={ toolbarStyles } ref={(el) => this.toolbar = el}>
                 { toolbarNode }
               </div>
             }
-            <div style={editingButtonStyles}>
+            <div name="EditorWrapperEditingActions" style={editingButtonStyles}>
               <OkButton style={{marginRight: 5}} shadow={true} color="#00b850" onClick={() => onSave()} />
               <CancelButton style={{marginRight: 5}} secondary shadow={true} color="rgba(255, 255, 255, 0.8)" onClick={() => onCancel()} />
               { (disableDeleteButton) ? null : <DeleteButton secondary shadow={true} color="#eb6e5e" onClick={() => onRemove()} /> }
@@ -108,7 +108,7 @@ export default class EditorWrapper extends React.Component {
     }
 
     return (
-      <div className="content" ref={(el) => this.wrapper = el}>
+      <div name="EditorWrapper" className="content" ref={(el) => this.wrapper = el}>
         {(buttons) ? buttons : children}
       </div>
     );

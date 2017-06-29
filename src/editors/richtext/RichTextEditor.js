@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState } from 'draft-js';
+import { Editor, EditorState, RichUtils } from 'draft-js';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 
 export default class RichTextEditor extends React.Component {
@@ -32,10 +32,6 @@ export default class RichTextEditor extends React.Component {
     }
   }
 
-  componentDidMount() {
-    window.editorShadowRoot = this.wrapper.getRootNode();
-  }
-
   render() {
     const { isEditing, persistedState, localState } = this.props;
     const editorState = localState.get('editorState');
@@ -53,6 +49,15 @@ export default class RichTextEditor extends React.Component {
               editorState={editorState}
               customStyleFn={customStyleFn}
               blockStyleFn={blockStyleFn}
+              handleReturn={(e) =>
+                {
+                  if(e.shiftKey) {
+                    this.handleEditorStateChange(RichUtils.insertSoftNewline(editorState));
+                    return 'handled';
+                  }
+                  return 'not-handled';
+                }
+              }
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
           ) : null

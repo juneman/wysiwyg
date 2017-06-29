@@ -27,7 +27,7 @@ export default class Alignment extends React.Component {
 
   render() {
     const { position } = this.state;
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
     const secondaryButtonProps = getButtonProps(false);
@@ -38,6 +38,10 @@ export default class Alignment extends React.Component {
       left: position.left,
       width: 120
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>

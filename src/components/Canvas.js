@@ -37,6 +37,8 @@ export class Canvas extends React.Component {
       aceEditorConfig
     } = this.props;
 
+    window.editorShadowRoot = this.wrapper.getRootNode();
+
     this.setBoundingBox();
     if (rows && !rows.isEmpty()) {
       const activeZoneId = (startEditable) ? rows.get(0).get('zones').get(0) : null;
@@ -107,7 +109,6 @@ export class Canvas extends React.Component {
 
     const canvasStyles = Object.assign({}, {
       position: 'relative',
-      padding: (internalRows.size) ? '3px 0' : null,
       fontFamily: 'Sans-Serif'
     }, style);
 
