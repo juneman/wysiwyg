@@ -15,7 +15,8 @@ module.exports = {
     path: BUILD_DIR,
     publicPath: `https://${host}:${port}/`,
     library: 'WysiwygEditor',
-    libraryTarget: 'var'
+    libraryTarget: 'var',
+    filename: 'bundle.js',
   },
   resolve: {
     modules: [
