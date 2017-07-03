@@ -5,8 +5,7 @@ const port = 8080;
 
 const PROJ_ROOT = __dirname,
       SCRIPTS_DIR = path.join(PROJ_ROOT, 'src'),
-      BUILD_DIR = path.join(PROJ_ROOT, 'lib'),
-      DIST_DIR = path.join(PROJ_ROOT, 'dist');
+      BUILD_DIR = path.join(PROJ_ROOT, (process.env.AWS_BUCKET) ? `lib/${process.env.AWS_BUCKET}` : 'lib'),
 
 module.exports = {
   entry: { index: `${SCRIPTS_DIR}/index` },
