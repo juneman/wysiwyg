@@ -40,5 +40,5 @@ deploy:
           key-id: $AWS_ACCESS_KEY_ID
           key-secret: $AWS_SECRET_ACCESS_KEY
           bucket-url: s3://$AWS_BUCKET
-          source-dir: build/$AWS_BUCKET
+          source-dir: lib/$AWS_BUCKET
           opts: --acl-public
