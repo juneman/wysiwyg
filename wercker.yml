@@ -28,11 +28,8 @@ build:
     # - npm-test
 
     - script:
-        name: Build assets for development
-        code: AWS_BUCKET=appcues-wysiwyg-dev npm run clean && ./node_modules/.bin/babel src -d lib && ./node_modules/.bin/webpack --config webpack.build.js
-    - script:
-        name: Build assets for production
-        code: AWS_BUCKET=appcues-wysiwyg-prod npm run clean && ./node_modules/.bin/babel src -d lib && ./node_modules/.bin/webpack --config webpack.build.js
+        name: Build assets
+        code: npm run clean && ./node_modules/.bin/babel src -d lib && ./node_modules/.bin/webpack --config webpack.build.js
 
 deploy:
     steps:
@@ -40,5 +37,5 @@ deploy:
           key-id: $AWS_ACCESS_KEY_ID
           key-secret: $AWS_SECRET_ACCESS_KEY
           bucket-url: s3://$AWS_BUCKET
-          source-dir: lib/$AWS_BUCKET
+          source-dir: lib
           opts: --acl-public
