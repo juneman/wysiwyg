@@ -121,9 +121,6 @@ export default class ImageEditor extends React.Component {
       .set('width', width);
 
     // Make sure the uploaded image does not have a larger size than the canvas
-    if (height > canvasPosition.get('height')) {
-      newPersistedState = newPersistedState.set('heightOverride', canvasPosition.get('height'));
-    }
     if (width > canvasPosition.get('width')) {
       newPersistedState = newPersistedState.set('widthOverride', canvasPosition.get('width'));
     }
