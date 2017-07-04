@@ -1,8 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { EditorState } from 'draft-js';
+import { decorator, convertFromHTML } from '../../helpers/draft/convert';
 
-export default class HtmlEditor extends React.Component {
+import { placeholderStyle } from '../../helpers/styles/editor';
+
+export default class VideoEditor extends React.Component {
+
+  componentWillMount() {
+    const { persistedState } = this.props;
+    const htmlContent = persistedState.get('content') || '<p></p>';
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+    this.handleEditorStateChange(initialEditorState);
+  }
 
   render() {
     const { persistedState } = this.props;
@@ -15,7 +26,7 @@ export default class HtmlEditor extends React.Component {
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
     ) : (
-      <div className="placeholder">Add your Video Script</div>
+      <div style={ placeholderStyle }>Add your Video Script</div>
     );
   }
 
@@ -46,7 +57,7 @@ export default class HtmlEditor extends React.Component {
 
 }
 
-HtmlEditor.propTypes = {
+VideoEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
