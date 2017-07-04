@@ -27,10 +27,6 @@ export default class EditorWrapper extends React.Component {
     this.setBoundingBox();
   }
 
-  componentDidUpdate() {
-    this.setBoundingBox();
-  }
-
   render() {
     const { position, toolbarPosition } = this.state;
     const {
@@ -54,31 +50,25 @@ export default class EditorWrapper extends React.Component {
 
     const hoverButtonStyles = {
       position: 'absolute',
-      width: posWidth,
-      height: zoneHeight,
       top: 0,
+      bottom: 0,
       left: 0,
-      zIndex: 100
-    };
-
-    const innerButtonStyle = {
+      right: 0,
+      zIndex: 100,
       textAlign: 'center',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      alignItems: 'center'
     };
 
     const editingButtonStyles = {
-      position: 'absolute',
-      left: toolbarWidth + 20,
-      top: rowHeight + 10,
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',
+      display: 'flex',
+      marginLeft: 20
     };
 
     const toolbarStyles = {
-      position: 'absolute',
-      left: 0,
-      top: rowHeight + 10,
       zIndex: 100
     };
 
@@ -88,29 +78,29 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="editing">
           {children}
-          <div style={editingButtonStyles}>
-            <OkButton shadow={true} color="#0bdc66" onClick={() => onSave()} />
-            <CancelButton shadow={true} color="#C0C0C0" onClick={() => onCancel()} />
-            { (disableDeleteButton) ? null : <DeleteButton shadow={true} color="#FF0000" onClick={() => onRemove()} /> }
-          </div>
-          { (toolbarNode) ? (
-            <div style={toolbarStyles} ref={(el) => this.toolbar = el}>
-              { toolbarNode }
+          <div name="EditorWrapperEditingActionsContainer" style={{ position: 'absolute', bottom: -50, left: -20, marginTop: 10, display: 'flex' }}>
+            { toolbarNode &&
+              <div name="EditorWrapperEditingToolbar" style={ toolbarStyles } ref={(el) => this.toolbar = el}>
+                { toolbarNode }
+              </div>
+            }
+            <div name="EditorWrapperEditingActions" style={editingButtonStyles}>
+              <OkButton style={{marginRight: 5}} shadow={true} color="#00b850" onClick={() => onSave()} />
+              <CancelButton style={{marginRight: 5}} secondary shadow={true} color="rgba(255, 255, 255, 0.8)" onClick={() => onCancel()} />
+              { (disableDeleteButton) ? null : <DeleteButton secondary shadow={true} color="#eb6e5e" onClick={() => onRemove()} /> }
             </div>
-          ) : null}
+          </div>
         </div>
       );
     } else if (isHover) {
       buttons = (
-        <div className="hover" style={{position: 'relative'}}>
+        <div className="hover">
           <div style={hoverButtonStyles}>
-            <div style={innerButtonStyle}>
-              <EditButton
-                shadow={true}
-                color="#f4ad42"
-                onClick={() => onEdit()}
-              />
-            </div>
+            <EditButton
+              shadow={true}
+              color="#f4ad42"
+              onClick={() => onEdit()}
+            />
           </div>
           {children}
         </div>
@@ -118,7 +108,7 @@ export default class EditorWrapper extends React.Component {
     }
 
     return (
-      <div className="content" ref={(el) => this.wrapper = el}>
+      <div name="EditorWrapper" className="content" ref={(el) => this.wrapper = el}>
         {(buttons) ? buttons : children}
       </div>
     );

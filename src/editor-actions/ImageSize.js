@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, buttonStyle, textInputStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, textInputStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
+import Button from '../components/Button';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
 
@@ -21,7 +22,7 @@ export default class ImageSize extends React.Component {
 
   render() {
     const { width } = this.state;
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -32,19 +33,23 @@ export default class ImageSize extends React.Component {
       padding: 10,
       width: 300
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const titleStyles = secondaryMenuTitleStyle;
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Set Image Width</div>
+        <div style={titleStyles}>Set Image Width (number in pixels)</div>
         <div style={{marginTop: 20}}>
           <div>
             <label>Width:</label><br/>
-            <input style={textInputStyle} type="number" step="1" min="10" max="1000" value={width} onChange={(e) => this.handleInputChange(e, 'width')} />
+            <input style={textInputStyle} value={width} placeholder="auto" onChange={(e) => this.handleInputChange(e, 'width')} />
           </div>
           <div style={{textAlign: 'right', marginTop: 20}}>
-            <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
+            <Button onClick={(e) => this.handleSave(e)}>Update</Button>
           </div>
         </div>
       </Menu>
@@ -66,10 +71,8 @@ export default class ImageSize extends React.Component {
   handleInputChange(e, name) {
     const val = e.currentTarget.value;
     const update = {};
-    if (val && val.length) {
-      update[name] = parseInt(val);
-      this.setState(update);
-    }
+    update[name] = val && val.length ? parseInt(val) : val;
+    this.setState(update);
   }
 
   handleSave(e) {
@@ -80,16 +83,9 @@ export default class ImageSize extends React.Component {
     const { width } = this.state;
 
     // Auto scale the height based on the width selected
-    const { width: imageWidth, height: imageHeight } = persistedState.toJS();
-    if (!imageHeight) {
-      return;
-    }
-
-    const scaleRatio = width / imageWidth;
-    const height = imageHeight * scaleRatio;
+    const { width: imageWidth } = persistedState.toJS();
 
     const newPersistedState = persistedState
-      .set('height', height)
       .set('width', width)
       .delete('widthOverride')
       .delete('heightOverride');

@@ -83,7 +83,7 @@ export function convertToHTML(editorState) {
           case 'header-five':
             return <h5 {...styleProps} />;
           default:
-            return <div {...styleProps} />;
+            return <p {...styleProps} />;
         }
       }
     },

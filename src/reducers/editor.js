@@ -20,8 +20,9 @@ const initialState = fromJS({
   allowedEditorTypes: [],
   aceEditorConfig: {},
   sanitizeHtmlConfig: {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
-    allowedAttributes: false
+    allowedTags: false,
+    allowedAttributes: false,
+    exclusiveFilter: (frame) => frame.tag.toLowerCase() === 'script'
   }
 });
 

@@ -13,12 +13,15 @@ export default class ImageEditor extends React.Component {
     const { url, height, width, heightOverride, widthOverride, textAlign } = persistedState.toJS();
 
     const dropzoneStyle = {
-      height: 70,
+      paddingBottom: 30,
       paddingTop: 30,
-      width: '100%',
       backgroundColor: '#dafeea',
       color: '#0bdc66',
-      textAlign: 'center'
+      textAlign: 'center',
+      borderRadius: 4,
+      cursor: 'pointer',
+      marginLeft: -23,
+      width: 'calc(100% + 46px)'
     };
 
     const wrapperStyle = {};
@@ -28,7 +31,7 @@ export default class ImageEditor extends React.Component {
 
     let node = (<div style={{height: 100, ...placeholderStyle}} >Click to add your Image</div>);
     if (url) {
-      node = (<img src={url} height={heightOverride || height} width={widthOverride || width} />);
+      node = (<img src={url} style={{ height: heightOverride || height, width: widthOverride || width }} />);
     } else if (isEditing) {
       node = (
         <ImageUploader
@@ -62,12 +65,12 @@ export default class ImageEditor extends React.Component {
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
-    const imageAttrs = {};
+    const imageAttrs = {style: ""};
     if (height || heightOverride) {
-      imageAttrs.height = heightOverride || height;
+      imageAttrs.style = `${ imageAttrs.style } height: ${ heightOverride || height }px;`;
     }
     if (width || widthOverride) {
-      imageAttrs.width = widthOverride || width;
+      imageAttrs.style = `${ imageAttrs.style } width: ${ widthOverride || width }px`;
     }
 
     const imageAst = {
@@ -115,7 +118,6 @@ export default class ImageEditor extends React.Component {
     
     let newPersistedState = persistedState
       .set('url', url)
-      .set('height', height)
       .set('width', width);
 
     // Make sure the uploaded image does not have a larger size than the canvas
@@ -128,7 +130,8 @@ export default class ImageEditor extends React.Component {
 
     onChange({
       localState,
-      persistedState: newPersistedState
+      persistedState: newPersistedState,
+      html: this.generateHTML(newPersistedState)
     });
   }
 

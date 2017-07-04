@@ -55,7 +55,7 @@ export default class TextStyle extends React.Component {
 
   render() {
     const { blockType } = this.state;
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -66,6 +66,10 @@ export default class TextStyle extends React.Component {
       padding: 10,
       width: 300
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    } 
 
     const titleStyles = secondaryMenuTitleStyle;
 

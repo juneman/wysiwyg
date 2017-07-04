@@ -10,7 +10,6 @@ import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
 
-import EditorSelector from './EditorSelector';
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
 
@@ -38,6 +37,8 @@ export class Canvas extends React.Component {
       aceEditorConfig
     } = this.props;
 
+    window.editorShadowRoot = this.wrapper.getRootNode();
+
     this.setBoundingBox();
     if (rows && !rows.isEmpty()) {
       const activeZoneId = (startEditable) ? rows.get(0).get('zones').get(0) : null;
@@ -61,10 +62,6 @@ export class Canvas extends React.Component {
     if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
       dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
-  }
-
-  componentDidUpdate() {
-    this.setBoundingBox();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -106,16 +103,14 @@ export class Canvas extends React.Component {
       canvasPosition,
       style,
       internalAllowedEditorTypes,
-      allowedEditorTypes
+      allowedEditorTypes,
+      height
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
       position: 'relative',
-      padding: (internalRows.size) ? '3px 0' : null,
       fontFamily: 'Sans-Serif'
     }, style);
-
-    const { height: canvasHeight } = canvasPosition.toJS();
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
@@ -127,36 +122,30 @@ export class Canvas extends React.Component {
         />
       ): (
         <FullAddElement
+          baseHeight={ height }
           key={row.get('id')}
           allowedEditorTypes={allowedEditorTypes}
-          onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
+          onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+          internalAllowedEditorTypes={ internalAllowedEditorTypes }
         />
       );
     }) : null;
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
-        height={canvasHeight}
+        baseHeight={ height }
         allowedEditorTypes={allowedEditorTypes}
-        onClickAdd={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
-      />
-    ) : null;
-
-    const editorSelectorNode = showEditorSelector ? (
-      <EditorSelector
-        canvasPosition={canvasPosition}
-        addButtonPosition={addButtonPosition}
-        screenSize={screenSize}
-        allowedEditorTypes={internalAllowedEditorTypes}
-        onSelect={(type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction)}
+        onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+        internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
     ) : null;
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
-        onClick={(addButtonPosition) => this.toggleEditorSelector(addButtonPosition)}
+        onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+        internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
     ) : null;
 
@@ -165,7 +154,6 @@ export class Canvas extends React.Component {
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
-        { editorSelectorNode }
       </div>
     );
   }
@@ -245,15 +233,6 @@ export class Canvas extends React.Component {
 
   removeRow(id) {
     this.props.dispatch(rowActions.removeRow(id));
-  }
-
-  toggleEditorSelector(addButtonPosition) {
-    const { showEditorSelector } = this.props;
-    if (showEditorSelector) {
-      this.props.dispatch(editorSelectorActions.hide());
-    } else {
-      this.props.dispatch(editorSelectorActions.show(addButtonPosition));
-    }
   }
 
   moveRows(sourceIndex, targetIndex) {
@@ -341,7 +320,8 @@ Canvas.propTypes = {
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
   disableAddButton: PropTypes.bool,
-  maxRows: PropTypes.number
+  maxRows: PropTypes.number,
+  height: PropTypes.string
 };
 
 function mapStateToProps(state, ownProps) {

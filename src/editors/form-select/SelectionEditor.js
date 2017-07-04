@@ -101,9 +101,6 @@ export default class SelectionEditor extends React.Component {
   
   // Instance Method
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
   }
 
   handleEditorStateChange(editorState) {

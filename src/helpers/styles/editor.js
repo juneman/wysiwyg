@@ -25,7 +25,8 @@ export const textInputStyle = {
   appearance: 'none',
   boxShadow: 'none',
   borderRadius: 'none',
-  padding: 4
+  padding: 4,
+  outline: 'none'
 };
 
 export const dropdownStyle = {
@@ -42,16 +43,6 @@ export const dropdownStyle = {
 
 export const checkboxStyle = {
   marginRight: 10
-};
-
-export const buttonStyle = {
-  backgroundImage: 'linear-gradient(to bottom, #3498db, #2980b9)',
-  color: '#fff',
-  border: 'none',
-  borderRadius: 5,
-  fontSize: 18,
-  padding: '5px 30px',
-  textDecoration: 'none'
 };
 
 export const placeholderStyle = {

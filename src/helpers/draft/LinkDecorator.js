@@ -21,7 +21,7 @@ const Link = (props) => {
   const { href, isNewWindow } = contentState.getEntity(entityKey).getData();
   
   return (
-    <a href={href} target={(isNewWindow) ? '_blank' : '_self'} style={{textDecoration: 'underline', color: 'blue'}}>
+    <a href={href} target={(isNewWindow) ? '_blank' : '_self'}>
       {children}
     </a>
   );

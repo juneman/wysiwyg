@@ -25,9 +25,10 @@ export default class ImageUpload extends React.Component {
     const { url, height, width } = imageDetails;
     const { localState, persistedState, onChange, maxWidth, maxHeight } = this.props;
     
+    const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
+
     let newPersistedState = persistedState
-      .set('url', url)
-      .set('height', height)
+      .set('url', urlWithoutProtocol)
       .set('width', width);
 
     // Make sure the uploaded image does not have a larger size than available
