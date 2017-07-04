@@ -29,7 +29,7 @@ export default class FullAddElement extends React.Component {
   }
 
   render() {
-    const { minHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
+    const { baseHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
     const { showEditorSelector } = this.state;
 
     const fullScreenStyles = {
@@ -50,18 +50,19 @@ export default class FullAddElement extends React.Component {
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      minHeight: 120
     };
 
     return (
-      <div style={{ height: minHeight }}>
+      <div style={{ height: baseHeight, minHeight: 120 }}>
         { (allowedEditorTypes.isEmpty() || allowedEditorTypes.includes("Image")) ? (
           <div className="full-add" style={centeredContainer}>
             <ImageUploader
               disableClick={true}
               onUpload={(imageDetails) => onUpload(imageDetails)}
             >
-              <div style={{ cursor: 'pointer', height: '100%', padding: '20px' }} id="addBtn" onClick={ this.handleAddNew }>
+              <div style={{ cursor: 'pointer', height: '100%' }} id="addBtn" onClick={ this.handleAddNew }>
                 <div style={fullScreenStyles}>
                   <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <span ref={(addButton) => this.addButton = addButton}>
@@ -106,6 +107,7 @@ export default class FullAddElement extends React.Component {
 
 FullAddElement.propTypes = {
   onUpload: PropTypes.func.isRequired,
+  baseHeight: PropTypes.number,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired

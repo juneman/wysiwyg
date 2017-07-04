@@ -122,7 +122,7 @@ export class Canvas extends React.Component {
         />
       ): (
         <FullAddElement
-          minHeight={ height }
+          baseHeight={ height }
           key={row.get('id')}
           allowedEditorTypes={allowedEditorTypes}
           onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
@@ -134,7 +134,7 @@ export class Canvas extends React.Component {
 
     const fullScreenAddNode = (!internalRows.size) ? (
       <FullAddElement
-        minHeight={ height }
+        baseHeight={ height }
         allowedEditorTypes={allowedEditorTypes}
         onUpload={(imageDetails) => this.handleAddImage(imageDetails)}
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
