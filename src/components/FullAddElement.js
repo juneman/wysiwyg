@@ -98,7 +98,6 @@ export default class FullAddElement extends React.Component {
   }
 
   setBoundingBox() {
-    console.log("updated");
     if (!this.addButton) {
       return;
     }
