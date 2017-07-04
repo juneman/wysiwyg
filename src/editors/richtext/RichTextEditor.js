@@ -3,24 +3,29 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const htmlContent = persistedState.get('content') || '<p>Edit This Text</p>';
-    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+    const htmlContent = persistedState.get('content');
+    const initialEditorState = htmlContent ?
+      EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
+      : EditorState.createEmpty(decorator);
     this.handleEditorStateChange(initialEditorState);
   }
 
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const htmlContent = persistedState.get('content') || '<p>Edit This Text</p>';
+    const htmlContent = persistedState.get('content');
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
-      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+      const initialEditorState = htmlContent ?
+        EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
+        : EditorState.createEmpty(decorator);
       this.handleEditorStateChange(initialEditorState);
     } else if (nextProps.isEditing) {
       // If editorState changes from the toolbar, push any changes up the chain
@@ -36,7 +41,7 @@ export default class RichTextEditor extends React.Component {
     const { isEditing, persistedState, localState } = this.props;
     const editorState = localState.get('editorState');
 
-    const content = (persistedState.get('content')) || '<p>Edit This Text</p>';
+    const content = (persistedState.get('content')) || '';
 
     const wrapperStyle = {};
 
@@ -49,6 +54,7 @@ export default class RichTextEditor extends React.Component {
               editorState={editorState}
               customStyleFn={customStyleFn}
               blockStyleFn={blockStyleFn}
+              placeholder="Start typing"
               handleReturn={(e) =>
                 {
                   if(e.shiftKey) {
@@ -62,11 +68,15 @@ export default class RichTextEditor extends React.Component {
             />
           ) : null
         ) : (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: content
-            }}
-          />
+          (content && content != '<p></p>') ? (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: content
+              }}
+            />
+          ) : (
+            <div style={ placeholderStyle }>Click to add your text</div>
+          )
         )}
       </div>
     );

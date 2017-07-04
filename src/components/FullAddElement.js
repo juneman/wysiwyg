@@ -106,7 +106,7 @@ export default class FullAddElement extends React.Component {
 
 FullAddElement.propTypes = {
   onUpload: PropTypes.func.isRequired,
-  baseHeight: PropTypes.number,
+  baseHeight: PropTypes.string,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired

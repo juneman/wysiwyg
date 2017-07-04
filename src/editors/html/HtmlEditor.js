@@ -1,10 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { EditorState } from 'draft-js';
+import { decorator, convertFromHTML } from '../../helpers/draft/convert';
 
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class HtmlEditor extends React.Component {
+
+  componentWillMount() {
+    const { persistedState } = this.props;
+    const htmlContent = persistedState.get('content') || '<p></p>';
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+    this.handleEditorStateChange(initialEditorState);
+  }
 
   render() {
     const { persistedState } = this.props;
