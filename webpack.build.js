@@ -2,7 +2,7 @@ const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const host = 'localhost';
 const port = 8080;
-
+const webpack = require('webpack');
 
 const PROJ_ROOT = __dirname,
       SCRIPTS_DIR = path.join(PROJ_ROOT, 'src'),
@@ -17,7 +17,16 @@ module.exports = {
     library: 'WysiwygEditor',
     libraryTarget: 'var',
     filename: 'bundle.js',
+    chunkFilename: '[id].chunk.js'
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      comments: false,
+      compressor: {
+        warnings: false
+      }
+    })
+  ],
   resolve: {
     modules: [
       SCRIPTS_DIR,
@@ -26,8 +35,8 @@ module.exports = {
     extensions: ['.js', '.json']
   },
   externals: {
-"react": "React",
-"react-dom": "ReactDOM"
+    "react": "React",
+    "react-dom": "ReactDOM"
   },
   module: {
     loaders: [
