@@ -35,7 +35,7 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
     "sanitize-html": "^1.14.1",
-    "striptags": "^3.0.1",
+    "striptags": "^2.2.1",
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
