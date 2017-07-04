@@ -1,7 +1,8 @@
 .DS_Store
 
-# Intermediary Output
+# Output
 lib/
+dist/
 
 # Logs
 logs
