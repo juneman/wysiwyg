@@ -32,9 +32,6 @@ export default class ImageUpload extends React.Component {
       .set('width', width);
 
     // Make sure the uploaded image does not have a larger size than available
-    if (maxHeight && height > maxHeight) {
-      newPersistedState = newPersistedState.set('heightOverride', maxHeight);
-    }
     if (maxWidth && width > maxWidth) {
       newPersistedState = newPersistedState.set('widthOverride', maxWidth);
     }
