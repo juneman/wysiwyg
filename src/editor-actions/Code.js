@@ -111,7 +111,7 @@ export default class Code extends React.Component {
       return;
     }
     const newPersistedState = persistedState.set('content', cleanHtml);
-    const newLocalState = localState.set('content', cleanHtml);    
+    const newLocalState = localState.set('content', cleanHtml);
     onChange({
       localState: newLocalState,
       persistedState: newPersistedState
