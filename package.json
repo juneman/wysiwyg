@@ -12,7 +12,7 @@
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
     "build": "npm run clean && babel src -d lib && webpack --config webpack.build.js",
     "watch": "npm run clean && babel src -d lib && webpack --config webpack.build.js --watch",
-    "start": "webpack-dev-server --config webpack.build.js --hot --inline --colors",
+    "start": "NODE_ENV=development webpack-dev-server --config webpack.build.js --hot --inline --colors",
     "clean": "rm -rf lib && mkdir lib"
   },
   "author": "Michael Cox",
