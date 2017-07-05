@@ -30,7 +30,7 @@ module.exports = {
   resolve: {
     modules: [
       SCRIPTS_DIR,
-      `${PROJ_ROOT}/node_modules`      
+      `${PROJ_ROOT}/node_modules`
     ],
     extensions: ['.js', '.json']
   },
