@@ -8,7 +8,7 @@ const PROJ_ROOT = __dirname,
       SCRIPTS_DIR = path.join(PROJ_ROOT, 'src'),
       BUILD_DIR = path.join(PROJ_ROOT, 'lib');
 
-module.exports = {
+const baseConfig = {
   entry: { index: `${SCRIPTS_DIR}/index` },
   devServer: {host, port, https: true},
   output: {
@@ -19,14 +19,7 @@ module.exports = {
     filename: 'bundle.js',
     chunkFilename: '[id].chunk.js'
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      compressor: {
-        warnings: false
-      }
-    })
-  ],
+  plugins: [],
   resolve: {
     modules: [
       SCRIPTS_DIR,
@@ -44,3 +37,16 @@ module.exports = {
     ]
   }
 };
+
+if (process.env.NODE_ENV != 'development') {
+  baseConfig.plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      comments: false,
+      compressor: {
+        warnings: false
+      }
+    })
+  );
+}
+
+module.exports = baseConfig;
