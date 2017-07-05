@@ -9,10 +9,17 @@ import { placeholderStyle } from '../../helpers/styles/editor';
 export default class VideoEditor extends React.Component {
 
   componentWillMount() {
-    const { persistedState } = this.props;
-    const htmlContent = persistedState.get('content') || '<p></p>';
-    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
-    this.handleEditorStateChange(initialEditorState);
+    const { persistedState, localState, onChange } = this.props;
+
+    if (!persistedState.get('content')) {
+      const newPersistedState = persistedState.set('content', '');
+      const newLocalState = localState.set('content', '');
+      onChange({
+        persistedState: newPersistedState,
+        localState: newLocalState,
+        html: this.generateHTML(newPersistedState)
+      });
+    }
   }
 
   render() {
@@ -33,20 +40,6 @@ export default class VideoEditor extends React.Component {
   // Instance Method
   focus() {
     // Do nothing for this editor
-  }
-
-  handleEditorStateChange(editorState) {
-    const { persistedState, localState, onChange } = this.props;
-    const content = editorState.getCurrentContent().getPlainText();
-
-    const newPersistedState = persistedState.set('content', content);
-    const newLocalState = localState.set('editorState', editorState);
-
-    onChange({
-      persistedState: newPersistedState,
-      localState: newLocalState,
-      html: this.generateHTML(newPersistedState)
-    });
   }
 
   generateHTML(persistedState) {
