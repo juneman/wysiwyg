@@ -6,7 +6,7 @@ import { List } from 'immutable';
 
 export default class AddButtonContainer extends React.Component {
   render() {
-    const { shadow, className, style, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
+    const { shadow, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
 
     const editorSelectorNode = showEditorSelector ? (
       <EditorSelector
@@ -27,8 +27,6 @@ export default class AddButtonContainer extends React.Component {
 }
 
 AddButtonContainer.propTypes = {
-  style: PropTypes.object,
-  className: PropTypes.string,
   shadow: PropTypes.bool,
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,

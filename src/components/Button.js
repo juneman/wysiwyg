@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export default class Button extends React.Component {
   render() {
-    const { className, label, onClick, children } = this.props;
+    const { label, onClick, children } = this.props;
 
     const buttonStyle = {
       display: 'inline-flex',
@@ -36,7 +36,6 @@ export default class Button extends React.Component {
 }
 
 Button.propTypes = {
-  className: PropTypes.string,
   label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node

@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, List, fromJS } from 'immutable';
+import { List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 
 import Menu from './Menu';
-import { convertBoundingBox } from '../helpers/domHelpers';
 import TextButton from '../icons/TextButton';
 import ImageButton from '../icons/ImageButton';
 import VideoButton from '../icons/VideoButton';
@@ -233,9 +232,6 @@ export default class EditorSelector extends React.Component {
     super(props);
 
     this.state = {
-      position: Map(),
-      formPosition: Map(),
-      secondaryMenuPosition: Map(),
       showForm: false,
       primaryHoverMenu: '',
       secondaryMenuHover: '',
@@ -253,28 +249,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes } = this.props;
-    const { hasRoomToRenderBelow, position, formPosition, secondaryMenuPosition, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
-
-    // const { top: addBtnTop = 0, left: addBtnLeft = 0 } = addButtonPosition.toJS();
-    // const { top: canvasTop = 0, left: canvasLeft = 0 } = canvasPosition.toJS();
-    // const { height: screenHeight = 0 } = screenSize.toJS();
-    // const { height: menuHeight = 0, width: menuWidth = 0, top: menuTop = 0 } = position.toJS();
-    // const { height: secMenuHeight = 0 } = secondaryMenuPosition.toJS();
-    // const { top: formTop = 0 } = formPosition.toJS();
-
-    // const hasRoomToRenderBelow = (addBtnTop + 300 < screenHeight) ? true : false;
-
-    // const positionBelowBtn = {
-    //   top: addBtnTop - canvasTop,
-    //   left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
-    // };
-
-    // const positionAboveBtn = {
-    //   top: addBtnTop - canvasTop - menuHeight,
-    //   left: addBtnLeft - canvasLeft - (menuWidth / 2) + 20
-    // };
-
-    // const menuPosition = (hasRoomToRenderBelow) ? positionBelowBtn : positionAboveBtn;
+    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
     const menuStyle = {
       zIndex: 100,

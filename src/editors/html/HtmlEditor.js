@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { EditorState } from 'draft-js';
-import { decorator, convertFromHTML } from '../../helpers/draft/convert';
 
 import { placeholderStyle } from '../../helpers/styles/editor';
 

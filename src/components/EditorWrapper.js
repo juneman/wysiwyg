@@ -28,13 +28,10 @@ export default class EditorWrapper extends React.Component {
   }
 
   render() {
-    const { position, toolbarPosition } = this.state;
     const {
       isEditing,
       isHover,
       children,
-      rowPosition,
-      zonePosition,
       toolbarNode,
       onSave,
       onCancel,
@@ -42,11 +39,6 @@ export default class EditorWrapper extends React.Component {
       onEdit,
       disableDeleteButton
     } = this.props;
-
-    const { height: rowHeight = 0 } = rowPosition.toJS();
-    const { height: zoneHeight = 0 } = zonePosition.toJS();
-    const { width: posWidth = 0 } = position.toJS();
-    const { width: toolbarWidth = 0 } = toolbarPosition.toJS();
 
     const hoverButtonStyles = {
       position: 'absolute',

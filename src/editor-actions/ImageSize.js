@@ -82,9 +82,6 @@ export default class ImageSize extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { width } = this.state;
 
-    // Auto scale the height based on the width selected
-    const { width: imageWidth } = persistedState.toJS();
-
     const newPersistedState = persistedState
       .set('width', width)
       .delete('widthOverride')
@@ -105,5 +102,6 @@ ImageSize.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool
 };

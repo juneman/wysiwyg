@@ -115,6 +115,6 @@ function mapStateToProps(state) {
     sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig'),
     aceEditorConfig: state.editor.get('aceEditorConfig')
   };
-};
+}
 
 export default connect(mapStateToProps)(Toolbar);

@@ -7,10 +7,8 @@ import AceEditor from 'react-ace';
 import 'brace/mode/html';
 import 'brace/theme/monokai';
 
-import { getButtonProps, secondaryMenuTitleStyle, buttonStyle } from '../helpers/styles/editor';
+import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
-
-import CodeButton from '../icons/CodeButton';
 
 export default class Code extends React.Component {
 
@@ -93,7 +91,7 @@ export default class Code extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, onToggleActive, sanitizeHtmlConfig } = this.props;
+    const { localState, persistedState, onChange, sanitizeHtmlConfig } = this.props;
     const { content, isSaved } = this.state;
 
     const cleanHtml = sanitizeHtml(content, sanitizeHtmlConfig.toJS());
@@ -126,8 +124,8 @@ Code.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map),
-  aceEditorConfig: PropTypes.instanceOf(Map).isRequired
+  aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
+  hasRoomToRenderBelow: PropTypes.bool
 };

@@ -216,7 +216,7 @@ export default class IconButton extends React.Component {
 IconButton.defaultProps = {
   style: {},
   secondary: false
-}
+};
 
 IconButton.propTypes = {
   title: PropTypes.string.isRequired,

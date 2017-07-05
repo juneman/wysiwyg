@@ -97,10 +97,6 @@ export class Canvas extends React.Component {
     const {
       internalRows,
       showAddButton,
-      showEditorSelector,
-      addButtonPosition,
-      screenSize,
-      canvasPosition,
       style,
       internalAllowedEditorTypes,
       allowedEditorTypes,
@@ -313,10 +309,7 @@ Canvas.propTypes = {
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   aceEditorConfig: PropTypes.instanceOf(Map),
-  showEditorSelector: PropTypes.bool.isRequired,
-  addButtonPosition: PropTypes.instanceOf(Map).isRequired,
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
-  screenSize: PropTypes.instanceOf(Map).isRequired,
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
   disableAddButton: PropTypes.bool,
@@ -338,10 +331,7 @@ function mapStateToProps(state, ownProps) {
     internalRows: state.rows,
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
     
-    showEditorSelector: state.editorSelector.get('isOpen'),
     canvasPosition: state.editor.get('canvasPosition'),
-    screenSize: state.editor.get('screenSize'),
-    addButtonPosition: state.editorSelector.get('addButtonPosition'),
 
     showAddButton: (!ownProps.maxRows || ownProps.maxRows < state.rows.size)
      && !state.editor.get('disableAddButton')
