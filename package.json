@@ -65,6 +65,7 @@
     "react-dom": "^15.5.4",
     "react-test-renderer": "^15.5.4",
     "redux-devtools-extension": "^2.13.0",
+    "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.2.3",
     "sinon": "^2.2.0",
     "sinon-chai": "^2.10.0",

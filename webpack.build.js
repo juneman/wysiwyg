@@ -18,7 +18,13 @@ const baseConfig = {
     filename: 'bundle.js',
     chunkFilename: '[id].chunk.js'
   },
-  plugins: [],
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+      }
+    })
+  ],
   resolve: {
     modules: [
       SCRIPTS_DIR,
