@@ -272,7 +272,7 @@ export class Zone extends React.Component {
     const zoneHtml = `
       <div class="zone-container" style="display: inline-block; width: ${ zoneWidth }">
         <div class="zone">
-          <div class="content">
+          <div class="zone-content">
             ${html || ''}
           </div>
         </div>
