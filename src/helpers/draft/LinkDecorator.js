@@ -18,11 +18,10 @@ function findLinkEntities(contentBlock, callback, contentState) {
 const Link = (props) => {
   const { contentState, entityKey, children } = props;
 
-  const { href, isNewWindow } = contentState.getEntity(entityKey).getData();
-  
+  const { href, isNewWindow, color } = contentState.getEntity(entityKey).getData();
   return (
-    <a href={href} target={(isNewWindow) ? '_blank' : '_self'}>
-      {children}
+    <a style={{ color }} href={href} target={(isNewWindow) ? '_blank' : '_self'}>
+      { children }
     </a>
   );
 };
@@ -48,6 +47,7 @@ export function linkToEntity(nodeName, node) {
       'MUTABLE',
       {
         href: node.href,
+        color: node.style.color || node.parentNode.style.color,
         isNewWindow: (node.target === '_blank') ? true : false
       }
     );
@@ -56,7 +56,7 @@ export function linkToEntity(nodeName, node) {
 
 export function entityToLink(entity, originalText) {
   if (entity.type === 'LINK') {
-    return <a href={entity.data.href} target={(entity.data.isNewWindow) ? '_blank' : '_self'}>{originalText}</a>;
+    return <a style={{ color: entity.data.color }} href={entity.data.href} target={(entity.data.isNewWindow) ? '_blank' : '_self'}>{originalText}</a>;
   }
   return originalText;
 }
