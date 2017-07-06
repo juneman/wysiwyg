@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
-import { RichUtils } from 'draft-js';
+import { RichUtils, EditorState } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
@@ -87,6 +87,20 @@ export default class FontColor extends React.Component {
     }, editorState);
 
     nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
+
+    const contentState = editorState.getCurrentContent();
+    const startKey = editorState.getSelection().getStartKey();
+    const startOffset = editorState.getSelection().getStartOffset();
+    const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+    const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
+    if (linkKey) {
+      const linkInstance = contentState.getEntity(linkKey);
+      if (linkInstance) {
+        const nextContentState = contentState.mergeEntityData(linkKey, { color: color.hex });
+
+        nextEditorState = EditorState.push(nextEditorState, nextContentState, 'apply-inline-style');
+      }
+    }
 
     const newLocalState = localState.set('editorState', nextEditorState);
 
