@@ -100,7 +100,7 @@ export default class EditorWrapper extends React.Component {
     }
 
     return (
-      <div name="EditorWrapper" className="content" ref={(el) => this.wrapper = el}>
+      <div name="EditorWrapper" className="zone-content" ref={(el) => this.wrapper = el}>
         {(buttons) ? buttons : children}
       </div>
     );
