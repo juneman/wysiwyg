@@ -1,5 +1,4 @@
 const path = require('path');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const host = 'localhost';
 const port = 8080;
 const webpack = require('webpack');

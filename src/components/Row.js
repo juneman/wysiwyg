@@ -98,7 +98,7 @@ function collect(connect, monitor) {
   };
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     isMovable: (!state.editor.get('isCanvasInEditMode') && state.rows.size > 1) ? true : false
   };

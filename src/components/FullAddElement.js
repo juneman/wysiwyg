@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, List } from 'immutable';
+import { List } from 'immutable';
 
-import { convertBoundingBox } from '../helpers/domHelpers';
 import ImageUploader from './ImageUploader';
 import AddButtonHorizRule from './AddButtonHorizRule';
 import AddButtonContainer from './AddButtonContainer';

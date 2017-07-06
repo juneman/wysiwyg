@@ -113,7 +113,7 @@ export default class ImageEditor extends React.Component {
   }
 
   handleUpload(imageDetails) {
-    const { url, height, width } = imageDetails;
+    const { url, width } = imageDetails;
     const { localState, persistedState, onChange, canvasPosition } = this.props;
     
     let newPersistedState = persistedState

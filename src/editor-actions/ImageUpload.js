@@ -22,8 +22,8 @@ export default class ImageUpload extends React.Component {
   }
 
   handleUpload(imageDetails) {
-    const { url, height, width } = imageDetails;
-    const { localState, persistedState, onChange, maxWidth, maxHeight } = this.props;
+    const { url, width } = imageDetails;
+    const { localState, persistedState, onChange, maxWidth } = this.props;
     
     const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
 
@@ -48,6 +48,5 @@ ImageUpload.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
-  maxWidth: PropTypes.number,
-  maxHeight: PropTypes.number
+  maxWidth: PropTypes.number
 };

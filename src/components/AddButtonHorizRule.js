@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
 
-import { convertBoundingBox } from '../helpers/domHelpers';
 import AddButtonContainer from './AddButtonContainer';
 
 /**
@@ -64,10 +63,10 @@ export default class AddButtonHorizRule extends React.Component {
     );
   }
 
-  handleAddNew(e) {
-
+  handleAddNew() {
     this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
+
   setBoundingBox() {
     if (!this.addButton) {
       return;

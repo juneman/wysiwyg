@@ -10,6 +10,8 @@ import Menu from '../components/Menu';
 
 import FontColorButton from '../icons/FontColorButton';
 
+const MENU_HEIGHT_ALLOWANCE = 300;
+
 export default class FontColor extends React.Component {
   render() {
     const { isActive, hasRoomToRenderBelow } = this.props;
@@ -108,5 +110,6 @@ FontColor.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool  
 };

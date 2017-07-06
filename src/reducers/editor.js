@@ -1,6 +1,5 @@
 import Actions from '../helpers/actionConstants';
 import { fromJS, Map } from 'immutable';
-import sanitizeHtml from 'sanitize-html';
 
 const initialState = fromJS({
   screenSize: {},
