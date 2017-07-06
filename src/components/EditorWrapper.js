@@ -77,7 +77,7 @@ export default class EditorWrapper extends React.Component {
               </div>
             }
             <div name="EditorWrapperEditingActions" style={editingButtonStyles}>
-              <OkButton style={{marginRight: 5}} shadow={true} color="#00b850" onClick={() => onSave()} />
+              <OkButton style={{marginRight: 5}} shadow={true} color="#00b850" onClick={ onSave } />
               <CancelButton style={{marginRight: 5}} secondary shadow={true} color="rgba(255, 255, 255, 0.8)" onClick={() => onCancel()} />
               { (disableDeleteButton) ? null : <DeleteButton secondary shadow={true} color="#eb6e5e" onClick={() => onRemove()} /> }
             </div>

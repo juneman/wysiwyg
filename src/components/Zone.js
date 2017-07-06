@@ -125,9 +125,6 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       onChange: (update) => {
-        if (!isEditing) {
-          return;
-        }
         // const html = update.html || this.activeEditor.generateHTML(update.persistedState);
 
         dispatch(editorActions.updateDraft({
@@ -254,9 +251,11 @@ export class Zone extends React.Component {
   }
 
   toggleHover(isOver) {
-    const { dispatch, zone, row } = this.props;
-    dispatch(editorActions.toggleZoneHover(zone, isOver));
-    dispatch(editorActions.toggleRowHover(row, isOver));
+    const { dispatch, zone, row, isHover, isEditingAny } = this.props;
+    if (isOver != isHover && !isEditingAny) {
+      dispatch(editorActions.toggleZoneHover(zone, isOver));
+      dispatch(editorActions.toggleRowHover(row, isOver));
+    }
   }
 
   save() {
@@ -267,7 +266,6 @@ export class Zone extends React.Component {
     if (this.activeEditor && (!html || !html.length)) {
       html = this.activeEditor.generateHTML(persistedState);
     }
-
 
     const zoneWidth = `${ 100 / row.get('zones').size }%`;
 
@@ -326,6 +324,7 @@ Zone.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   html: PropTypes.string.isRequired,
   isEditing: PropTypes.bool.isRequired,
+  isEditingAny: PropTypes.bool.isRequired,
   isHover: PropTypes.bool.isRequired,
   disableAddButton: PropTypes.bool.isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
@@ -337,6 +336,7 @@ function mapStateToProps(state, ownProps) {
   // PersistedState is either a draft if we're actively editing
   // or the persistedState from the zone data if we're not in edit mode
   const isEditing = state.editor.get('isCanvasInEditMode') && (state.editor.get('activeZoneId') === ownProps.zone.get('id')) ? true : false;
+  const isEditingAny = state.editor.get('isCanvasInEditMode');
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
   const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === ownProps.zone.get('id'))) ? true : false;
 
@@ -345,6 +345,7 @@ function mapStateToProps(state, ownProps) {
     persistedState,
     html: state.editor.get('draftHtml'),
     isEditing,
+    isEditingAny,
     isHover,
     disableAddButton: state.editor.get('disableAddButton'),
     canvasPosition: state.editor.get('canvasPosition'),
