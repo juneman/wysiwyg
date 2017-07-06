@@ -83,7 +83,7 @@ export default class Code extends React.Component {
             { ...aceEditorProps }
           />
           <div style={{textAlign: 'right', marginTop: 10}}>
-            <span style={{color:'rgba(255,255,255,0.7)'}}>{ isSaved ? 'Saved' : 'Waiting to save'}</span>
+            <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>{ isSaved ? 'Saved' : 'Unsaved — Invalid HTML' }</span>
           </div>
         </Menu>
       </div>
