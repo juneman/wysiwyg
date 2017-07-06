@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
 import * as editorActions from './actions/editorActions';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { Iterable } from 'immutable';
 
 import Canvas from './components/Canvas';
 
@@ -20,9 +22,49 @@ const reducer = combineReducers({
   editor
 });
 
+function transformImmutableStateToJS (state) {
+  let midState = {};
+  let newState = {};
+
+  for (var i of Object.keys(state)) {
+    if (Iterable.isIterable(state[i])) {
+      midState[i] = state[i].toJS();
+    } else {
+      midState[i] = state[i];
+    }
+
+
+    if ((typeof midState[i] === "object") && (midState[i] !== null)) {
+      newState[i] = {};
+      for (var j of Object.keys(midState[i])) {
+        if (Iterable.isIterable(midState[i][j])) {
+          newState[i][j] = midState[i][j].toJS();
+        } else {
+          newState[i][j] = midState[i][j];
+        }
+      }
+    } else {
+      newState[i] = midState[i];
+    }
+  }
+
+  return newState;
+}
+
+const loggerMiddleware = createLogger({
+  level: 'info',
+  collapsed: false,
+  actionTransformer: transformImmutableStateToJS,
+  stateTransformer: transformImmutableStateToJS
+});
+
+const middleware = [thunkMiddleware];
+
+if (process.env.NODE_ENV == 'development') { middleware.push(loggerMiddleware); }
+
 const finalCreateStore = compose(
   applyMiddleware(
-    thunkMiddleware,
+    ...middleware
   )
 )(createStore);
 
