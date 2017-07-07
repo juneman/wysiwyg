@@ -4,6 +4,7 @@ import { fromJS, Map } from 'immutable';
 const initialState = fromJS({
   screenSize: {},
   canvasPosition: {},
+  basePadding: 0,
   activeZoneId: null,
   hoverZoneId: null,
   movableRowId: null,
@@ -103,6 +104,9 @@ export default function editorSelector(state = initialState, action) {
     case Actions.EDITOR_SETTINGS_DISABLE_ADD_BUTTON:
       newState = newState.set('disableAddButton', action.disableAddButton);
       break;
+    case Actions.EDITOR_SET_BASE_PADDING:
+      newState = newState.set('basePadding', action.basePadding);
+      break;    
     case Actions.ROWS_REPLACE_ALL:
       if (action.activeZoneId) {
         newState = newState

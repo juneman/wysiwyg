@@ -52,15 +52,15 @@ export class Zone extends React.Component {
     this.baseHoverStateStyle = {
       outline: '2px dotted #FFAA39',
       backgroundColor: 'rgba(255,186,76,0.13)',
-      margin: '0 -20px',
-      padding: '0 20px',
-      width: 'calc(100% + 40px)'
+      margin: `0 -${ props.basePadding }px`,
+      padding: `0 ${ props.basePadding }px`,
+      width: `calc(100% + ${ props.basePadding * 2 }px)`
     };
     this.baseActiveStateStyle = {
       boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
-      margin: '0 -20px',
-      padding: '0 20px',
-      width: 'calc(100% + 40px)'
+      margin: `0 -${ props.basePadding }px`,
+      padding: `0 ${ props.basePadding }px`,
+      width: `calc(100% + ${ props.basePadding * 2 }px)`
     };
     this.baseContainerStyle = {
       width: '100%',
@@ -329,6 +329,7 @@ Zone.propTypes = {
   disableAddButton: PropTypes.bool.isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
+  basePadding: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
@@ -347,6 +348,7 @@ function mapStateToProps(state, ownProps) {
     isEditing,
     isEditingAny,
     isHover,
+    basePadding: state.editor.get('basePadding'),
     disableAddButton: state.editor.get('disableAddButton'),
     canvasPosition: state.editor.get('canvasPosition'),
     userProperties: state.editor.get('userProperties'),

@@ -34,7 +34,8 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       sanitizeHtml,
       disableAddButton,
-      aceEditorConfig
+      aceEditorConfig,
+      basePadding
     } = this.props;
 
     window.editorShadowRoot = this.wrapper.getRootNode();
@@ -46,6 +47,9 @@ export class Canvas extends React.Component {
     }
     if (cloudinary) {
       dispatch(editorActions.setCloudinarySettings(cloudinary));
+    }
+    if (basePadding) {      
+      dispatch(editorActions.setBasePadding(basePadding));
     }
     if (userProperties && !userProperties.isEmpty()) {
       this.props.dispatch(editorActions.setUserProperties(userProperties));
@@ -314,7 +318,8 @@ Canvas.propTypes = {
   startEditable: PropTypes.bool,
   disableAddButton: PropTypes.bool,
   maxRows: PropTypes.number,
-  height: PropTypes.string
+  height: PropTypes.string,
+  basePadding: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
