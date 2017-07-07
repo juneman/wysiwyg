@@ -97,6 +97,13 @@ export function setCloudinarySettings(cloudinary) {
   };
 }
 
+export function setBasePadding(basePadding) {
+  return {
+    type: Actions.EDITOR_SET_BASE_PADDING,
+    basePadding
+  };
+}
+
 export function setUserProperties(userProperties) {
   return {
     type: Actions.EDITOR_SETTINGS_USER_PROPERTIES,
