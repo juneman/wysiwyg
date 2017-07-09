@@ -10,7 +10,11 @@ const actions = [
   {
     Component: Code,
     props: {
-      title: 'Paste in the script for your video below'
+      title: 'Paste in the script for your video below',
+      overrideSanitizeHtmlConfig: {
+        allowedTags: false,
+        allowedAttributes: false
+      }
     },
     name: 'code'
   }
