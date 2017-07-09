@@ -17,7 +17,7 @@ export default class Code extends React.Component {
 
     this.state = {
       content: '',
-      isSaved: false
+      isSaved: true
     };
   }
 
@@ -91,10 +91,10 @@ export default class Code extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, sanitizeHtmlConfig } = this.props;
+    const { localState, persistedState, onChange, sanitizeHtmlConfig, overrideSanitizeHtmlConfig } = this.props;
     const { content, isSaved } = this.state;
 
-    const cleanHtml = sanitizeHtml(content, sanitizeHtmlConfig.toJS());
+    const cleanHtml = sanitizeHtml(content, overrideSanitizeHtmlConfig || sanitizeHtmlConfig.toJS());
     if (cleanHtml != content) {
       if (isSaved) {
         const newLocalState = localState.set('content', content);
@@ -126,6 +126,7 @@ Code.propTypes = {
   title: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map),
+  overrideSanitizeHtmlConfig: PropTypes.object,
   aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
   hasRoomToRenderBelow: PropTypes.bool
 };

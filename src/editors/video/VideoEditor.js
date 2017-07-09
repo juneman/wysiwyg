@@ -26,10 +26,13 @@ export default class VideoEditor extends React.Component {
     const content = persistedState.get('content');
 
     return (content) ? (
+      <div style={{ minHeight: 100 }}>
       <div
         className="video-html"
+        style={{ minHeight: 100 }}
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
+      </div>
     ) : (
       <div style={ placeholderStyle }>Add your Video Script</div>
     );
