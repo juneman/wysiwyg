@@ -44,13 +44,7 @@ export default class HeroEditor extends React.Component {
       minHeight: 120,
       backgroundImage: (url) ? `url(${url})` : null,
       backgroundSize: 'cover',
-      textAlign: 'center',
-      marginLeft: -20,
-      marginRight: -20,
-      marginTop: -20,
-      marginBottom: 15,
-      padding: 20,
-      display: 'inline-block'
+      textAlign: 'center'
     };
 
     const textStyle = {
@@ -58,7 +52,7 @@ export default class HeroEditor extends React.Component {
     };
 
     return (
-      <div className="hero" style={wrapperStyle}>
+      <div className="hero apc-hero" style={wrapperStyle}>
         { (isEditing) ? (
           (editorState) ? (
             <div style={textStyle}>
@@ -90,21 +84,14 @@ export default class HeroEditor extends React.Component {
     const { url, content } = persistedState.toJS();
     const contentAst = HTMLParser.parse(content || '');
     const wrapperStyles = [];
-    wrapperStyles.push('display:inline-block');
     wrapperStyles.push('min-height:120px');
     wrapperStyles.push('background-size:cover');
     wrapperStyles.push('text-align:center');
-    wrapperStyles.push('margin: -20px -20px 15px');
-    wrapperStyles.push('padding: 20px');
 
     if (url) {
       wrapperStyles.push(`background-image:url(${url})`);
     }
     const textAttrs = {};
-    const width = canvasPosition.get('width');
-    if (width) {
-      textAttrs.style = `width:${ width }px;`;
-    }
 
     const ast = [
       {
@@ -112,7 +99,7 @@ export default class HeroEditor extends React.Component {
         name: 'div',
         voidElement: false,
         attrs: {
-          class: 'hero',
+          class: 'hero apc-hero',
           style: wrapperStyles.join(';') + ';'
         },
         children: [
