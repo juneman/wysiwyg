@@ -62,6 +62,7 @@ export default class ImageEditor extends React.Component {
     const wrapperAttrs = {
       class: 'image'
     };
+
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
@@ -118,7 +119,8 @@ export default class ImageEditor extends React.Component {
     
     let newPersistedState = persistedState
       .set('url', url)
-      .set('width', width);
+      .set('width', width)
+      .set('textAlign', 'center');
 
     // Make sure the uploaded image does not have a larger size than the canvas
     if (width > canvasPosition.get('width')) {
