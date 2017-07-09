@@ -29,7 +29,8 @@ export default class ImageUpload extends React.Component {
 
     let newPersistedState = persistedState
       .set('url', urlWithoutProtocol)
-      .set('width', width);
+      .set('width', width)
+      .set('textAlign', 'center');
 
     // Make sure the uploaded image does not have a larger size than available
     if (maxWidth && width > maxWidth) {
