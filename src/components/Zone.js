@@ -50,17 +50,11 @@ export class Zone extends React.Component {
     };
 
     this.baseHoverStateStyle = {
-      outline: '2px dotted #FFAA39',
-      backgroundColor: 'rgba(255,186,76,0.13)',
-      margin: `0 -${ props.basePadding }px`,
-      padding: `0 ${ props.basePadding }px`,
-      width: `calc(100% + ${ props.basePadding * 2 }px)`
+      outlineColor: '#FFAA39',
+      backgroundColor: 'rgba(255,186,76,0.13)'
     };
     this.baseActiveStateStyle = {
       boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
-      margin: `0 -${ props.basePadding }px`,
-      padding: `0 ${ props.basePadding }px`,
-      width: `calc(100% + ${ props.basePadding * 2 }px)`
     };
     this.baseContainerStyle = {
       width: '100%',
@@ -69,9 +63,14 @@ export class Zone extends React.Component {
       display: 'inline-block'
     };
     this.zoneStyle = {
-      outline: '2px solid transparent',
+      outlineStyle: 'dotted',
+      outlineWidth: '2px',
+      outlineColor: 'transparent',
       display: 'inline-block',
-      width: '100%'
+      margin: `0 -${ props.basePadding }px`,
+      padding: `0 ${ props.basePadding }px`,
+      width: `calc(100% + ${ props.basePadding * 2 }px)`,
+      transition: 'background-color 0.15s ease-out, outline-color 0.15s ease-out'
     };
   }
 
@@ -105,7 +104,7 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties
     } = this.props;
- 
+
     const type = zone.get('type');
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
@@ -114,7 +113,7 @@ export class Zone extends React.Component {
     const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
 
-    // Common props across all editors    
+    // Common props across all editors
     const editorProps = {
       persistedState,
       localState,

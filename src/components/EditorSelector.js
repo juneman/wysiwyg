@@ -235,12 +235,18 @@ export default class EditorSelector extends React.Component {
       showForm: false,
       primaryHoverMenu: '',
       secondaryMenuHover: '',
-      hasRoomToRenderBelow: true
+      hasRoomToRenderBelow: true,
+      opacityState: '0',
+      transformState: 'translate3d(0, -15px, 0)'
     };
   }
 
   componentDidMount() {
     this.setHasRoomToRenderBelow();
+    this.setState({
+      opacityState: '1',
+      transformState: 'translate3d(0, 0, 0)'
+    });
   }
 
   componentDidUpdate() {
@@ -249,19 +255,24 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
+    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover, opacityState, transformState } = this.state;
 
     const menuStyle = {
       zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-80px + 50%)'
+      left: 'calc(-80px + 50%)',
+      transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
+      opacity: opacityState,
+      transform: transformState
     };
 
     if (hasRoomToRenderBelow) {
       menuStyle.top = 8;
+      // menuStyle.transform = 'translate3d(-100%,0,0)';
     } else {
       menuStyle.bottom = 48;
+      // menuStyle.transform = 'translate3d(100%,0,0)';
     }
 
     const secondaryMenuStyle = {
@@ -347,7 +358,7 @@ export default class EditorSelector extends React.Component {
           ) : null}
         </div>
       </div>
-    ); 
+    );
   }
 
   setHover(primaryHoverMenu, isOver, secondaryMenuHover) {
@@ -367,7 +378,7 @@ export default class EditorSelector extends React.Component {
     const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
-    } 
+    }
   }
 
 }

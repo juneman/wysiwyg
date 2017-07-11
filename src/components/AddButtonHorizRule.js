@@ -76,5 +76,6 @@ export default class AddButtonHorizRule extends React.Component {
 
 AddButtonHorizRule.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
-  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired
+  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
+  // isHover: PropTypes.any
 };

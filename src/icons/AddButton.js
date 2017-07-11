@@ -1,5 +1,5 @@
 import React from 'react';
-import tinycolor from 'tinycolor2'
+import tinycolor from 'tinycolor2';
 
 import IconButton from './IconButton';
 

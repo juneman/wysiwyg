@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import tinyColor from 'tinycolor2';
 import { Map } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
@@ -65,7 +66,7 @@ export default class EditorWrapper extends React.Component {
     };
 
     let buttons;
-    
+
     if (isEditing) {
       buttons = (
         <div className="editing">
@@ -91,6 +92,7 @@ export default class EditorWrapper extends React.Component {
             <EditButton
               shadow={true}
               color="#f4ad42"
+              hoverColor={tinyColor("#f4ad42").lighten(5).toHexString()}
               onClick={() => onEdit()}
             />
           </div>
