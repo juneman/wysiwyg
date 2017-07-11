@@ -8,7 +8,8 @@ const baseIconStyle = {
   strokeWidth: 0,
   stroke: 'currentColor',
   fill: 'currentColor',
-  zIndex: 10
+  zIndex: 10,
+  transition: 'background-color 0.15s ease-in'
 };
 
 const wrapperStyle = {
@@ -72,7 +73,8 @@ export default class IconButton extends React.Component {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      flexShrink: '0'
+      flexShrink: '0',
+      transition: 'all 0.15s ease-out'
     }, {
       boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px' : null
     });
