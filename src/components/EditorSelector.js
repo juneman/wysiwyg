@@ -262,9 +262,12 @@ export default class EditorSelector extends React.Component {
       position: 'absolute',
       width: 160,
       left: 'calc(-80px + 50%)',
-      transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
-      opacity: opacityState,
-      transform: transformState
+      animationName: 'editor-slide-in',
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationDirection: 'normal',
+      animationFillMode: 'both'
     };
 
     if (hasRoomToRenderBelow) {

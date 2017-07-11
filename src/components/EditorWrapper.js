@@ -65,6 +65,18 @@ export default class EditorWrapper extends React.Component {
       zIndex: 100
     };
 
+    const applyAnimationWithDelay = (delay, styles={}) => {
+      return Object.assign(styles, {
+        animationName: 'editor-slide-in',
+        animationTimingFunction: 'ease-out',
+        animationDuration: `${0.15 + delay}s`,
+        animationIterationCount: 1,
+        animationDirection: 'normal',
+        animationFillMode: 'both',
+        animationDelay: `${delay}s`
+      });
+    };
+
     let buttons;
 
     if (isEditing) {
@@ -73,14 +85,25 @@ export default class EditorWrapper extends React.Component {
           {children}
           <div name="EditorWrapperEditingActionsContainer" style={{ position: 'absolute', bottom: -50, left: -20, marginTop: 10, display: 'flex' }}>
             { toolbarNode &&
-              <div name="EditorWrapperEditingToolbar" style={ toolbarStyles } ref={(el) => this.toolbar = el}>
+              <div name="EditorWrapperEditingToolbar" style={applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
                 { toolbarNode }
               </div>
             }
             <div name="EditorWrapperEditingActions" style={editingButtonStyles}>
-              <OkButton style={{marginRight: 5}} shadow={true} color="#00b850" onClick={ onSave } />
-              <CancelButton style={{marginRight: 5}} secondary shadow={true} color="rgba(255, 255, 255, 0.8)" onClick={() => onCancel()} />
-              { (disableDeleteButton) ? null : <DeleteButton secondary shadow={true} color="#eb6e5e" onClick={() => onRemove()} /> }
+              <OkButton
+                style={ applyAnimationWithDelay(0.05, {marginRight: 5}) }
+                shadow={true}
+                color="#00b850"
+                hoverColor={tinyColor("#00b850").lighten(5).toHexString()}
+                onClick={ onSave } />
+              <CancelButton
+                style={applyAnimationWithDelay(0.1, {marginRight: 5, opacity: 0.8})}
+                secondary
+                shadow={true}
+                color="#eee"
+                hoverColor={tinyColor("#eee").lighten(5).toHexString()}
+                onClick={() => onCancel()} />
+              { (disableDeleteButton) ? null : <DeleteButton secondary style={applyAnimationWithDelay(0.15, {marginRight: 5})} shadow={true} color="#eb6e5e"hoverColor={tinyColor("#eb6e5e").lighten(5).toHexString()} onClick={() => onRemove()} /> }
             </div>
           </div>
         </div>

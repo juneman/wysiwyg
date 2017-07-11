@@ -48,7 +48,7 @@ export class Canvas extends React.Component {
     if (cloudinary) {
       dispatch(editorActions.setCloudinarySettings(cloudinary));
     }
-    if (basePadding) {      
+    if (basePadding) {
       dispatch(editorActions.setBasePadding(basePadding));
     }
     if (userProperties && !userProperties.isEmpty()) {
@@ -114,7 +114,7 @@ export class Canvas extends React.Component {
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
-        <RowContainer 
+        <RowContainer
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -149,14 +149,30 @@ export class Canvas extends React.Component {
       />
     ) : null;
 
+
     return (
       <div className="canvas" style={canvasStyles} ref={(el) => this.wrapper = el}>
+        { this.injectStyle() }
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
       </div>
     );
   }
+
+  injectStyle() {
+    return (
+      <style>
+        {
+          `@-webkit-keyframes editor-slide-in {
+              0% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
+              100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+          }`
+        }
+      </style>
+    );
+  }
+
 
   setBoundingBox() {
     const { dispatch, canvasPosition } = this.props;
@@ -331,11 +347,11 @@ function mapStateToProps(state, ownProps) {
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
-    
+
     // Internal mappings some of the above properties
     internalRows: state.rows,
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
-    
+
     canvasPosition: state.editor.get('canvasPosition'),
 
     showAddButton: (!ownProps.maxRows || ownProps.maxRows < state.rows.size)
