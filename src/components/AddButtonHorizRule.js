@@ -14,7 +14,8 @@ export default class AddButtonHorizRule extends React.Component {
     super(props);
 
     this.state = {
-      showEditorSelector: false
+      showEditorSelector: false,
+      hoveringAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -25,8 +26,8 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   render() {
-    const { onSelectEditorType, internalAllowedEditorTypes } = this.props;
-    const { showEditorSelector } = this.state;
+    const { onSelectEditorType, internalAllowedEditorTypes, isHovering } = this.props;
+    const { showEditorSelector, hoveringAddButton } = this.state;
 
     const hrStyle = {
       height: 1,
@@ -37,15 +38,28 @@ export default class AddButtonHorizRule extends React.Component {
       zIndex: 2,
       padding: 0,
       margin: 0,
-      backgroundImage: 'linear-gradient(to right, transparent 0%, #00b850 50%, transparent)'
+      background: '#00b850',
+      transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
+      opacity: `${(hoveringAddButton) ? .3 : .25}`,
+      transform: `scale(1, ${(hoveringAddButton) ? 3 : 1})`
+    };
+
+    const containerStyle = {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      opacity: 1,
+      transition: 'opacity 0.15s ease-out'
     };
 
     return (
-      <div className="add-row" style={{ position: 'absolute', left: 0, right: 0 }}>
+      <div className="add-row" style={containerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
             id="addBtn"
             style={{ cursor: 'pointer' }}
+            onMouseEnter={() => this.setState({hoveringAddButton: true})}
+            onMouseLeave={() => this.setState({hoveringAddButton: false})}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
@@ -77,5 +91,5 @@ export default class AddButtonHorizRule extends React.Component {
 AddButtonHorizRule.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  // isHover: PropTypes.any
+  isHovering: PropTypes.bool
 };
