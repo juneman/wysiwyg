@@ -322,7 +322,7 @@ Zone.propTypes = {
   rowPosition: PropTypes.instanceOf(Map).isRequired,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  html: PropTypes.string.isRequired,
+  html: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   isEditingAny: PropTypes.bool.isRequired,
   isHover: PropTypes.bool.isRequired,
@@ -339,12 +339,13 @@ function mapStateToProps(state, ownProps) {
   const isEditing = state.editor.get('isCanvasInEditMode') && (state.editor.get('activeZoneId') === ownProps.zone.get('id')) ? true : false;
   const isEditingAny = state.editor.get('isCanvasInEditMode');
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
+  const html = (isEditing) ? state.editor.get('draftHtml') : ownProps.zone.get('html');
   const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === ownProps.zone.get('id'))) ? true : false;
 
   return {
     localState: state.editor.get('localState'),
     persistedState,
-    html: state.editor.get('draftHtml'),
+    html,
     isEditing,
     isEditingAny,
     isHover,
