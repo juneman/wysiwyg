@@ -67,7 +67,7 @@ export default class EditorWrapper extends React.Component {
 
     const applyAnimationWithDelay = (delay, styles={}) => {
       return Object.assign(styles, {
-        animationName: 'editor-slide-in',
+        animationName: 'editor-slide-in-bottom',
         animationTimingFunction: 'ease-out',
         animationDuration: `${0.15 + delay}s`,
         animationIterationCount: 1,

@@ -17,12 +17,21 @@ export default class ButtonStyles extends React.Component {
       padding: props.persistedState.get('padding') || '',
       fontSize: props.persistedState.get('fontSize') || '',
       width: props.persistedState.get('width') || '',
-      className: props.persistedState.get('className') || ''
+      className: props.persistedState.get('className') || '',
+      isMenuOpen: props.isActive || false
     };
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
-    const { borderRadius, padding, fontSize, width, className } = this.state;
+    const { borderRadius, padding, fontSize, width, className, isMenuOpen } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -43,7 +52,7 @@ export default class ButtonStyles extends React.Component {
     };
 
     const dropdownNodes = isActive ? (
-      <Menu style={dropdownStyles}>
+      <Menu style={dropdownStyles} isMenuOpen={isMenuOpen}>
         <div style={titleStyles}>Advanced Button Options</div>
         <div style={{display: 'grid', gridGap: 10}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
@@ -83,6 +92,9 @@ export default class ButtonStyles extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
     onToggleActive(!isActive);
   }
 
@@ -104,7 +116,7 @@ export default class ButtonStyles extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     let newPersistedState = persistedState;
-    
+
     Object.keys(this.state).forEach((key) => {
       const val = this.state[key];
       if (val && val.length) {
@@ -115,7 +127,7 @@ export default class ButtonStyles extends React.Component {
     });
 
     onToggleActive(false);
-      
+
     onChange({
       localState,
       persistedState: newPersistedState

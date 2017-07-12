@@ -258,14 +258,15 @@ export default class EditorSelector extends React.Component {
       position: 'absolute',
       width: 160,
       left: 'calc(-80px + 50%)',
-      animationName: 'editor-slide-in',
+      animationName: `editor-slide-${(showEditorSelector) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
+      animationDirection: 'normal',
       animationFillMode: 'both'
     };
 
-    menuStyle.animationName = (showEditorSelector) ? 'editor-slide-in' : 'editor-slide-out';
+    // menuStyle.animationName = (showEditorSelector) ? 'editor-slide-in' : 'editor-slide-out';
 
     if (hasRoomToRenderBelow) {
       menuStyle.top = 8;

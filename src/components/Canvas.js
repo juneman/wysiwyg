@@ -166,14 +166,24 @@ export class Canvas extends React.Component {
     return (
       <style>
         {
-          `@-webkit-keyframes editor-slide-in {
+          `@-webkit-keyframes editor-slide-in-bottom {
               0% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
               100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
           }
 
-          @-webkit-keyframes editor-slide-out {
+          @-webkit-keyframes editor-slide-out-bottom {
               0% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
               100% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
+          }
+
+          @-webkit-keyframes editor-slide-in-top {
+              0% {-webkit-transform:translate3d(0, 15px, 0); opacity: 0}
+              100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+          }
+
+          @-webkit-keyframes editor-slide-out-top {
+              0% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+              100% {-webkit-transform:translate3d(0, 15px, 0); opacity: 0}
           }
           `
         }

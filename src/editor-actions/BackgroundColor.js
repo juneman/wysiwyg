@@ -10,8 +10,25 @@ import SquareButton from '../icons/SquareButton';
 
 export default class BackgroundColor extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isMenuOpen: props.isActive || false
+    };
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
     const { isActive, persistedState } = this.props;
+    const { isMenuOpen } = this.state;
 
     const selectedColor = persistedState.get('backgroundColor') || '#C0C0C0';
     const buttonProps = {
@@ -23,7 +40,12 @@ export default class BackgroundColor extends React.Component {
       position: 'absolute',
       top: 45,
       left: 0,
-      padding: 5
+      padding: 5,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
 
     const titleStyles = secondaryMenuTitleStyle;
@@ -48,7 +70,15 @@ export default class BackgroundColor extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleColor(color) {

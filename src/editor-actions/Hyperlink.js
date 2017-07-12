@@ -14,7 +14,8 @@ export default class Hyperlink extends React.Component {
 
     this.state = {
       href: props.href || '',
-      isNewWindow: props.isNewWindow || false
+      isNewWindow: props.isNewWindow || false,
+      isMenuOpen: props.isActive || false
     };
   }
 
@@ -26,6 +27,9 @@ export default class Hyperlink extends React.Component {
     if (nextProps.isNewWindow !== this.props.isNewWindow) {
       update.isNewWindow = nextProps.isNewWindow;
     }
+    if (nextProps.isActive !== this.props.isActive) {
+      update.isMenuOpen = nextProps.isActive;
+    }
     if (Object.keys(update).length) {
       this.setState(update);
     }
@@ -33,7 +37,7 @@ export default class Hyperlink extends React.Component {
 
   render() {
     const { isActive, hasRoomToRenderBelow } = this.props;
-    const { href, isNewWindow } = this.state;
+    const { href, isNewWindow, isMenuOpen } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -42,12 +46,17 @@ export default class Hyperlink extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -84,7 +93,15 @@ export default class Hyperlink extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleIsNewWindow(e) {
@@ -112,7 +129,11 @@ export default class Hyperlink extends React.Component {
     const { onChange, onToggleActive } = this.props;
     const { isNewWindow, href } = this.state;
 
-    onToggleActive(false);
+    this.setState({
+      isMenuOpen: false
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
 
     onChange(href, isNewWindow);
   }

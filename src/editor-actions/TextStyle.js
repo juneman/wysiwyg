@@ -40,7 +40,8 @@ export default class TextStyle extends React.Component {
     const currentBlockType = this.findCurrentBlockType(props.localState);
 
     this.state = {
-      blockType: currentBlockType
+      blockType: currentBlockType,
+      isMenuOpen: props.isActive || false
     };
   }
 
@@ -54,7 +55,7 @@ export default class TextStyle extends React.Component {
   }
 
   render() {
-    const { blockType } = this.state;
+    const { blockType, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -64,12 +65,17 @@ export default class TextStyle extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -106,9 +112,15 @@ export default class TextStyle extends React.Component {
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
     this.setState({
-      blockType: 'unstyled'
+      blockType: 'unstyled',
+      isMenuOpen: !this.state.isMenuOpen
     });
-    onToggleActive(!isActive);
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleSave(e) {
@@ -122,10 +134,11 @@ export default class TextStyle extends React.Component {
     const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), selectedValue));
 
     this.setState({
-      blockType: 'unstyled'
+      blockType: 'unstyled',
+      isMenuOpen: false
     });
 
-    onToggleActive(false);
+    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState: newLocalState,

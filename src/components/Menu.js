@@ -11,7 +11,7 @@ export default class Menu extends React.Component {
   render() {
     const { style, className, children } = this.props;
 
-    const menuStyles = {
+    let menuStyles = {
       backgroundColor: 'white',
       borderRadius: 4,
       boxShadow: 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',

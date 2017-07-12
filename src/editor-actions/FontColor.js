@@ -13,8 +13,25 @@ import FontColorButton from '../icons/FontColorButton';
 const MENU_HEIGHT_ALLOWANCE = 300;
 
 export default class FontColor extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isMenuOpen: props.isActive || false
+    };
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
     const { isActive, hasRoomToRenderBelow } = this.props;
+    const { isMenuOpen } = this.state;
 
     const selectedColor = this.getCurrentInlineColor();
     const buttonProps = {
@@ -26,12 +43,17 @@ export default class FontColor extends React.Component {
       position: 'absolute',
       top: 45,
       left: 0,
-      padding: 5
+      padding: 5,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -55,7 +77,16 @@ export default class FontColor extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
+
   }
 
   getCurrentInlineColor() {
@@ -114,7 +145,7 @@ export default class FontColor extends React.Component {
     const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
-    } 
+    }
   }
 
 }
@@ -125,5 +156,5 @@ FontColor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  hasRoomToRenderBelow: PropTypes.bool  
+  hasRoomToRenderBelow: PropTypes.bool
 };

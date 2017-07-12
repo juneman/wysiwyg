@@ -37,8 +37,6 @@ export default class AddButtonContainer extends React.Component {
     const { shadow, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
     const { isEditorSelectorVisibile } = this.state;
 
-    console.log(isEditorSelectorVisibile, internalAllowedEditorTypes);
-
     const editorSelectorNode = isEditorSelectorVisibile ? (
       <EditorSelector
         allowedEditorTypes={internalAllowedEditorTypes}
