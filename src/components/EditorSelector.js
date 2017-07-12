@@ -235,9 +235,7 @@ export default class EditorSelector extends React.Component {
       showForm: false,
       primaryHoverMenu: '',
       secondaryMenuHover: '',
-      hasRoomToRenderBelow: true,
-      opacityState: '0',
-      transformState: 'translate3d(0, -15px, 0)'
+      hasRoomToRenderBelow: true
     };
   }
 
@@ -265,8 +263,6 @@ export default class EditorSelector extends React.Component {
       animationDirection: 'normal',
       animationFillMode: 'both'
     };
-
-    // menuStyle.animationName = (showEditorSelector) ? 'editor-slide-in' : 'editor-slide-out';
 
     if (hasRoomToRenderBelow) {
       menuStyle.top = 8;
