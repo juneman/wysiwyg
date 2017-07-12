@@ -34,7 +34,7 @@ export default class AddButtonHorizRule extends React.Component {
       border: 0,
       position: 'relative',
       top: -20,
-      width: 'calc(100% + 40px)',
+      width: '100%',
       zIndex: 2,
       padding: 0,
       margin: 0,
@@ -48,7 +48,7 @@ export default class AddButtonHorizRule extends React.Component {
       position: 'absolute',
       left: 0,
       right: 0,
-      opacity: 1,
+      opacity: (isHovering || showEditorSelector) ? 1 : 0,
       transition: 'opacity 0.15s ease-out'
     };
 
@@ -57,7 +57,7 @@ export default class AddButtonHorizRule extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
             id="addBtn"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${(hoveringAddButton || showEditorSelector) ? 1 : 0.8})`, transition: 'all 0.15s ease-out' }}
             onMouseEnter={() => this.setState({hoveringAddButton: true})}
             onMouseLeave={() => this.setState({hoveringAddButton: false})}
             ref={(el) => this.addButton = el}

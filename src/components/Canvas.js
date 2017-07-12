@@ -105,14 +105,14 @@ export class Canvas extends React.Component {
       internalAllowedEditorTypes,
       allowedEditorTypes,
       height,
-      isHoveringCue
+      isHoveringCue,
+      isHoveringTooltip
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
       position: 'relative',
       fontFamily: 'Sans-Serif'
     }, style);
-
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
@@ -145,7 +145,7 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
-        isHovering={ isHoveringCue }
+        isHovering={ isHoveringCue || isHoveringTooltip }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
@@ -354,7 +354,8 @@ Canvas.propTypes = {
   maxRows: PropTypes.number,
   height: PropTypes.string,
   basePadding: PropTypes.number,
-  isHoveringCue: PropTypes.bool
+  isHoveringCue: PropTypes.bool,
+  isHoveringTooltip: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {

@@ -95,6 +95,7 @@ export default class FullAddElement extends React.Component {
 
   handleAddNew(e) {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
 
