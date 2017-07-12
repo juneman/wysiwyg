@@ -170,6 +170,11 @@ export class Canvas extends React.Component {
               0% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
               100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
           }
+
+          @-webkit-keyframes editor-slide-out {
+              0% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+              100% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
+          }
           `
         }
       </style>

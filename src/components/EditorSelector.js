@@ -243,10 +243,6 @@ export default class EditorSelector extends React.Component {
 
   componentDidMount() {
     this.setHasRoomToRenderBelow();
-    this.setState({
-      opacityState: '1',
-      transformState: 'translate3d(0, 0, 0)'
-    });
   }
 
   componentDidUpdate() {
@@ -254,8 +250,8 @@ export default class EditorSelector extends React.Component {
   }
 
   render() {
-    const { onSelect, allowedEditorTypes } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover, opacityState, transformState } = this.state;
+    const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
+    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -266,16 +262,15 @@ export default class EditorSelector extends React.Component {
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
-      animationDirection: 'normal',
       animationFillMode: 'both'
     };
 
+    menuStyle.animationName = (showEditorSelector) ? 'editor-slide-in' : 'editor-slide-out';
+
     if (hasRoomToRenderBelow) {
       menuStyle.top = 8;
-      // menuStyle.transform = 'translate3d(-100%,0,0)';
     } else {
       menuStyle.bottom = 48;
-      // menuStyle.transform = 'translate3d(100%,0,0)';
     }
 
     const secondaryMenuStyle = {
@@ -387,5 +382,6 @@ export default class EditorSelector extends React.Component {
 }
 EditorSelector.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  allowedEditorTypes: PropTypes.instanceOf(List)
+  allowedEditorTypes: PropTypes.instanceOf(List),
+  showEditorSelector: PropTypes.bool
 };
