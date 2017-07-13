@@ -9,8 +9,7 @@ export class ImageUploader extends React.Component {
     const { children, disableClick, preventDropOnDocument } = this.props;
 
     const baseStyle = {
-      border: 'none',
-      height: '100%'
+      border: 'none'
     };
     const style = Object.assign({}, baseStyle, this.props.style);
 
