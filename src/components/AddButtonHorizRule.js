@@ -56,7 +56,6 @@ export default class AddButtonHorizRule extends React.Component {
       <div className="add-row" style={containerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
-            id="addBtn"
             style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`, transition: 'all 0.15s ease-out' }}
             onMouseEnter={() => this.setState({ isHoveringOverAddButton: true })}
             onMouseLeave={() => this.setState({ isHoveringOverAddButton: false })}

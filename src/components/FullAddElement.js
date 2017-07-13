@@ -43,7 +43,8 @@ export default class FullAddElement extends React.Component {
       justifyContent: 'center',
       minHeight: 'calc(100% - 4px)',
       position: 'relative',
-      borderRadius: 4
+      borderRadius: 4,
+      padding: 10
     };
 
     const centeredContainer = {
@@ -63,7 +64,11 @@ export default class FullAddElement extends React.Component {
               disableClick={true}
               onUpload={(imageDetails) => onUpload(imageDetails)}
             >
-              <div style={{ cursor: 'pointer', height: '100%' }} id="addBtn" onClick={ this.handleAddNew } onMouseEnter={() => this.setState({hoveringAddButton: true})} onMouseLeave={() => this.setState({hoveringAddButton: false})}>
+              <div
+                style={{ cursor: 'pointer', height: '100%' }}
+                onClick={ this.handleAddNew }
+                onMouseEnter={ () => this.setState({ hoveringAddButton: true }) }
+                onMouseLeave={ () => this.setState({ hoveringAddButton: false }) }>
                 <div style={fullScreenStyles}>
                   <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <span ref={(addButton) => this.addButton = addButton}>
