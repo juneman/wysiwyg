@@ -9,48 +9,49 @@ export default class AddButtonContainer extends React.Component {
     super(props);
 
     this.state = {
-      isEditorSelectorVisibile: props.showEditorSelector,
+      isEditorSelectorVisible: props.showEditorSelector,
       editorSelectorAnimationTimer: null
     };
   }
 
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.showEditorSelector) {
+    const { showEditorSelector } = this.props;
+    const willShowEditorSelector = !showEditorSelector && nextProps.showEditorSelector;
+    const willNotShowEditorSelector = showEditorSelector && !nextProps.showEditorSelector;
+
+    if (willShowEditorSelector) {
       this.setState({
-        isEditorSelectorVisibile: true,
+        isEditorSelectorVisible: true,
         editorSelectorAnimationTimer: null
       });
       window.clearTimeout(this.state.editorSelectorAnimationTimer);
-
-    } else if (nextProps.showEditorSelector === false) {
+    } else if (willNotShowEditorSelector) {
       this.setState({
         editorSelectorAnimationTimer: setTimeout(() => {
           this.setState({
-            isEditorSelectorVisibile: false
+            isEditorSelectorVisible: false
           });
         }, 150)
       });
     }
   }
+
   render() {
     const { shadow, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
-    const { isEditorSelectorVisibile } = this.state;
-
-
-    const editorSelectorNode = isEditorSelectorVisibile ? (
-      <EditorSelector
-        allowedEditorTypes={internalAllowedEditorTypes}
-        onSelect={ onSelectEditorType }
-        showEditorSelector={ showEditorSelector }
-      />
-    ) : null;
+    const { isEditorSelectorVisible } = this.state;
 
     return (
       <div>
         <AddButton shadow={ shadow } {...this.props}/>
         <div style={{ position: 'relative' }}>
-          { editorSelectorNode }
+          { isEditorSelectorVisible &&
+            <EditorSelector
+              allowedEditorTypes={ internalAllowedEditorTypes }
+              onSelect={ onSelectEditorType }
+              showEditorSelector={ showEditorSelector }
+            />
+          }
         </div>
       </div>
     );

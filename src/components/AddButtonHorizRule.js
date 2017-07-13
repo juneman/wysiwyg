@@ -15,7 +15,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.state = {
       showEditorSelector: false,
-      hoveringAddButton: false
+      isHoveringOverAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -26,8 +26,8 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   render() {
-    const { onSelectEditorType, internalAllowedEditorTypes, isHovering } = this.props;
-    const { showEditorSelector, hoveringAddButton } = this.state;
+    const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
+    const { showEditorSelector, isHoveringOverAddButton } = this.state;
 
     const hrStyle = {
       height: 1,
@@ -40,15 +40,15 @@ export default class AddButtonHorizRule extends React.Component {
       margin: 0,
       background: '#00b850',
       transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
-      opacity: `${(hoveringAddButton) ? .3 : .25}`,
-      transform: `scale(1, ${(hoveringAddButton) ? 3 : 1})`
+      opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
+      transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`
     };
 
     const containerStyle = {
       position: 'absolute',
       left: 0,
       right: 0,
-      opacity: (isHovering || showEditorSelector) ? 1 : 0,
+      opacity: (isHoveringOverContainer || showEditorSelector) ? 1 : 0,
       transition: 'opacity 0.15s ease-out'
     };
 
@@ -57,14 +57,14 @@ export default class AddButtonHorizRule extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
             id="addBtn"
-            style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${(hoveringAddButton || showEditorSelector) ? 1 : 0.8})`, transition: 'all 0.15s ease-out' }}
-            onMouseEnter={() => this.setState({hoveringAddButton: true})}
-            onMouseLeave={() => this.setState({hoveringAddButton: false})}
+            style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`, transition: 'all 0.15s ease-out' }}
+            onMouseEnter={() => this.setState({ isHoveringOverAddButton: true })}
+            onMouseLeave={() => this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
               onSelectEditorType={ onSelectEditorType }
-              onClick={this.handleAddNew}
+              onClick={ this.handleAddNew }
               showEditorSelector={ showEditorSelector }
               internalAllowedEditorTypes={ internalAllowedEditorTypes }
               shadow={false}
@@ -91,5 +91,5 @@ export default class AddButtonHorizRule extends React.Component {
 AddButtonHorizRule.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  isHovering: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool
 };

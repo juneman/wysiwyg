@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import tinyColor from 'tinycolor2';
 import { Map } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
@@ -65,45 +64,49 @@ export default class EditorWrapper extends React.Component {
       zIndex: 100
     };
 
-    const applyAnimationWithDelay = (delay, styles={}) => {
-      return Object.assign(styles, {
-        animationName: 'editor-slide-in-bottom',
-        animationTimingFunction: 'ease-out',
-        animationDuration: `${0.15 + delay}s`,
-        animationIterationCount: 1,
-        animationDirection: 'normal',
-        animationFillMode: 'both',
-        animationDelay: `${delay}s`
-      });
-    };
+    const applyAnimationWithDelay = (delay, styles={}) => ({
+      ...styles,
+      animationName: 'editor-slide-in-bottom',
+      animationTimingFunction: 'ease-out',
+      animationDuration: `${0.15 + delay}s`,
+      animationIterationCount: 1,
+      animationDirection: 'normal',
+      animationFillMode: 'both',
+      animationDelay: `${delay}s`
+    });
 
     let buttons;
 
     if (isEditing) {
       buttons = (
         <div className="editing">
-          {children}
+          { children }
           <div name="EditorWrapperEditingActionsContainer" style={{ position: 'absolute', bottom: -50, left: -20, marginTop: 10, display: 'flex' }}>
             { toolbarNode &&
-              <div name="EditorWrapperEditingToolbar" style={applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
+              <div name="EditorWrapperEditingToolbar" style={ applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
                 { toolbarNode }
               </div>
             }
-            <div name="EditorWrapperEditingActions" style={editingButtonStyles}>
+            <div name="EditorWrapperEditingActions" style={ editingButtonStyles }>
               <OkButton
                 style={ applyAnimationWithDelay(0.05, {marginRight: 5}) }
                 shadow={true}
                 color="#00b850"
-                hoverColor={tinyColor("#00b850").lighten(5).toHexString()}
                 onClick={ onSave } />
               <CancelButton
                 style={applyAnimationWithDelay(0.1, {marginRight: 5, opacity: 0.8})}
                 secondary
                 shadow={true}
                 color="#eee"
-                hoverColor={tinyColor("#eee").lighten(5).toHexString()}
-                onClick={() => onCancel()} />
-              { (disableDeleteButton) ? null : <DeleteButton secondary style={applyAnimationWithDelay(0.15, {marginRight: 5})} shadow={true} color="#eb6e5e"hoverColor={tinyColor("#eb6e5e").lighten(5).toHexString()} onClick={() => onRemove()} /> }
+                onClick={ () => onCancel() } />
+              { !disableDeleteButton && 
+                <DeleteButton
+                  secondary
+                  style={ applyAnimationWithDelay(0.15, { marginRight: 5 }) }
+                  shadow={ true }
+                  color="#eb6e5e"
+                  onClick={ () => onRemove() } />
+              }
             </div>
           </div>
         </div>
@@ -115,7 +118,6 @@ export default class EditorWrapper extends React.Component {
             <EditButton
               shadow={true}
               color="#f4ad42"
-              hoverColor={tinyColor("#f4ad42").lighten(5).toHexString()}
               onClick={() => onEdit()}
             />
           </div>

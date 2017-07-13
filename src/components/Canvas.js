@@ -105,8 +105,7 @@ export class Canvas extends React.Component {
       internalAllowedEditorTypes,
       allowedEditorTypes,
       height,
-      isHoveringCue,
-      isHoveringTooltip
+      isHoveringOverContainer
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
@@ -145,7 +144,7 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
-        isHovering={ isHoveringCue || isHoveringTooltip }
+        isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
@@ -154,7 +153,7 @@ export class Canvas extends React.Component {
 
     return (
       <div className="canvas" style={canvasStyles} ref={(el) => this.wrapper = el}>
-        { this.injectStyle() }
+        { this.renderKeyframeStyles() }
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
@@ -162,7 +161,7 @@ export class Canvas extends React.Component {
     );
   }
 
-  injectStyle() {
+  renderKeyframeStyles() {
     return (
       <style>
         {
@@ -354,8 +353,7 @@ Canvas.propTypes = {
   maxRows: PropTypes.number,
   height: PropTypes.string,
   basePadding: PropTypes.number,
-  isHoveringCue: PropTypes.bool,
-  isHoveringTooltip: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {

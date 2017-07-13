@@ -107,7 +107,7 @@ WysiwygEditor.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
   })),
-  isHoveringCue: PropTypes.bool,
+  isHoveringOverContainer: PropTypes.bool,
   startEditable: PropTypes.bool,
   closeAll: PropTypes.bool,
   disableAddButton: PropTypes.bool,

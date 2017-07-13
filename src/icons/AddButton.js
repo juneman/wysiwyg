@@ -1,5 +1,4 @@
 import React from 'react';
-import tinycolor from 'tinycolor2';
 
 import IconButton from './IconButton';
 
@@ -13,7 +12,6 @@ export default class AddButton extends React.PureComponent {
         }
         viewBox="0 0 22 28"
         color="#00b850"
-        hoverColor={tinycolor("#00b850").lighten(5).toHexString()}
         {...this.props}
       />
     );
