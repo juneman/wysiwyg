@@ -16,7 +16,8 @@ export default class SelectFieldOptions extends React.Component {
 
     this.state = {
       isRequired: isRequired || false,
-      fieldType: fieldType || 'radio'
+      fieldType: fieldType || 'radio',
+      isMenuOpen: false
     };
   }
 
@@ -31,13 +32,16 @@ export default class SelectFieldOptions extends React.Component {
     if (fieldType !== fieldTypeNew) {
       update.fieldType = fieldTypeNew;
     }
+    if (nextProps.isActive !== this.props.isActive) {
+      update.isMenuOpen = nextProps.isActive;
+    }
     if (Object.keys(update).length) {
       this.setState(update);
     }
   }
 
   render() {
-    const { isRequired, fieldType } = this.state;
+    const { isRequired, fieldType, isMenuOpen } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -47,7 +51,12 @@ export default class SelectFieldOptions extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
 
     const titleStyles = secondaryMenuTitleStyle;
@@ -92,7 +101,15 @@ export default class SelectFieldOptions extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleIsRequired(e) {
@@ -120,8 +137,12 @@ export default class SelectFieldOptions extends React.Component {
       .set('isRequired', isRequired)
       .set('fieldType', fieldType);
 
-    onToggleActive(false);
-      
+    this.setState({
+      isMenuOpen: false
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
+
     onChange({
       localState,
       persistedState: newPersistedState

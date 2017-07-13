@@ -5,21 +5,53 @@ import EditorSelector from './EditorSelector';
 import { List } from 'immutable';
 
 export default class AddButtonContainer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditorSelectorVisible: props.showEditorSelector,
+      editorSelectorAnimationTimer: null
+    };
+  }
+
+
+  componentWillReceiveProps(nextProps) {
+    const { showEditorSelector } = this.props;
+    const willShowEditorSelector = !showEditorSelector && nextProps.showEditorSelector;
+    const willNotShowEditorSelector = showEditorSelector && !nextProps.showEditorSelector;
+
+    if (willShowEditorSelector) {
+      this.setState({
+        isEditorSelectorVisible: true,
+        editorSelectorAnimationTimer: null
+      });
+      window.clearTimeout(this.state.editorSelectorAnimationTimer);
+    } else if (willNotShowEditorSelector) {
+      this.setState({
+        editorSelectorAnimationTimer: setTimeout(() => {
+          this.setState({
+            isEditorSelectorVisible: false
+          });
+        }, 150)
+      });
+    }
+  }
+
   render() {
     const { shadow, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
-
-    const editorSelectorNode = showEditorSelector ? (
-      <EditorSelector
-        allowedEditorTypes={internalAllowedEditorTypes}
-        onSelect={ onSelectEditorType }
-      />
-    ) : null;
+    const { isEditorSelectorVisible } = this.state;
 
     return (
       <div>
-        <AddButton color="#00b850" shadow={ shadow } {...this.props}/>
+        <AddButton shadow={ shadow } {...this.props}/>
         <div style={{ position: 'relative' }}>
-          { editorSelectorNode }
+          { isEditorSelectorVisible &&
+            <EditorSelector
+              allowedEditorTypes={ internalAllowedEditorTypes }
+              onSelect={ onSelectEditorType }
+              showEditorSelector={ showEditorSelector }
+            />
+          }
         </div>
       </div>
     );

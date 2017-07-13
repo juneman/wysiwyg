@@ -16,7 +16,8 @@ export default class List extends React.Component {
     super(props);
 
     this.state = {
-      position: Map()
+      position: Map(),
+      isMenuOpen: props.isActive || false
     };
   }
 
@@ -24,8 +25,16 @@ export default class List extends React.Component {
     this.setBoundingBox();
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
-    const { position } = this.state;
+    const { position, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const primaryButtonProps = getButtonProps(isActive);
@@ -34,12 +43,17 @@ export default class List extends React.Component {
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
-      left: position.left
+      left: position.left,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
@@ -58,15 +72,27 @@ export default class List extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleList(listType) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    
+
     const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), listType));
 
-    onToggleActive(false);
+    this.setState({
+      isMenuOpen: false
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState: newLocalState,

@@ -16,12 +16,21 @@ export default class ImageSize extends React.Component {
     const { persistedState } = props;
 
     this.state = {
-      width: persistedState.get('width') || ''
+      width: persistedState.get('width') || '',
+      isMenuOpen: props.isActive || false
     };
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
-    const { width } = this.state;
+    const { width, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -31,12 +40,17 @@ export default class ImageSize extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -65,7 +79,15 @@ export default class ImageSize extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleInputChange(e, name) {
@@ -87,7 +109,11 @@ export default class ImageSize extends React.Component {
       .delete('widthOverride')
       .delete('heightOverride');
 
-    onToggleActive(false);
+    this.setState({
+      isMenuOpen: false
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,

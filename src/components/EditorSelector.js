@@ -248,14 +248,20 @@ export default class EditorSelector extends React.Component {
   }
 
   render() {
-    const { onSelect, allowedEditorTypes } = this.props;
+    const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
     const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
 
     const menuStyle = {
       zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-80px + 50%)'
+      left: 'calc(-80px + 50%)',
+      animationName: `editor-slide-${(showEditorSelector) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationDirection: 'normal',
+      animationFillMode: 'both'
     };
 
     if (hasRoomToRenderBelow) {
@@ -347,7 +353,7 @@ export default class EditorSelector extends React.Component {
           ) : null}
         </div>
       </div>
-    ); 
+    );
   }
 
   setHover(primaryHoverMenu, isOver, secondaryMenuHover) {
@@ -367,11 +373,12 @@ export default class EditorSelector extends React.Component {
     const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
-    } 
+    }
   }
 
 }
 EditorSelector.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  allowedEditorTypes: PropTypes.instanceOf(List)
+  allowedEditorTypes: PropTypes.instanceOf(List),
+  showEditorSelector: PropTypes.bool
 };

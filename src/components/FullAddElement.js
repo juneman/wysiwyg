@@ -17,7 +17,8 @@ export default class FullAddElement extends React.Component {
     super(props);
 
     this.state = {
-      showEditorSelector: false
+      showEditorSelector: false,
+      hoveringAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -29,10 +30,11 @@ export default class FullAddElement extends React.Component {
 
   render() {
     const { baseHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
-    const { showEditorSelector } = this.state;
+    const { showEditorSelector, hoveringAddButton } = this.state;
 
     const fullScreenStyles = {
-      backgroundColor: 'rgba(9,248,113,0.15)',
+      backgroundColor: `rgba(9,248,113, ${(hoveringAddButton) ? '0.15' : '0.05'})`,
+      transition: 'background-color 0.15s ease-out',
       color: '#0bdc66',
       textAlign: 'center',
       border: '2px dashed #0bdc66',
@@ -61,7 +63,7 @@ export default class FullAddElement extends React.Component {
               disableClick={true}
               onUpload={(imageDetails) => onUpload(imageDetails)}
             >
-              <div style={{ cursor: 'pointer', height: '100%' }} id="addBtn" onClick={ this.handleAddNew }>
+              <div style={{ cursor: 'pointer', height: '100%' }} id="addBtn" onClick={ this.handleAddNew } onMouseEnter={() => this.setState({hoveringAddButton: true})} onMouseLeave={() => this.setState({hoveringAddButton: false})}>
                 <div style={fullScreenStyles}>
                   <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <span ref={(addButton) => this.addButton = addButton}>
@@ -93,6 +95,7 @@ export default class FullAddElement extends React.Component {
 
   handleAddNew(e) {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({ showEditorSelector: !this.state.showEditorSelector });
   }
 

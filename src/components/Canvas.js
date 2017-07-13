@@ -48,7 +48,7 @@ export class Canvas extends React.Component {
     if (cloudinary) {
       dispatch(editorActions.setCloudinarySettings(cloudinary));
     }
-    if (basePadding) {      
+    if (basePadding) {
       dispatch(editorActions.setBasePadding(basePadding));
     }
     if (userProperties && !userProperties.isEmpty()) {
@@ -104,17 +104,17 @@ export class Canvas extends React.Component {
       style,
       internalAllowedEditorTypes,
       allowedEditorTypes,
-      height
+      height,
+      isHoveringOverContainer
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
       position: 'relative',
       fontFamily: 'Sans-Serif'
     }, style);
-
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
-        <RowContainer 
+        <RowContainer
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -144,19 +144,52 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
+        isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
       />
     ) : null;
 
+
     return (
       <div className="canvas" style={canvasStyles} ref={(el) => this.wrapper = el}>
+        { this.renderKeyframeStyles() }
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
       </div>
     );
   }
+
+  renderKeyframeStyles() {
+    return (
+      <style>
+        {
+          `@-webkit-keyframes editor-slide-in-bottom {
+              0% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
+              100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+          }
+
+          @-webkit-keyframes editor-slide-out-bottom {
+              0% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+              100% {-webkit-transform:translate3d(0, -15px, 0); opacity: 0}
+          }
+
+          @-webkit-keyframes editor-slide-in-top {
+              0% {-webkit-transform:translate3d(0, 15px, 0); opacity: 0}
+              100% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+          }
+
+          @-webkit-keyframes editor-slide-out-top {
+              0% {-webkit-transform:translate3d(0, 0px, 0); opacity: 1)}
+              100% {-webkit-transform:translate3d(0, 15px, 0); opacity: 0}
+          }
+          `
+        }
+      </style>
+    );
+  }
+
 
   setBoundingBox() {
     const { dispatch, canvasPosition } = this.props;
@@ -319,7 +352,8 @@ Canvas.propTypes = {
   disableAddButton: PropTypes.bool,
   maxRows: PropTypes.number,
   height: PropTypes.string,
-  basePadding: PropTypes.number
+  basePadding: PropTypes.number,
+  isHoveringOverContainer: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {
@@ -331,11 +365,11 @@ function mapStateToProps(state, ownProps) {
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
-    
+
     // Internal mappings some of the above properties
     internalRows: state.rows,
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
-    
+
     canvasPosition: state.editor.get('canvasPosition'),
 
     showAddButton: (!ownProps.maxRows || ownProps.maxRows < state.rows.size)

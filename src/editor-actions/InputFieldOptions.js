@@ -14,12 +14,21 @@ export default class InputFieldOptions extends React.Component {
 
     this.state = {
       isRequired: props.persistedState.get('isRequired') || false,
-      maxLength: props.persistedState.get('maxLength') || ''
+      maxLength: props.persistedState.get('maxLength') || '',
+      isMenuOpen: props.isActive || false
     };
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
+  }
+
   render() {
-    const { isRequired, maxLength } = this.state;
+    const { isRequired, maxLength, isMenuOpen } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -29,7 +38,12 @@ export default class InputFieldOptions extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
 
     const titleStyles = secondaryMenuTitleStyle;
@@ -70,7 +84,15 @@ export default class InputFieldOptions extends React.Component {
 
   toggleDropdown() {
     const { onToggleActive, isActive } = this.props;
-    onToggleActive(!isActive);
+    this.setState({
+      isMenuOpen: !this.state.isMenuOpen
+    });
+
+    if(isActive) {
+      setTimeout(() => onToggleActive(!isActive), 200);
+    } else {
+      onToggleActive(!isActive);
+    }
   }
 
   handleIsRequired(e) {
@@ -102,8 +124,12 @@ export default class InputFieldOptions extends React.Component {
       .set('isRequired', isRequired)
       .set('maxLength', maxLength);
 
-    onToggleActive(false);
-      
+    this.setState({
+      isMenuOpen: false
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
+
     onChange({
       localState,
       persistedState: newPersistedState

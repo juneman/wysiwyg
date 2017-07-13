@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import tinyColor from 'tinycolor2';
 
 const baseIconStyle = {
   display: 'inline-block',
@@ -8,7 +9,8 @@ const baseIconStyle = {
   strokeWidth: 0,
   stroke: 'currentColor',
   fill: 'currentColor',
-  zIndex: 10
+  zIndex: 10,
+  transition: 'background-color 0.15s ease-in'
 };
 
 const wrapperStyle = {
@@ -23,7 +25,8 @@ export default class IconButton extends React.Component {
 
     this.state = {
       colorOverride: null,
-      shadowOverride: null
+      shadowOverride: null,
+      hoverColor: props.color ? tinyColor(props.color).lighten(5).toHexString() : null
     };
   }
 
@@ -72,7 +75,8 @@ export default class IconButton extends React.Component {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      flexShrink: '0'
+      flexShrink: '0',
+      transition: 'all 0.15s ease-out'
     }, {
       boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px' : null
     });
@@ -149,7 +153,8 @@ export default class IconButton extends React.Component {
   }
 
   handleMouseOver() {
-    const { hoverColor, onMouseOver } = this.props;
+    const { onMouseOver } = this.props;
+    const { hoverColor } = this.state;
 
     this.setState({ shadowOverride: true });
 
@@ -164,7 +169,8 @@ export default class IconButton extends React.Component {
   }
 
   handleMouseOut() {
-    const { hoverColor, onMouseOut } = this.props;
+    const { onMouseOut } = this.props;
+    const { hoverColor } = this.state;
 
     this.setState({ shadowOverride: false });
 
@@ -229,7 +235,6 @@ IconButton.propTypes = {
   cursor: PropTypes.string,
   clickColor: PropTypes.string,
   activeColor: PropTypes.string,
-  hoverColor: PropTypes.string,
   shadow: PropTypes.bool,
   hideBackground: PropTypes.bool,
   onClick: PropTypes.func,
