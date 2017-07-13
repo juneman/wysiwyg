@@ -94,8 +94,14 @@ export default class Code extends React.Component {
     const { localState, persistedState, onChange, sanitizeHtmlConfig, overrideSanitizeHtmlConfig } = this.props;
     const { content, isSaved } = this.state;
 
-    const cleanHtml = sanitizeHtml(content, overrideSanitizeHtmlConfig || sanitizeHtmlConfig.toJS());
-    if (cleanHtml != content) {
+    const cleanHtml =
+      sanitizeHtml(
+        content, overrideSanitizeHtmlConfig || sanitizeHtmlConfig.toJS()
+      ).replace(/[\t ]+\/\>/g, "/>");
+
+    const trimmedContent = content.replace(/[\t ]+\/\>/g, "/>");
+
+    if (cleanHtml != trimmedContent) {
       if (isSaved) {
         const newLocalState = localState.set('content', content);
 
@@ -108,6 +114,7 @@ export default class Code extends React.Component {
       }
       return;
     }
+
     const newPersistedState = persistedState.set('content', cleanHtml);
     const newLocalState = localState.set('content', cleanHtml);
     onChange({
