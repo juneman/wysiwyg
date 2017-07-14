@@ -14,7 +14,7 @@ export class ImageUploader extends React.Component {
   }
 
   render() {
-    const { children, disableClick, preventDropOnDocument } = this.props;
+    const { children, disableClick, disableUploadText, preventDropOnDocument } = this.props;
     const { isUploading } = this.state;
 
     const baseStyle = {
@@ -34,7 +34,7 @@ export class ImageUploader extends React.Component {
       borderRadius: 4
     };
 
-    return isUploading ? (
+    return isUploading && !disableUploadText ? (
       <div style={ uploadingContainerStyle }>Uploading...</div>
     ) : (
       <Dropzone
@@ -93,8 +93,13 @@ ImageUploader.propTypes = {
   onUpload: PropTypes.func.isRequired,
   disableClick: PropTypes.bool,
   preventDropOnDocument: PropTypes.bool,
+  disableUploadText: PropTypes.bool,
   style: PropTypes.object,
   cloudinary: PropTypes.instanceOf(Map).isRequired
+};
+
+ImageUploader.defaultProps = {
+  disableUploadText: false
 };
 
 function mapStateToProps(state) {

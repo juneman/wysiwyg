@@ -14,6 +14,7 @@ export default class ImageUpload extends React.Component {
 
     return (
       <ImageUploader
+        disableUploadText
         onUpload={(imageDetails) => this.handleUpload(imageDetails)}
       >
         <FileUploadButton onClick={() => {}} {...buttonProps} />
