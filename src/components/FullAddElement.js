@@ -42,6 +42,7 @@ export default class FullAddElement extends React.Component {
       flexDirection: 'column',
       justifyContent: 'center',
       minHeight: 'calc(100% - 4px)',
+      flexGrow: 1,
       position: 'relative',
       borderRadius: 4,
       padding: 10
@@ -57,7 +58,7 @@ export default class FullAddElement extends React.Component {
     };
 
     return (
-      <div style={{ height: baseHeight, minHeight: 120 }}>
+      <div style={{ height: baseHeight, minHeight: 120, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         { (allowedEditorTypes.isEmpty() || allowedEditorTypes.includes("Image")) ? (
           <div className="full-add" style={centeredContainer}>
             <ImageUploader
@@ -65,7 +66,7 @@ export default class FullAddElement extends React.Component {
               onUpload={(imageDetails) => onUpload(imageDetails)}
             >
               <div
-                style={{ cursor: 'pointer', height: '100%' }}
+                style={{ cursor: 'pointer', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
                 onClick={ this.handleAddNew }
                 onMouseEnter={ () => this.setState({ hoveringAddButton: true }) }
                 onMouseLeave={ () => this.setState({ hoveringAddButton: false }) }>
