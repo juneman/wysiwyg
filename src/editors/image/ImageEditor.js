@@ -35,9 +35,10 @@ export default class ImageEditor extends React.Component {
     } else if (isEditing) {
       node = (
         <ImageUploader
+          style={ dropzoneStyle }
           onUpload={(imageDetails) => this.handleUpload(imageDetails)}
         >
-          <div style={dropzoneStyle}>
+          <div>
             <div>Click here to select an image to upload</div>
             <div>or drag and drop an image</div>
           </div>

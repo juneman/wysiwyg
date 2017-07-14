@@ -5,8 +5,17 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 
 export class ImageUploader extends React.Component {
+  constructor(props) { 
+    super(props);
+
+    this.state = {
+      isUploading: false
+    };
+  }
+
   render() {
     const { children, disableClick, preventDropOnDocument } = this.props;
+    const { isUploading } = this.state;
 
     const baseStyle = {
       border: 'none',
@@ -14,9 +23,20 @@ export class ImageUploader extends React.Component {
       display: 'flex',
       flexDirection: 'column'
     };
-    const style = Object.assign({}, baseStyle, this.props.style);
+    const style = { ...baseStyle, ...this.props.style };
 
-    return (
+    const uploadingContainerStyle = {
+      ...style,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'hsla(37, 80%, 65%, 0.43)',
+      color: 'hsla(37, 80%, 35%, 0.43)',
+      borderRadius: 4
+    };
+
+    return isUploading ? (
+      <div style={ uploadingContainerStyle }>Uploading...</div>
+    ) : (
       <Dropzone
         multiple={false}
         accept="image/*"
@@ -31,6 +51,7 @@ export class ImageUploader extends React.Component {
   }
 
   handleDrop(files) {
+    this.setState({ isUploading: true });
     this.uploadImageFile(files[0]);
   }
 
@@ -58,6 +79,7 @@ export class ImageUploader extends React.Component {
     }).then((response) => {
       return response.json();
     }).then((imageDetails) => {
+      this.setState({ isUploading: false });
       onUpload(imageDetails);
     }).catch((err) => {
       console.error('parsing failed', err);

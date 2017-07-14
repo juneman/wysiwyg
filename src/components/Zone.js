@@ -70,7 +70,7 @@ export class Zone extends React.Component {
       margin: `0 -${ props.basePadding }px`,
       padding: `0 ${ props.basePadding }px`,
       width: `calc(100% + ${ props.basePadding * 2 }px)`,
-      transition: 'background-color 0.15s ease-out'
+      transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
     };
   }
 
