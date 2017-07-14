@@ -134,7 +134,7 @@ export default class IconButton extends React.Component {
       <a href="#"
         style={linkStyle}
         onClick={(e) => this.handleClick(e)}
-        onMouseDown={() => this.handleMouseDown()}
+        onMouseDown={(e) => this.handleMouseDown(e)}
         onMouseUp={() => this.handleMouseUp()}
         onMouseOver={() => this.handleMouseOver()}
         onMouseOut={() => this.handleMouseOut()}
@@ -148,7 +148,7 @@ export default class IconButton extends React.Component {
     e.preventDefault();
     const { onClick } = this.props;
     if (onClick) {
-      onClick();
+      onClick(e);
     }
   }
 
@@ -192,7 +192,8 @@ export default class IconButton extends React.Component {
     */
   }
 
-  handleMouseDown() {
+  handleMouseDown(e) {
+    e.preventDefault();
     const { clickColor, onMouseDown } = this.props;
 
     if (clickColor) {
@@ -201,7 +202,7 @@ export default class IconButton extends React.Component {
       });
     }
     if (onMouseDown) {
-      onMouseDown();
+      onMouseDown(e);
     }
   }
 
