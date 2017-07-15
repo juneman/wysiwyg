@@ -73,10 +73,6 @@ export class Canvas extends React.Component {
     if (nextProps.internalRows !== this.props.internalRows) {
       this.save(nextProps.internalRows);
     }
-    if (!is(nextProps.rows, this.props.rows)) {
-      const activeZoneId = (nextProps.startEditable) ? nextProps.rows.get(0).get('zones').get(0) : null;
-      dispatch(rowActions.replaceRows(nextProps.rows, activeZoneId));
-    }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
       dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
     }
@@ -152,7 +148,9 @@ export class Canvas extends React.Component {
 
 
     return (
-      <div className="canvas" style={canvasStyles} ref={(el) => this.wrapper = el}>
+      <div className="canvas"
+        style={ canvasStyles }
+        ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }
         { rowNodes }
         { fullScreenAddNode }
