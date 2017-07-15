@@ -7,16 +7,17 @@ import Hyperlink from './Hyperlink';
 export default class HyperlinkBlock extends React.Component {
 
   render() {
-    const { persistedState, isActive, onToggleActive } = this.props;
+    const { persistedState, isActive, onToggleActive, hasRoomToRenderBelow } = this.props;
     const { href, isNewWindow } = persistedState.toJS();
 
     return (
       <Hyperlink
-        href={href}
-        isNewWindow={isNewWindow}
-        isActive={isActive}
-        onToggleActive={onToggleActive}
-        onChange={(href, isNewWindow) => this.handleLink(href, isNewWindow)}
+        href={ href }
+        isNewWindow={ isNewWindow }
+        isActive={ isActive }
+        onToggleActive={ onToggleActive }
+        hasRoomToRenderBelow={ hasRoomToRenderBelow }
+        onChange={ (href, isNewWindow) => this.handleLink(href, isNewWindow) }
       />);
   }
 
@@ -41,5 +42,6 @@ HyperlinkBlock.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool.isRequired
 };

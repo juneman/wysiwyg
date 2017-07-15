@@ -7,12 +7,13 @@ import Alignment from './Alignment';
 
 export default class AlignmentInline extends React.Component {
   render() {
-    const { onToggleActive, isActive } = this.props;
+    const { onToggleActive, isActive, hasRoomToRenderBelow } = this.props;
     return (
       <Alignment
-        onChange={(type) => this.handleAlignment(type)}
-        onToggleActive={onToggleActive}
-        isActive={isActive}
+        onChange={ (type) => this.handleAlignment(type) }
+        onToggleActive={ onToggleActive }
+        isActive={ isActive }
+        hasRoomToRenderBelow={ hasRoomToRenderBelow }
       />);
   }
 
@@ -46,5 +47,6 @@ AlignmentInline.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool
 };
