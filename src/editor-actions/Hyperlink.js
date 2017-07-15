@@ -135,7 +135,9 @@ export default class Hyperlink extends React.Component {
 
     setTimeout(() => onToggleActive(false), 200);
 
-    onChange(href, isNewWindow);
+    const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
+
+    onChange(hrefWithProtocol, isNewWindow);
   }
 
 }
