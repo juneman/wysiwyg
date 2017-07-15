@@ -140,14 +140,6 @@ export default class FontColor extends React.Component {
       persistedState
     });
   }
-
-  setHasRoomToRenderBelow() {
-    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
-    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
-      this.setState({ hasRoomToRenderBelow });
-    }
-  }
-
 }
 
 FontColor.propTypes = {

@@ -8,7 +8,7 @@ import Hyperlink from './Hyperlink';
 export default class HyperlinkInline extends React.Component {
 
   render() {
-    const { localState, isActive, onToggleActive } = this.props;
+    const { localState, isActive, onToggleActive, hasRoomToRenderBelow } = this.props;
 
     let href = '';
     let isNewWindow = false;
@@ -35,11 +35,12 @@ export default class HyperlinkInline extends React.Component {
 
     return (
       <Hyperlink
-        href={href}
-        isNewWindow={isNewWindow}
-        isActive={isActive}
-        onToggleActive={onToggleActive}
-        onChange={(href, isNewWindow) => this.handleLink(href, isNewWindow)}
+        href={ href }
+        isNewWindow={ isNewWindow }
+        isActive={ isActive }
+        onToggleActive={ onToggleActive }
+        hasRoomToRenderBelow={ hasRoomToRenderBelow }
+        onChange={ (href, isNewWindow) => this.handleLink(href, isNewWindow) }
       />);
   }
 
@@ -77,5 +78,6 @@ HyperlinkInline.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool
 };
