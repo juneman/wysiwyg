@@ -29,8 +29,8 @@ export class ImageUploader extends React.Component {
       ...style,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'hsla(37, 80%, 65%, 0.43)',
-      color: 'hsla(37, 80%, 35%, 0.43)',
+      backgroundColor: 'hsla(47, 81%, 65%, 0.43)',
+      color: 'hsla(47, 81%, 35%, 0.53)',
       borderRadius: 4
     };
 
