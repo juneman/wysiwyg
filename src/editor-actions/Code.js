@@ -62,9 +62,10 @@ export default class Code extends React.Component {
       editorProps: { $blockScrolling: true },
       showGutter: false,
       key: "helloEditor",
+      wrapEnabled: true,
       showPrintMargin: false,
-      width: '400px',
-      height: '150px'
+      width: '520px',
+      height: '400px'
     },
       aceEditorConfig.toJS(), // Let the user override items above
     {
