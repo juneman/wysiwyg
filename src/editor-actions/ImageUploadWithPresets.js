@@ -43,15 +43,39 @@ export default class ImageUploadWithPresets extends React.Component {
         'solid': [
             {
                 type: 'linear-gradient',
-                src: 'to left, #00A27E, #00A27E'
+                src: 'to left, #35aae6, #35aae6'
             },
             {
                 type: 'linear-gradient',
-                src: 'to left, #259fe4, #259fe4'
+                src: 'to left, #138dcb, #138dcb'
             },
             {
                 type: 'linear-gradient',
-                src: 'to left, #142b38, #142b38'
+                src: 'to left, #0c4d6e, #0c4d6e'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #ff7145, #ff7145'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #da3e0d, #da3e0d'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #8630f5, #8630f5'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #613593, #613593'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #0bdc66, #0bdc66'
+            },
+            {
+                type: 'linear-gradient',
+                src: 'to left, #00b84f, #00b84f'
             }
         ],
         'gradient': [
@@ -62,16 +86,56 @@ export default class ImageUploadWithPresets extends React.Component {
             {
                 type: 'linear-gradient',
                 src: 'to right, #360033, #0b8793'
-            }
+            },
+            {
+                type: 'linear-gradient',
+                src: '-142deg, #50A6ED 0%, #34E8AD 100%'
+            },
+            {
+                type: 'linear-gradient',
+                src: '-153deg, #AD50ED 0%, #34E8AD 100%'
+            },
+            {
+                type: 'linear-gradient',
+                src: '-155deg, #7D4E4E 0%, #4E9E84 100%'
+            },
+            {
+                type: 'linear-gradient',
+                src: '-110deg, #0C4D6E 0%, #4E9E84 100%'
+            },
         ],
         'image': [
             {
                 type: 'url',
-                src: 'https://res.cloudinary.com/appcues-dev/image/upload/c_lfill,q_90,w_800/v1496931466/14981/qdorltjp5lsiv5rdb0ur.jpg'
+                src: '//res.cloudinary.com/appcues-dev/image/upload/c_lfill,q_90,w_800/v1496931466/14981/qdorltjp5lsiv5rdb0ur.jpg'
             },
             {
                 type: 'url',
-                src: 'https://res.cloudinary.com/appcues-dev/image/upload/v1495142286/14932/f88gmzhnenh7c9drv9ks.png'
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1495142286/14932/f88gmzhnenh7c9drv9ks.png'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492807/appcues-dev/shizjjktdoi5sq8mpd32.jpg'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492853/appcues-dev/pnzjeqy5uebz4wvzep3s.jpg'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492883/appcues-dev/wltx0g9m0ufbgnacgy1z.jpg'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492918/appcues-dev/l3tu6wocnjqhw2vyf5pn.jpg'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492956/appcues-dev/xv8fxxtqbrki8y1c8vll.jpg'
+            },
+            {
+                type: 'url',
+                src: '//res.cloudinary.com/appcues-dev/image/upload/v1500492984/appcues-dev/uiu7x7jk9yljsyfozbvn.jpg'
             }
         ]
     };
@@ -155,6 +219,7 @@ export default class ImageUploadWithPresets extends React.Component {
                             <div style={{color: 'hsl(146, 90%, 43%)'}}>
                                 <div style={{fontSize: 'larger', marginTop: 10}}>Click here to add some content</div>
                                 <div style={{fontSize: 'smaller', marginTop: 10}}>or drag and drop an image</div>
+                                <div style={{fontSize: 'smaller', padding: 4}}>(Recommended Dimensions: 1200px min width, 600px max height)</div>
                             </div>
                         </div>
                     </div>
@@ -213,6 +278,8 @@ export default class ImageUploadWithPresets extends React.Component {
     const { localState, persistedState, onChange, maxWidth } = this.props;
 
     const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
+
+    console.log(urlWithoutProtocol);
 
     let newPersistedState = persistedState
     .set('url', urlWithoutProtocol)
