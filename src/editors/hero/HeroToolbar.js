@@ -5,26 +5,32 @@ import { Map } from 'immutable';
 import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 
-import ImageUpload from '../../editor-actions/ImageUpload';
+import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets';
 import FontColor from '../../editor-actions/FontColor';
 import TextStyle from '../../editor-actions/TextStyle';
 
-const actions = [
-  {
-    Component: ImageUpload,
-    name: 'image-upload'
-  },
-  {
-    Component: FontColor,
-    name: 'font-color'
-  },
-  {
-    Component: TextStyle,
-    name: 'text-style'
-  }
-];
-
 export default function HeroToolbar(props) {
+
+  const { height: maxHeight, width: maxWidth } = props.canvasPosition.toJS();
+
+  const actions = [
+    {
+      Component: ImageUploadWithPresets,
+      props: {
+          maxWidth,
+          maxHeight
+        },
+      name: 'image-upload-with-presets'
+    },
+    {
+      Component: FontColor,
+      name: 'font-color'
+    },
+    {
+      Component: TextStyle,
+      name: 'text-style'
+    }
+  ];
 
   return (
     <Menu>
