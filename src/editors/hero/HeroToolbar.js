@@ -7,6 +7,7 @@ import Toolbar from '../../components/Toolbar';
 
 import ImageUpload from '../../editor-actions/ImageUpload';
 import FontColor from '../../editor-actions/FontColor';
+import TextStyle from '../../editor-actions/TextStyle';
 
 const actions = [
   {
@@ -16,6 +17,10 @@ const actions = [
   {
     Component: FontColor,
     name: 'font-color'
+  },
+  {
+    Component: TextStyle,
+    name: 'text-style'
   }
 ];
 
