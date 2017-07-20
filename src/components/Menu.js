@@ -15,7 +15,6 @@ export default class Menu extends React.Component {
       backgroundColor: 'white',
       borderRadius: 4,
       boxShadow: 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
-      overflow: 'hidden',
       color: 'rgb(128, 128, 128)',
       ...style
     };
