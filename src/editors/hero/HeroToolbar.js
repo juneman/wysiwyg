@@ -7,7 +7,7 @@ import Toolbar from '../../components/Toolbar';
 
 import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets';
 import FontColor from '../../editor-actions/FontColor';
-
+import TextStyle from '../../editor-actions/TextStyle';
 
 export default function HeroToolbar(props) {
 
@@ -25,6 +25,10 @@ export default function HeroToolbar(props) {
     {
       Component: FontColor,
       name: 'font-color'
+    },
+    {
+      Component: TextStyle,
+      name: 'text-style'
     }
   ];
 

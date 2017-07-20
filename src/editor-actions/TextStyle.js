@@ -12,23 +12,28 @@ import FontStyleButton from '../icons/FontStyleButton';
 const styleOptions = ([
   {
     name: 'Normal',
-    value: 'unstyled'
+    value: 'unstyled',
+    htmlTag: 'p'
   },
   {
     name: 'Header 1',
-    value: 'header-one'
+    value: 'header-one',
+    htmlTag: 'h1'
   },
   {
     name: 'Header 2',
-    value: 'header-two'
+    value: 'header-two',
+    htmlTag: 'h2'
   },
   {
     name: 'Header 3',
-    value: 'header-three'
+    value: 'header-three',
+    htmlTag: 'h3'
   },
   {
     name: 'Header 4',
-    value: 'header-four'
+    value: 'header-four',
+    htmlTag: 'h4'
   }
 ]);
 
@@ -41,7 +46,8 @@ export default class TextStyle extends React.Component {
 
     this.state = {
       blockType: currentBlockType,
-      isMenuOpen: props.isActive || false
+      isMenuOpen: props.isActive || false,
+      hoveredTag: null
     };
   }
 
@@ -52,10 +58,16 @@ export default class TextStyle extends React.Component {
         blockType: currentBlockType
       });
     }
+
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
   }
 
   render() {
-    const { blockType, isMenuOpen } = this.state;
+    const { blockType, isMenuOpen, hoveredTag } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -65,7 +77,9 @@ export default class TextStyle extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300,
+      width: 200,
+      height: 150,
+      overflowY: 'scroll',
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
@@ -73,7 +87,7 @@ export default class TextStyle extends React.Component {
       animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
-      dropdownStyles.bottom = dropdownStyles.top;
+      dropdownStyles.bottom = dropdownStyles.top + 55;
       delete dropdownStyles.top;
     }
 
@@ -82,13 +96,31 @@ export default class TextStyle extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Text Style</div>
-        <select className="form-control" onChange={(e) => this.handleSave(e)} value={blockType}>
-          { styleOptions.map((styleOption) => {
-            return (
-              <option key={styleOption.value} value={styleOption.value}>{styleOption.name}</option>
-            );
-          })}
-        </select>
+        <div style={{margin: '-10px 0', borderTop: '1px solid #f3f3f3'}}>
+          {
+            styleOptions.map((styleOption, i) => {
+              const CustomTag = styleOption.htmlTag;
+              const tagStyles = {
+                color: '#222',
+                margin: '0 -10px',
+                padding: '8px 10px',
+                cursor: 'pointer',
+                transition: 'background-color 0.15s ease-out',
+                backgroundColor: (hoveredTag == styleOption.name) ? '#f3f3f3' : 'transparent'
+              };
+              return(
+                <CustomTag
+                  onMouseEnter={() => this.setState({hoveredTag: styleOption.name })}
+                  onMouseLeave={() => this.setState({hoveredTag: null })}
+                  onClick={() => this.handleSave(styleOption.value)}
+                  style={tagStyles}
+                  key={i}>
+                  {styleOption.name}
+                </CustomTag>
+              );
+            })
+          }
+        </div>
       </Menu>
     ) : null;
 
@@ -123,9 +155,8 @@ export default class TextStyle extends React.Component {
     }
   }
 
-  handleSave(e) {
-    e.preventDefault();
-    this.handleFormat(e.target.value);
+  handleSave(value) {
+    this.handleFormat(value);
   }
 
   handleFormat(selectedValue) {
@@ -134,7 +165,7 @@ export default class TextStyle extends React.Component {
     const newLocalState = localState.set('editorState', RichUtils.toggleBlockType(localState.get('editorState'), selectedValue));
 
     this.setState({
-      blockType: 'unstyled',
+      blockType: selectedValue,
       isMenuOpen: false
     });
 
