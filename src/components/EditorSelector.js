@@ -54,6 +54,11 @@ const editors = [
     type: 'Form'
   },
   {
+    Button: FormTextInputButton,
+    text: 'TextArea Field',
+    type: 'TextAreaInput'
+  },
+  {
     Button: ButtonButton,
     text: 'Button',
     type: 'Button'
@@ -65,11 +70,6 @@ const formEditors = [
     Button: FormTextInputButton,
     text: 'Text Field',
     type: 'TextInput'
-  },
-  {
-    Button: FormTextInputButton,
-    text: 'TextArea Field',
-    type: 'TextAreaInput'
   },
   {
     Button: FormRadioButton,
