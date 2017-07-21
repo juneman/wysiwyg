@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
+import uuid from 'uuid/v4';
 
 export default class TextAreaInputEditor extends React.Component {
 
@@ -45,24 +46,50 @@ export default class TextAreaInputEditor extends React.Component {
 
     return (
       <div style={containerStyle}>
+        <style>
+          {`label [contenteditable] {
+              cursor: text;
+            }
+          `}
+        </style>
         { isEditing ? (
-          <div>
-            <label>
-              { (editorState) ? (
-                <Editor
-                  ref={(editor) => this.editor = editor}
-                  editorState={editorState}
-                  onChange={(editorState) => this.handleEditorStateChange(editorState)}
-                />
-              ) : null }
-            </label>
-            <textarea className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
-          </div>
+          <form className="step-action-form">
+            <div className="fields">
+              <div data-field-id={ zone.get('id') } className="field">
+                <div data-appcues-required={ isRequired } className="form-field form-field-textarea">
+                  <div className="field-label">
+                    <label htmlFor={ zone.get('id') } className="label-display">
+                      { (editorState) ? (
+                        <Editor
+                          ref={(editor) => this.editor = editor}
+                          editorState={editorState}
+                          onChange={(editorState) => this.handleEditorStateChange(editorState)}
+                        />
+                      ) : null }
+                    </label>
+                  </div>
+                  <div className="field-controls">
+                    <textarea name={ zone.get('id') } rows="4" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" className="placeholder-value"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         ) : (
-          <div>
-            <label>{(isRequired) ? '*' : ''} {label}</label>
-            <textarea className="form-control" data-field-id={zone.get('id')} required={isRequired} maxLength={maxLength} placeholder={placeholder} />
-          </div>
+          <form className="step-action-form">
+            <div className="fields">
+              <div data-field-id={ zone.get('id') } className="field">
+                <div data-appcues-required={ isRequired } className="form-field form-field-textarea">
+                  <div className="field-label">
+                    <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
+                  </div>
+                  <div className="field-controls">
+                    <textarea name={ zone.get('id') } rows="4" placeholder={ placeholder } className="placeholder-value"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         )}
       </div>
     );
@@ -84,9 +111,6 @@ export default class TextAreaInputEditor extends React.Component {
 
   // Instance Method
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
   }
 
   handleInputChange(e) {
@@ -107,8 +131,9 @@ export default class TextAreaInputEditor extends React.Component {
     const { label, placeholder, isRequired = false, maxLength } = persistedState.toJS();
 
     const inputAttrs = {
-      class: 'form-control',
-      ['data-field-id']: zone.get('id')
+      class: 'form-control placeholder-value',
+      ['data-field-id']: zone.get('id'),
+      rows: 4
     };
     if (isRequired) {
       inputAttrs.required = '';
@@ -123,31 +148,69 @@ export default class TextAreaInputEditor extends React.Component {
     const ast = [];
     ast.push({
       type: 'tag',
-      name: 'div',
+      name: 'form',
+      attrs: { class: "step-action-form" },
       voidElement: false,
       children: [
         {
           type: 'tag',
           name: 'div',
+          attrs: { class: "fields" },
           voidElement: false,
           children: [
             {
               type: 'tag',
-              name: 'label',
+              name: 'div',
+              attrs: { class: "field", ['data-field-id']: zone.get('id') },
               voidElement: false,
-              children: [{
-                type: 'text',
-                content: (isRequired) ? `* ${label}` : label
-              }]
-            }, {
-              type: 'tag',
-              name: 'textarea',
-              attrs: inputAttrs,
-              voidElement: false,
-              children: [{
-                type: 'text',
-                content: ''
-              }]
+              children: [
+                {
+                  type: 'tag',
+                  name: 'div',
+                  attrs: {
+                    class: 'form-field form-field-textarea',
+                    ['data-appcues-required']: isRequired },
+                  voidElement: false,
+                  children: [
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-label" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'label',
+                          attrs: { class: "label-display", for: zone.get('id') },
+                          voidElement: false,
+                          children: [{
+                            type: 'text',
+                            content: (isRequired) ? `* ${label}` : label
+                          }]
+                        }
+                      ]
+                    }, 
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-controls" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'textarea',
+                          attrs: inputAttrs,
+                          voidElement: false,
+                          children: [{
+                            type: 'text',
+                            content: ''
+                          }]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
