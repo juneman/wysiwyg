@@ -43,24 +43,50 @@ export default class TextInputEditor extends React.Component {
 
     return (
       <div>
+        <style>
+          {`label [contenteditable] {
+              cursor: text;
+            }
+          `}
+        </style>
         { isEditing ? (
-          <div>
-            <div className="field-label">
-              { (editorState) ? (
-                <Editor
-                  ref={(editor) => this.editor = editor}
-                  editorState={editorState}
-                  onChange={(editorState) => this.handleEditorStateChange(editorState)}
-                />
-              ) : null }
+          <form className="step-action-form">
+            <div className="fields">
+              <div data-field-id={ zone.get('id') } className="field">
+                <div data-appcues-required={ isRequired } className="form-field form-field-textarea">
+                  <div className="field-label">
+                    <label htmlFor={ zone.get('id') } className="label-display">
+                      { (editorState) ? (
+                        <Editor
+                          ref={(editor) => this.editor = editor}
+                          editorState={editorState}
+                          onChange={(editorState) => this.handleEditorStateChange(editorState)}
+                        />
+                      ) : null }
+                    </label>
+                  </div>
+                  <div className="field-controls">
+                    <input name={ zone.get('id') } type="text" className="placeholder-value" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
-          </div>
+          </form>
         ) : (
-          <div>
-            <div className="field-label">{(isRequired) ? '*' : ''} {label}</div>
-            <input type="text" className="form-control" data-field-id={zone.get('id')} required={isRequired} maxLength={maxLength} placeholder={placeholder} />
-          </div>
+          <form className="step-action-form">
+            <div className="fields">
+              <div data-field-id={ zone.get('id') } className="field">
+                <div data-appcues-required={ isRequired } className="form-field form-field-textarea">
+                  <div className="field-label">
+                    <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
+                  </div>
+                  <div className="field-controls">
+                    <input name={ zone.get('id') } type="text" required={isRequired} maxLength={maxLength} placeholder={ placeholder } className="placeholder-value" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         )}
       </div>
     );
@@ -68,9 +94,6 @@ export default class TextInputEditor extends React.Component {
 
   // Instance Method
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
   }
 
   handleEditorStateChange(editorState) {
@@ -122,30 +145,65 @@ export default class TextInputEditor extends React.Component {
     const ast = [];
     ast.push({
       type: 'tag',
-      name: 'div',
+      name: 'form',
+      attrs: { class: "step-action-form" },
       voidElement: false,
       children: [
         {
           type: 'tag',
           name: 'div',
+          attrs: { class: "fields" },
           voidElement: false,
           children: [
             {
               type: 'tag',
               name: 'div',
+              attrs: { class: "field", ['data-field-id']: zone.get('id') },
               voidElement: false,
-              attrs: {
-                class: 'field-label'
-              },
-              children: [{
-                type: 'text',
-                content: (isRequired) ? `* ${label}` : label
-              }]
-            }, {
-              type: 'tag',
-              name: 'input',
-              attrs: inputAttrs,
-              voidElement: true
+              children: [
+                {
+                  type: 'tag',
+                  name: 'div',
+                  attrs: {
+                    class: 'form-field form-field-text',
+                    ['data-appcues-required']: isRequired },
+                  voidElement: false,
+                  children: [
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-label" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'label',
+                          attrs: { class: "label-display", for: zone.get('id') },
+                          voidElement: false,
+                          children: [{
+                            type: 'text',
+                            content: (isRequired) ? `* ${label}` : label
+                          }]
+                        }
+                      ]
+                    }, 
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-controls" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'input',
+                          attrs: inputAttrs,
+                          voidElement: true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
