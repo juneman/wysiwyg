@@ -64,14 +64,6 @@ const editors = [
     type: 'TextAreaInput'
   },
   {
-    Button: ButtonButton,
-    text: 'Button',
-    type: 'Button'
-  }
-];
-
-const formEditors = [
-  {
     Button: FormRadioButton,
     text: 'Radio Select',
     type: 'SelectionField',
@@ -91,25 +83,6 @@ const formEditors = [
     ])
   },
   {
-    Button: FormDropdownButton,
-    text: 'Dropdown',
-    type: 'SelectionField',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'SelectionField',
-            persistedState: {
-              fieldType: 'dropdown'
-            }
-          }
-        ]
-      }
-    ])
-  },
-  {
     Button: FormCheckboxButton,
     text: 'Checkbox',
     type: 'SelectionField',
@@ -122,6 +95,33 @@ const formEditors = [
             type: 'SelectionField',
             persistedState: {
               fieldType: 'checkbox'
+            }
+          }
+        ]
+      }
+    ])
+  },
+  {
+    Button: ButtonButton,
+    text: 'Button',
+    type: 'Button'
+  }
+];
+
+const formEditors = [
+  {
+    Button: FormDropdownButton,
+    text: 'Dropdown',
+    type: 'SelectionField',
+    rows: fromJS([
+      {
+        id: uuid(),
+        zones: [
+          {
+            id: uuid(),
+            type: 'SelectionField',
+            persistedState: {
+              fieldType: 'dropdown'
             }
           }
         ]
