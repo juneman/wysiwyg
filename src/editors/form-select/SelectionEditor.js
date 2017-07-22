@@ -35,7 +35,7 @@ export default class SelectionEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState } = this.props;
+    const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
     const label = (persistedState.get('label')) || 'Add Label...';
@@ -45,9 +45,9 @@ export default class SelectionEditor extends React.Component {
     const isRequired = persistedState.get('isRequired') || false;
 
     const placeholder = (`Place each option on a new line, e.g.
-      Apples
-      Oranges
-      Pineapples`).split('\n').map((row) => row.trim()).join('\n');
+      Option 1
+      Option 2
+      Option 3`).split('\n').map((row) => row.trim()).join('\n');
 
     const dropdownNodes = (
       <div>
@@ -65,10 +65,10 @@ export default class SelectionEditor extends React.Component {
       <div>
         { options.map((option) => {
           return (
-            <div key={option}>
-              <input type={fieldType} />
-              <label>{option}</label>
-            </div>
+            <label className="field-option" key={ option }>
+              <input className="response-value" value={ option } type={ fieldType } />
+              <span>{ option }</span>
+            </label>
           );
         })}
       </div>
@@ -76,6 +76,30 @@ export default class SelectionEditor extends React.Component {
 
     return (
       <div>
+        <style> {`
+          appcues cue>section .form-field label.field-option input[type=checkbox] {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+          }
+
+          appcues cue>section .form-field label.field-option input[type=checkbox]+span:before {
+            content: "";
+            display: inline-block;
+            width: .8em;
+            height: .8em;
+            vertical-align: -.05em;
+            border: .125em solid #fff;
+            box-shadow: 0 0 0 0.15em #888;
+            margin-right: .7em;
+            transition: all .5s ease;
+          } `}
+        </style>
         { isEditing ? (
           <div>
             <label>
@@ -87,13 +111,23 @@ export default class SelectionEditor extends React.Component {
                 />
               ) : null }
             </label>
-            <textarea type="text" rows={5} style={textInputStyle} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
+            <textarea type="text" rows={5} style={{ ...textInputStyle, marginBottom: 10 }} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
           </div>
         ) : (
-          <div>
-            <label>{label}</label>
-            { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
-          </div>
+          <form className="step-action-form">
+            <div className="fields">
+              <div data-field-id={ zone.get('id') } className="field">
+                <div data-appcues-required={ isRequired } className={ `form-field form-field-${ fieldType }` }>
+                  <div className="field-label">
+                    <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
+                  </div>
+                  <div className="field-controls">
+                    { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         )}
       </div>
     );
@@ -137,6 +171,7 @@ export default class SelectionEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
+    const { zone } = this.props;
     const { label = '', options = [], isRequired = false, fieldType = 'radio' } = persistedState.toJS();
 
     const requiredAttr = {};
@@ -147,8 +182,9 @@ export default class SelectionEditor extends React.Component {
     const radioChildren = options.map((option) => {
       return {
         type: 'tag',
-        name: 'div',
+        name: 'label',
         voidElement: false,
+        attrs: { class: 'field-option' },
         children: [
           {
             type: 'tag',
@@ -156,12 +192,15 @@ export default class SelectionEditor extends React.Component {
             voidElement: true,
             attrs: {
               type: fieldType,
+              class: 'response-value',
+              name: zone.get('id'),
+              value: option,
               ...requiredAttr
             }
           },
           {
             type: 'tag',
-            name: 'label',
+            name: 'span',
             voidElement: false,
             children: [{
               type: 'text',
@@ -202,30 +241,66 @@ export default class SelectionEditor extends React.Component {
     const ast = [];
     ast.push({
       type: 'tag',
-      name: 'div',
+      name: 'form',
+      attrs: { class: "step-action-form" },
       voidElement: false,
       children: [
         {
           type: 'tag',
           name: 'div',
+          attrs: { class: "fields" },
           voidElement: false,
           children: [
             {
               type: 'tag',
-              name: 'label',
+              name: 'div',
+              attrs: { class: "field", ['data-field-id']: zone.get('id') },
               voidElement: false,
               children: [
                 {
-                  type: 'text',
-                  content: label
+                  type: 'tag',
+                  name: 'div',
+                  attrs: {
+                    class: `form-field form-field-${ fieldType }`,
+                    ['data-appcues-required']: isRequired },
+                  voidElement: false,
+                  children: [
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-label" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'label',
+                          attrs: { class: "label-display", for: zone.get('id') },
+                          voidElement: false,
+                          children: [{
+                            type: 'text',
+                            content: (isRequired) ? `* ${label}` : label
+                          }]
+                        }
+                      ]
+                    }, 
+                    {
+                      type: 'tag',
+                      name: 'div',
+                      attrs: { class: "field-controls" },
+                      voidElement: false,
+                      children: [
+                        {
+                          type: 'tag',
+                          name: 'div',
+                          attrs: { class: "field-options" },
+                          voidElement: false,
+                          children: optionsChildren
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
-            },
-            {
-              type: 'tag',
-              name: 'div',
-              voidElement: false,
-              children: optionsChildren
             }
           ]
         }
@@ -241,5 +316,6 @@ SelectionEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  localState: PropTypes.instanceOf(Map).isRequired
+  localState: PropTypes.instanceOf(Map).isRequired,
+  zone: PropTypes.instanceOf(Map).isRequired
 };
