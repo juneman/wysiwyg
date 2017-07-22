@@ -42,10 +42,8 @@ export default class TextAreaInputEditor extends React.Component {
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
 
-    const containerStyle = {};
-
     return (
-      <div style={containerStyle}>
+      <div>
         <style>
           {`label [contenteditable] {
               cursor: text;
