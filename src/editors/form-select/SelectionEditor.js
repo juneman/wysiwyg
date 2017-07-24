@@ -117,7 +117,7 @@ export default class SelectionEditor extends React.Component {
           <form className="step-action-form">
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
-                <div data-appcues-required={ isRequired } className={ `form-field form-field-${ fieldType }` }>
+                <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-${ fieldType }` }>
                   <div className="field-label">
                     <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
                   </div>
@@ -262,6 +262,7 @@ export default class SelectionEditor extends React.Component {
                   name: 'div',
                   attrs: {
                     class: `form-field form-field-${ fieldType }`,
+                    style: "marginTop: 0; padding: 0;",
                     ['data-appcues-required']: isRequired },
                   voidElement: false,
                   children: [
