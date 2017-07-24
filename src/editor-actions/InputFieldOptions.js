@@ -29,7 +29,7 @@ export default class InputFieldOptions extends React.Component {
 
   render() {
     const { isRequired, maxLength, isMenuOpen } = this.state;
-    const { isActive } = this.props;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -39,12 +39,16 @@ export default class InputFieldOptions extends React.Component {
       left: 0,
       padding: 10,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom`,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
       animationFillMode: 'both'
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -143,5 +147,6 @@ InputFieldOptions.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool
 };
