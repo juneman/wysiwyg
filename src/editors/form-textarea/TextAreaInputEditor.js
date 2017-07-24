@@ -9,7 +9,7 @@ export default class TextAreaInputEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const content = persistedState.get('label') || 'Add Label...';
+    const content = persistedState.get('label') || '';
     const initialEditorState = EditorState.createWithContent(ContentState.createFromText(content));
     this.handleEditorStateChange(initialEditorState);
   }
@@ -17,7 +17,7 @@ export default class TextAreaInputEditor extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const content = persistedState.get('label') || 'Add Label...';
+    const content = persistedState.get('label') || '';
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
@@ -37,7 +37,7 @@ export default class TextAreaInputEditor extends React.Component {
     const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
-    const label = (persistedState.get('label')) || 'Add Label...';
+    const label = persistedState.get('label');
     const placeholder = (persistedState.get('placeholder'));
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
@@ -47,6 +47,10 @@ export default class TextAreaInputEditor extends React.Component {
         <style>
           {`label [contenteditable] {
               cursor: text;
+            }
+            .public-DraftEditorPlaceholder-root {
+              pointer-events: none;
+              color: #999;
             }
           `}
         </style>
@@ -64,6 +68,7 @@ export default class TextAreaInputEditor extends React.Component {
                         <Editor
                           ref={(editor) => this.editor = editor}
                           editorState={editorState}
+                          placeholder="Add Label..."
                           onChange={(editorState) => this.handleEditorStateChange(editorState)}
                         />
                       ) : null }

@@ -4,13 +4,13 @@ import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
-import { textInputStyle } from '../../helpers/styles/editor';
+import { textInputStyle, placeholderStyle } from '../../helpers/styles/editor';
 
 export default class SelectionEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const content = persistedState.get('label') || 'Add Label...';
+    const content = persistedState.get('label') || '';
     const initialEditorState = EditorState.createWithContent(ContentState.createFromText(content));
     this.handleEditorStateChange(initialEditorState);
   }
@@ -18,7 +18,7 @@ export default class SelectionEditor extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const content = persistedState.get('label') || 'Add Label...';
+    const content = persistedState.get('label') || '';
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
@@ -38,7 +38,7 @@ export default class SelectionEditor extends React.Component {
     const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
-    const label = (persistedState.get('label')) || 'Add Label...';
+    const label = persistedState.get('label');
     const options = persistedState.get('options') || [];
     const optionString = (localState.get('options')) || options.join('\n') || '';
     const fieldType = persistedState.get('fieldType') || 'radio';
@@ -77,6 +77,10 @@ export default class SelectionEditor extends React.Component {
     return (
       <div>
         <style> {`
+          .public-DraftEditorPlaceholder-root {
+            pointer-events: none;
+            color: #999;
+          }
           appcues cue>section .form-field label.field-option input[type=checkbox] {
             border: 0;
             clip: rect(0 0 0 0);
@@ -101,33 +105,48 @@ export default class SelectionEditor extends React.Component {
           } `}
         </style>
         { isEditing ? (
-          <div>
-            <label>
-              { (editorState) ? (
-                <Editor
-                  ref={(editor) => this.editor = editor}
-                  editorState={editorState}
-                  onChange={(editorState) => this.handleEditorStateChange(editorState)}
-                />
-              ) : null }
-            </label>
-            <textarea type="text" rows={5} style={{ ...textInputStyle, marginBottom: 10 }} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
-          </div>
-        ) : (
           <form className="step-action-form">
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
                 <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-${ fieldType }` }>
                   <div className="field-label">
-                    <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
+                    <label htmlFor={ zone.get('id') } className="label-display">
+                      { (editorState) ? (
+                        <Editor
+                          ref={(editor) => this.editor = editor}
+                          editorState={editorState}
+                          placeholder="Add Label..."
+                          onChange={(editorState) => this.handleEditorStateChange(editorState)}
+                        />
+                      ) : null }
+                    </label>
                   </div>
                   <div className="field-controls">
-                    { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
+                    <textarea type="text" rows={5} style={{ ...textInputStyle, marginBottom: 10 }} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
                   </div>
                 </div>
               </div>
             </div>
           </form>
+        ) : (
+          (options.size || label) ? (
+            <form className="step-action-form">
+              <div className="fields">
+                <div data-field-id={ zone.get('id') } className="field">
+                  <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-${ fieldType }` }>
+                    <div className="field-label">
+                      <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
+                    </div>
+                    <div className="field-controls">
+                      { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div style={ placeholderStyle }>Click to add your options</div>          
+          )
         )}
       </div>
     );
