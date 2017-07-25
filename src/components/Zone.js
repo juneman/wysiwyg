@@ -34,6 +34,8 @@ import TextAreaInputToolbar from '../editors/form-textarea/TextAreaInputToolbar'
 import SelectionEditor from '../editors/form-select/SelectionEditor';
 import SelectionToolbar from '../editors/form-select/SelectionToolbar';
 
+import RatingEditor from '../editors/rating/RatingEditor';
+
 import EditorWrapper from './EditorWrapper';
 
 /**
@@ -197,6 +199,10 @@ export class Zone extends React.Component {
         break;
       case 'SelectionField':
         editorNode = (<SelectionEditor {...editorProps} />);
+        toolbarNode = (<SelectionToolbar {...toolbarProps} />);
+        break;
+      case 'Rating':
+        editorNode = (<RatingEditor {...editorProps} />);
         toolbarNode = (<SelectionToolbar {...toolbarProps} />);
         break;
     }

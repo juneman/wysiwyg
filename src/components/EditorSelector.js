@@ -102,6 +102,11 @@ const editors = [
     ])
   },
   {
+    Button: FormRatingButton,
+    text: 'Rating',
+    type: 'Rating'
+  },
+  {
     Button: ButtonButton,
     text: 'Button',
     type: 'Button'
@@ -122,69 +127,6 @@ const formEditors = [
             type: 'SelectionField',
             persistedState: {
               fieldType: 'dropdown'
-            }
-          }
-        ]
-      }
-    ])
-  },
-  {
-    Button: FormRatingButton,
-    text: 'Rating',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'RichText',
-            persistedState: {
-              content: 'Please Rate Us From 1 (not so great) to 5 (awesome!)'
-            }
-          }
-        ]
-      },
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>1</p>',
-              textAlign: 'center'
-            }
-          },
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>2</p>',
-              textAlign: 'center'
-            }
-          },
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>3</p>',
-              textAlign: 'center'
-            }
-          },
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>4</p>',
-              textAlign: 'center'
-            }
-          },
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>5</p>',
-              textAlign: 'center'
             }
           }
         ]
