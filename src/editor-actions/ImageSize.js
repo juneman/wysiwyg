@@ -71,13 +71,14 @@ export default class ImageSize extends React.Component {
 
     return (
       <div>
-        <a href="#" onClick={() => this.toggleDropdown()}><SelectSizeButton {...buttonProps} /></a>
+        <a href="#" onClick={(e) => this.toggleDropdown(e)}><SelectSizeButton {...buttonProps} /></a>
         { dropdownNodes }
       </div>
     );
   }
 
-  toggleDropdown() {
+  toggleDropdown(e) {
+    e.preventDefault();
     const { onToggleActive, isActive } = this.props;
     this.setState({
       isMenuOpen: !this.state.isMenuOpen
