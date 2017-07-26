@@ -7,31 +7,32 @@ import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
 import Button from '../components/Button';
+import DropDownMenu from '../components/DropDownMenu';
 
-export default class SelectFieldOptions extends React.Component {
+export default class RatingOptions extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const { isRequired, fieldType } = props.persistedState.toJS();
+    const { isRequired, numOptions } = props.persistedState.toJS();
 
     this.state = {
       isRequired: isRequired || false,
-      fieldType: fieldType || 'radio',
+      numOptions: numOptions || 11,
       isMenuOpen: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const update = {};
-    const { isRequired, fieldType } = this.props.persistedState.toJS();
-    const { isRequired: isRequiredNew, fieldType: fieldTypeNew } = nextProps.persistedState.toJS();
+    const { isRequired, numOptions } = this.props.persistedState.toJS();
+    const { isRequired: isRequiredNew, numOptions: numOptionsNew } = nextProps.persistedState.toJS();
 
     if (isRequired !== isRequiredNew) {
       update.isRequired = isRequiredNew;
     }
-    if (fieldType !== fieldTypeNew) {
-      update.fieldType = fieldTypeNew;
+    if (numOptions !== numOptionsNew) {
+      update.numOptions = numOptionsNew;
     }
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
@@ -42,7 +43,7 @@ export default class SelectFieldOptions extends React.Component {
   }
 
   render() {
-    const { isRequired, fieldType, isMenuOpen } = this.state;
+    const { isRequired, numOptions, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -69,14 +70,25 @@ export default class SelectFieldOptions extends React.Component {
     const row = {
       marginTop: 20
     };
+    const allOptions = [...(new Array(10))].map((_, i) => ({ label: i + 1, value: i + 2 }))
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Select Field Options</div>
+        <div style={titleStyles}>Rating Options</div>
         <div>
           <div style={row}>
             <input id="field-is-required" type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label htmlFor="field-is-required">Required Field</label>
+          </div>
+          <div style={row}>
+            <DropDownMenu
+              className="form-control"
+              label="Rating limit"
+              unsearchable
+              selectedValue={ numOptions }
+              hasRoomToRenderBelow={ hasRoomToRenderBelow }
+              options={ allOptions }
+              onSelect={ (value) => this.handleRatingLimit(value) }/>
           </div>
           <div style={{textAlign: 'right', ...row}}>
             <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
@@ -89,7 +101,7 @@ export default class SelectFieldOptions extends React.Component {
       <div style={{marginRight: 10}}>
         <SettingsButton
           onClick={() => this.toggleDropdown()}
-          text="Field Options"
+          text="Rating Options"
           {...buttonProps}  />
         { dropdownNodes }
       </div>
@@ -109,6 +121,12 @@ export default class SelectFieldOptions extends React.Component {
     }
   }
 
+  handleRatingLimit(numOptions) {
+    this.setState({ 
+      numOptions
+    });
+  }
+
   handleIsRequired(e) {
     const isRequired = e.target.checked;
     this.setState({
@@ -121,11 +139,11 @@ export default class SelectFieldOptions extends React.Component {
       e.preventDefault();
     }
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isRequired, fieldType } = this.state;
+    const { isRequired, numOptions } = this.state;
 
     const newPersistedState = persistedState
-      .set('isRequired', isRequired)
-      .set('fieldType', fieldType);
+      .set('numOptions', numOptions)
+      .set('isRequired', isRequired);
 
     this.setState({
       isMenuOpen: false
@@ -141,7 +159,7 @@ export default class SelectFieldOptions extends React.Component {
 
 }
 
-SelectFieldOptions.propTypes = {
+RatingOptions.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
