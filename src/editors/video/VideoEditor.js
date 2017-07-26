@@ -29,7 +29,7 @@ export default class VideoEditor extends React.Component {
       <div style={{ minHeight: 100 }}>
       <div
         className="video-html"
-        style={{ minHeight: 100 }}
+        style={{ minHeight: 100, textAlign: 'center' }}
         dangerouslySetInnerHTML={{__html: content}}
       ></div>
       </div>
