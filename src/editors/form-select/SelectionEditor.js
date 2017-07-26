@@ -77,6 +77,10 @@ export default class SelectionEditor extends React.Component {
     return (
       <div>
         <style> {`
+          label [contenteditable] {
+            cursor: text;
+          }
+
           .public-DraftEditorPlaceholder-root {
             pointer-events: none;
             color: #999;

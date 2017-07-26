@@ -88,10 +88,15 @@ export function convertToHTML(editorState) {
       }
     },
     entityToHTML: (entity, originalText) => {
-      originalText = entityToLink(entity, originalText);
+      originalText = entityToLink(entity, htmlDecode(originalText));
       return originalText;
     }
   })(editorState.getCurrentContent());
+}
+
+function htmlDecode(input) {
+  const doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
 }
 
 export function customStyleFn(style) {
