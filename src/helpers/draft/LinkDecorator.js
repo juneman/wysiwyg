@@ -56,7 +56,7 @@ export function linkToEntity(nodeName, node) {
 
 export function entityToLink(entity, originalText) {
   if (entity.type === 'LINK') {
-    return <a style={{ color: entity.data.color }} href={entity.data.href} target={(entity.data.isNewWindow) ? '_blank' : '_self'}>{originalText}</a>;
+    return <a style={{ color: entity.data.color }} href={entity.data.href} target={(entity.data.isNewWindow) ? '_blank' : '_self'}/>;
   }
   return originalText;
 }
