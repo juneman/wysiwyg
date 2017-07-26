@@ -77,7 +77,7 @@ export default class TextStyle extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 200,
+      width: 250,
       height: 150,
       overflowY: 'scroll',
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
@@ -87,7 +87,7 @@ export default class TextStyle extends React.Component {
       animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
-      dropdownStyles.bottom = dropdownStyles.top + 55;
+      dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
     }
 
