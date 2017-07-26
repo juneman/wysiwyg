@@ -84,7 +84,13 @@ export default class Code extends React.Component {
             { ...aceEditorProps }
           />
           <div style={{textAlign: 'right', marginTop: 10}}>
-            <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>{ isSaved ? 'Saved' : 'Unsaved — Invalid HTML' }</span>
+            <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>
+              { isSaved ?
+                <span>Saved</span>
+                :
+                <span style={{ color: 'rgba(255, 69, 0, 0.8)' }}>Warning — HTML is probably invalid</span>
+              }
+            </span>
           </div>
         </Menu>
       </div>
@@ -101,28 +107,24 @@ export default class Code extends React.Component {
       ).replace(/[\t ]+\/\>/g, "/>");
 
     const trimmedContent = content.replace(/[\t ]+\/\>/g, "/>");
+    let newLocalState;
 
     if (cleanHtml != trimmedContent) {
       if (isSaved) {
-        const newLocalState = localState.set('content', content);
-
-        onChange({
-          localState: newLocalState,
-          persistedState
-        });
-
         this.setState({ isSaved: false });
       }
-      return;
+
+      newLocalState = localState.set('content', content);
+    } else if (!isSaved) {
+      this.setState({ isSaved: true });
     }
 
     const newPersistedState = persistedState.set('content', cleanHtml);
-    const newLocalState = localState.set('content', cleanHtml);
+    newLocalState = newLocalState || localState.set('content', cleanHtml);
     onChange({
       localState: newLocalState,
       persistedState: newPersistedState
     });
-    this.setState({ isSaved: true });
   }
 
 }
