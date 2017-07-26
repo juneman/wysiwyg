@@ -113,37 +113,37 @@ export default class ImageUploadWithPresets extends React.Component {
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581529/appcues-dev/x4uc1yzmd0dhh6ljcste.png',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1495142286/14932/f88gmzhnenh7c9drv9ks.png'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097446/appcues-dev/qfqtt1rzcfuniw1u5kvv.png'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500580947/appcues-dev/zgpyya23z1muz25ohgza.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492807/appcues-dev/shizjjktdoi5sq8mpd32.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097510/appcues-dev/lwrxgeujaakvarxdqxsr.jpg'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581353/appcues-dev/csxijdtxrxqkip3cscqv.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492853/appcues-dev/pnzjeqy5uebz4wvzep3s.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097550/appcues-dev/bplefflfgzq8qzc5mjq5.jpg'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581210/appcues-dev/vsudv3f31erwrtrh3kxq.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492883/appcues-dev/wltx0g9m0ufbgnacgy1z.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097598/appcues-dev/ho7i9ttcmnf1ezq7lofy.jpg'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581160/appcues-dev/ruj5ysoiqmuqkxwllmix.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492918/appcues-dev/l3tu6wocnjqhw2vyf5pn.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097625/appcues-dev/bew13cceknmxg1uuhvy9.jpg'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581076/appcues-dev/byxg9ket5bsid4piamuv.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492956/appcues-dev/xv8fxxtqbrki8y1c8vll.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097649/appcues-dev/ipxsa7xctutqma2gikrz.jpg'
             },
             {
                 type: 'url',
                 src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581019/appcues-dev/fyye2tcrtoyyxrl2lupm.jpg',
-                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1500492984/appcues-dev/uiu7x7jk9yljsyfozbvn.jpg'
+                fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097667/appcues-dev/io9imwcj5ymmofy2yesy.jpg'
             }
         ]
     };
@@ -285,6 +285,8 @@ export default class ImageUploadWithPresets extends React.Component {
     const { localState, persistedState, onChange, maxWidth } = this.props;
 
     const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
+
+    console.log(urlWithoutProtocol);
 
     let newPersistedState = persistedState
     .set('url', urlWithoutProtocol)
