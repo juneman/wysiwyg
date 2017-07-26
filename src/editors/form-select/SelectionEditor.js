@@ -133,7 +133,7 @@ export default class SelectionEditor extends React.Component {
             </div>
           </form>
         ) : (
-          (options.size || label) ? (
+          (options.length || label) ? (
             <form className="step-action-form">
               <div className="fields">
                 <div data-field-id={ zone.get('id') } className="field">
