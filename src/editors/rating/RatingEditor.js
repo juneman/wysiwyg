@@ -64,10 +64,15 @@ export default class RatingEditor extends React.Component {
     return (
       <div>
         <style> {`
+          label [contenteditable] {
+            cursor: text;
+          }
+
           .public-DraftEditorPlaceholder-root {
             pointer-events: none;
             color: #999;
           }
+
           appcues cue>section .form-field label.field-option input[type=checkbox] {
             border: 0;
             clip: rect(0 0 0 0);

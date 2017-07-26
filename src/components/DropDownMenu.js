@@ -48,7 +48,7 @@ export default class DropDownMenu extends React.Component {
     }
 
     render() {
-        const { className, menuClassName, optionClassName, labelClassName, selectedClassName, title, label, style, options, renderOptionSubtextNode, disabled, actionable, hiddenCaret, create, success, left, imageHeight, defaultValue, unsearchable, searchPlaceholder } = this.props;
+        const { className, menuClassName, optionClassName, labelClassName, selectedClassName, title, label, style, options, renderOptionSubtextNode, disabled, actionable, hiddenCaret, create, success, left, imageHeight, defaultValue, unsearchable, searchPlaceholder, hasRoomToRenderBelow } = this.props;
         const { selectedValue, isMenuOpen, searchTerm, isHoveringOverOptionByIndex } = this.state;
 
         const selectedOption = selectedValue !== undefined ? options.find((option) => option.value == selectedValue) : null;
@@ -120,6 +120,12 @@ export default class DropDownMenu extends React.Component {
                 color: '#666'
         	}
         };
+	    if (!hasRoomToRenderBelow) {
+	      styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
+	      styles.dropDownMenu.bottom = styles.dropDownMenu.top;
+	      delete styles.dropDownMenu.marginTop;
+	      delete styles.dropDownMenu.top;
+	    }
 
         if (isMenuOpen) {
         	styles.dropDownMenu = {
@@ -128,6 +134,12 @@ export default class DropDownMenu extends React.Component {
 	            opacity: 1,
 	            pointerEvents: 'all'
         	}
+
+		    if (!hasRoomToRenderBelow) {
+		      styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
+		      delete styles.dropDownMenu.marginTop;
+		    }
+
         }
 
         const getDropDownMenuOptionStyle = (index) => {
@@ -246,6 +258,7 @@ DropDownMenu.propTypes = {
     imageHeight: PropTypes.number,
     style: PropTypes.object,
     unsearchable: PropTypes.bool,
-    searchPlaceholder: PropTypes.string
+    searchPlaceholder: PropTypes.string,
+    hasRoomToRenderBelow: PropTypes.bool
 };
 

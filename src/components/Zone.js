@@ -35,6 +35,7 @@ import SelectionEditor from '../editors/form-select/SelectionEditor';
 import SelectionToolbar from '../editors/form-select/SelectionToolbar';
 
 import RatingEditor from '../editors/rating/RatingEditor';
+import RatingToolbar from '../editors/rating/RatingToolbar';
 
 import EditorWrapper from './EditorWrapper';
 
@@ -203,7 +204,7 @@ export class Zone extends React.Component {
         break;
       case 'Rating':
         editorNode = (<RatingEditor {...editorProps} />);
-        toolbarNode = (<SelectionToolbar {...toolbarProps} />);
+        toolbarNode = (<RatingToolbar {...toolbarProps} />);
         break;
     }
 
