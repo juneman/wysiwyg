@@ -78,7 +78,7 @@ export default class IconButton extends React.Component {
       flexShrink: '0',
       transition: 'all 0.15s ease-out'
     }, {
-      boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px' : null
+      boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.3) 0 0 10px' : null
     });
 
     const textStyle = {
