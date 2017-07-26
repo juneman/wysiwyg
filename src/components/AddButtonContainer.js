@@ -42,7 +42,7 @@ export default class AddButtonContainer extends React.Component {
     const { isEditorSelectorVisible } = this.state;
 
     return (
-      <div>
+      <div style={{ pointerEvents: 'all' }}>
         <AddButton shadow={ shadow } {...this.props}/>
         <div style={{ position: 'relative' }}>
           { isEditorSelectorVisible &&
