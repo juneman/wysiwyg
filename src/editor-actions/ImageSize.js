@@ -94,8 +94,12 @@ export default class ImageSize extends React.Component {
   handleInputChange(e, name) {
     const val = e.currentTarget.value;
     const update = {};
-    update[name] = val && val.length ? parseInt(val) : val;
-    this.setState(update);
+    const parsedNumber = val && val.length ? parseInt(val) : val;
+
+    if (!isNaN(parsedNumber)) {
+      update[name] = parsedNumber;
+      this.setState(update);
+    }
   }
 
   handleSave(e) {
