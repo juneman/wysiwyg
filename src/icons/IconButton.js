@@ -115,7 +115,7 @@ export default class IconButton extends React.Component {
     const iconNodes = (
       <span style={wrapperStyle}>
         <span style={iconWrapperStyle}>
-          <svg style={finalIconStyle} viewBox={viewBox}>
+          <svg className="wysiwyg--icon" style={finalIconStyle} viewBox={viewBox}>
             <title>{title}</title>
             {pathNode}
           </svg>

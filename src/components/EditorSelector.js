@@ -161,7 +161,7 @@ export default class EditorSelector extends React.Component {
 
     return (
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
-        <Menu>
+        <Menu style={{overflow: 'hidden'}}>
           { trimmedEditors.map((editor) => {
             const isHover = (editor.text === primaryHoverMenu) ? true : false;
             const style = {
@@ -199,7 +199,7 @@ export default class EditorSelector extends React.Component {
         </Menu>
         <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
           { (showForm) ? (
-            <Menu>
+            <Menu style={{overflow: 'hidden'}}>
               { trimmedFormEditors.map((editor) => {
                 const isHover = (editor.text === secondaryMenuHover) ? true : false;
                 const style = {

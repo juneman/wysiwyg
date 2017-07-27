@@ -4,6 +4,7 @@ import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
 import { RichUtils, EditorState } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
+import tinyColor from 'tinycolor2';
 
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
@@ -36,7 +37,12 @@ export default class FontColor extends React.Component {
     const selectedColor = this.getCurrentInlineColor();
     const buttonProps = {
       hideBackground: true,
-      color: selectedColor
+      color: selectedColor,
+      iconStyle: {
+        backgroundColor: (tinyColor(selectedColor).getBrightness() > 240) ? tinyColor(selectedColor).darken(25).toHexString() : null,
+        borderRadius: '3px',
+        border: (tinyColor(selectedColor).getBrightness() > 240) ? `1px solid ${tinyColor(selectedColor).darken(25).toHexString()}` : null,
+      }
     };
 
     const dropdownStyles = {
