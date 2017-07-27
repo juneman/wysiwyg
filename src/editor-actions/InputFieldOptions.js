@@ -61,8 +61,8 @@ export default class InputFieldOptions extends React.Component {
         <div style={titleStyles}>Text Field Options</div>
         <div>
           <div style={row}>
-            <input style={checkboxStyle} type="checkbox" checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
-            <label>Required Field</label>
+            <input id="field-is-required" type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
+            <label htmlFor="field-is-required">Required Field</label>
           </div>
           <div style={row}>
             <label>Maximum Length</label>

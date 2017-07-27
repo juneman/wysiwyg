@@ -51,28 +51,21 @@ export default class HeroEditor extends React.Component {
       textAlign: 'center'
     };
 
-    const textStyle = {
-      width: canvasPosition.get('width')
-    };
-
     return (
       <div className="hero apc-hero" style={wrapperStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <div style={textStyle}>
-              <Editor
-                ref={(editor) => this.editor = editor}
-                editorState={editorState}
-                customStyleFn={customStyleFn}
-                blockStyleFn={blockStyleFn}
-                onChange={(editorState) => this.handleEditorStateChange(editorState)}
-              />
-            </div>
+            <Editor
+              ref={(editor) => this.editor = editor}
+              editorState={editorState}
+              customStyleFn={customStyleFn}
+              blockStyleFn={blockStyleFn}
+              onChange={(editorState) => this.handleEditorStateChange(editorState)}
+            />
           ) : null
         ) : (
           <div
             className="hero-content"
-            style={textStyle}
             ref={ (el) => this._heroContent = el }
             dangerouslySetInnerHTML={{
               __html: content
