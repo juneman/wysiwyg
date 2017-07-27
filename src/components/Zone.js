@@ -303,8 +303,13 @@ export class Zone extends React.Component {
   }
 
   removeRow() {
-    const { row, dispatch } = this.props;
-    dispatch(rowActions.removeRow(row.get('id')));
+    const { row, dispatch, persistedState } = this.props;
+    const persistedContent = persistedState.get('url') || persistedState.get('content') || persistedState.get('label');
+    const isComponentEmpty = !persistedContent || (persistedContent === '<p></p>' || persistedContent === '');
+
+    if (isComponentEmpty || confirm("Are you sure you want to delete this?")) {
+        dispatch(rowActions.removeRow(row.get('id')));
+    }
   }
 
   setBoundingBox() {
