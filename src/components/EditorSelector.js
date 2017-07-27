@@ -39,7 +39,7 @@ const editors = [
   },
   {
     Button: HeroButton,
-    text: 'Hero',
+    text: 'Image Banner',
     type: 'Hero'
   },
   {
