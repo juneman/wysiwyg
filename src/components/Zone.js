@@ -228,7 +228,7 @@ export class Zone extends React.Component {
               this.save();
               this.cancelEditing();
             }}
-            onCancel={() => this.cancelEditing()}
+            onCancel={() => this.clickedCancel()}
             onRemove={() => this.removeRow()}
             onMoveRowStart={() => {
               dispatch(editorActions.startMoving(row));
@@ -295,6 +295,18 @@ export class Zone extends React.Component {
   startEditing() {
     const { dispatch, zone } = this.props;
     dispatch(editorActions.startEditing(zone));
+  }
+
+  clickedCancel() {
+    const { dispatch, row, zone } = this.props;
+    const persistedState = zone.get('persistedState');
+    const isComponentNew = !persistedState || !persistedState.size;
+
+    if (isComponentNew) {
+      dispatch(rowActions.removeRow(row.get('id')));      
+    } else {
+      this.cancelEditing();
+    }
   }
 
   cancelEditing() {

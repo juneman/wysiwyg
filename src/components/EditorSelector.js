@@ -73,10 +73,7 @@ const editors = [
         zones: [
           {
             id: uuid(),
-            type: 'SelectionField',
-            persistedState: {
-              fieldType: 'radio'
-            }
+            type: 'SelectionField'
           }
         ]
       }

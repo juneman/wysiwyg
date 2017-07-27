@@ -41,7 +41,6 @@ export default class SelectionEditor extends React.Component {
     const label = persistedState.get('label');
     const options = persistedState.get('options') || [];
     const optionString = (localState.get('options')) || options.join('\n') || '';
-    const fieldType = persistedState.get('fieldType') || 'radio';
     const isRequired = persistedState.get('isRequired') || false;
 
     const placeholder = (`Place each option on a new line, e.g.
@@ -49,24 +48,12 @@ export default class SelectionEditor extends React.Component {
       Option 2
       Option 3`).split('\n').map((row) => row.trim()).join('\n');
 
-    const dropdownNodes = (
-      <div>
-        <select className="form-control" required={isRequired}>
-          { options.map((option) => {
-            return (
-              <option key={option}>{option}</option>
-            );
-          })}
-        </select>
-      </div>
-    );
-
     const buttonListNodes = (
       <div>
         { options.map((option) => {
           return (
             <label className="field-option" key={ option }>
-              <input className="response-value" value={ option } type={ fieldType } />
+              <input className="response-value" value={ option } type="radio" />
               <span>{ option }</span>
             </label>
           );
@@ -112,7 +99,7 @@ export default class SelectionEditor extends React.Component {
           <form className="step-action-form">
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
-                <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-${ fieldType }` }>
+                <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-radio` }>
                   <div className="field-label">
                     <label htmlFor={ zone.get('id') } className="label-display">
                       { (editorState) ? (
@@ -137,12 +124,12 @@ export default class SelectionEditor extends React.Component {
             <form className="step-action-form">
               <div className="fields">
                 <div data-field-id={ zone.get('id') } className="field">
-                  <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-${ fieldType }` }>
+                  <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-radio` }>
                     <div className="field-label">
                       <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
                     </div>
                     <div className="field-controls">
-                      { fieldType === 'dropdown' ? dropdownNodes : buttonListNodes }
+                      { buttonListNodes }
                     </div>
                   </div>
                 </div>
@@ -195,7 +182,7 @@ export default class SelectionEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { label = '', options = [], isRequired = false, fieldType = 'radio' } = persistedState.toJS();
+    const { label = '', options = [], isRequired = false } = persistedState.toJS();
 
     const requiredAttr = {};
     if (isRequired) {
@@ -214,7 +201,7 @@ export default class SelectionEditor extends React.Component {
             name: 'input',
             voidElement: true,
             attrs: {
-              type: fieldType,
+              type: 'radio',
               class: 'response-value',
               name: zone.get('id'),
               value: option,
@@ -233,33 +220,6 @@ export default class SelectionEditor extends React.Component {
         ]
       };
     });
-
-    const dropdownChildren = [
-      {
-        type: 'tag',
-        name: 'select',
-        voidElement: false,
-        attrs: {
-          class: 'form-control',
-          ...requiredAttr
-        },
-        children: options.map((option) => {
-          return {
-            type: 'tag',
-            name: 'option',
-            voidElement: false,
-            children: [
-              {
-                type: 'text',
-                content: option
-              }
-            ]
-          };
-        })
-      }
-    ];
-    
-    const optionsChildren = (fieldType === 'dropdown') ? dropdownChildren : radioChildren;
 
     const ast = [];
     ast.push({
@@ -284,7 +244,7 @@ export default class SelectionEditor extends React.Component {
                   type: 'tag',
                   name: 'div',
                   attrs: {
-                    class: `form-field form-field-${ fieldType }`,
+                    class: `form-field form-field-radio`,
                     style: "marginTop: 0; padding: 0;",
                     ['data-appcues-required']: isRequired },
                   voidElement: false,
@@ -318,7 +278,7 @@ export default class SelectionEditor extends React.Component {
                           name: 'div',
                           attrs: { class: "field-options" },
                           voidElement: false,
-                          children: optionsChildren
+                          children: radioChildren
                         }
                       ]
                     }
