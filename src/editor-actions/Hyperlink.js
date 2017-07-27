@@ -54,7 +54,7 @@ export default class Hyperlink extends React.Component {
       animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
-      dropdownStyles.bottom = dropdownStyles.top;
+      dropdownStyles.bottom = dropdownStyles.top + 55;
       delete dropdownStyles.top;
     }
 
