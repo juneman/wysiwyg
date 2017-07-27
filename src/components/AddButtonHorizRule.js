@@ -38,6 +38,7 @@ export default class AddButtonHorizRule extends React.Component {
       zIndex: 2,
       padding: 0,
       margin: 0,
+      pointerEvents: 'none',
       background: '#00b850',
       transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
       opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
@@ -46,6 +47,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     const containerStyle = {
       position: 'absolute',
+      pointerEvents: 'none',
       left: 0,
       right: 0,
       opacity: (isHoveringOverContainer || showEditorSelector) ? 1 : 0,

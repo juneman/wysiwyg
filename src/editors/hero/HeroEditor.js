@@ -42,7 +42,7 @@ export default class HeroEditor extends React.Component {
 
     const backgroundStyle = (url && backgroundType == 'url') ? `url(${url})` :
                             (gradient && backgroundType == 'linear-gradient') ? `linear-gradient(${gradient})` :
-                            null;
+                            `linear-gradient(0deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3))`;
 
     const wrapperStyle = {
       minHeight: 120,
@@ -51,28 +51,21 @@ export default class HeroEditor extends React.Component {
       textAlign: 'center'
     };
 
-    const textStyle = {
-      width: canvasPosition.get('width')
-    };
-
     return (
       <div className="hero apc-hero" style={wrapperStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <div style={textStyle}>
-              <Editor
-                ref={(editor) => this.editor = editor}
-                editorState={editorState}
-                customStyleFn={customStyleFn}
-                blockStyleFn={blockStyleFn}
-                onChange={(editorState) => this.handleEditorStateChange(editorState)}
-              />
-            </div>
+            <Editor
+              ref={(editor) => this.editor = editor}
+              editorState={editorState}
+              customStyleFn={customStyleFn}
+              blockStyleFn={blockStyleFn}
+              onChange={(editorState) => this.handleEditorStateChange(editorState)}
+            />
           ) : null
         ) : (
           <div
             className="hero-content"
-            style={textStyle}
             ref={ (el) => this._heroContent = el }
             dangerouslySetInnerHTML={{
               __html: content
