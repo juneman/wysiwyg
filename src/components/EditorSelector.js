@@ -39,7 +39,7 @@ const editors = [
   },
   {
     Button: HeroButton,
-    text: 'Hero',
+    text: 'Hero/Header',
     type: 'Hero'
   },
   {
@@ -55,12 +55,12 @@ const editors = [
   },
   {
     Button: FormTextInputButton,
-    text: 'Text Field',
+    text: 'Small Text Input',
     type: 'TextInput'
   },
   {
     Button: FormTextInputButton,
-    text: 'TextArea Field',
+    text: 'Big Text Area',
     type: 'TextAreaInput'
   },
   {
@@ -83,25 +83,6 @@ const editors = [
     ])
   },
   {
-    Button: FormCheckboxButton,
-    text: 'Checkbox',
-    type: 'SelectionField',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'SelectionField',
-            persistedState: {
-              fieldType: 'checkbox'
-            }
-          }
-        ]
-      }
-    ])
-  },
-  {
     Button: FormRatingButton,
     text: 'Rating',
     type: 'Rating'
@@ -113,56 +94,7 @@ const editors = [
   }
 ];
 
-const formEditors = [
-  {
-    Button: FormDropdownButton,
-    text: 'Dropdown',
-    type: 'SelectionField',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'SelectionField',
-            persistedState: {
-              fieldType: 'dropdown'
-            }
-          }
-        ]
-      }
-    ])
-  },
-  {
-    Button: PrevNextButton,
-    text: 'Prev/Next',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>Previous</p>',
-              textAlign: 'left',
-              buttonAction: 'prev'
-            }
-          },
-          {
-            id: uuid(),
-            type: 'Button',
-            persistedState: {
-              content: '<p>Next</p>',
-              textAlign: 'right',
-              buttonAction: 'next'
-            }
-          }
-        ]
-      }
-    ])
-  }
-];
+const formEditors = [];
 
 /**
  * A React component that displays the dropdown menu
@@ -221,7 +153,7 @@ export default class EditorSelector extends React.Component {
     };
 
     const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
-      return (allowedEditorTypes.includes(editor.text));
+      return (allowedEditorTypes.includes(editor.type));
     });
     const trimmedFormEditors = (allowedEditorTypes.isEmpty()) ? formEditors : formEditors.filter((editor) => {
       return (allowedEditorTypes.includes(editor.text));
