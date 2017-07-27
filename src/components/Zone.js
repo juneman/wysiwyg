@@ -303,7 +303,7 @@ export class Zone extends React.Component {
   }
 
   removeRow() {
-    const { row, dispatch, zone, html, localState, persistedState } = this.props;
+    const { row, dispatch, persistedState } = this.props;
     const persistedContent = persistedState.get('content');
     const componentHasNoContent = persistedContent === '<p></p>' || persistedContent === '';
 
