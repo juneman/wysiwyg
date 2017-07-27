@@ -305,9 +305,9 @@ export class Zone extends React.Component {
   removeRow() {
     const { row, dispatch, persistedState } = this.props;
     const persistedContent = persistedState.get('content');
-    const doesComponentHaveContent = persistedContent === '<p></p>' || persistedContent === '';
+    const isComponentEmpty = persistedContent === '<p></p>' || persistedContent === '';
 
-    if (doesComponentHaveContent || confirm("Are you sure you want to delete this?") == true) {
+    if (isComponentEmpty || confirm("Are you sure you want to delete this?") == true) {
         dispatch(rowActions.removeRow(row.get('id')));
     }
   }
