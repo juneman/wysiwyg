@@ -39,11 +39,24 @@ export default class RichTextEditor extends React.Component {
 
   render() {
     const { isEditing, persistedState, localState } = this.props;
+    const { top, right, bottom, left } = persistedState.toJS();
     const editorState = localState.get('editorState');
 
     const content = (persistedState.get('content')) || '';
 
     const wrapperStyle = {};
+    if (top) {
+      wrapperStyle.marginTop = top;
+    };
+    if (right) {
+      wrapperStyle.marginRight = right;
+    };
+    if (bottom) {
+      wrapperStyle.marginBottom = bottom;
+    };
+    if (left) {
+      wrapperStyle.marginLeft = left;
+    };
 
     return (
       <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
@@ -109,13 +122,32 @@ export default class RichTextEditor extends React.Component {
     const width = persistedState.get('width');
     const content = persistedState.get('content') || '';
 
+    const { top, right, bottom, left } = persistedState.toJS();
+
     let styles = '';
     if (height) {
       styles += `height:${height};`;
-    }
+    };
     if (width) {
       styles += `width:${width};`;
-    }
+    };
+
+    const isNotDefaultMargins = top || right || bottom || left;
+    if (isNotDefaultMargins) {
+      if (top) {
+        styles = styles + `margin-top:${top}px;`;
+      };
+      if (right) {
+        styles = styles + `margin-right:${right}px;`;
+      };
+      if (bottom) {
+        styles = styles + `margin-bottom:${bottom}px;`;
+      };
+      if (left) {
+        styles = styles + `margin-left:${left}px;`;
+      };
+    } 
+
     const stylesTag = (styles && styles.length) ? ` style="${styles}"` : '';
 
     const html = `<div class="rich-text"${stylesTag}><div>${content}</div></div>`;
