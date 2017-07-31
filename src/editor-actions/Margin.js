@@ -63,7 +63,7 @@ export default class Margin extends React.Component {
         <div style={{marginTop: -10}}>
           <div style={{textAlign: 'center'}}>
             <label>Top: </label>
-            <input style={shortInputStyle} value={top} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'top')} />
+            <input autoFocus style={shortInputStyle} value={top} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'top')} />
           </div>
           <div className='row' style={{display: 'flex', alignItems: 'center', margin: '5px 0'}}>
             <div style={{width: '30%'}}>
