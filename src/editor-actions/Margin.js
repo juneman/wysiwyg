@@ -115,32 +115,17 @@ export default class Margin extends React.Component {
 
     if (!isNaN(parsedNumber)) {
       update[name] = parsedNumber;
+
+      const newPersistedState = persistedState
+        .set(name, parsedNumber)
+
       this.setState(update);
+
+      onChange({
+        localState,
+        persistedState: newPersistedState
+      });
     }
-  }
-
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { top, right, bottom, left } = this.state;
-
-    // const newPersistedState = persistedState
-    //   .set('width', width)
-    //   .delete('widthOverride')
-    //   .delete('heightOverride');
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
-
-    // onChange({
-    //   localState,
-    //   persistedState: newPersistedState
-    // });
   }
 
 }

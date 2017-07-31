@@ -28,16 +28,16 @@ export default function ImageToolbar(props) {
       name: 'image-size'
     },
     {
-      Component: Margin,
-      name: 'margin'
-    },
-    {
       Component: AlignmentBlock,
       name: 'alignment-block'
     },
     {
       Component: HyperlinkBlock,
       name: 'hyperlink-block'
+    },
+    {
+      Component: Margin,
+      name: 'margin'
     }
   ];
 
