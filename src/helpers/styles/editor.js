@@ -29,6 +29,27 @@ export const textInputStyle = {
   outline: 'none'
 };
 
+export const shortInputStyle = {
+  display: 'inline',
+  margin: '0 0 0 5px',
+  width: '35px',
+  fontFamily: 'sans-serif',
+  fontSize: 14,
+  appearance: 'none',
+  boxShadow: 'none',
+  borderRadius: 'none',
+  padding: '1px 4px',
+  outline: 'none',
+  verticalAlign: 'middle'
+};
+
+export const marginBoxStyle = {
+    height: '50px',
+    width: '70px',
+    margin: '5px auto',
+    border: '2px dashed #808080'
+};
+
 export const dropdownStyle = {
   display: 'block',
   margin: 0,

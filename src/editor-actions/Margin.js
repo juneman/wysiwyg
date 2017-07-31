@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, textInputStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, marginBoxStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -59,26 +59,27 @@ export default class Margin extends React.Component {
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Change Surrounding Margin (in pixels)</div>
-        <div style={{marginTop: 20}}>
-          <div>
-            <label>Top:</label><br/>
-            <input style={textInputStyle} value={top} placeholder="0" onChange={(e) => this.handleInputChange(e, 'top')} />
+        <div style={titleStyles}>Surrounding Margin (in pixels)</div>
+        <div style={{marginTop: -10}}>
+          <div style={{textAlign: 'center'}}>
+            <label>Top: </label>
+            <input style={shortInputStyle} value={top} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'top')} />
           </div>
-          <div>
-            <label>Right:</label><br/>
-            <input style={textInputStyle} value={right} placeholder="0" onChange={(e) => this.handleInputChange(e, 'right')} />
+          <div className='row' style={{display: 'flex', alignItems: 'center', margin: '5px 0'}}>
+            <div style={{width: '30%'}}>
+              <label>Left: </label>
+              <input style={shortInputStyle} value={left} max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'left')} />
+            </div>
+            <div style={marginBoxStyle}>
+            </div>
+            <div style={{width: '30%'}}>
+              <label>Right: </label>
+              <input style={shortInputStyle} value={right} max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'right')} />
+            </div>
           </div>
-          <div>
-            <label>Bottom:</label><br/>
-            <input style={textInputStyle} value={bottom} placeholder="0" onChange={(e) => this.handleInputChange(e, 'bottom')} />
-          </div>
-          <div>
-            <label>Left:</label><br/>
-            <input style={textInputStyle} value={left} placeholder="0" onChange={(e) => this.handleInputChange(e, 'left')} />
-          </div>
-          <div style={{textAlign: 'right', marginTop: 20}}>
-            <Button onClick={(e) => this.handleSave(e)}>Update</Button>
+          <div style={{textAlign: 'center', marginBottom: '10px'}}>
+            <label>Bottom: </label>
+            <input style={shortInputStyle} value={bottom} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'bottom')} />
           </div>
         </div>
       </Menu>
@@ -107,6 +108,7 @@ export default class Margin extends React.Component {
   }
 
   handleInputChange(e, name) {
+    const { onChange, localState, persistedState, onToggleActive } = this.props;
     const val = e.currentTarget.value;
     const update = {};
     const parsedNumber = val && val.length ? parseInt(val) : val;
