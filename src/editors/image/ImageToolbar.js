@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 
 import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
-import ImageUpload from '../../editor-actions/ImageUpload';
+import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
@@ -15,12 +15,13 @@ export default function ImageToolbar(props) {
 
   const actions = [
     {
-      Component: ImageUpload,
+      Component: ImageUploadWithPresets,
       props: {
         maxWidth,
-        maxHeight
+        maxHeight,
+        galleryType: 'emoji'
       },
-      name: 'image-upload'
+      name: 'image-upload-with-presets'
     },
     {
       Component: ImageSize,

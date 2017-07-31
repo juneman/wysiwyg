@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps } from '../helpers/styles/editor';
+import { getButtonProps, emojiPickerStyles} from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 import ImageUploader from '../components/ImageUploader';
@@ -17,7 +18,7 @@ export default class ImageUploadWithPresets extends React.Component {
     this.state = {
       position: Map(),
       isMenuOpen: props.isActive || false,
-      tabState: 'gallery'
+      tabState: (props.galleryType) ? 'gallery' : 'upload'
     };
   }
 
@@ -36,7 +37,7 @@ export default class ImageUploadWithPresets extends React.Component {
 
   render() {
     const { position, isMenuOpen, tabState } = this.state;
-    const { isActive, hasRoomToRenderBelow } = this.props;
+    const { isActive, hasRoomToRenderBelow, galleryType } = this.props;
 
     const presetGallery = {
       'solid': [
@@ -184,10 +185,29 @@ export default class ImageUploadWithPresets extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={{display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #e1e1e1'}}>
-          <span style={ {...tabStyle, ...(tabState == 'gallery') ? selectedTabStyle : {}} } onClick={ () => this.setTabView('gallery') }>Gallery</span>
+          { galleryType == 'emoji' &&
+              <span style={ {...tabStyle, ...(tabState == 'gallery') ? selectedTabStyle : {}} } onClick={ () => this.setTabView('gallery') }>Emoji</span>
+          }
+          { galleryType == 'hero' &&
+              <span style={ {...tabStyle, ...(tabState == 'gallery') ? selectedTabStyle : {}} } onClick={ () => this.setTabView('gallery') }>Gallery</span>
+          }
           <span style={  {...tabStyle, ...(tabState == 'upload') ? selectedTabStyle : {}} }  onClick={ () => this.setTabView('upload') }>Upload</span>
         </div>
-        { tabState == 'gallery' &&
+        { galleryType == 'emoji' && tabState == 'gallery' &&
+            <div style={{padding: '4px 8px', height: 250, overflowY: 'scroll'}}>
+                <style>
+                    { emojiPickerStyles }
+                </style>
+                <Picker
+                    color="#23baff"
+                    set='twitter'
+                    onClick={(emoji) => this.pickEmoji(emoji)}
+                    style={{width: '100%'}}
+                    />
+            </div>
+
+        }
+        { galleryType == 'hero' && tabState == 'gallery' &&
           <div style={{padding: '4px 8px', height: 150, overflowY: 'scroll'}}>
             {
               Object.keys(presetGallery).map((key) =>
@@ -277,6 +297,29 @@ export default class ImageUploadWithPresets extends React.Component {
 
   }
 
+  pickEmoji(emoji) {
+      const { localState, persistedState, onChange } = this.props;
+      let url;
+
+      //temporary check to make sure that our
+      //saved url matches what the twemoji cdn expects.
+      if ((emoji.unified.match(new RegExp("-", "g")) || []).length == 1) {
+          url =  `//twemoji.maxcdn.com/2/svg/${emoji.unified.split('-fe0f')[0]}.svg`;
+      } else {
+          url = `//twemoji.maxcdn.com/2/svg/${emoji.unified}.svg`;
+      }
+
+      let newPersistedState = persistedState
+        .set('url', url)
+        .set('width', 250)
+        .set('textAlign', 'center');
+
+      onChange({
+        localState,
+        persistedState: newPersistedState
+      });
+  }
+
   handleUpload(imageDetails) {
     const { url, width } = imageDetails;
     const { localState, persistedState, onChange, maxWidth } = this.props;
@@ -332,5 +375,6 @@ ImageUploadWithPresets.propTypes = {
   hasRoomToRenderBelow: PropTypes.bool,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  maxWidth: PropTypes.number
+  maxWidth: PropTypes.number,
+  galleryType: PropTypes.string
 };

@@ -18,7 +18,8 @@ export default function HeroToolbar(props) {
       Component: ImageUploadWithPresets,
       props: {
           maxWidth,
-          maxHeight
+          maxHeight,
+          galleryType: 'hero'
         },
       name: 'image-upload-with-presets'
     },
