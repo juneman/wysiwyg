@@ -9,6 +9,8 @@ import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
+import { GALLERY_TYPES } from '../../helpers/constants';
+
 export default function ImageToolbar(props) {
 
   const { height: maxHeight, width: maxWidth } = props.canvasPosition.toJS();
@@ -19,7 +21,7 @@ export default function ImageToolbar(props) {
       props: {
         maxWidth,
         maxHeight,
-        galleryType: 'emoji'
+        galleryType: GALLERY_TYPES.EMOJI
       },
       name: 'image-upload-with-presets'
     },

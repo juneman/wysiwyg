@@ -60,32 +60,27 @@ export const emojiPickerStyles = `.emoji-mart,
 }
 
 .emoji-mart {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-size: 16px;
   display: inline-block;
-  color: #222427;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
-  background: #fff;
 }
 
 .emoji-mart .emoji-mart-emoji {
   padding: 6px;
+}
+
+.emoji-mart .emoji-mart-emoji, .emoji-mart .emoji-mart-emoji * {
   cursor: pointer;
 }
 
-.emoji-mart-bar {
-  border: 0 solid #d9d9d9;
-}
 .emoji-mart-bar:first-child {
-  border-bottom-width: 1px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  background: #e9e9e9;
+  border-radius: 4px;
+  width: 50%;
+  display: inline-block;
+  height: 36px;
 }
 .emoji-mart-bar:last-child {
-  border-top-width: 1px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-top: 1px solid #d9d9d9;
 }
 
 .emoji-mart-anchors {
@@ -100,7 +95,7 @@ export const emojiPickerStyles = `.emoji-mart,
   position: relative;
   flex: 1;
   text-align: center;
-  padding: 12px 4px;
+  padding: 8px 4px 4px;
   overflow: hidden;
   transition: color .1s ease-out;
 }
@@ -133,29 +128,35 @@ export const emojiPickerStyles = `.emoji-mart,
 
 .emoji-mart-scroll {
   overflow-y: scroll;
-  height: 135px;
+  height: 80px;
   padding: 0 6px 6px 6px;
 }
 
 .emoji-mart-search {
-  margin-top: 6px;
-  padding: 0 6px;
+  width: 50%;
+  height: 36px;
+  display: inline-flex;
+  vertical-align: bottom;
+  justify-content: center;
+  align-items: center;
 }
 .emoji-mart-search input {
   font-size: 16px;
+  line-height: 24px;
+  height: 100%;
   display: block;
   width: 100%;
   padding: .2em .6em;
-  border-radius: 25px;
-  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  border: 1px solid #e9e9e9;
   outline: 0;
+  margin: 0 4px;
 }
 
 .emoji-mart-category .emoji-mart-emoji span {
   z-index: 1;
   position: relative;
   text-align: center;
-  cursor: default;
 }
 
 .emoji-mart-category .emoji-mart-emoji:hover:before {
@@ -192,7 +193,6 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-no-results {
   font-size: 14px;
   text-align: center;
-  padding-top: 70px;
   color: #858585;
 }
 .emoji-mart-no-results .emoji-mart-category-label {
@@ -210,6 +210,7 @@ export const emojiPickerStyles = `.emoji-mart,
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
 }
 
 .emoji-mart-preview-emoji, .emoji-mart-preview-shortname, .emoji-mart-preview-emoticon {
@@ -219,6 +220,7 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-preview-skins {
   right: 30px;
   text-align: right;
+  height: 18px
 }
 
 .emoji-mart-title-label {
@@ -228,18 +230,21 @@ export const emojiPickerStyles = `.emoji-mart,
 }
 
 .emoji-mart-skin-swatches {
-  font-size: 0;
-  padding: 2px 0;
-  border: 1px solid #d9d9d9;
-  border-radius: 12px;
-  background-color: #fff;
-  height: 22px;
-  align-items: center;
-  display: flex;
+    padding: 1px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    background-color: #fff;
+    height: 18px;
+    align-items: center;
+    display: flex;
 }
 
 .emoji-mart-skin-swatches-opened .emoji-mart-skin-swatch {
   width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0 2px;
 }
 
@@ -248,7 +253,9 @@ export const emojiPickerStyles = `.emoji-mart,
 }
 
 .emoji-mart-skin-swatch {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 0;
   vertical-align: middle;
   transition-property: width, padding;
@@ -267,6 +274,7 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-skin-swatch-selected {
   position: relative;
   width: 16px;
+  height: 16px;
   padding: 0 2px;
 }
 .emoji-mart-skin-swatch-selected:after {
