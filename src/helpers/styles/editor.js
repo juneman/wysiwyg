@@ -32,7 +32,7 @@ export const textInputStyle = {
 export const shortInputStyle = {
   display: 'inline',
   margin: '0 0 0 5px',
-  width: '40px',
+  width: '43px',
   fontFamily: 'sans-serif',
   fontSize: 14,
   appearance: 'none',

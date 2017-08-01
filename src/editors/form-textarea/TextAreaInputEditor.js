@@ -42,6 +42,22 @@ export default class TextAreaInputEditor extends React.Component {
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
 
+    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+
+    const wrapperStyle = {};
+    if (marginTop) {
+      wrapperStyle.marginTop = marginTop;
+    };
+    if (marginRight) {
+      wrapperStyle.marginRight = marginRight;
+    };
+    if (marginBottom) {
+      wrapperStyle.marginBottom = marginBottom;
+    };
+    if (marginLeft) {
+      wrapperStyle.marginLeft = marginLeft;
+    };
+
     return (
       <div>
         <style>
@@ -55,7 +71,7 @@ export default class TextAreaInputEditor extends React.Component {
           `}
         </style>
         { isEditing ? (
-          <form className="step-action-form">
+          <form className="step-action-form" style={wrapperStyle}>
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
                 <div
@@ -82,7 +98,7 @@ export default class TextAreaInputEditor extends React.Component {
             </div>
           </form>
         ) : (
-          <form className="step-action-form">
+          <form className="step-action-form" style={wrapperStyle}>
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
                 <div
@@ -137,7 +153,7 @@ export default class TextAreaInputEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { label, placeholder, isRequired = false, maxLength } = persistedState.toJS();
+    const { label, placeholder, isRequired = false, maxLength, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const inputAttrs = {
       class: 'form-control placeholder-value',
@@ -154,11 +170,28 @@ export default class TextAreaInputEditor extends React.Component {
       inputAttrs.placeholder = placeholder;
     }
 
+    let styles = '';
+    if (marginTop) {
+      styles = styles + `marginTop:${marginTop}px;`;
+    };
+    if (marginRight) {
+      styles = styles + `marginRight:${marginRight}px;`;
+    };
+    if (marginBottom) {
+      styles = styles + `marginBottom:${marginBottom}px;`;
+    };
+    if (marginLeft) {
+      styles = styles + `marginLeft:${marginLeft}px;`;
+    };
+
     const ast = [];
     ast.push({
       type: 'tag',
       name: 'form',
-      attrs: { class: "step-action-form" },
+      attrs: { 
+        class: "step-action-form", 
+        style: styles 
+      },
       voidElement: false,
       children: [
         {
