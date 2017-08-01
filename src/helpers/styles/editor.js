@@ -16,6 +16,16 @@ export const secondaryMenuTitleStyle = {
   marginBottom: 20
 };
 
+export const defaultButtonStyle = {
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderImage: 'none'
+};
+
+export const appcuesButtonSuccessStyle = {
+  border: '1px solid transparent',
+};
+
 export const textInputStyle = {
   display: 'block',
   margin: 0,
