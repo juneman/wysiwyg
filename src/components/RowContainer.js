@@ -15,10 +15,7 @@ class RowContainer extends React.Component {
     const { connectDropTarget, isOver } = this.props;
 
     const style = {
-      position: 'relative',
-      outline: (isOver) ? '2px dotted #0bdc66' : null,
-      margin: (isOver) ? '0 -20px': null,
-      padding: (isOver) ? '0 20px': null
+      position: 'relative'
     };
 
     return connectDropTarget(
