@@ -49,7 +49,8 @@ export default class IconButton extends React.Component {
       cursor,
       svg,
       style,
-      secondary
+      secondary,
+      textStyle
     } = this.props;
 
     const { colorOverride, shadowOverride } = this.state;
@@ -81,20 +82,21 @@ export default class IconButton extends React.Component {
       boxShadow: (shadow || shadowOverride) ? 'rgba(0, 0, 0, 0.3) 0 0 10px' : null
     });
 
-    const textStyle = {
+    const combinedTextStyle = {
       fontSize: 16,
       color: '#0bdc66',
-      zIndex: 10
+      zIndex: 10,
+      ...textStyle
     };
 
     if (finalColor) {
       iconWrapperStyle.backgroundColor = finalColor;
-      textStyle.color = finalColor;
+      combinedTextStyle.color = finalColor;
     }
     if (textColor && !colorOverride) {
-      textStyle.color = textColor;
+      combinedTextStyle.color = textColor;
     } else if (textColor && colorOverride) {
-      textStyle.color = colorOverride;
+      combinedTextStyle.color = colorOverride;
     }
 
     if (secondary) {
@@ -120,7 +122,7 @@ export default class IconButton extends React.Component {
             {pathNode}
           </svg>
         </span>
-        { (text) ? (<span style={textStyle}>{text}</span>) : null }
+        { (text) ? (<span style={combinedTextStyle}>{text}</span>) : null }
       </span>
     );
 
@@ -222,6 +224,7 @@ export default class IconButton extends React.Component {
 
 IconButton.defaultProps = {
   style: {},
+  textStyle: {},
   secondary: false
 };
 
@@ -246,5 +249,6 @@ IconButton.propTypes = {
   isActive: PropTypes.bool,
   svg: PropTypes.element,
   style: PropTypes.object,
+  textStyle: PropTypes.object,
   secondary: PropTypes.bool
 };
