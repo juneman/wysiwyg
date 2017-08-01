@@ -26,7 +26,7 @@ export class Row extends React.Component {
   }
 
   render() {
-    const { row, connectDragSource, isMovable } = this.props;
+    const { row, connectDragSource, isMovable, isOver } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
@@ -35,6 +35,7 @@ export class Row extends React.Component {
           key={zone.get('id')}
           zone={zone}
           row={row}
+          isOver={isOver}
           rowPosition={position}
           columnIndex={i}
         />
@@ -79,7 +80,8 @@ Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
   connectDragSource: PropTypes.func,
   isDragging: PropTypes.bool,
-  isMovable: PropTypes.bool.isRequired
+  isMovable: PropTypes.bool.isRequired,
+  isOver: PropTypes.bool.isRequired
 };
 
 const rowSource = {
