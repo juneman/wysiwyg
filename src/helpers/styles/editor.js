@@ -89,6 +89,7 @@ export const emojiPickerStyles = `.emoji-mart,
   padding: 0 6px;
   color: #858585;
   line-height: 0;
+  cursor: pointer;
 }
 
 .emoji-mart-anchor {
