@@ -9,6 +9,9 @@ import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets'
 import FontColor from '../../editor-actions/FontColor';
 import TextStyle from '../../editor-actions/TextStyle';
 
+import { GALLERY_TYPES } from '../../helpers/constants';
+
+
 export default function HeroToolbar(props) {
 
   const { height: maxHeight, width: maxWidth } = props.canvasPosition.toJS();
@@ -18,7 +21,8 @@ export default function HeroToolbar(props) {
       Component: ImageUploadWithPresets,
       props: {
           maxWidth,
-          maxHeight
+          maxHeight,
+          galleryType: GALLERY_TYPES.HERO
         },
       name: 'image-upload-with-presets'
     },
