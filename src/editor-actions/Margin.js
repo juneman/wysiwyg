@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, marginBoxStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, marginBoxStyle, marginBoxRowStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -16,10 +16,10 @@ export default class Margin extends React.Component {
     const { persistedState } = props;
 
     this.state = {
-      top: persistedState.get('top') || '',
-      right: persistedState.get('right') || '',
-      bottom: persistedState.get('bottom') || '',
-      left: persistedState.get('left') || '',
+      marginTop: persistedState.get('marginTop') || '',
+      marginRight: persistedState.get('marginRight') || '',
+      marginBottom: persistedState.get('marginBottom') || '',
+      marginLeft: persistedState.get('marginLeft') || '',
       isMenuOpen: props.isActive || false
     };
   }
@@ -33,7 +33,7 @@ export default class Margin extends React.Component {
   }
 
   render() {
-    const { top, right, bottom, left, isMenuOpen } = this.state;
+    const { marginTop, marginRight, marginBottom, marginLeft, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -60,26 +60,26 @@ export default class Margin extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Surrounding Margin (in pixels)</div>
-        <div style={{marginTop: -10}}>
+        <div style={{marginTop: 0}}>
           <div style={{textAlign: 'center'}}>
             <label>Top: </label>
-            <input autoFocus style={shortInputStyle} value={top} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'top')} />
+            <input autoFocus style={shortInputStyle} value={marginTop} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginTop')} />
           </div>
-          <div className='row' style={{display: 'flex', alignItems: 'center', margin: '5px 0'}}>
-            <div style={{width: '30%'}}>
+          <div className='row' style={marginBoxRowStyle}>
+            <div style={{width: '33%'}}>
               <label>Left: </label>
-              <input style={shortInputStyle} value={left} max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'left')} />
+              <input style={shortInputStyle} value={marginLeft} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginLeft')} />
             </div>
             <div style={marginBoxStyle}>
             </div>
-            <div style={{width: '30%'}}>
+            <div style={{width: '33%'}}>
               <label>Right: </label>
-              <input style={shortInputStyle} value={right} max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'right')} />
+              <input style={shortInputStyle} value={marginRight} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginRight')} />
             </div>
           </div>
           <div style={{textAlign: 'center', marginBottom: '10px'}}>
             <label>Bottom: </label>
-            <input style={shortInputStyle} value={bottom} max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'bottom')} />
+            <input style={shortInputStyle} value={marginBottom} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginBottom')} />
           </div>
         </div>
       </Menu>
