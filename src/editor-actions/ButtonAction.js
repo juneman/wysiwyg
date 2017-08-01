@@ -26,10 +26,9 @@ export default class ButtonAction extends React.Component {
   }
 
   render() {
-    const { persistedState, isActive } = this.props;
+    const { persistedState, isActive, hasRoomToRenderBelow } = this.props;
     const { isMenuOpen } = this.state;
     const buttonAction = persistedState.get('buttonAction') || '';
-
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
@@ -38,12 +37,16 @@ export default class ButtonAction extends React.Component {
       left: 0,
       padding: 10,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom}`,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
       animationFillMode: 'both'
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top + 55;
+      delete dropdownStyles.top;
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 

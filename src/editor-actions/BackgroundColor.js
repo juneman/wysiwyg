@@ -27,7 +27,7 @@ export default class BackgroundColor extends React.Component {
   }
 
   render() {
-    const { isActive, persistedState } = this.props;
+    const { isActive, persistedState, hasRoomToRenderBelow } = this.props;
     const { isMenuOpen } = this.state;
 
     const selectedColor = persistedState.get('backgroundColor') || '#C0C0C0';
@@ -41,12 +41,16 @@ export default class BackgroundColor extends React.Component {
       top: 45,
       left: 0,
       padding: 5,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom}`,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
       animationFillMode: 'both'
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top + 55;
+      delete dropdownStyles.top;
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 

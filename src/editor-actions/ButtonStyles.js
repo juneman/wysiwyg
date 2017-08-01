@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, shortInputStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import AdvancedStylingButton from '../icons/AdvancedStylingButton';
@@ -31,7 +31,7 @@ export default class ButtonStyles extends React.Component {
   }
 
   render() {
-    const { borderRadius, padding, fontSize, width, className, isMenuOpen } = this.state;
+    const { borderRadius, padding, fontSize, width, className, isMenuOpen, hasRoomToRenderBelow } = this.state;
     const { isActive } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -41,8 +41,17 @@ export default class ButtonStyles extends React.Component {
       top: 45,
       left: 0,
       padding: 10,
-      width: 300
+      width: 300,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
+      animationTimingFunction: 'ease-out',
+      animationDuration: '0.15s',
+      animationIterationCount: 1,
+      animationFillMode: 'both'
     };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top + 55;
+      delete dropdownStyles.top;
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -57,23 +66,23 @@ export default class ButtonStyles extends React.Component {
         <div style={{display: 'grid', gridGap: 10}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
             <label>Border Radius</label>
-            <input type="text" value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
+            <input type="text" style={shortInputStyle} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 1}}>
             <label>Padding</label>
-            <input type="text" value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
+            <input type="text" style={shortInputStyle} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
           </div>
           <div style={{gridColumn: 1, gridRow: 2}}>
             <label>Font Size</label>
-            <input type="text" value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
+            <input type="text" style={shortInputStyle} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 2}}>
             <label>Width</label>
-            <input type="text" value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
+            <input type="text" style={shortInputStyle} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 3}}>
-            <label>Class Names (sparate by space)</label>
-            <input type="text" value={className} onChange={(e) => this.handleChange(e, 'className')} {...commonProps} />
+            <label>Class Names (separate by space)</label>
+            <input type="text" className={textInputStyle} value={className} onChange={(e) => this.handleChange(e, 'className')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right'}}>
             <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>

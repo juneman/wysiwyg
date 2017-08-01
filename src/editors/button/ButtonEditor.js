@@ -5,6 +5,7 @@ import { Editor, EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { defaultButtonStyle } from '../../helpers/styles/editor';
 
 export default class ButtonEditor extends React.Component {
 
@@ -54,11 +55,17 @@ export default class ButtonEditor extends React.Component {
       }
     });
 
+    const updatedButtonStyle = {
+      ...defaultButtonStyle,
+      ...buttonStyle,
+      borderColor: buttonStyle.backgroundColor === '#ffffff' ? '#cccccc' : buttonStyle.backgroundColor
+    }
+
     return (
       <div className="button-wrapper" style={containerStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <div className="btn" style={{display: 'inline-block', ...buttonStyle}}>
+            <button className="btn" disabled style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}>
             <Editor
               ref={(editor) => this.editor = editor}
               editorState={editorState}
@@ -66,12 +73,12 @@ export default class ButtonEditor extends React.Component {
               blockStyleFn={blockStyleFn}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
-            </div>
+            </button>
           ) : null
         ) : (
           <button
             className={`btn${classNameString}`}
-            style={buttonStyle}
+            style={updatedButtonStyle}
             disabled={true}
             data-field-id={zone.get('id')}
             value={striptags(content)}
@@ -122,9 +129,11 @@ export default class ButtonEditor extends React.Component {
       ['data-field-id']: zone.get('id'),
       value: striptags(content)
     };
+    buttonAttrs.style = `border-width:'1px';border-style:'solid';`;
     if (backgroundColor) {
-      buttonAttrs.style = `background-color:${backgroundColor};`;
+      buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
     }
+
     if (href) {
       buttonAttrs.href = href;
       buttonAttrs.target = (isNewWindow) ? '_target' : '_self';
