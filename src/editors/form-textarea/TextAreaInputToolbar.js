@@ -16,8 +16,8 @@ const actions = [
     separator: true
   },
   {
-      Component: Margin,
-      name: 'margin'
+    Component: Margin,
+    name: 'margin'
   }
 ];
 
