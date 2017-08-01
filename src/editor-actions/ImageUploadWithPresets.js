@@ -211,7 +211,6 @@ export default class ImageUploadWithPresets extends React.Component {
                 </style>
                 <Picker
                     autoFocus
-                    title="Pick an emoji"
                     perLine={15}
                     color="#23baff"
                     set='twitter'
