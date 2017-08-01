@@ -129,9 +129,10 @@ export default class ButtonEditor extends React.Component {
       ['data-field-id']: zone.get('id'),
       value: striptags(content)
     };
-    buttonAttrs.style = `border-width:'1px';border-style:'solid';`;
+    buttonAttrs.style = `border-width:1px;border-style:solid;`;
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
+      buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? '#cccccc' : backgroundColor}`
     }
 
     if (href) {
