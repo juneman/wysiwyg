@@ -6,11 +6,19 @@ import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 
 import SelectionFieldOptions from '../../editor-actions/SelectionFieldOptions';
+import Margin from '../../editor-actions/Margin';
 
 const actions = [
   {
     Component: SelectionFieldOptions,
     name: 'selectionfield-options'
+  },
+  {
+    separator: true
+  },
+  {
+      Component: Margin,
+      name: 'margin'
   }
 ];
 

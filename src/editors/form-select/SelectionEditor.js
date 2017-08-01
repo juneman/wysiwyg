@@ -61,6 +61,22 @@ export default class SelectionEditor extends React.Component {
       </div>
     );
 
+    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+
+    const wrapperStyle = {};
+    if (marginTop) {
+      wrapperStyle.marginTop = marginTop;
+    };
+    if (marginRight) {
+      wrapperStyle.marginRight = marginRight;
+    };
+    if (marginBottom) {
+      wrapperStyle.marginBottom = marginBottom;
+    };
+    if (marginLeft) {
+      wrapperStyle.marginLeft = marginLeft;
+    };
+
     return (
       <div>
         <style> {`
@@ -96,7 +112,7 @@ export default class SelectionEditor extends React.Component {
           } `}
         </style>
         { isEditing ? (
-          <form className="step-action-form">
+          <form className="step-action-form" style={wrapperStyle}>
             <div className="fields">
               <div data-field-id={ zone.get('id') } className="field">
                 <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-radio` }>
@@ -121,7 +137,7 @@ export default class SelectionEditor extends React.Component {
           </form>
         ) : (
           (options.length || label) ? (
-            <form className="step-action-form">
+            <form className="step-action-form" style={wrapperStyle}>
               <div className="fields">
                 <div data-field-id={ zone.get('id') } className="field">
                   <div data-appcues-required={ isRequired } style={{ marginTop: 0, padding: 0 }} className={ `form-field form-field-radio` }>
@@ -182,12 +198,26 @@ export default class SelectionEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { label = '', options = [], isRequired = false } = persistedState.toJS();
+    const { label = '', options = [], isRequired = false,  marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const requiredAttr = {};
     if (isRequired) {
       requiredAttr.required = '';
-    }
+    };
+
+    let styles = '';
+    if (marginTop) {
+      styles = styles + `marginTop:${marginTop}px;`;
+    };
+    if (marginRight) {
+      styles = styles + `marginRight:${marginRight}px;`;
+    };
+    if (marginBottom) {
+      styles = styles + `marginBottom:${marginBottom}px;`;
+    };
+    if (marginLeft) {
+      styles = styles + `marginLeft:${marginLeft}px;`;
+    };
 
     const radioChildren = options.map((option) => {
       return {
@@ -225,7 +255,10 @@ export default class SelectionEditor extends React.Component {
     ast.push({
       type: 'tag',
       name: 'form',
-      attrs: { class: "step-action-form" },
+      attrs: {
+        class: "step-action-form",
+        style: styles
+      },
       voidElement: false,
       children: [
         {
