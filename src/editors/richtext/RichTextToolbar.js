@@ -12,6 +12,7 @@ import TextStyle from '../../editor-actions/TextStyle';
 import HyperlinkInline from '../../editor-actions/HyperlinkInline';
 import List from '../../editor-actions/List';
 import UserProperty from '../../editor-actions/UserProperty';
+import Margin from '../../editor-actions/Margin';
 
 const actions = [
   {
@@ -51,6 +52,10 @@ const actions = [
   {
     Component: UserProperty,
     name: 'user-property' 
+  },
+  {
+      Component: Margin,
+      name: 'margin'
   }
 ];
 

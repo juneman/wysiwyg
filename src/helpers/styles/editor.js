@@ -29,6 +29,37 @@ export const textInputStyle = {
   outline: 'none'
 };
 
+export const shortInputStyle = {
+  display: 'inline',
+  margin: '0 0 0 5px',
+  width: '43px',
+  fontFamily: 'sans-serif',
+  fontSize: 14,
+  appearance: 'none',
+  boxShadow: 'none',
+  borderRadius: '4px',
+  border: '1px solid #ddd',
+  padding: '4px 0 4px 4px',
+  color: '#666',
+  outline: 'none',
+  lineHeight: '18px',
+  verticalAlign: 'middle'
+};
+
+export const marginBoxRowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '5px 0'
+};
+
+export const marginBoxStyle = {
+    height: '50px',
+    width: '60px',
+    margin: '5px 15px 5px 5px',
+    border: '2px dashed #808080'
+};
+
 export const dropdownStyle = {
   display: 'block',
   margin: 0,

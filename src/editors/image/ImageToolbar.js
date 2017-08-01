@@ -7,6 +7,7 @@ import Toolbar from '../../components/Toolbar';
 import ImageUpload from '../../editor-actions/ImageUpload';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
+import Margin from '../../editor-actions/Margin';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
 export default function ImageToolbar(props) {
@@ -33,6 +34,10 @@ export default function ImageToolbar(props) {
     {
       Component: HyperlinkBlock,
       name: 'hyperlink-block'
+    },
+    {
+      Component: Margin,
+      name: 'margin'
     }
   ];
 

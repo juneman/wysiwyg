@@ -10,7 +10,7 @@ export default class ImageEditor extends React.Component {
 
   render() {
     const { persistedState, isEditing } = this.props;
-    const { url, height, width, heightOverride, widthOverride, textAlign } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, textAlign, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const dropzoneStyle = {
       paddingBottom: 30,
@@ -27,7 +27,19 @@ export default class ImageEditor extends React.Component {
     const wrapperStyle = {};
     if (textAlign) {
       wrapperStyle.textAlign = textAlign;
-    }
+    };
+    if (marginTop) {
+      wrapperStyle.marginTop = marginTop;
+    };
+    if (marginRight) {
+      wrapperStyle.marginRight = marginRight;
+    };
+    if (marginBottom) {
+      wrapperStyle.marginBottom = marginBottom;
+    };
+    if (marginLeft) {
+      wrapperStyle.marginLeft = marginLeft;
+    };
 
     let node = (<div style={{height: 100, ...placeholderStyle}} >Click to add your Image</div>);
     if (url) {
@@ -54,7 +66,7 @@ export default class ImageEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     if (!url) {
       return '';
@@ -67,6 +79,20 @@ export default class ImageEditor extends React.Component {
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
+    
+    if (marginTop) {
+      wrapperAttrs.style = wrapperAttrs.style + `margin-top:${marginTop}px;`;
+    };
+    if (marginRight) {
+      wrapperAttrs.style = wrapperAttrs.style + `margin-right:${marginRight}px;`;
+    };
+    if (marginBottom) {
+      wrapperAttrs.style = wrapperAttrs.style + `margin-bottom:${marginBottom}px;`;
+    };
+    if (marginLeft) {
+      wrapperAttrs.style = wrapperAttrs.style + `margin-left:${marginLeft}px;`;
+    };
+
     const imageAttrs = {style: ""};
     if (height || heightOverride) {
       imageAttrs.style = `${ imageAttrs.style } height: ${ heightOverride || height }px;`;

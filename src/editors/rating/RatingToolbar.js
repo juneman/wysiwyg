@@ -6,11 +6,19 @@ import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 
 import RatingOptions from '../../editor-actions/RatingOptions';
+import Margin from '../../editor-actions/Margin';
 
 const actions = [
   {
     Component: RatingOptions,
     name: 'rating-options'
+  },
+  {
+    separator: true
+  },
+  {
+      Component: Margin,
+      name: 'margin'
   }
 ];
 
