@@ -7,7 +7,10 @@ import Toolbar from '../../components/Toolbar';
 import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
+import Margin from '../../editor-actions/Margin';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
+
+import { GALLERY_TYPES } from '../../helpers/constants';
 
 export default function ImageToolbar(props) {
 
@@ -19,7 +22,7 @@ export default function ImageToolbar(props) {
       props: {
         maxWidth,
         maxHeight,
-        galleryType: 'emoji'
+        galleryType: GALLERY_TYPES.EMOJI
       },
       name: 'image-upload-with-presets'
     },
@@ -34,6 +37,10 @@ export default function ImageToolbar(props) {
     {
       Component: HyperlinkBlock,
       name: 'hyperlink-block'
+    },
+    {
+      Component: Margin,
+      name: 'margin'
     }
   ];
 

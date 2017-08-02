@@ -58,6 +58,10 @@ export class Zone extends React.Component {
     };
     this.baseActiveStateStyle = {
       boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
+      cursor: 'inherit'
+    };
+    this.baseIsOverStateStyle = {
+      outlineColor: '#0bdc66'
     };
     this.baseContainerStyle = {
       width: '100%',
@@ -70,6 +74,7 @@ export class Zone extends React.Component {
       outlineWidth: '2px',
       outlineColor: 'transparent',
       display: 'inline-block',
+      cursor: '-webkit-grab',
       margin: `0 -${ props.basePadding }px`,
       padding: `0 ${ props.basePadding }px`,
       width: `calc(100% + ${ props.basePadding * 2 }px)`,
@@ -105,16 +110,21 @@ export class Zone extends React.Component {
       disableAddButton,
       persistedState,
       cloudinary,
-      userProperties
+      userProperties,
+      isOver
     } = this.props;
 
     const type = zone.get('type');
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
+    const isOverStyle = (isOver && !isHover) ? this.baseIsOverStateStyle: null;
+
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle);
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle, isOverStyle);
+
+
 
     // Common props across all editors
     const editorProps = {
@@ -214,6 +224,7 @@ export class Zone extends React.Component {
         style={containerStyle}
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
+        onDoubleClick={() => this.startEditing()}
         ref={(el) => this.wrapper = el}
       >
         <div className="zone" style={zoneStyle}>
@@ -352,7 +363,8 @@ Zone.propTypes = {
   disableAddButton: PropTypes.bool.isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
-  basePadding: PropTypes.number
+  basePadding: PropTypes.number,
+  isOver: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {
