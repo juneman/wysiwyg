@@ -5,7 +5,7 @@ import { Editor, EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
-import { defaultButtonStyle } from '../../helpers/styles/editor';
+import { defaultButtonStyle, getButtonStyleString } from '../../helpers/styles/editor';
 
 export default class ButtonEditor extends React.Component {
 
@@ -130,8 +130,8 @@ export default class ButtonEditor extends React.Component {
       ['data-field-id']: zone.get('id'),
       value: striptags(content)
     };
+    buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
-     buttonAttrs.style = `border-width:1px;border-style:solid;border-radius:${borderRadius}px;padding:${padding}px;font-size:${fontSize}px;width:${width}px;`;
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
       buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? '#cccccc' : backgroundColor}`

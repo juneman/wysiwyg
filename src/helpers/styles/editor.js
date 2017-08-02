@@ -23,6 +23,26 @@ export const defaultButtonStyle = {
   borderImage: 'none'
 };
 
+export const getButtonStyleString = (borderRadius, padding, fontSize, width) => {
+
+  let buttonStyleString = `border-width:1px;border-style:solid;cursor:pointer;outline:none`;
+
+  if (borderRadius) {
+    buttonStyleString =+ `border-radius:${borderRadius}px`; 
+  }
+  if (padding) {
+    buttonStyleString =+ `padding:${padding}px`; 
+  }
+  if (fontSize) {
+    buttonStyleString =+ `font-size:${fontSize}px`;
+  }
+  if (width) {
+    buttonStyleString =+ `wdth:${width}px`; 
+  }
+
+  return buttonStyleString
+};
+
 export const appcuesButtonSuccessStyle = {
   border: '1px solid transparent',
 };
