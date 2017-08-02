@@ -25,21 +25,21 @@ export const defaultButtonStyle = {
 
 export const getButtonStyleString = (borderRadius, padding, fontSize, width) => {
 
-  let buttonStyleString = `border-width:1px;border-style:solid;cursor:pointer;outline:none`;
+  let buttonStyleString = 'border-width:1px;border-style:solid;cursor:pointer;outline:none;';
 
   if (borderRadius) {
-    buttonStyleString =+ `border-radius:${borderRadius}px`; 
+    buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 
   }
   if (padding) {
-    buttonStyleString =+ `padding:${padding}px`; 
+    buttonStyleString = buttonStyleString + `padding:${padding}px;`; 
   }
   if (fontSize) {
-    buttonStyleString =+ `font-size:${fontSize}px`;
+    buttonStyleString = buttonStyleString + `font-size:${fontSize}px;`;
   }
   if (width) {
-    buttonStyleString =+ `wdth:${width}px`; 
+    buttonStyleString = buttonStyleString + `width:${width}px;`; 
   }
-
+  
   return buttonStyleString
 };
 
