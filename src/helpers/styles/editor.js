@@ -16,7 +16,18 @@ export const secondaryMenuTitleStyle = {
   marginBottom: 20
 };
 
+export const selectMenuStyle = {
+  background: 'transparent',
+  border: '1px solid rgba(128, 128, 128, 0.5)',
+  fontSize: '13px',
+  height: '29px',
+  padding: '5px',
+  width: '175px',
+  cursor: 'pointer'
+};
+
 export const defaultButtonStyle = {
+  display: 'inline-block',
   fontSize: '16px',
   borderWidth: '1px',
   borderStyle: 'solid',
@@ -25,7 +36,7 @@ export const defaultButtonStyle = {
 
 export const getButtonStyleString = (borderRadius, padding, fontSize, width) => {
 
-  let buttonStyleString = 'border-width:1px;border-style:solid;cursor:pointer;outline:none;';
+  let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;';
 
   if (borderRadius) {
     buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 

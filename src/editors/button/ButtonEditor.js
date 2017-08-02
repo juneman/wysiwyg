@@ -66,7 +66,7 @@ export default class ButtonEditor extends React.Component {
       <div className="button-wrapper" style={containerStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <button className="btn" disabled style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}>
+            <a className="btn" style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}>
             <Editor
               ref={(editor) => this.editor = editor}
               editorState={editorState}
@@ -74,10 +74,10 @@ export default class ButtonEditor extends React.Component {
               blockStyleFn={blockStyleFn}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
-            </button>
+            </a>
           ) : null
         ) : (
-          <button
+          <a
             className={`btn${classNameString}`}
             style={updatedButtonStyle}
             disabled={true}
@@ -87,7 +87,7 @@ export default class ButtonEditor extends React.Component {
             <span
               dangerouslySetInnerHTML={{__html: content}}
             />
-          </button>
+          </a>
         )}
       </div>
     );
@@ -145,7 +145,7 @@ export default class ButtonEditor extends React.Component {
     }
 
     const contentAst = HTMLParser.parse(content);
-    contentAst[0].attrs.style = `margin-bottom:0px;`;
+    contentAst[0].attrs.style = `margin-bottom:0px;font-size:inherit;`;
 
     const ast = [];
     ast.push({
@@ -156,7 +156,8 @@ export default class ButtonEditor extends React.Component {
       children: [
         {
           type: 'tag',
-          name: (href) ? 'a' : 'button',
+          // name: (href) ? 'a' : 'button',
+          name: 'a',
           voidElement: false,
           attrs: buttonAttrs,
           children: [
