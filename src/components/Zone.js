@@ -58,6 +58,7 @@ export class Zone extends React.Component {
     };
     this.baseActiveStateStyle = {
       boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
+      cursor: 'inherit'
     };
     this.baseIsOverStateStyle = {
       outlineColor: '#0bdc66'
@@ -66,14 +67,14 @@ export class Zone extends React.Component {
       width: '100%',
       margin: '0 auto',
       position: 'relative',
-      display: 'inline-block',
-      cursor: '-webkit-grab'
+      display: 'inline-block'
     };
     this.zoneStyle = {
       outlineStyle: 'dotted',
       outlineWidth: '2px',
       outlineColor: 'transparent',
       display: 'inline-block',
+      cursor: '-webkit-grab',
       margin: `0 -${ props.basePadding }px`,
       padding: `0 ${ props.basePadding }px`,
       width: `calc(100% + ${ props.basePadding * 2 }px)`,
