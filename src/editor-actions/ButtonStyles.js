@@ -32,8 +32,8 @@ export default class ButtonStyles extends React.Component {
   }
 
   render() {
-    const { borderRadius, padding, fontSize, width, className, isMenuOpen, hasRoomToRenderBelow } = this.state;
-    const { isActive } = this.props;
+    const { borderRadius, padding, fontSize, width, className, isMenuOpen } = this.state;
+    const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 

@@ -36,11 +36,23 @@ export default class ButtonEditor extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    const { localState } = this.props;
+    const hasButtonTextChanged = localState.get('buttonText') != nextProps.localState.get('buttonText');
+
+    if (hasButtonTextChanged){
+      return false;
+    }
+
+    return true;
+  }
+
   render() {
     const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
     const content = (persistedState.get('content')) || `<p>Button Text</p>`;
+    const buttonText = persistedState.get('buttonText') || "OK, Got it!";
     const { textAlign, className } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? ' ' + className : '';
@@ -66,14 +78,11 @@ export default class ButtonEditor extends React.Component {
       <div className="button-wrapper" style={containerStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <a className="btn" style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}>
-            <Editor
-              ref={(editor) => this.editor = editor}
-              editorState={editorState}
-              customStyleFn={customStyleFn}
-              blockStyleFn={blockStyleFn}
-              onChange={(editorState) => this.handleEditorStateChange(editorState)}
-            />
+            <a className="btn"
+              style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}
+              contentEditable
+              onInput={ (e) => this.onChangeButtonText(e.target.textContent) }
+              >{buttonText}
             </a>
           ) : null
         ) : (
@@ -81,12 +90,8 @@ export default class ButtonEditor extends React.Component {
             className={`btn${classNameString}`}
             style={updatedButtonStyle}
             disabled={true}
-            data-field-id={zone.get('id')}
-            value={striptags(content)}
-          >
-            <span
-              dangerouslySetInnerHTML={{__html: content}}
-            />
+            data-field-id={zone.get('id')}>
+            {buttonText}
           </a>
         )}
       </div>
@@ -95,9 +100,21 @@ export default class ButtonEditor extends React.Component {
 
   // Instance Method
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
+    // if (this.editor) {
+    //   this.editor.focus();
+    // }
+  }
+
+  onChangeButtonText(text) {
+    const { persistedState, localState, onChange } = this.props;
+    const newPersistedState = persistedState.set('buttonText', text);
+    const newLocalState = localState.set('buttonText', text);
+
+    onChange({
+      persistedState: newPersistedState,
+      localState: newLocalState,
+      html: this.generateHTML(newPersistedState)
+    });
   }
 
   handleEditorStateChange(editorState) {
@@ -116,7 +133,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content = '<p style="margin-bottom:0px;"></p>', textAlign, backgroundColor, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction } = persistedState.toJS();
+    const { content = '<p style="margin-bottom:0px;"></p>', textAlign, backgroundColor, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction, buttonText } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper'
@@ -128,9 +145,13 @@ export default class ButtonEditor extends React.Component {
     const buttonAttrs = {
       class: 'btn',
       ['data-field-id']: zone.get('id'),
-      value: striptags(content)
+      value: buttonText || "OK, Got it!"
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
+
+    if (textAlign) {
+      buttonAttrs.style = buttonAttrs.style + `text-align:${textAlign};`;
+    }
 
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
@@ -156,16 +177,13 @@ export default class ButtonEditor extends React.Component {
       children: [
         {
           type: 'tag',
-          // name: (href) ? 'a' : 'button',
           name: 'a',
           voidElement: false,
           attrs: buttonAttrs,
           children: [
             {
-              type: 'tag',
-              name: 'span',
-              voidElement: false,
-              children: contentAst
+              type: 'text',
+              content: buttonText
             }
           ]
         }
