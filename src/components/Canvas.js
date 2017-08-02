@@ -106,7 +106,6 @@ export class Canvas extends React.Component {
 
     const canvasStyles = Object.assign({}, {
       position: 'relative',
-      fontFamily: 'Sans-Serif'
     }, style);
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
