@@ -6,6 +6,7 @@ import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, shortInputStyl
 import Menu from '../components/Menu';
 
 import AdvancedStylingButton from '../icons/AdvancedStylingButton';
+import Button from '../components/Button';
 
 export default class ButtonStyles extends React.Component {
 
@@ -63,29 +64,32 @@ export default class ButtonStyles extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles} isMenuOpen={isMenuOpen}>
         <div style={titleStyles}>Advanced Button Options</div>
-        <div style={{display: 'grid', gridGap: 10}}>
-          <div style={{gridColumn: 1, gridRow: 1}}>
-            <label>Border Radius</label>
-            <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
+        <div>
+
+          <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+            <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Border Radius</label>
+              <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} onClick={(e) => this.handleClick(e)} />
+            </div>
+            <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Padding</label>
+              <input type="number" style={shortInputStyle} min={0} value={padding} onChange={(e) => this.handleChange(e, 'padding')} onClick={(e) => this.handleClick(e)} />
+            </div>
+            <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Font Size</label>
+              <input type="number" style={shortInputStyle} min={14} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} onClick={(e) => this.handleClick(e)} />
+            </div>
+            <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Width</label>
+              <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} onClick={(e) => this.handleClick(e)} />
+            </div>
+            <div>
+              <label>Class Names (separate by space)</label>
+              <input type="text" style={textInputStyle} value={className} onChange={(e) => this.handleChange(e, 'className')} onClick={(e) => this.handleClick(e)} />
+            </div>
           </div>
-          <div style={{gridColumn: 2, gridRow: 1}}>
-            <label>Padding</label>
-            <input type="number" style={shortInputStyle} min={0} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
-          </div>
-          <div style={{gridColumn: 1, gridRow: 2}}>
-            <label>Font Size</label>
-            <input type="number" style={shortInputStyle} min={14} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
-          </div>
-          <div style={{gridColumn: 2, gridRow: 2}}>
-            <label>Width</label>
-            <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
-          </div>
-          <div style={{gridColumn: '1 / 3', gridRow: 3}}>
-            <label>Class Names (separate by space)</label>
-            <input type="text" className={textInputStyle} value={className} onChange={(e) => this.handleChange(e, 'className')} {...commonProps} />
-          </div>
-          <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right'}}>
-            <button className="btn" onClick={(e) => this.handleSave(e)}>Save</button>
+          <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right', marginTop: '10px'}}>
+            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
           </div>
         </div>
       </Menu>
