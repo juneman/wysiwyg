@@ -66,19 +66,19 @@ export default class ButtonStyles extends React.Component {
         <div style={{display: 'grid', gridGap: 10}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
             <label>Border Radius</label>
-            <input type="number" style={shortInputStyle} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
+            <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 1}}>
             <label>Padding</label>
-            <input type="number" style={shortInputStyle} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
+            <input type="number" style={shortInputStyle} min={0} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
           </div>
           <div style={{gridColumn: 1, gridRow: 2}}>
             <label>Font Size</label>
-            <input type="number" style={shortInputStyle} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
+            <input type="number" style={shortInputStyle} min={14} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 2}}>
             <label>Width</label>
-            <input type="number" style={shortInputStyle} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
+            <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 3}}>
             <label>Class Names (separate by space)</label>
