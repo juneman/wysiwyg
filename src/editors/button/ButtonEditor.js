@@ -11,7 +11,8 @@ export default class ButtonEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const htmlContent = persistedState.get('content') || '<p>Button Text</p>';
+    const htmlContent = persistedState.get('content') || `<p>Button Text</p>`;
+
     const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
     this.handleEditorStateChange(initialEditorState);
   }
@@ -19,7 +20,7 @@ export default class ButtonEditor extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const htmlContent = persistedState.get('content') || '<p>Button Text</p>';
+    const htmlContent = persistedState.get('content') || `<p>Button Text</p>`;
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
@@ -39,7 +40,7 @@ export default class ButtonEditor extends React.Component {
     const { isEditing, persistedState, localState, zone } = this.props;
     const editorState = localState.get('editorState');
 
-    const content = (persistedState.get('content')) || '<p>Button Text</p>';
+    const content = (persistedState.get('content')) || `<p>Button Text</p>`;
     const { textAlign, className } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? ' ' + className : '';
@@ -115,7 +116,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content = '<p></p>', textAlign, backgroundColor, href, isNewWindow, buttonAction } = persistedState.toJS();
+    const { content = '<p style="margin-bottom:0px;"></p>', textAlign, backgroundColor, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper'
@@ -123,13 +124,14 @@ export default class ButtonEditor extends React.Component {
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
-
+    console.log('LOG checking values radius', borderRadius,'padding:', padding,'fontsize:', fontSize)
     const buttonAttrs = {
       class: 'btn',
       ['data-field-id']: zone.get('id'),
       value: striptags(content)
     };
-    buttonAttrs.style = `border-width:1px;border-style:solid;`;
+    // buttonAttrs.style = `border-width:1px;border-style:solid;`;
+     buttonAttrs.style = `border-width:1px;border-style:solid;border-radius:${borderRadius}px;padding:${padding}px;font-size:${fontSize}px;width:${width}px`;
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
       buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? '#cccccc' : backgroundColor}`
@@ -143,6 +145,7 @@ export default class ButtonEditor extends React.Component {
     }
 
     const contentAst = HTMLParser.parse(content);
+    contentAst[0].attrs.style = `margin-bottom:0px;`;
 
     const ast = [];
     ast.push({

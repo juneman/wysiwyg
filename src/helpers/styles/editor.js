@@ -17,6 +17,7 @@ export const secondaryMenuTitleStyle = {
 };
 
 export const defaultButtonStyle = {
+  fontSize: '16px',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderImage: 'none'

@@ -14,9 +14,9 @@ export default class ButtonStyles extends React.Component {
 
     this.state = {
       borderRadius: props.persistedState.get('borderRadius') || '',
-      padding: props.persistedState.get('padding') || '',
-      fontSize: props.persistedState.get('fontSize') || '',
-      width: props.persistedState.get('width') || '',
+      padding: props.persistedState.get('padding') || 5,
+      fontSize: props.persistedState.get('fontSize') || 16,
+      width: props.persistedState.get('width') || 100,
       className: props.persistedState.get('className') || '',
       isMenuOpen: props.isActive || false
     };
@@ -66,19 +66,19 @@ export default class ButtonStyles extends React.Component {
         <div style={{display: 'grid', gridGap: 10}}>
           <div style={{gridColumn: 1, gridRow: 1}}>
             <label>Border Radius</label>
-            <input type="text" style={shortInputStyle} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
+            <input type="number" style={shortInputStyle} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 1}}>
             <label>Padding</label>
-            <input type="text" style={shortInputStyle} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
+            <input type="number" style={shortInputStyle} value={padding} onChange={(e) => this.handleChange(e, 'padding')} {...commonProps} />
           </div>
           <div style={{gridColumn: 1, gridRow: 2}}>
             <label>Font Size</label>
-            <input type="text" style={shortInputStyle} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
+            <input type="number" style={shortInputStyle} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} {...commonProps} />
           </div>
           <div style={{gridColumn: 2, gridRow: 2}}>
             <label>Width</label>
-            <input type="text" style={shortInputStyle} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
+            <input type="number" style={shortInputStyle} value={width} onChange={(e) => this.handleChange(e, 'width')} {...commonProps} />
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 3}}>
             <label>Class Names (separate by space)</label>
@@ -108,10 +108,20 @@ export default class ButtonStyles extends React.Component {
   }
 
   handleChange(e, field) {
+    const { onChange, localState, persistedState } = this.props;
+
     const value = e.target.value;
     const update = {};
     update[field] = value;
+
+    const newPersistedState = persistedState
+        .set(field, value);
+
     this.setState(update);
+    onChange({
+        localState,
+        persistedState: newPersistedState
+      });
   }
 
   handleClick(e) {
