@@ -186,6 +186,7 @@ export default class EditorSelector extends React.Component {
                     color={isHover ? '#fff' : '#C0C0C0'}
                     textColor={isHover ? '#fff' : '#606060'}
                     text={editor.text}
+                    textStyle={{ fontSize: 15 }}
                     cursor="pointer"
                   />
                 </div>

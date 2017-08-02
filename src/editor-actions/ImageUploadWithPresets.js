@@ -1,13 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
+import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps } from '../helpers/styles/editor';
+import { getButtonProps, emojiPickerStyles} from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 import ImageUploader from '../components/ImageUploader';
+import { GALLERY_TYPES } from '../helpers/constants';
+
+const BASE_SVG_URL = '//twemoji.maxcdn.com/2/svg/';
+
 
 export default class ImageUploadWithPresets extends React.Component {
 
@@ -17,7 +22,9 @@ export default class ImageUploadWithPresets extends React.Component {
     this.state = {
       position: Map(),
       isMenuOpen: props.isActive || false,
-      tabState: 'gallery'
+      tabState: (props.galleryType) ? props.galleryType : 'upload',
+      dropdownWidth: (props.galleryType == GALLERY_TYPES.EMOJI) ? 570 : 440,
+      hasRoomToRenderRight: true
     };
   }
 
@@ -35,8 +42,8 @@ export default class ImageUploadWithPresets extends React.Component {
 
 
   render() {
-    const { position, isMenuOpen, tabState } = this.state;
-    const { isActive, hasRoomToRenderBelow } = this.props;
+    const { isMenuOpen, tabState, dropdownWidth, hasRoomToRenderRight } = this.state;
+    const { isActive, hasRoomToRenderBelow, galleryType } = this.props;
 
     const presetGallery = {
       'solid': [
@@ -152,14 +159,19 @@ export default class ImageUploadWithPresets extends React.Component {
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
-      left: position.left,
-      width: 328,
+      left: 0,
+      width: dropdownWidth,
+      overflow: 'hidden',
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
       animationFillMode: 'both'
     };
+    if(!hasRoomToRenderRight) {
+        dropdownStyles.right = dropdownStyles.left;
+        delete dropdownStyles.left;
+    }
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
@@ -172,11 +184,12 @@ export default class ImageUploadWithPresets extends React.Component {
         textAlign: 'center',
         fontWeight: 600,
         width: '50%',
-        transition: 'background-color 0.15s ease-out, color 0.15s ease-out'
+        transition: 'background-color 0.15s ease-out, color 0.15s ease-out',
+        textTransform: 'capitalize',
+        padding: '5px 0'
     };
 
     const selectedTabStyle = {
-        borderBottom: '1px solid #23baff',
         color: '#fff',
         backgroundColor: '#23baff'
     };
@@ -184,10 +197,30 @@ export default class ImageUploadWithPresets extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={{display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #e1e1e1'}}>
-          <span style={ {...tabStyle, ...(tabState == 'gallery') ? selectedTabStyle : {}} } onClick={ () => this.setTabView('gallery') }>Gallery</span>
-          <span style={  {...tabStyle, ...(tabState == 'upload') ? selectedTabStyle : {}} }  onClick={ () => this.setTabView('upload') }>Upload</span>
+          { galleryType &&
+              <span style={ {...tabStyle, ...(tabState == galleryType) ? selectedTabStyle : {}} } onClick={ () => this.setTabView(galleryType) }>
+                  { galleryType }
+              </span>
+          }
+          <span style={  {...tabStyle, ...(tabState == 'upload') ? selectedTabStyle : {}} }  onClick={ () => this.setTabView('upload') }>Upload image</span>
         </div>
-        { tabState == 'gallery' &&
+        { tabState == GALLERY_TYPES.EMOJI &&
+            <div style={{padding: '4px 8px'}}>
+                <style>
+                    { emojiPickerStyles }
+                </style>
+                <Picker
+                    autoFocus
+                    perLine={15}
+                    color="#23baff"
+                    set='twitter'
+                    onClick={(emoji) => this.pickEmoji(emoji)}
+                    style={{width: '100%'}}
+                    />
+            </div>
+
+        }
+        { tabState == GALLERY_TYPES.HERO &&
           <div style={{padding: '4px 8px', height: 150, overflowY: 'scroll'}}>
             {
               Object.keys(presetGallery).map((key) =>
@@ -202,7 +235,7 @@ export default class ImageUploadWithPresets extends React.Component {
                           flexBasis: 100,
                           height: 50,
                           cursor: 'pointer',
-                          margin: '0 2px 5px 2px',
+                          margin: '0 3px 5px 3px',
                         };
 
                         return (
@@ -277,6 +310,32 @@ export default class ImageUploadWithPresets extends React.Component {
 
   }
 
+  pickEmoji(emoji) {
+      const { localState, persistedState, onChange } = this.props;
+      let url;
+      //check to make sure that our
+      //saved url matches what the twemoji cdn expects.
+      if ((emoji.unified.match(new RegExp("-", "g")) || []).length == 1) {
+          //Removes variant values introduced by emojiMart
+          url =  `${BASE_SVG_URL}${emoji.unified.split('-fe0f')[0]}.svg`;
+      } else if ((emoji.unified.match(new RegExp("20e3", "g")) || []).length == 1) {
+           //Removes variant values introduced by emojiMart, and leading 00's
+           url =  `${BASE_SVG_URL}${emoji.unified.slice(2).split('-fe0f')[0]}-20e3.svg`;
+      } else {
+          url = `${BASE_SVG_URL}${emoji.unified}.svg`;
+      }
+
+      let newPersistedState = persistedState
+        .set('url', url)
+        .set('width', 250)
+        .set('textAlign', 'center');
+
+      onChange({
+        localState,
+        persistedState: newPersistedState
+      });
+  }
+
   handleUpload(imageDetails) {
     const { url, width } = imageDetails;
     const { localState, persistedState, onChange, maxWidth } = this.props;
@@ -314,12 +373,20 @@ export default class ImageUploadWithPresets extends React.Component {
   }
 
   setBoundingBox() {
+    const { dropdownWidth } = this.state;
     if (!this.wrapper) {
       return;
     }
     const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
+
     if (!position.equals(this.state.position)) {
       this.setState({position});
+    }
+    //only switch if the full dropdown will fit
+    if ((position.get('left') + dropdownWidth) > window.innerWidth && (position.get('right') - dropdownWidth) > 0) {
+        this.setState({
+            hasRoomToRenderRight: false
+        });
     }
   }
 
@@ -332,5 +399,6 @@ ImageUploadWithPresets.propTypes = {
   hasRoomToRenderBelow: PropTypes.bool,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
-  maxWidth: PropTypes.number
+  maxWidth: PropTypes.number,
+  galleryType: PropTypes.string
 };
