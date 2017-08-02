@@ -124,14 +124,14 @@ export default class ButtonEditor extends React.Component {
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
-    console.log('LOG checking values radius', borderRadius,'padding:', padding,'fontsize:', fontSize)
+
     const buttonAttrs = {
       class: 'btn',
       ['data-field-id']: zone.get('id'),
       value: striptags(content)
     };
-    // buttonAttrs.style = `border-width:1px;border-style:solid;`;
-     buttonAttrs.style = `border-width:1px;border-style:solid;border-radius:${borderRadius}px;padding:${padding}px;font-size:${fontSize}px;width:${width}px`;
+
+     buttonAttrs.style = `border-width:1px;border-style:solid;border-radius:${borderRadius}px;padding:${padding}px;font-size:${fontSize}px;width:${width}px;`;
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
       buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? '#cccccc' : backgroundColor}`

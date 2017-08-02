@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { CompactPicker } from 'react-color';
+import tinyColor from 'tinycolor2';
 
 import Menu from '../components/Menu';
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
@@ -33,7 +34,12 @@ export default class BackgroundColor extends React.Component {
     const selectedColor = persistedState.get('backgroundColor') || '#C0C0C0';
     const buttonProps = {
       hideBackground: true,
-      color: selectedColor
+      color: selectedColor,
+      iconStyle: {
+        backgroundColor: (tinyColor(selectedColor).getBrightness() > 240) ? tinyColor(selectedColor).darken(25).toHexString() : null,
+        borderRadius: '3px',
+        border: `1px solid ${ (tinyColor(selectedColor).getBrightness() > 240) ? tinyColor(selectedColor).darken(25).toHexString() : selectedColor }`
+      }
     };
 
     const dropdownStyles = {
