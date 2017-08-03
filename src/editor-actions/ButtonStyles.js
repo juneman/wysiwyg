@@ -14,10 +14,10 @@ export default class ButtonStyles extends React.Component {
     super(props);
 
     this.state = {
-      borderRadius: props.persistedState.get('borderRadius') || '',
-      padding: props.persistedState.get('padding') || 5,
-      fontSize: props.persistedState.get('fontSize') || 16,
-      width: props.persistedState.get('width') || 100,
+      borderRadius: props.persistedState.get('borderRadius') || 3,
+      padding: props.persistedState.get('padding'),
+      fontSize: props.persistedState.get('fontSize') || 14,
+      width: props.persistedState.get('width') || 110,
       className: props.persistedState.get('className') || '',
       isMenuOpen: props.isActive || false
     };

@@ -28,23 +28,29 @@ export const selectMenuStyle = {
 
 export const defaultButtonStyle = {
   display: 'inline-block',
-  fontSize: '16px',
+  fontSize: '14px',
+  padding: '8px 18px',
+  fontWeight: '700',
+  color: '#ffffff',
   textAlign: 'center',
+  backgroundColor: '#5cb85c',
+  borderRadius: '3px',
   borderWidth: '1px',
   borderStyle: 'solid',
-  borderImage: 'none'
+  borderImage: 'none',
+  lineHeight: '1.42857em'
 };
 
-export const getButtonStyleString = (borderRadius, padding, fontSize, width, buttonTextColor) => {
+export const getButtonStyleString = (borderRadius=3, padding, fontSize, width, buttonTextColor) => {
 
   let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;text-align:center;';
 
   if (borderRadius) {
     buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 
   }
-  if (padding) {
-    buttonStyleString = buttonStyleString + `padding:${padding || 5 }px;`; 
-  }
+
+  buttonStyleString = buttonStyleString + `padding:${padding ? (padding + 'px') : '8px 18px'};`;
+
   if (fontSize) {
     buttonStyleString = buttonStyleString + `font-size:${fontSize}px;`;
   }
@@ -60,6 +66,7 @@ export const getButtonStyleString = (borderRadius, padding, fontSize, width, but
 
 export const appcuesButtonSuccessStyle = {
   border: '1px solid transparent',
+  backgroundColor: '#5cb85c'
 };
 
 export const textInputStyle = {
@@ -72,6 +79,16 @@ export const textInputStyle = {
   borderRadius: 'none',
   padding: 4,
   outline: 'none'
+};
+
+export const buttonNavTypeContainerStyle ={
+  border: '1px solid grey',
+  height: '100px'
+};
+
+export const buttonNavTypeMenuStyle ={
+  border: '1px solid grey',
+  height: '95px'
 };
 
 export const shortInputStyle = {
