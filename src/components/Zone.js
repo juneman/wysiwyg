@@ -56,30 +56,38 @@ export class Zone extends React.Component {
       outlineColor: '#FFAA39',
       backgroundColor: 'rgba(255,186,76,0.13)'
     };
+
     this.baseActiveStateStyle = {
       boxShadow: '0 0 0 1500px rgba(78,77,76,0.83), rgba(0, 0, 0, 0.12) 0px 2px 10px, rgba(0, 0, 0, 0.16) 0px 2px 5px',
       cursor: 'inherit'
     };
+
     this.baseIsOverStateStyle = {
       outlineColor: '#0bdc66'
     };
+
     this.baseContainerStyle = {
       width: '100%',
       margin: '0 auto',
       position: 'relative',
       display: 'inline-block'
     };
+
+    this.baseNotEditingAnyZoneStyle = {
+      cursor: '-webkit-grab'
+    };
+
     this.zoneStyle = {
       outlineStyle: 'dotted',
       outlineWidth: '2px',
       outlineColor: 'transparent',
       display: 'inline-block',
-      cursor: '-webkit-grab',
       margin: `0 -${ props.basePadding }px`,
       padding: `0 ${ props.basePadding }px`,
       width: `calc(100% + ${ props.basePadding * 2 }px)`,
       transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
     };
+
   }
 
   componentDidMount() {
@@ -105,6 +113,7 @@ export class Zone extends React.Component {
       canvasPosition,
       rowPosition,
       isEditing,
+      isEditingAny,
       localState,
       isHover,
       disableAddButton,
@@ -119,10 +128,11 @@ export class Zone extends React.Component {
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const isOverStyle = (isOver && !isHover) ? this.baseIsOverStateStyle: null;
+    const isEditingAnyStyle = (!isEditingAny) ? this.baseNotEditingAnyZoneStyle : null;
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle, isOverStyle);
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isEditingAnyStyle, activeStateStyle, isOverStyle);
 
 
 
@@ -224,7 +234,7 @@ export class Zone extends React.Component {
         style={containerStyle}
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
-        onDoubleClick={() => this.startEditing()}
+        onDoubleClick={() => { if(!isEditingAny){ this.startEditing() }}}
         ref={(el) => this.wrapper = el}
       >
         <div className="zone" style={zoneStyle}>
