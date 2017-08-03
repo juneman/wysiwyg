@@ -159,7 +159,7 @@ export const emojiPickerStyles = `.emoji-mart,
 
 .emoji-mart-scroll {
   overflow-y: scroll;
-  height: 80px;
+  height: 120px;
   padding: 0 6px 6px 6px;
 }
 
