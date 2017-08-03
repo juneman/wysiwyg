@@ -19,15 +19,15 @@ const actions = [
     Component: AlignmentBlock,
     name: 'alignment-block'
   },
-  {
-    Component: FontColor,
-    name: 'font-color',
-    isButtonComponent: true
-  },
-  {
-    Component: BackgroundColor,
-    name: 'background-color'
-  },
+  // {
+  //   Component: FontColor,
+  //   name: 'font-color',
+  //   isButtonComponent: true
+  // },
+  // {
+  //   Component: BackgroundColor,
+  //   name: 'background-color'
+  // },
   {
     Component: ButtonStyles,
     name: 'button-styles'
@@ -37,7 +37,8 @@ const actions = [
   },
   {
     Component: ButtonAction,
-    name: 'button-action'
+    name: 'button-action',
+    isButtonComponent: true
   },
   {
     Component: Margin,
