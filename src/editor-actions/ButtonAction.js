@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle } from '../helpers/styles/editor';
+import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle} from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -16,7 +16,12 @@ export default class ButtonAction extends React.Component {
     this.state = {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
-      isMenuOpen: props.isActive || false
+      isMenuOpen: props.isActive || false,
+      isNavigationOpen: false,
+      isStepIndexOpen: false,
+      isURLOpen: true,
+      dataStepOption: props.dataStepOption || null,
+      dataStepIndex: 1
     };
   }
 
@@ -37,8 +42,8 @@ export default class ButtonAction extends React.Component {
   }
 
   render() {
-    const { persistedState, isActive, hasRoomToRenderBelow } = this.props;
-    const { href, isNewWindow, isMenuOpen } = this.state;
+    const { persistedState, isActive, hasRoomToRenderBelow, numPages } = this.props;
+    const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex } = this.state;
     const buttonAction = persistedState.get('buttonAction') || '';
     const buttonProps = getButtonProps(isActive);
 
@@ -85,31 +90,47 @@ export default class ButtonAction extends React.Component {
     ]);
 
     const row = {
-      marginTop: 10
+      marginTop: 5
     };
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
 
-        <div style={titleStyles}>Button Action</div>
-        <select value={buttonAction} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleSave(e)}>
-          { actionOption.map((styleOption) => {
-            return (
-              <option style={{marginLeft: '15px'}} key={styleOption.value} value={styleOption.value}>{styleOption.name}</option>
-            );
-          })}
-        </select>
+        <div style={titleStyles}>Button Actions</div>
 
+        <div style={buttonNavTypeWrapperStyle} className="button-action-nav-wrapper">
+            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isURLOpen')}>By URL</p>
+            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isNavigationOpen')}>By Type</p>
+            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isStepIndexOpen')}>By Step Number</p>
+          </div>
 
-        <div style={titleStyles}>Create a Link</div>
-          <div>
-            <label>URL</label>
-            <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
-          </div>
-          <div style={row}>
-            <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
-            <label htmlFor="link-checkbox">Open In New Window</label>
-          </div>
+          { isURLOpen &&
+            <div style={buttonNavTypeMenuStyle}>
+              <label>Link to URL</label>
+              <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+
+              <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+              <label htmlFor="link-checkbox">Open In New Window</label>
+            </div>
+          }
+          { isNavigationOpen &&
+            <div style={buttonNavTypeMenuStyle}>
+              <label>Navigation Type</label>
+              <select value={buttonAction} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleSave(e)}>
+                { actionOption.map((dataStepOption) => {
+                  return (
+                    <option style={{marginLeft: '15px'}} key={dataStepOption.value} value={dataStepOption.value}>{dataStepOption.name}</option>
+                  );
+                })}
+              </select>
+            </div>
+          }
+          { isStepIndexOpen &&
+            <div style={buttonNavTypeMenuStyle}>
+              <label>Step number</label>
+              <input type="number" min={1} max={numPages} value={dataStepIndex} style={shortInputStyle} />
+            </div>
+          }
 
         <div style={{textAlign: 'right', ...row}}>
           <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
@@ -141,6 +162,34 @@ export default class ButtonAction extends React.Component {
     }
   }
 
+  handleSelectActionMenu(menuOption){
+    const {isNavigationOpen, isStepIndexOpen, isURLOpen} = this.state;
+
+    switch (menuOption) {
+      case 'isURLOpen':
+        this.setState({
+          isURLOpen: true,
+          isNavigationOpen: false,
+          isStepIndexOpen: false
+        });
+        break;
+      case 'isNavigationOpen':
+        this.setState({
+          isURLOpen: false,
+          isNavigationOpen: true,
+          isStepIndexOpen: false
+        });
+        break;
+      case 'isStepIndexOpen':
+        this.setState({
+          isURLOpen: false,
+          isNavigationOpen: false,
+          isStepIndexOpen: true
+        });
+        break;
+    }
+  }
+
   handleHref(e) {
     const href = e.target.value;
     this.setState({
@@ -160,12 +209,12 @@ export default class ButtonAction extends React.Component {
   }
 
   handleSave(e) {
-    // this.handleAction(e.target.value && e.target.value.length ? e.target.value : null);
-    // if (e) {
-    //   e.preventDefault();
-    // }
-    // const { onChange, onToggleActive } = this.props;
-    // const { isNewWindow, href } = this.state;
+    this.handleAction(e.target.value && e.target.value.length ? e.target.value : null);
+    if (e) {
+      e.preventDefault();
+    }
+    const { onChange, onToggleActive } = this.props;
+    const { isNewWindow, href, dataStepOption, dataStepIndex } = this.state;
 
     // this.setState({
     //   isMenuOpen: false
@@ -173,7 +222,7 @@ export default class ButtonAction extends React.Component {
 
     // setTimeout(() => onToggleActive(false), 200);
 
-    // const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
+    const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
 
     // onChange(hrefWithProtocol, isNewWindow);
   }
@@ -186,16 +235,16 @@ export default class ButtonAction extends React.Component {
       .delete('href')
       .delete('isNewWindow');
 
-    this.setState({
-      isMenuOpen: !this.state.isMenuOpen
-    });
+    // this.setState({
+    //   isMenuOpen: !this.state.isMenuOpen
+    // });
 
-    setTimeout(() => onToggleActive(false), 200);
+    // setTimeout(() => onToggleActive(false), 200);
 
-    onChange({
-      localState,
-      persistedState: newPersistedState
-    });
+    // onChange({
+    //   localState,
+    //   persistedState: newPersistedState
+    // });
   }
 
 }

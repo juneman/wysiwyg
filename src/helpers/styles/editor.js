@@ -81,14 +81,21 @@ export const textInputStyle = {
   outline: 'none'
 };
 
-export const buttonNavTypeContainerStyle ={
-  border: '1px solid grey',
-  height: '100px'
+export const buttonNavTypeWrapperStyle = {
+  cursor: 'pointer',
+  display: 'flex',
+  justifyContent: 'space-around'
 };
 
-export const buttonNavTypeMenuStyle ={
-  border: '1px solid grey',
-  height: '95px'
+export const buttonNavOptionStyle = {
+  marginBottom: '5px',
+  padding: '2px 6px',
+  backgroundColor: 'rgba(0,0,0,0.1)'
+};
+
+export const buttonNavTypeMenuStyle = {
+  height: '95px',
+  padding: '2px 10px'
 };
 
 export const shortInputStyle = {
