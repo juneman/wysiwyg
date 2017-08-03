@@ -20,8 +20,8 @@ export default class ButtonAction extends React.Component {
       isNavigationOpen: false,
       isStepIndexOpen: false,
       isURLOpen: true,
-      dataStepOption: null,
-      dataStepIndex: 1
+      dataStepOption: props.dataStepOption || '',
+      dataStepIndex: props.dataStepIndex || 1
     };
   }
 
@@ -36,6 +36,12 @@ export default class ButtonAction extends React.Component {
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
     }
+    if (nextProps.dataStepOption !== this.props.dataStepOption) {
+      update.dataStepOption = nextProps.dataStepOption;
+    }
+    if (nextProps.dataStepIndex !== this.props.dataStepIndex) {
+      update.dataStepIndex = nextProps.dataStepIndex;
+    }
     if (Object.keys(update).length) {
       this.setState(update);
     }
@@ -44,7 +50,7 @@ export default class ButtonAction extends React.Component {
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages } = this.props;
     const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex, dataStepOption } = this.state;
-    const buttonAction = persistedState.get('buttonAction') || '';
+    const buttonAction = persistedState.get('buttonAction') || ''; 
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
@@ -116,7 +122,7 @@ export default class ButtonAction extends React.Component {
           { isNavigationOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Navigation Type</label>
-              <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleSave(e)}>
+              <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleOption(e)}>
                 { actionOption.map((option) => {
                   return (
                     <option style={{marginLeft: '15px'}} key={option.value} value={option.value}>{option.name}</option>
@@ -128,7 +134,7 @@ export default class ButtonAction extends React.Component {
           { isStepIndexOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
-              <input type="number" min={1} max={numPages} value={dataStepIndex} disabled={numPages === 1} style={shortInputStyle} onChange={(e) => this.handleSave(e)}/>
+              <input type="number" min={1} max={numPages} value={dataStepIndex} disabled={numPages === 1} style={shortInputStyle} onChange={(e) => this.handleOption(e)}/>
               { numPages >= 1 &&
                 <p>This group contains {numPages} steps.</p>
               }
@@ -136,7 +142,7 @@ export default class ButtonAction extends React.Component {
           }
 
         <div style={{textAlign: 'right', ...row}}>
-          <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
+          <Button className="btn" onClick={(e) => this.saveAction(e)}>Save</Button>
         </div>
 
 
@@ -211,30 +217,17 @@ export default class ButtonAction extends React.Component {
     });
   }
 
-  handleSave(e) {
-    this.handleAction(e.target.value && e.target.value.length ? e.target.value : null);
+  handleOption(e) {
+    this.handleAction(e.target.value);
     if (e) {
       e.preventDefault();
     }
-    const { onChange, onToggleActive } = this.props;
-    const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen,
-      isStepIndexOpen,
-      isURLOpen } = this.state;
 
-    // this.setState({
-    //   isMenuOpen: false
-    // });
-
-    // setTimeout(() => onToggleActive(false), 200);
-
-    const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
-
-    // onChange(hrefWithProtocol, isNewWindow);
   }
 
   handleAction(value) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-     const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen, isURLOpen  } = this.state;
+     const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
 
     if (isStepIndexOpen) {
       this.setState({
@@ -244,33 +237,56 @@ export default class ButtonAction extends React.Component {
     }
 
     if (isNavigationOpen) {
-      const newPersistedState = persistedState.set('buttonAction', value);
-
-      onChange({
-        localState,
-        persistedState: newPersistedState
-      });
       this.setState({
         dataStepOption: value
       });
       return
     }
+    
+  }
 
-    const newPersistedState = persistedState
-      .set('buttonAction', value)
-      .delete('href')
-      .delete('isNewWindow');
+  saveAction() {
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { isMenuOpen, isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen, isURLOpen  } = this.state;
 
-    // this.setState({
-    //   isMenuOpen: !this.state.isMenuOpen
-    // });
+    const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
 
-    // setTimeout(() => onToggleActive(false), 200);
+    let newPersistedState;
+    
+    if (isNavigationOpen) {
+      newPersistedState = persistedState
+        .set('buttonAction', dataStepOption)
+        .delete('href')
+        .delete('isNewWindow');
+    };
 
-    // onChange({
-    //   localState,
-    //   persistedState: newPersistedState
-    // });
+    if (isStepIndexOpen) {
+      newPersistedState = persistedState
+        .set('buttonAction', dataStepIndex - 1)
+        .delete('href')
+        .delete('isNewWindow')
+    }
+
+    if (isURLOpen) {
+      newPersistedState = persistedState
+        .set('href', hrefWithProtocol)
+        .set('isNewWindow', isNewWindow)
+        .delete('buttonAction')
+    }
+
+    // onChange(hrefWithProtocol, isNewWindow);
+
+    this.setState({
+      isMenuOpen: !isMenuOpen
+    });
+
+    setTimeout(() => onToggleActive(false), 200);
+
+    onChange({
+      localState,
+      persistedState: newPersistedState
+    });
+
   }
 
 }
