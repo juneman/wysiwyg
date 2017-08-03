@@ -45,7 +45,8 @@ export class Toolbar extends React.Component {
       cloudinary,
       userProperties,
       sanitizeHtmlConfig,
-      aceEditorConfig
+      aceEditorConfig,
+      numPages
     } = this.props;
 
     const { hasRoomToRenderBelow } = this.state;
@@ -88,7 +89,10 @@ export class Toolbar extends React.Component {
           return (
             <div key={editorAction.name} style={{gridColumn: index + 1, gridRow: 1}}>
               { editorAction.isButtonComponent ?
-                <editorAction.Component isButtonComponent={true} {...editorAction.props} {...toolbarProps} /> :
+                <editorAction.Component 
+                  isButtonComponent={true}
+                  numPages={numPages}
+                  {...editorAction.props} {...toolbarProps} /> :
                   <editorAction.Component {...editorAction.props} {...toolbarProps} />
               }
             </div>

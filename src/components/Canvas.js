@@ -101,7 +101,8 @@ export class Canvas extends React.Component {
       internalAllowedEditorTypes,
       allowedEditorTypes,
       height,
-      isHoveringOverContainer
+      isHoveringOverContainer,
+      numPages
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
@@ -110,6 +111,7 @@ export class Canvas extends React.Component {
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
+          numPages={numPages}
           key={row.get('id')}
           row={row}
           rowIndex={i}
