@@ -13,6 +13,10 @@ export default class ButtonAction extends React.Component {
   constructor(props) {
     super(props);
 
+    // const currentAction = props.persistedState.get('buttonAction');
+    // const stepIndex = typeof currentAction === "number" && currentAction;
+    // const stepOption = typeof currentAction === "string" && currentAction;
+
     this.state = {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
@@ -20,8 +24,8 @@ export default class ButtonAction extends React.Component {
       isNavigationOpen: false,
       isStepIndexOpen: false,
       isURLOpen: true,
-      dataStepOption: props.dataStepOption || '',
-      dataStepIndex: props.dataStepIndex || 1
+      dataStepOption: '',
+      dataStepIndex: 1
     };
   }
 
@@ -29,19 +33,14 @@ export default class ButtonAction extends React.Component {
     const update = {};
     if (nextProps.href !== this.props.href) {
       update.href = nextProps.href;
-    }
+    };
     if (nextProps.isNewWindow !== this.props.isNewWindow) {
       update.isNewWindow = nextProps.isNewWindow;
-    }
+    };
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
-    }
-    if (nextProps.dataStepOption !== this.props.dataStepOption) {
-      update.dataStepOption = nextProps.dataStepOption;
-    }
-    if (nextProps.dataStepIndex !== this.props.dataStepIndex) {
-      update.dataStepIndex = nextProps.dataStepIndex;
-    }
+    };
+    
     if (Object.keys(update).length) {
       this.setState(update);
     }
@@ -68,7 +67,7 @@ export default class ButtonAction extends React.Component {
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
       delete dropdownStyles.top;
-    }
+    };
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -95,9 +94,7 @@ export default class ButtonAction extends React.Component {
       }
     ]);
 
-    const row = {
-      marginTop: 5
-    };
+    const hasMoreThanOneStep = numPages > 1;
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
@@ -122,7 +119,7 @@ export default class ButtonAction extends React.Component {
           { isNavigationOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Navigation Type</label>
-              <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleOption(e)}>
+              <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleAction(e)}>
                 { actionOption.map((option) => {
                   return (
                     <option style={{marginLeft: '15px'}} key={option.value} value={option.value}>{option.name}</option>
@@ -134,17 +131,19 @@ export default class ButtonAction extends React.Component {
           { isStepIndexOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
-              <input type="number" min={1} max={numPages} value={dataStepIndex} disabled={numPages === 1} style={shortInputStyle} onChange={(e) => this.handleOption(e)}/>
-              { numPages >= 1 &&
-                <p>This group contains {numPages} steps.</p>
-              }
+              <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : 0} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
+              <p style={{marginTop: '10px', lineHeight: '15px'}}>
+                { hasMoreThanOneStep ?
+                  `This group contains ${numPages} steps.` :
+                  `This option allows you to skip to a different step within this step group.`
+                }
+              </p>
             </div>
           }
 
-        <div style={{textAlign: 'right', ...row}}>
+        <div style={{textAlign: 'right', marginTop: '5px'}}>
           <Button className="btn" onClick={(e) => this.saveAction(e)}>Save</Button>
         </div>
-
 
       </Menu>
     ) : null;
@@ -217,31 +216,25 @@ export default class ButtonAction extends React.Component {
     });
   }
 
-  handleOption(e) {
-    this.handleAction(e.target.value);
-    if (e) {
-      e.preventDefault();
-    }
-
-  }
-
-  handleAction(value) {
+  handleAction(e) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-     const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
-
+    const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
+    
+    const value = e.target.value;
+    
     if (isStepIndexOpen) {
       this.setState({
         dataStepIndex: value
       });
       return
-    }
+    };
 
     if (isNavigationOpen) {
       this.setState({
         dataStepOption: value
       });
       return
-    }
+    };
     
   }
 
@@ -265,16 +258,14 @@ export default class ButtonAction extends React.Component {
         .set('buttonAction', dataStepIndex - 1)
         .delete('href')
         .delete('isNewWindow')
-    }
+    };
 
     if (isURLOpen) {
       newPersistedState = persistedState
         .set('href', hrefWithProtocol)
         .set('isNewWindow', isNewWindow)
         .delete('buttonAction')
-    }
-
-    // onChange(hrefWithProtocol, isNewWindow);
+    };
 
     this.setState({
       isMenuOpen: !isMenuOpen
