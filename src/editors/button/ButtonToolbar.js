@@ -21,7 +21,8 @@ const actions = [
   },
   {
     Component: FontColor,
-    name: 'font-color'
+    name: 'font-color',
+    isButtonComponent: true
   },
   {
     Component: BackgroundColor,

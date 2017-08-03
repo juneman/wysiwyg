@@ -70,6 +70,7 @@ export class Toolbar extends React.Component {
               </div>
             );
           }
+
           const toolbarProps = {
             localState,
             persistedState,
@@ -86,7 +87,10 @@ export class Toolbar extends React.Component {
           };
           return (
             <div key={editorAction.name} style={{gridColumn: index + 1, gridRow: 1}}>
-              <editorAction.Component {...editorAction.props} {...toolbarProps} />
+              { editorAction.isButtonComponent ?
+                <editorAction.Component isButtonComponent={true} {...editorAction.props} {...toolbarProps} /> :
+                  <editorAction.Component {...editorAction.props} {...toolbarProps} />
+              }
             </div>
           );
         })}
