@@ -20,7 +20,7 @@ export default class ButtonAction extends React.Component {
       isNavigationOpen: false,
       isStepIndexOpen: false,
       isURLOpen: true,
-      dataStepOption: props.dataStepOption || null,
+      dataStepOption: null,
       dataStepIndex: 1
     };
   }
@@ -43,7 +43,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages } = this.props;
-    const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex } = this.state;
+    const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex, dataStepOption } = this.state;
     const buttonAction = persistedState.get('buttonAction') || '';
     const buttonProps = getButtonProps(isActive);
 
@@ -116,10 +116,10 @@ export default class ButtonAction extends React.Component {
           { isNavigationOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Navigation Type</label>
-              <select value={buttonAction} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleSave(e)}>
-                { actionOption.map((dataStepOption) => {
+              <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleSave(e)}>
+                { actionOption.map((option) => {
                   return (
-                    <option style={{marginLeft: '15px'}} key={dataStepOption.value} value={dataStepOption.value}>{dataStepOption.name}</option>
+                    <option style={{marginLeft: '15px'}} key={option.value} value={option.value}>{option.name}</option>
                   );
                 })}
               </select>
@@ -128,7 +128,10 @@ export default class ButtonAction extends React.Component {
           { isStepIndexOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
-              <input type="number" min={1} max={numPages} value={dataStepIndex} style={shortInputStyle} />
+              <input type="number" min={1} max={numPages} value={dataStepIndex} disabled={numPages === 1} style={shortInputStyle} onChange={(e) => this.handleSave(e)}/>
+              { numPages >= 1 &&
+                <p>This group contains {numPages} steps.</p>
+              }
             </div>
           }
 
@@ -214,7 +217,9 @@ export default class ButtonAction extends React.Component {
       e.preventDefault();
     }
     const { onChange, onToggleActive } = this.props;
-    const { isNewWindow, href, dataStepOption, dataStepIndex } = this.state;
+    const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen,
+      isStepIndexOpen,
+      isURLOpen } = this.state;
 
     // this.setState({
     //   isMenuOpen: false
@@ -229,6 +234,27 @@ export default class ButtonAction extends React.Component {
 
   handleAction(value) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
+     const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen, isURLOpen  } = this.state;
+
+    if (isStepIndexOpen) {
+      this.setState({
+        dataStepIndex: value
+      });
+      return
+    }
+
+    if (isNavigationOpen) {
+      const newPersistedState = persistedState.set('buttonAction', value);
+
+      onChange({
+        localState,
+        persistedState: newPersistedState
+      });
+      this.setState({
+        dataStepOption: value
+      });
+      return
+    }
 
     const newPersistedState = persistedState
       .set('buttonAction', value)
