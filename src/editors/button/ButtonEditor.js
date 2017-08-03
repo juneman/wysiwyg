@@ -52,6 +52,7 @@ export default class ButtonEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
+    const buttonTextColor = persistedState.get('buttonTextColor') || "#808080";
     const { textAlign, className, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
     const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? ' ' + className : '';
@@ -83,7 +84,8 @@ export default class ButtonEditor extends React.Component {
     const updatedButtonStyle = {
       ...defaultButtonStyle,
       ...buttonStyle,
-      borderColor: buttonStyle.backgroundColor === '#ffffff' ? '#cccccc' : buttonStyle.backgroundColor
+      color: buttonTextColor,
+      borderColor: buttonStyle.backgroundColor === '#ffffff' ? buttonTextColor : buttonStyle.backgroundColor
     }
 
     return (
@@ -170,15 +172,12 @@ export default class ButtonEditor extends React.Component {
       class: 'btn',
       ['data-field-id']: zone.get('id')
     };
-    buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
-
-    if (textAlign) {
-      buttonAttrs.style = buttonAttrs.style + `text-align:${textAlign};`;
-    }
+    const buttonTextColor = persistedState.get('buttonTextColor') || "#808080";
+    buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width, buttonTextColor);
 
     if (backgroundColor) {
       buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
-      buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? '#cccccc' : backgroundColor};`
+      buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? buttonTextColor : backgroundColor};`
     }
 
     if (href) {

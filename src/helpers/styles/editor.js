@@ -29,26 +29,30 @@ export const selectMenuStyle = {
 export const defaultButtonStyle = {
   display: 'inline-block',
   fontSize: '16px',
+  textAlign: 'center',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderImage: 'none'
 };
 
-export const getButtonStyleString = (borderRadius, padding, fontSize, width) => {
+export const getButtonStyleString = (borderRadius, padding, fontSize, width, buttonTextColor) => {
 
-  let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;';
+  let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;text-align:center;';
 
   if (borderRadius) {
     buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 
   }
   if (padding) {
-    buttonStyleString = buttonStyleString + `padding:${padding}px;`; 
+    buttonStyleString = buttonStyleString + `padding:${padding || 5 }px;`; 
   }
   if (fontSize) {
     buttonStyleString = buttonStyleString + `font-size:${fontSize}px;`;
   }
   if (width) {
-    buttonStyleString = buttonStyleString + `width:${width}px;`; 
+    buttonStyleString = buttonStyleString + `width:${width}px;`;
+  }
+  if (buttonTextColor) {
+    buttonStyleString = buttonStyleString + `color:${buttonTextColor};`;
   }
   
   return buttonStyleString

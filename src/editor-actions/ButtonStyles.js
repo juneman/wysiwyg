@@ -77,7 +77,7 @@ export default class ButtonStyles extends React.Component {
             </div>
             <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Font Size</label>
-              <input type="number" style={shortInputStyle} min={14} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} onClick={(e) => this.handleClick(e)} />
+              <input type="number" style={shortInputStyle} min={10} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={{width: '45%', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Width</label>
