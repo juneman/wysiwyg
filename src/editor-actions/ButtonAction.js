@@ -99,7 +99,7 @@ export default class ButtonAction extends React.Component {
       },
       {
         name: 'Previous',
-        value: 'previous'
+        value: 'prev'
       },
       {
         name: 'Skip',
