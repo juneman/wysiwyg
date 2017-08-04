@@ -26,24 +26,10 @@ export const selectMenuStyle = {
   cursor: 'pointer'
 };
 
-export const defaultButtonStyle = {
-  display: 'inline-block',
-  fontSize: '14px',
-  padding: '8px 18px',
-  fontWeight: '700',
-  color: '#ffffff',
-  textAlign: 'center',
-  backgroundColor: '#5cb85c',
-  borderRadius: '3px',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderImage: 'none',
-  lineHeight: '1.42857em'
-};
+export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) => {
 
-export const getButtonStyleString = (borderRadius=3, padding, fontSize, width, buttonTextColor) => {
-
-  let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;text-align:center;';
+  // let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;text-align:center;';
+  let buttonStyleString = 'text-align:center;';
 
   if (borderRadius) {
     buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 
@@ -57,16 +43,8 @@ export const getButtonStyleString = (borderRadius=3, padding, fontSize, width, b
   if (width) {
     buttonStyleString = buttonStyleString + `width:${width}px;`;
   }
-  if (buttonTextColor) {
-    buttonStyleString = buttonStyleString + `color:${buttonTextColor};`;
-  }
   
   return buttonStyleString
-};
-
-export const appcuesButtonSuccessStyle = {
-  border: '1px solid transparent',
-  backgroundColor: '#5cb85c'
 };
 
 export const textInputStyle = {
@@ -95,7 +73,8 @@ export const buttonNavOptionStyle = {
 
 export const buttonNavTypeMenuStyle = {
   height: '95px',
-  padding: '2px 10px'
+  padding: '2px 10px',
+  marginTop: '5px'
 };
 
 export const shortInputStyle = {

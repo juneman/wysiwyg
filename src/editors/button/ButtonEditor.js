@@ -5,7 +5,7 @@ import { Editor, EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
-import { defaultButtonStyle, getButtonStyleString } from '../../helpers/styles/editor';
+import { getButtonStyleString } from '../../helpers/styles/editor';
 
 export default class ButtonEditor extends React.Component {
 
@@ -52,15 +52,14 @@ export default class ButtonEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
-    const buttonTextColor = persistedState.get('buttonTextColor') || "#ffffff";
+
     const { textAlign, className, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
-    const buttonStyleProps = ['backgroundColor', 'borderRadius', 'padding', 'width', 'fontSize'];
+    const buttonStyleProps = [ 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? ' ' + className : '';
 
     const containerStyle = {};
-    if (textAlign) {
-      containerStyle.textAlign = textAlign;
-    }
+    containerStyle.textAlign = textAlign ? textAlign : 'center';
+
     if (marginTop) {
       containerStyle.marginTop = marginTop;
     };
@@ -73,19 +72,18 @@ export default class ButtonEditor extends React.Component {
     if (marginLeft) {
       containerStyle.marginLeft = marginLeft;
     };
-    containerStyle.width = 'inherit';
+    containerStyle.width = '100%';
 
     const buttonStyle = {};
     buttonStyleProps.forEach((key) => {
       if (persistedState.get(key)) {
-        buttonStyle[key] = persistedState.get(key) || defaultButtonStyle[key];
+        buttonStyle[key] = persistedState.get(key)
       }
     });
 
     const updatedButtonStyle = {
-      ...defaultButtonStyle,
       ...buttonStyle,
-      borderColor: buttonStyle.backgroundColor === '#ffffff' ? buttonTextColor : buttonStyle.backgroundColor
+      textAlign: 'center'
     }
 
     return (
@@ -147,16 +145,13 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, backgroundColor, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
     };
-    wrapperAttrs.style = `width:inherit;`;
-    // default wrapper align to center
-    if (textAlign) {
-      wrapperAttrs.style = `text-align:${textAlign};`;
-    }
+    wrapperAttrs.style = `width:100%;textAlign:${textAlign ? textAlign : 'center'};`;
+
     if (marginTop) {
       wrapperAttrs.style = wrapperAttrs.style + `marginTop:${marginTop}px;`;
     };
@@ -171,12 +166,10 @@ export default class ButtonEditor extends React.Component {
     };
 
     const buttonAttrs = {
-      class: 'btn appcues-button-success appcues-button',
+      class: 'appcues-button-success appcues-button',
       ['data-field-id']: zone.get('id')
     };
-    const buttonTextColor = persistedState.get('buttonTextColor') || "#ffffff";
-    buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width, buttonTextColor);
-    buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor || '#5cb85c'};`;
+    buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
     // if (backgroundColor) {
     //   buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
