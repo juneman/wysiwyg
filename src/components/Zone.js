@@ -112,7 +112,9 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       isOver,
-      numPages
+      numPages,
+      isFirst,
+      isLast
     } = this.props;
 
     const type = zone.get('type');
@@ -187,7 +189,7 @@ export class Zone extends React.Component {
         break;
       case 'Button':
         editorNode = (<ButtonEditor {...editorProps} />);
-        toolbarNode = (<ButtonToolbar numPages={numPages} {...toolbarProps} />);
+        toolbarNode = (<ButtonToolbar isFirst={isFirst} isLast={isLast} numPages={numPages} {...toolbarProps} />);
         break;
       case 'HTML':
         editorNode = (<HtmlEditor {...editorProps} />);

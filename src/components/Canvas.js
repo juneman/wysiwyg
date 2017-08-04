@@ -102,7 +102,9 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       height,
       isHoveringOverContainer,
-      numPages
+      numPages,
+      isFirst,
+      isLast
     } = this.props;
 
     const canvasStyles = Object.assign({}, {
@@ -112,6 +114,8 @@ export class Canvas extends React.Component {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
           numPages={numPages}
+          isFirst={isFirst}
+          isLast={isLast}
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -150,6 +154,7 @@ export class Canvas extends React.Component {
 
     return (
       <div className="canvas"
+        suppressContentEditableWarning={true}
         style={ canvasStyles }
         ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }

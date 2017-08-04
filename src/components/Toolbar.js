@@ -46,7 +46,9 @@ export class Toolbar extends React.Component {
       userProperties,
       sanitizeHtmlConfig,
       aceEditorConfig,
-      numPages
+      numPages,
+      isFirst,
+      isLast
     } = this.props;
 
     const { hasRoomToRenderBelow } = this.state;
@@ -92,6 +94,8 @@ export class Toolbar extends React.Component {
                 <editorAction.Component 
                   isButtonComponent={true}
                   numPages={numPages}
+                  isFirst={isFirst}
+                  isLast={isLast}
                   {...editorAction.props} {...toolbarProps} /> :
                   <editorAction.Component {...editorAction.props} {...toolbarProps} />
               }
