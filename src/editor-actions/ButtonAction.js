@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle} from '../helpers/styles/editor';
+import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle, buttonNavOptionSelectedStyle} from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -47,7 +47,7 @@ export default class ButtonAction extends React.Component {
   }
 
   render() {
-    const { persistedState, isActive, hasRoomToRenderBelow, numPages } = this.props;
+    const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
     const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex, dataStepOption } = this.state;
     const buttonAction = persistedState.get('buttonAction') || ''; 
     const buttonProps = getButtonProps(isActive);
@@ -96,15 +96,17 @@ export default class ButtonAction extends React.Component {
 
     const hasMoreThanOneStep = numPages > 1;
 
+    // TO DO: 
+    // Allow flow ID selection for buttons to launch another flow
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
 
         <div style={titleStyles}>Button Actions</div>
 
         <div style={buttonNavTypeWrapperStyle} className="button-action-nav-wrapper">
-            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isURLOpen')}>By URL</p>
-            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isNavigationOpen')}>By Type</p>
-            <p style={buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isStepIndexOpen')}>By Step Number</p>
+            <p style={isURLOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isURLOpen')}>By URL</p>
+            <p style={isNavigationOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isNavigationOpen')}>By Type</p>
+            <p style={isStepIndexOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isStepIndexOpen')}>By Step Number</p>
           </div>
 
           { isURLOpen &&
@@ -132,7 +134,7 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
               <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : 0} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
-              <p style={{marginTop: '10px', lineHeight: '15px'}}>
+              <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 { hasMoreThanOneStep ?
                   `This group contains ${numPages} steps.` :
                   `This option allows you to skip to a different step within this step group.`

@@ -67,7 +67,15 @@ export const buttonNavTypeWrapperStyle = {
 export const buttonNavOptionStyle = {
   marginBottom: '5px',
   padding: '2px 6px',
-  backgroundColor: 'rgba(0,0,0,0.1)'
+  backgroundColor: 'transparent',
+  border: '1px solid rgba(0,0,0,0.2)'
+};
+
+export const buttonNavOptionSelectedStyle = {
+  marginBottom: '5px',
+  padding: '2px 6px',
+  backgroundColor: 'rgba(0,0,0,0.1)',
+  border: '1px solid transparent'
 };
 
 export const buttonNavTypeMenuStyle = {
