@@ -11,20 +11,20 @@ export default class ButtonEditor extends React.Component {
 
   componentWillMount() {
     const { persistedState } = this.props;
-    const htmlContent = persistedState.get('content') || `<p>Button Text</p>`;
+    const content = persistedState.get('buttonText') || `OK, Got it!`;
 
-    const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+    const initialEditorState = EditorState.createWithContent(convertFromHTML(content), decorator);
     this.handleEditorStateChange(initialEditorState);
   }
 
   componentWillReceiveProps(nextProps) {
     const { persistedState } = this.props;
 
-    const htmlContent = persistedState.get('content') || `<p>Button Text</p>`;
+    const content = persistedState.get('buttonText') || `OK, Got it!`;
 
     if (nextProps.isEditing && nextProps.localState.isEmpty()) {
       // If there is no editorState, create a new blank one
-      const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
+      const initialEditorState = EditorState.createWithContent(convertFromHTML(content), decorator);
       this.handleEditorStateChange(initialEditorState);
     } else if (nextProps.isEditing) {
       // If editorState changes from the toolbar, push any changes up the chain
@@ -59,15 +59,11 @@ export default class ButtonEditor extends React.Component {
 
     const containerStyle = {};
     containerStyle.textAlign = textAlign ? textAlign : 'center';
+    containerStyle.marginTop = marginTop || 5;
+    containerStyle.marginBottom = marginBottom || 5;
 
-    if (marginTop) {
-      containerStyle.marginTop = marginTop;
-    };
     if (marginRight) {
       containerStyle.marginRight = marginRight;
-    };
-    if (marginBottom) {
-      containerStyle.marginBottom = marginBottom;
     };
     if (marginLeft) {
       containerStyle.marginLeft = marginLeft;
@@ -152,14 +148,10 @@ export default class ButtonEditor extends React.Component {
     };
     wrapperAttrs.style = `width:100%;textAlign:${textAlign ? textAlign : 'center'};`;
 
-    if (marginTop) {
-      wrapperAttrs.style = wrapperAttrs.style + `marginTop:${marginTop}px;`;
-    };
+    wrapperAttrs.style = wrapperAttrs.style + `marginTop:${marginTop || 5}px;`;
+    wrapperAttrs.style = wrapperAttrs.style + `marginBottom:${marginBottom || 5}px;`;
     if (marginRight) {
       wrapperAttrs.style = wrapperAttrs.style + `marginRight:${marginRight}px;`;
-    };
-    if (marginBottom) {
-      wrapperAttrs.style = wrapperAttrs.style + `marginBottom:${marginBottom}px;`;
     };
     if (marginLeft) {
       wrapperAttrs.style = wrapperAttrs.style + `marginLeft:${marginLeft}px;`;
@@ -170,11 +162,6 @@ export default class ButtonEditor extends React.Component {
       ['data-field-id']: zone.get('id')
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
-
-    // if (backgroundColor) {
-    //   buttonAttrs.style = buttonAttrs.style + `background-color:${backgroundColor};`;
-    //   buttonAttrs.style = buttonAttrs.style + `border-color:${backgroundColor === '#ffffff' ? buttonTextColor : backgroundColor};`
-    // }
 
     if (href) {
       buttonAttrs.href = href;

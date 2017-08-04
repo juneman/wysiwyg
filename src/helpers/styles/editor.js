@@ -28,7 +28,6 @@ export const selectMenuStyle = {
 
 export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) => {
 
-  // let buttonStyleString = 'display:inline-block;border-width:1px;border-style:solid;cursor:pointer;outline:none;text-align:center;';
   let buttonStyleString = 'text-align:center;';
 
   if (borderRadius) {
