@@ -150,11 +150,9 @@ export default class ButtonAction extends React.Component {
           { isStepIndexOpen &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
-              <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : 0} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
+              <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : ''} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { hasMoreThanOneStep ?
-                  `This group contains ${numPages} steps.` :
-                  `This option allows you to skip to a different step within this step group.`
+                { `This group contains ${numPages} step${hasMoreThanOneStep ? 's' : ''}. ${hasMoreThanOneStep ? 'Set a step number to this button to direct users that step.' : ''}`
                 }
               </p>
             </div>
