@@ -5,7 +5,7 @@ import { Editor, EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
-import { getButtonStyleString } from '../../helpers/styles/editor';
+import { getButtonStyleString, removeBeforeArrowStyle, removeAfterArrowStyle} from '../../helpers/styles/editor';
 
 export default class ButtonEditor extends React.Component {
 
@@ -183,7 +183,40 @@ export default class ButtonEditor extends React.Component {
       buttonAttrs['data-step'] = buttonAction;
     }
 
-    const buttonText = persistedState.get('buttonText') || "OK, Got it!"
+    const buttonText = persistedState.get('buttonText') || "OK, Got it!";
+
+    
+    const buttonObj = {
+      type: 'tag',
+      name: 'a',
+      voidElement: false,
+      attrs: buttonAttrs,
+      children: [
+        {
+          type: 'text',
+          content: buttonText
+        }
+      ]
+    };
+    const arrowStyle = (buttonAction === 'prev' && removeBeforeArrowStyle) || (buttonAction === 'next' && removeAfterArrowStyle);
+    const removeArrowStyleObj = {
+      type: 'tag',
+      name: 'style',
+      voidElement: false,
+      attrs: null,
+      children: [
+        {
+          type: 'text',
+          content: arrowStyle
+        }
+      ]
+    };
+
+    const buttonWrapperChildren = [];
+    if (buttonAction === 'prev' || buttonAction === 'next') {
+      buttonWrapperChildren.push(removeArrowStyleObj);
+    };
+    buttonWrapperChildren.push(buttonObj);
 
     const ast = [];
     ast.push({
@@ -191,20 +224,7 @@ export default class ButtonEditor extends React.Component {
       name: 'div',
       voidElement: false,
       attrs: wrapperAttrs,
-      children: [
-        {
-          type: 'tag',
-          name: 'a',
-          voidElement: false,
-          attrs: buttonAttrs,
-          children: [
-            {
-              type: 'text',
-              content: buttonText
-            }
-          ]
-        }
-      ]
+      children: buttonWrapperChildren
     });
 
     return HTMLParser.stringify(ast);
