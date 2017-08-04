@@ -29,21 +29,22 @@ const actions = [
   //   name: 'background-color'
   // },
   {
-    Component: ButtonStyles,
-    name: 'button-styles'
+    Component: Margin,
+    name: 'margin'
   },
   {
     separator: true
+  },
+  {
+    Component: ButtonStyles,
+    name: 'button-styles'
   },
   {
     Component: ButtonAction,
     name: 'button-action',
     isButtonComponent: true
   },
-  {
-    Component: Margin,
-    name: 'margin'
-  }
+  
 ];
 
 export default function ButtonToolbar(props) {

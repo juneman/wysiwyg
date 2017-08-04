@@ -13,10 +13,6 @@ export default class ButtonAction extends React.Component {
   constructor(props) {
     super(props);
 
-    // const currentAction = props.persistedState.get('buttonAction');
-    // const stepIndex = typeof currentAction === "number" && currentAction;
-    // const stepOption = typeof currentAction === "string" && currentAction;
-
     this.state = {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
@@ -40,10 +36,24 @@ export default class ButtonAction extends React.Component {
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
     };
-    
+
+    const { persistedState } = nextProps;
+    const buttonAction = persistedState.get('buttonAction');
+
+    if (buttonAction && typeof buttonAction === 'number') {
+      update.dataStepIndex = buttonAction + 1;
+      update.isStepIndexOpen = true;
+      update.isURLOpen = false;
+    };
+    if (buttonAction && typeof buttonAction === 'string') {
+      update.dataStepOption = buttonAction;
+      update.isNavigationOpen = true;
+      update.isURLOpen = false;
+    };
+
     if (Object.keys(update).length) {
       this.setState(update);
-    }
+    };
   }
 
   render() {
@@ -220,7 +230,7 @@ export default class ButtonAction extends React.Component {
 
   handleAction(e) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
+    const { dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
     
     const value = e.target.value;
     
