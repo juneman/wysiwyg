@@ -126,6 +126,13 @@ export const dropdownStyle = {
   padding: 4
 };
 
+export const buttonStyleOptionStyle = {
+  width: '45%',
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: '10px'
+};
+
 export const checkboxStyle = {
   marginRight: 10
 };
