@@ -73,6 +73,7 @@ export default class ButtonEditor extends React.Component {
     if (marginLeft) {
       containerStyle.marginLeft = marginLeft;
     };
+    containerStyle.width = 'inherit';
 
     const buttonStyle = {};
     buttonStyleProps.forEach((key) => {
@@ -88,10 +89,10 @@ export default class ButtonEditor extends React.Component {
     }
 
     return (
-      <div className="button-wrapper" style={containerStyle}>
+      <div className="button-wrapper appcues-actions-right appcues-actions-left" style={containerStyle}>
         { (isEditing) ? (
           (editorState) ? (
-            <a className="btn"
+            <a className="appcues-button appcues-button-success"
               style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}
               contentEditable
               onInput={ (e) => this.onChangeButtonText(e.target.textContent) }
@@ -100,7 +101,7 @@ export default class ButtonEditor extends React.Component {
           ) : null
         ) : (
           <a
-            className={`btn${classNameString}`}
+            className={`appcues-button appcues-button-success ${classNameString}`}
             style={updatedButtonStyle}
             disabled={true}
             data-field-id={zone.get('id')}>
@@ -149,8 +150,10 @@ export default class ButtonEditor extends React.Component {
     const { content, textAlign, backgroundColor, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const wrapperAttrs = {
-      class: 'button-wrapper'
+      class: 'button-wrapper appcues-actions-right appcues-actions-left'
     };
+    wrapperAttrs.style = `width:inherit;`;
+    // default wrapper align to center
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
@@ -168,7 +171,7 @@ export default class ButtonEditor extends React.Component {
     };
 
     const buttonAttrs = {
-      class: 'btn appcues-button-success',
+      class: 'btn appcues-button-success appcues-button',
       ['data-field-id']: zone.get('id')
     };
     const buttonTextColor = persistedState.get('buttonTextColor') || "#ffffff";
