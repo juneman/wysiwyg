@@ -39,6 +39,13 @@ export default class ButtonAction extends React.Component {
 
     const { persistedState } = nextProps;
     const buttonAction = persistedState.get('buttonAction');
+    const href = persistedState.get('href');
+    const isNewWindow = persistedState.get('isNewWindow');
+
+    if (href) {
+      update.href = href;
+      update.isNewWindow = isNewWindow;
+    };
 
     if (buttonAction && typeof buttonAction === 'number') {
       update.dataStepIndex = buttonAction + 1;
@@ -254,7 +261,7 @@ export default class ButtonAction extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isMenuOpen, isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen, isURLOpen  } = this.state;
 
-    const hrefWithProtocol = (href.includes('://')) ? href : '//' + href;
+    const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
     let newPersistedState;
     

@@ -178,7 +178,7 @@ export default class ButtonEditor extends React.Component {
 
     if (href) {
       buttonAttrs.href = href;
-      buttonAttrs.target = (isNewWindow) ? '_target' : '_self';
+      buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
     } else if (buttonAction) {
       buttonAttrs['data-step'] = buttonAction;
     }
