@@ -18,7 +18,7 @@ export default class ButtonEditor extends React.Component {
 
     const marginTop = persistedState.get('marginTop');
     const marginBottom = persistedState.get('marginBottom');
-    console.log('LOG ButtonEditor will mount', marginTop, marginBottom)
+
     const newPersistedState = persistedState
       .set('marginTop', marginTop || 5)
       .set('marginBottom', marginBottom || 5)
