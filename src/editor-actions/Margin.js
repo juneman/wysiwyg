@@ -29,6 +29,22 @@ export default class Margin extends React.Component {
       this.setState({
         isMenuOpen: nextProps.isActive
       });
+    };
+
+    const { persistedState } = nextProps;
+    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+
+    if (marginTop !== this.state.marginTop) {
+      this.setState({ marginTop });
+    }
+    if (marginRight !== this.state.marginRight) {
+      this.setState({ marginRight });
+    }
+    if (marginBottom !== this.state.marginBottom) {
+      this.setState({ marginBottom });
+    }
+    if (marginLeft !== this.state.marginLeft) {
+      this.setState({ marginLeft });
     }
   }
 

@@ -10,11 +10,23 @@ import { getButtonStyleString } from '../../helpers/styles/editor';
 export default class ButtonEditor extends React.Component {
 
   componentWillMount() {
-    const { persistedState } = this.props;
+    const { persistedState, localState, onChange } = this.props;
     const content = persistedState.get('buttonText') || `OK, Got it!`;
 
     const initialEditorState = EditorState.createWithContent(convertFromHTML(content), decorator);
     this.handleEditorStateChange(initialEditorState);
+
+    const marginTop = persistedState.get('marginTop');
+    const marginBottom = persistedState.get('marginBottom');
+    console.log('LOG ButtonEditor will mount', marginTop, marginBottom)
+    const newPersistedState = persistedState
+      .set('marginTop', marginTop || 5)
+      .set('marginBottom', marginBottom || 5)
+
+    onChange({
+      localState: localState,
+      persistedState: newPersistedState
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -34,6 +46,7 @@ export default class ButtonEditor extends React.Component {
         this.handleEditorStateChange(newEditorState);
       }
     }
+
   }
 
   shouldComponentUpdate(nextProps) {
