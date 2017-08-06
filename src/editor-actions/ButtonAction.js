@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
 import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle, buttonNavOptionSelectedStyle} from '../helpers/styles/editor';
+import { BUTTON_NAVIGATION_OPTIONS } from '../helpers/constants';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -88,29 +89,6 @@ export default class ButtonAction extends React.Component {
 
     const titleStyles = secondaryMenuTitleStyle;
 
-    const actionOption = ([
-      {
-        name: 'None',
-        value: ''
-      },
-      {
-        name: 'Next',
-        value: 'next'
-      },
-      {
-        name: 'Previous',
-        value: 'prev'
-      },
-      {
-        name: 'Skip',
-        value: 'skip'
-      },
-      {
-        name: 'End',
-        value: 'end'
-      }
-    ]);
-
     const hasMoreThanOneStep = numPages > 1;
 
     // TO DO: 
@@ -139,7 +117,7 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <label>Navigation Type</label>
               <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleAction(e)}>
-                { actionOption.map((option) => {
+                { BUTTON_NAVIGATION_OPTIONS.map((option) => {
                   return (
                     <option style={{marginLeft: '15px'}} key={option.value} value={option.value}>{option.name}</option>
                   );
