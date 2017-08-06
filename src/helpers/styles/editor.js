@@ -64,6 +64,12 @@ export const buttonNavTypeWrapperStyle = {
   justifyContent: 'space-around'
 };
 
+export const buttonStyleLabelStyle = {
+  fontSize: '12px',
+  lineHeight: '12px',
+  width: '55px'
+};
+
 export const buttonNavOptionStyle = {
   marginBottom: '5px',
   padding: '2px 6px',

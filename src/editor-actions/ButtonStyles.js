@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, shortInputStyle, buttonStyleOptionStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, shortInputStyle, buttonStyleOptionStyle, buttonStyleLabelStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import AdvancedStylingButton from '../icons/AdvancedStylingButton';
@@ -68,19 +68,19 @@ export default class ButtonStyles extends React.Component {
 
           <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
             <div style={buttonStyleOptionStyle}>
-              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Border Radius</label>
+              <label style={buttonStyleLabelStyle}>Border Radius</label>
               <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Padding</label>
+              <label style={buttonStyleLabelStyle}>Padding</label>
               <input type="number" style={shortInputStyle} min={0} value={padding} onChange={(e) => this.handleChange(e, 'padding')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Font Size</label>
+              <label style={buttonStyleLabelStyle}>Font Size</label>
               <input type="number" style={shortInputStyle} min={10} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={{fontSize: '12px', lineHeight: '12px', width: '55px'}}>Width</label>
+              <label style={buttonStyleLabelStyle}>Width</label>
               <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div>
