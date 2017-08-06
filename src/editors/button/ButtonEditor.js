@@ -19,9 +19,12 @@ export default class ButtonEditor extends React.Component {
     const marginTop = persistedState.get('marginTop');
     const marginBottom = persistedState.get('marginBottom');
 
+    const hasMarginTopBeenSet = marginTop || marginTop === 0;
+    const hasMarginBottomBeenSet = marginBottom || marginBottom === 0;
+
     const newPersistedState = persistedState
-      .set('marginTop', marginTop || 5)
-      .set('marginBottom', marginBottom || 5)
+      .set('marginTop', hasMarginTopBeenSet ? marginTop : 5)
+      .set('marginBottom', hasMarginBottomBeenSet ? marginBottom : 5)
 
     onChange({
       localState: localState,
@@ -70,10 +73,13 @@ export default class ButtonEditor extends React.Component {
     const buttonStyleProps = [ 'borderRadius', 'padding', 'width', 'fontSize'];
     const classNameString = (className && className.length) ? ' ' + className : '';
 
+    const hasMarginTopBeenSet = marginTop || marginTop === 0;
+    const hasMarginBottomBeenSet = marginBottom || marginBottom === 0;
+
     const containerStyle = {};
     containerStyle.textAlign = textAlign ? textAlign : 'center';
-    containerStyle.marginTop = marginTop || 5;
-    containerStyle.marginBottom = marginBottom || 5;
+    containerStyle.marginTop = hasMarginTopBeenSet ? marginTop : 5;
+    containerStyle.marginBottom = hasMarginBottomBeenSet ? marginBottom : 5;
 
     if (marginRight) {
       containerStyle.marginRight = marginRight;
@@ -161,8 +167,11 @@ export default class ButtonEditor extends React.Component {
     };
     wrapperAttrs.style = `width:100%;textAlign:${textAlign ? textAlign : 'center'};`;
 
-    wrapperAttrs.style = wrapperAttrs.style + `marginTop:${marginTop || 5}px;`;
-    wrapperAttrs.style = wrapperAttrs.style + `marginBottom:${marginBottom || 5}px;`;
+    const hasMarginTopBeenSet = marginTop || marginTop === 0;
+    const hasMarginBottomBeenSet = marginBottom || marginBottom === 0;
+
+    wrapperAttrs.style = wrapperAttrs.style + `marginTop:${hasMarginTopBeenSet ? marginTop : 5}px;`;
+    wrapperAttrs.style = wrapperAttrs.style + `marginBottom:${hasMarginBottomBeenSet ? marginBottom : 5}px;`;
     if (marginRight) {
       wrapperAttrs.style = wrapperAttrs.style + `marginRight:${marginRight}px;`;
     };
