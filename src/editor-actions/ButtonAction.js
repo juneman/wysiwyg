@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
 import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle, buttonNavOptionSelectedStyle} from '../helpers/styles/editor';
-import { BUTTON_NAVIGATION_OPTIONS } from '../helpers/constants';
+import { BUTTON_ACTION_TYPES, BUTTON_NAVIGATION_OPTIONS } from '../helpers/constants';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -18,9 +18,7 @@ export default class ButtonAction extends React.Component {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       isMenuOpen: props.isActive || false,
-      isNavigationOpen: false,
-      isStepIndexOpen: false,
-      isURLOpen: true,
+      tabState: BUTTON_ACTION_TYPES.URL, 
       dataStepOption: '',
       dataStepIndex: 1
     };
@@ -49,14 +47,13 @@ export default class ButtonAction extends React.Component {
     };
 
     if (buttonAction && typeof buttonAction === 'number') {
+      update.tabState = BUTTON_ACTION_TYPES.INDEX;
       update.dataStepIndex = buttonAction + 1;
-      update.isStepIndexOpen = true;
-      update.isURLOpen = false;
+
     };
     if (buttonAction && typeof buttonAction === 'string') {
+      update.tabState = BUTTON_ACTION_TYPES.NAV;
       update.dataStepOption = buttonAction;
-      update.isNavigationOpen = true;
-      update.isURLOpen = false;
     };
 
     if (Object.keys(update).length) {
@@ -66,7 +63,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
-    const { href, isNewWindow, isMenuOpen, isNavigationOpen, isStepIndexOpen, isURLOpen, dataStepIndex, dataStepOption } = this.state;
+    const { href, isNewWindow, isMenuOpen, tabState, dataStepIndex, dataStepOption } = this.state;
     const buttonAction = persistedState.get('buttonAction') || ''; 
     const buttonProps = getButtonProps(isActive);
 
@@ -88,23 +85,20 @@ export default class ButtonAction extends React.Component {
     };
 
     const titleStyles = secondaryMenuTitleStyle;
-
     const hasMoreThanOneStep = numPages > 1;
 
-    // TO DO: 
-    // Allow flow ID selection for buttons to launch another flow
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
 
         <div style={titleStyles}>Button Actions</div>
 
         <div style={buttonNavTypeWrapperStyle} className="button-action-nav-wrapper">
-            <p style={isURLOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isURLOpen')}>By URL</p>
-            <p style={isNavigationOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isNavigationOpen')}>By Type</p>
-            <p style={isStepIndexOpen ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu('isStepIndexOpen')}>By Step Number</p>
+            <p style={tabState === BUTTON_ACTION_TYPES.URL ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.URL)}>By URL</p>
+            <p style={tabState === BUTTON_ACTION_TYPES.NAV ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.NAV)}>By Type</p>
+            <p style={tabState === BUTTON_ACTION_TYPES.INDEX ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.INDEX)}>By Step Number</p>
           </div>
 
-          { isURLOpen &&
+          { tabState === BUTTON_ACTION_TYPES.URL &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Link to URL</label>
               <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
@@ -113,7 +107,7 @@ export default class ButtonAction extends React.Component {
               <label htmlFor="link-checkbox">Open In New Window</label>
             </div>
           }
-          { isNavigationOpen &&
+          { tabState === BUTTON_ACTION_TYPES.NAV &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Navigation Type</label>
               <select value={dataStepOption} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleAction(e)}>
@@ -125,7 +119,7 @@ export default class ButtonAction extends React.Component {
               </select>
             </div>
           }
-          { isStepIndexOpen &&
+          { tabState === BUTTON_ACTION_TYPES.INDEX &&
             <div style={buttonNavTypeMenuStyle}>
               <label>Step number</label>
               <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : ''} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
@@ -165,32 +159,8 @@ export default class ButtonAction extends React.Component {
     }
   }
 
-  handleSelectActionMenu(menuOption){
-    const {isNavigationOpen, isStepIndexOpen, isURLOpen} = this.state;
-
-    switch (menuOption) {
-      case 'isURLOpen':
-        this.setState({
-          isURLOpen: true,
-          isNavigationOpen: false,
-          isStepIndexOpen: false
-        });
-        break;
-      case 'isNavigationOpen':
-        this.setState({
-          isURLOpen: false,
-          isNavigationOpen: true,
-          isStepIndexOpen: false
-        });
-        break;
-      case 'isStepIndexOpen':
-        this.setState({
-          isURLOpen: false,
-          isNavigationOpen: false,
-          isStepIndexOpen: true
-        });
-        break;
-    }
+  handleSelectActionMenu(actionType){
+    this.setState({ tabState: actionType })
   }
 
   handleHref(e) {
@@ -213,18 +183,18 @@ export default class ButtonAction extends React.Component {
 
   handleAction(e) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen  } = this.state;
-    
+    const { tabState, dataStepOption, dataStepIndex } = this.state;
+
     const value = e.target.value;
     
-    if (isStepIndexOpen) {
+    if (tabState === BUTTON_ACTION_TYPES.INDEX) {
       this.setState({
         dataStepIndex: value
       });
       return
     };
 
-    if (isNavigationOpen) {
+    if (tabState === BUTTON_ACTION_TYPES.NAV) {
       this.setState({
         dataStepOption: value
       });
@@ -235,27 +205,27 @@ export default class ButtonAction extends React.Component {
 
   saveAction() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isMenuOpen, isNewWindow, href, dataStepOption, dataStepIndex, isNavigationOpen, isStepIndexOpen, isURLOpen  } = this.state;
+    const { isMenuOpen, isNewWindow, href, dataStepOption, dataStepIndex, tabState } = this.state;
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
     let newPersistedState;
     
-    if (isNavigationOpen) {
+    if (tabState === BUTTON_ACTION_TYPES.NAV) {
       newPersistedState = persistedState
         .set('buttonAction', dataStepOption)
         .delete('href')
         .delete('isNewWindow');
     };
 
-    if (isStepIndexOpen) {
+    if (tabState === BUTTON_ACTION_TYPES.INDEX) {
       newPersistedState = persistedState
         .set('buttonAction', dataStepIndex - 1)
         .delete('href')
         .delete('isNewWindow')
     };
 
-    if (isURLOpen) {
+    if (tabState === BUTTON_ACTION_TYPES.URL) {
       newPersistedState = persistedState
         .set('href', hrefWithProtocol)
         .set('isNewWindow', isNewWindow)

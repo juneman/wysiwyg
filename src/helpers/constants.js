@@ -8,6 +8,12 @@ export const GALLERY_TYPES = {
   EMOJI: 'emoji'
 };
 
+export const BUTTON_ACTION_TYPES = {
+	URL: 'URL',
+	NAV: 'NAV',
+	INDEX: 'INDEX'
+}
+
 export const BUTTON_NAVIGATION_OPTIONS = ([
   {
     name: 'None',
