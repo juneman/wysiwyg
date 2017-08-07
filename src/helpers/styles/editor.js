@@ -84,7 +84,7 @@ export const buttonNavTypeWrapperStyle = {
 export const buttonStyleLabelStyle = {
   fontSize: '12px',
   lineHeight: '12px',
-  width: '55px'
+  width: '65px'
 };
 
 export const buttonNavTypeMenuStyle = {

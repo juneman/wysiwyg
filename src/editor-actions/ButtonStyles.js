@@ -62,12 +62,12 @@ export default class ButtonStyles extends React.Component {
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles} isMenuOpen={isMenuOpen}>
-        <div style={titleStyles}>Advanced Button Options</div>
+        <div style={titleStyles}>Advanced Button Options (In Pixels)</div>
         <div>
 
           <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
             <div style={buttonStyleOptionStyle}>
-              <label style={buttonStyleLabelStyle}>Border Radius</label>
+              <label style={buttonStyleLabelStyle}>Roundness</label>
               <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
