@@ -32,26 +32,6 @@ export default class ButtonEditor extends React.Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { persistedState } = this.props;
-
-    const content = persistedState.get('buttonText') || `OK, Got it!`;
-
-    if (nextProps.isEditing && nextProps.localState.isEmpty()) {
-      // If there is no editorState, create a new blank one
-      const initialEditorState = EditorState.createWithContent(convertFromHTML(content), decorator);
-      this.handleEditorStateChange(initialEditorState);
-    } else if (nextProps.isEditing) {
-      // If editorState changes from the toolbar, push any changes up the chain
-      const oldEditorState = this.props.localState.get('editorState');
-      const newEditorState = nextProps.localState.get('editorState');
-      if (oldEditorState !== newEditorState) {
-        this.handleEditorStateChange(newEditorState);
-      }
-    }
-
-  }
-
   shouldComponentUpdate(nextProps) {
     const { localState } = this.props;
     const hasButtonTextChanged = localState.get('buttonText') != nextProps.localState.get('buttonText');
@@ -65,7 +45,6 @@ export default class ButtonEditor extends React.Component {
 
   render() {
     const { isEditing, persistedState, localState, zone } = this.props;
-    const editorState = localState.get('editorState');
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
 
@@ -103,24 +82,22 @@ export default class ButtonEditor extends React.Component {
 
     return (
       <div className="button-wrapper appcues-actions-right appcues-actions-left" style={containerStyle}>
-        { (isEditing) ? (
-          (editorState) ? (
+        { (isEditing) ? 
             <a className="appcues-button appcues-button-success"
               style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}
               contentEditable
               onInput={ (e) => this.onChangeButtonText(e.target.textContent) }
               >{buttonText}
             </a>
-          ) : null
-        ) : (
-          <a
-            className={`appcues-button appcues-button-success ${classNameString}`}
-            style={updatedButtonStyle}
-            disabled={true}
-            data-field-id={zone.get('id')}>
-            {buttonText}
-          </a>
-        )}
+           : 
+            <a
+              className={`appcues-button appcues-button-success ${classNameString}`}
+              style={updatedButtonStyle}
+              disabled={true}
+              data-field-id={zone.get('id')}>
+              {buttonText}
+            </a>
+        }
       </div>
     );
   }
