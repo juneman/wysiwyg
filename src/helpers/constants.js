@@ -14,11 +14,11 @@ export const BUTTON_NAVIGATION_OPTIONS = ([
     value: ''
   },
   {
-    name: 'Next Step',
+    name: 'Next Page',
     value: 'next'
   },
   {
-    name: 'Previous Step',
+    name: 'Previous Page',
     value: 'prev'
   },
   {
