@@ -114,7 +114,7 @@ export default class ButtonStyles extends React.Component {
     update[field] = value;
 
     const newPersistedState = persistedState
-        .set(field, value);
+      .set(field, value);
 
     this.setState(update);
     onChange({
