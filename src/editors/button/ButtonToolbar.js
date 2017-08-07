@@ -41,8 +41,7 @@ const actions = [
   },
   {
     Component: ButtonAction,
-    name: 'button-action',
-    isButtonComponent: true
+    name: 'button-action'
   },
   
 ];

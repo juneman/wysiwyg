@@ -118,9 +118,9 @@ export default class ButtonStyles extends React.Component {
 
     this.setState(update);
     onChange({
-        localState,
-        persistedState: newPersistedState
-      });
+      localState,
+      persistedState: newPersistedState
+    });
   }
 
   handleClick(e) {
