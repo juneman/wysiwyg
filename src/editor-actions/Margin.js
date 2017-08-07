@@ -25,26 +25,39 @@ export default class Margin extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if (nextProps.isActive !== this.props.isActive) {
+    const { isActive } = this.props;
+    const { marginTop, marginRight, marginBottom, marginLeft } = this.state;
+
+    if (nextProps.isActive !== isActive) {
       this.setState({
         isMenuOpen: nextProps.isActive
       });
     };
 
-    const { persistedState } = nextProps;
-    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const nextMarginTop = nextProps.persistedState.get('marginTop');
+    const nextMarginRight = nextProps.persistedState.get('marginRight');
+    const nextMarginBottom = nextProps.persistedState.get('marginBottom');
+    const nextMarginLeft = nextProps.persistedState.get('marginLeft');
 
-    if (marginTop !== this.state.marginTop) {
-      this.setState({ marginTop });
+    if (nextMarginTop !== marginTop) {
+      this.setState({
+        marginTop: nextMarginTop
+      });
     }
-    if (marginRight !== this.state.marginRight) {
-      this.setState({ marginRight });
+    if (nextMarginRight !== marginRight) {
+      this.setState({
+        marginRight: nextMarginRight
+      });
     }
-    if (marginBottom !== this.state.marginBottom) {
-      this.setState({ marginBottom });
+    if (nextMarginBottom !== marginBottom) {
+      this.setState({
+        marginBottom: nextMarginBottom
+      });
     }
-    if (marginLeft !== this.state.marginLeft) {
-      this.setState({ marginLeft });
+    if (nextMarginLeft !== marginLeft) {
+      this.setState({
+        marginLeft: nextMarginLeft
+      });
     }
   }
 
