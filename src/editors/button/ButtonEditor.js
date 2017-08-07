@@ -77,7 +77,7 @@ export default class ButtonEditor extends React.Component {
     const isMarginBottomSet = marginBottom || marginBottom === 0;
 
     const containerStyle = {};
-    containerStyle.textAlign = textAlign ? textAlign : 'center';
+    containerStyle.textAlign = textAlign || 'center';
     containerStyle.marginTop = isMarginTopSet ? marginTop : 5;
     containerStyle.marginBottom = isMarginBottomSet ? marginBottom : 5;
 
@@ -127,9 +127,7 @@ export default class ButtonEditor extends React.Component {
 
   // Instance Method
   focus() {
-    // if (this.editor) {
-    //   this.editor.focus();
-    // }
+   
   }
 
   onChangeButtonText(text) {
