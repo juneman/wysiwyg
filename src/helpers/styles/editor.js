@@ -9,6 +9,23 @@ export function getButtonProps(isActive) {
   };
 }
 
+export const tabStyle = {
+  cursor: 'pointer',
+  color: '#969696',
+  backgroundColor: '#fff',
+  textAlign: 'center',
+  fontWeight: 600,
+  width: '50%',
+  transition: 'background-color 0.15s ease-out, color 0.15s ease-out',
+  textTransform: 'capitalize',
+  padding: '5px 0'
+};
+
+export const selectedTabStyle = {
+  color: '#fff',
+  backgroundColor: '#23baff'
+};
+
 export const secondaryMenuTitleStyle = {
   textTransform: 'uppercase',
   fontSize: 'smaller',
@@ -68,20 +85,6 @@ export const buttonStyleLabelStyle = {
   fontSize: '12px',
   lineHeight: '12px',
   width: '55px'
-};
-
-export const buttonNavOptionStyle = {
-  marginBottom: '5px',
-  padding: '2px 6px',
-  backgroundColor: 'transparent',
-  border: '1px solid rgba(0,0,0,0.2)'
-};
-
-export const buttonNavOptionSelectedStyle = {
-  marginBottom: '5px',
-  padding: '2px 6px',
-  backgroundColor: 'rgba(0,0,0,0.1)',
-  border: '1px solid transparent'
 };
 
 export const buttonNavTypeMenuStyle = {

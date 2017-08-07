@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, buttonNavOptionStyle, buttonNavOptionSelectedStyle} from '../helpers/styles/editor';
+import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, tabStyle, selectedTabStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle} from '../helpers/styles/editor';
 import { BUTTON_ACTION_TYPES, BUTTON_NAVIGATION_OPTIONS } from '../helpers/constants';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
@@ -90,12 +90,12 @@ export default class ButtonAction extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
 
-        <div style={titleStyles}>Button Actions</div>
+        <div style={{...titleStyles, marginBottom: '5px'}}>Button Actions</div>
 
         <div style={buttonNavTypeWrapperStyle} className="button-action-nav-wrapper">
-            <p style={tabState === BUTTON_ACTION_TYPES.URL ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.URL)}>By URL</p>
-            <p style={tabState === BUTTON_ACTION_TYPES.NAV ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.NAV)}>By Type</p>
-            <p style={tabState === BUTTON_ACTION_TYPES.INDEX ? buttonNavOptionSelectedStyle : buttonNavOptionStyle} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.INDEX)}>By Step Number</p>
+            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.URL && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.URL)}>URL</span>
+            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.NAV && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.NAV)}>Type</span>
+            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.INDEX && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.INDEX)}>Page</span>
           </div>
 
           { tabState === BUTTON_ACTION_TYPES.URL &&
@@ -117,14 +117,15 @@ export default class ButtonAction extends React.Component {
                   );
                 })}
               </select>
+              
             </div>
           }
           { tabState === BUTTON_ACTION_TYPES.INDEX &&
             <div style={buttonNavTypeMenuStyle}>
-              <label>Step number</label>
+              <label>Page number</label>
               <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? dataStepIndex : ''} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { `This group contains ${numPages} step${hasMoreThanOneStep ? 's' : ''}. ${hasMoreThanOneStep ? 'Set a step number to this button to direct users that step.' : ''}`
+                { `This group contains ${numPages} page${hasMoreThanOneStep ? 's' : ''}. ${hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : ''}`
                 }
               </p>
             </div>
