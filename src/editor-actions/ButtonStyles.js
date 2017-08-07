@@ -18,7 +18,6 @@ export default class ButtonStyles extends React.Component {
       padding: props.persistedState.get('padding'),
       fontSize: props.persistedState.get('fontSize') || 14,
       width: props.persistedState.get('width') || 110,
-      className: props.persistedState.get('className') || '',
       isMenuOpen: props.isActive || false
     };
   }
@@ -32,7 +31,7 @@ export default class ButtonStyles extends React.Component {
   }
 
   render() {
-    const { borderRadius, padding, fontSize, width, className, isMenuOpen } = this.state;
+    const { borderRadius, padding, fontSize, width, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -82,10 +81,6 @@ export default class ButtonStyles extends React.Component {
             <div style={buttonStyleOptionStyle}>
               <label style={buttonStyleLabelStyle}>Width</label>
               <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} onClick={(e) => this.handleClick(e)} />
-            </div>
-            <div>
-              <label>Class Names (separate by space)</label>
-              <input type="text" style={textInputStyle} value={className} onChange={(e) => this.handleChange(e, 'className')} onClick={(e) => this.handleClick(e)} />
             </div>
           </div>
           <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right', marginTop: '10px'}}>
