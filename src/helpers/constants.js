@@ -9,10 +9,10 @@ export const GALLERY_TYPES = {
 };
 
 export const BUTTON_ACTION_TYPES = {
-	URL: 'URL',
-	NAV: 'NAV',
-	INDEX: 'INDEX'
-}
+  URL: 'url',
+  NAVIGATION: 'navigation',
+  STEPINDEX: 'stepIndex'
+};
 
 export const BUTTON_NAVIGATION_OPTIONS = ([
   {

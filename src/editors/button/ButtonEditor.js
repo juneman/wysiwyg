@@ -71,14 +71,14 @@ export default class ButtonEditor extends React.Component {
     const buttonStyle = {};
     buttonStyleProps.forEach((key) => {
       if (persistedState.get(key)) {
-        buttonStyle[key] = persistedState.get(key)
+        buttonStyle[key] = persistedState.get(key);
       }
     });
 
     const updatedButtonStyle = {
       ...buttonStyle,
       textAlign: 'center'
-    }
+    };
 
     return (
       <div className="button-wrapper appcues-actions-right appcues-actions-left" style={containerStyle}>
@@ -164,7 +164,7 @@ export default class ButtonEditor extends React.Component {
       buttonAttrs.href = href;
       buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
     } else if (buttonAction) {
-      buttonAttrs['data-step'] = buttonAction;
+      buttonAttrs['data-step'] = buttonAction.value;
     }
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
@@ -182,7 +182,7 @@ export default class ButtonEditor extends React.Component {
         }
       ]
     };
-    const arrowStyle = (buttonAction === 'prev' && removeBeforeArrowStyle) || (buttonAction === 'next' && removeAfterArrowStyle);
+    const arrowStyle = (buttonAction.value === 'prev' && removeBeforeArrowStyle) || (buttonAction.value === 'next' && removeAfterArrowStyle);
     const removeArrowStyleObj = {
       type: 'tag',
       name: 'style',
@@ -197,7 +197,7 @@ export default class ButtonEditor extends React.Component {
     };
 
     const buttonWrapperChildren = [];
-    if (buttonAction === 'prev' || buttonAction === 'next') {
+    if (buttonAction.value === 'prev' || buttonAction.value === 'next') {
       buttonWrapperChildren.push(removeArrowStyleObj);
     };
     buttonWrapperChildren.push(buttonObj);
