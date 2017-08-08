@@ -83,9 +83,7 @@ export default class ButtonStyles extends React.Component {
               <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} onClick={(e) => this.handleClick(e)} />
             </div>
           </div>
-          <div style={{gridColumn: '1 / 3', gridRow: 4, textAlign: 'right', marginTop: '10px'}}>
-            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
-          </div>
+          
         </div>
       </Menu>
     ) : null;
@@ -125,31 +123,6 @@ export default class ButtonStyles extends React.Component {
 
   handleClick(e) {
     e.target.focus();
-  }
-
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
-
-    let newPersistedState = persistedState;
-
-    Object.keys(this.state).forEach((key) => {
-      const val = this.state[key];
-      if (val && val.length) {
-        newPersistedState = newPersistedState.set(key, val);
-      } else {
-        newPersistedState = newPersistedState.delete(key);
-      }
-    });
-
-    onToggleActive(false);
-
-    onChange({
-      localState,
-      persistedState: newPersistedState
-    });
   }
 
 }
