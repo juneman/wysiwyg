@@ -44,7 +44,7 @@ export default class ButtonAction extends React.Component {
     const href = persistedState.get('href');
     const isNewWindow = persistedState.get('isNewWindow');
 
-    if (buttonAction.type === BUTTON_ACTION_TYPES.URL) {
+    if (buttonAction && buttonAction.type === BUTTON_ACTION_TYPES.URL) {
       update.href = href;
       update.isNewWindow = isNewWindow;
       update.buttonAction = {
@@ -54,7 +54,7 @@ export default class ButtonAction extends React.Component {
       }
     };
 
-    if (buttonAction.type === BUTTON_ACTION_TYPES.NAVIGATION || buttonAction.type === BUTTON_ACTION_TYPES.STEPINDEX) {
+    if (buttonAction && (buttonAction.type === BUTTON_ACTION_TYPES.NAVIGATION || buttonAction.type === BUTTON_ACTION_TYPES.STEPINDEX)) {
       update.tabState = buttonAction.type;
       update.buttonAction = {
         type: buttonAction.type,
