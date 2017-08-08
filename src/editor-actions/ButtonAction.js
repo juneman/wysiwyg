@@ -227,21 +227,21 @@ export default class ButtonAction extends React.Component {
     switch (tabState) {
       case BUTTON_ACTION_TYPES.NAVIGATION:
         newPersistedState = persistedState
-        .set('buttonAction', buttonAction)
-        .delete('href')
-        .delete('isNewWindow');
+          .set('buttonAction', buttonAction)
+          .delete('href')
+          .delete('isNewWindow');
         break
       case BUTTON_ACTION_TYPES.STEPINDEX:
         newPersistedState = persistedState
-        .set('buttonAction', buttonAction)
-        .delete('href')
-        .delete('isNewWindow');
+          .set('buttonAction', buttonAction)
+          .delete('href')
+          .delete('isNewWindow');
         break
       case BUTTON_ACTION_TYPES.URL:
         newPersistedState = persistedState
-        .set('buttonAction', {type: BUTTON_ACTION_TYPES.URL, value: hrefWithProtocol, isNewWindow: isNewWindow})
-        .set('href', hrefWithProtocol)
-        .set('isNewWindow', isNewWindow);
+          .set('buttonAction', {type: BUTTON_ACTION_TYPES.URL, value: hrefWithProtocol, isNewWindow: isNewWindow})
+          .set('href', hrefWithProtocol)
+          .set('isNewWindow', isNewWindow);
         break
     };
 
