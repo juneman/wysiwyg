@@ -221,7 +221,7 @@ export default class ImageUploadWithPresets extends React.Component {
 
         }
         { tabState == GALLERY_TYPES.HERO &&
-          <div style={{padding: '4px 8px', height: 150, overflowY: 'scroll'}}>
+          <div style={{padding: '4px 8px', height: 250, overflowY: 'scroll'}}>
             {
               Object.keys(presetGallery).map((key) =>
                 <div key={key} style={{marginTop: 4}}>
