@@ -5,7 +5,7 @@ import { Editor, EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
-import { getButtonStyleString, removeBeforeArrowStyle, removeAfterArrowStyle} from '../../helpers/styles/editor';
+import { getButtonStyleString, removeArrowStyle} from '../../helpers/styles/editor';
 
 export default class ButtonEditor extends React.Component {
 
@@ -182,7 +182,7 @@ export default class ButtonEditor extends React.Component {
         }
       ]
     };
-    const arrowStyle = (buttonAction.value === 'prev' && removeBeforeArrowStyle) || (buttonAction.value === 'next' && removeAfterArrowStyle);
+
     const removeArrowStyleObj = {
       type: 'tag',
       name: 'style',
@@ -191,13 +191,13 @@ export default class ButtonEditor extends React.Component {
       children: [
         {
           type: 'text',
-          content: arrowStyle
+          content: removeArrowStyle
         }
       ]
     };
 
     const buttonWrapperChildren = [];
-    if (buttonAction.value === 'prev' || buttonAction.value === 'next') {
+    if (buttonAction && (buttonAction.value === 'prev' || buttonAction.value === 'next')) {
       buttonWrapperChildren.push(removeArrowStyleObj);
     };
     buttonWrapperChildren.push(buttonObj);

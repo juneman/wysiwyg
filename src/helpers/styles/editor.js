@@ -153,9 +153,7 @@ export const placeholderStyle = {
   textTransform: 'uppercase'
 };
 
-export const removeBeforeArrowStyle = '.button-wrapper>[data-step=prev]::before {content: none}';
-
-export const removeAfterArrowStyle = '.button-wrapper>.appcues-button[data-step=next]::after {content: none}';
+export const removeArrowStyle = '.button-wrapper>[data-step=prev]::before {content: none} .button-wrapper>.appcues-button[data-step=next]::after {content: none}';
 
 export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart * {
