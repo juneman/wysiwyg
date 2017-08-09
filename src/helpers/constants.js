@@ -10,29 +10,47 @@ export const GALLERY_TYPES = {
 
 export const BUTTON_ACTION_TYPES = {
   URL: 'url',
-  NAVIGATION: 'navigation',
-  STEPINDEX: 'stepIndex'
+  NEXT_PAGE: 'next',
+  PREVIOUS_PAGE: 'prev',
+  CUSTOM_PAGE: 'custom',
+  END_FLOW: 'skip',
+  NEXT_GROUP: 'end'
 };
 
-export const BUTTON_NAVIGATION_OPTIONS = ([
+export const BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS = [
+  BUTTON_ACTION_TYPES.NEXT_PAGE,
+  BUTTON_ACTION_TYPES.PREVIOUS_PAGE,
+  BUTTON_ACTION_TYPES.END_FLOW,
+  BUTTON_ACTION_TYPES.NEXT_GROUP
+];
+
+export const BUTTON_ACTION_TYPES_LIST = [
   {
-    name: 'None',
+    label: 'Do nothing',
     value: ''
   },
   {
-    name: 'Next Page',
-    value: 'next'
+    label: 'Go to URL',
+    value: BUTTON_ACTION_TYPES.URL
   },
   {
-    name: 'Previous Page',
-    value: 'prev'
+    label: 'Go to Next Page',
+    value: BUTTON_ACTION_TYPES.NEXT_PAGE
   },
   {
-    name: 'Dismiss Entire Flow',
-    value: 'skip'
+    label: 'Go to Previous Page',
+    value: BUTTON_ACTION_TYPES.PREVIOUS_PAGE
   },
   {
-    name: 'Skip to Next Group',
-    value: 'end'
+    label: 'Go to Custom Page',
+    value: BUTTON_ACTION_TYPES.CUSTOM_PAGE
+  },
+  {
+    label: 'Dismiss Entire Flow',
+    value: BUTTON_ACTION_TYPES.END_FLOW
+  },
+  {
+    label: 'Skip to Next Step Group',
+    value: BUTTON_ACTION_TYPES.NEXT_GROUP
   }
-]);
+];
