@@ -6,7 +6,7 @@ import { RichUtils, EditorState } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 import tinyColor from 'tinycolor2';
 
-import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { secondaryMenuTitleStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import FontColorButton from '../icons/FontColorButton';
@@ -46,15 +46,11 @@ export default class FontColor extends React.Component {
     };
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 5,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      ...dropdownStyle,
+      paddingBottom: 5,
+      paddingLeft: 5,
+      paddingRight: 5,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;

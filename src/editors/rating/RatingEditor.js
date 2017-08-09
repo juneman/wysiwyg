@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
-import { textInputStyle, placeholderStyle } from '../../helpers/styles/editor';
+import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RatingEditor extends React.Component {
 

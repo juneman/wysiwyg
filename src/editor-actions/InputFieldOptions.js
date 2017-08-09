@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, checkboxStyle, buttonStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, inputStyle, labelStyle, checkboxStyle, buttonStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
+import Button from '../components/Button';
 
 import SettingsButton from '../icons/SettingsButton';
 
@@ -34,16 +35,9 @@ export default class InputFieldOptions extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
@@ -53,7 +47,8 @@ export default class InputFieldOptions extends React.Component {
     const titleStyles = secondaryMenuTitleStyle;
 
     const row = {
-      marginTop: 20
+      marginTop: 20,
+      display: 'flex'
     };
 
     const dropdownNodes = isActive ? (
@@ -64,12 +59,12 @@ export default class InputFieldOptions extends React.Component {
             <input id="field-is-required" type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label htmlFor="field-is-required">Required Field</label>
           </div>
-          <div style={row}>
-            <label>Maximum Length</label>
-            <input style={textInputStyle} type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
+          <div style={{ ...row, flexDirection: 'column' }}>
+            <label style={ labelStyle }>Maximum Length</label>
+            <input style={ inputStyle } type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
           </div>
           <div style={{textAlign: 'right', ...row}}>
-            <button style={buttonStyle} onClick={(e) => this.handleSave(e)}>Save</button>
+            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
           </div>
         </div>
       </Menu>

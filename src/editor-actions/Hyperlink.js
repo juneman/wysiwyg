@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, textInputStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, dropdownStyle, inputStyle, labelStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
@@ -42,16 +42,9 @@ export default class Hyperlink extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
@@ -61,22 +54,23 @@ export default class Hyperlink extends React.Component {
     const titleStyles = secondaryMenuTitleStyle;
 
     const row = {
-      marginTop: 20
+      marginTop: 20,
+      display: 'flex'
     };
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Create a Link</div>
         <div>
-          <div style={row}>
-            <label>URL</label>
-            <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+          <div style={{ ...row, flexDirection: 'column' }}>
+            <label style={ labelStyle }>URL</label>
+            <input autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
           </div>
-          <div style={row}>
-            <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+          <div style={{ ...row, alignItems: 'center' }}>
+            <input id="link-checkbox" type="checkbox" style={ checkboxStyle } checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
             <label htmlFor="link-checkbox">Open In New Window</label>
           </div>
-          <div style={{textAlign: 'right', ...row}}>
+          <div style={{ textAlign: 'right', ...row }}>
             <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
           </div>
         </div>

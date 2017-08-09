@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
-import { textInputStyle, placeholderStyle } from '../../helpers/styles/editor';
+import { inputStyle, placeholderStyle } from '../../helpers/styles/editor';
 
 export default class SelectionEditor extends React.Component {
 
@@ -129,7 +129,7 @@ export default class SelectionEditor extends React.Component {
                     </label>
                   </div>
                   <div className="field-controls">
-                    <textarea type="text" rows={5} style={{ ...textInputStyle, marginBottom: 10 }} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
+                    <textarea type="text" rows={5} style={{ ...inputStyle, marginBottom: 10 }} placeholder={placeholder} onChange={(e) => this.handleInputChange(e)} value={optionString} />
                   </div>
                 </div>
               </div>

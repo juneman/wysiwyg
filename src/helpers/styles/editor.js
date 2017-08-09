@@ -63,51 +63,47 @@ export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) =
   return buttonStyleString
 };
 
-export const textInputStyle = {
-  display: 'block',
-  margin: 0,
-  width: '95%',
-  fontSize: 18,
-  appearance: 'none',
-  boxShadow: 'none',
-  borderRadius: 'none',
-  padding: 4,
-  outline: 'none'
-};
-
 export const buttonNavTypeWrapperStyle = {
   cursor: 'pointer',
   display: 'flex',
   justifyContent: 'space-around'
 };
 
-export const buttonStyleLabelStyle = {
-  fontSize: '12px',
-  lineHeight: '12px',
-  width: '65px'
+export const labelStyle = {
+  fontSize: '14px',
+  display: 'flex',
+  paddingTop: 5,
+  marginBottom: 8,
+  fontWeight: 400,
+  color: '#888',
+  lineHeight: 'normal'
+};
+
+export const fieldGroupStyle = {
+  display: 'flex',
+  flexDirection: 'column'
 };
 
 export const buttonNavTypeMenuStyle = {
-  height: '95px',
   padding: '2px 10px',
   marginTop: '5px'
 };
 
-export const shortInputStyle = {
-  display: 'inline',
-  margin: '0 0 0 5px',
-  width: '43px',
-  fontFamily: 'sans-serif',
-  fontSize: 14,
-  appearance: 'none',
-  boxShadow: 'none',
-  borderRadius: '4px',
-  border: '1px solid #ddd',
-  padding: '4px 0 4px 4px',
-  color: '#666',
+export const inputStyle = {
   outline: 'none',
-  lineHeight: '18px',
-  verticalAlign: 'middle'
+  display: 'flex',
+  padding: '5px 10px',
+  borderRadius: 4,
+  border: '2px solid #ddd',
+  backgroundColor: 'white',
+  lineHeight: '24px',
+  fontSize: '14px',
+  color: '#666'
+}
+
+export const shortInputStyle = {
+  ...inputStyle,
+  width: 62
 };
 
 export const marginBoxRowStyle = {
@@ -118,32 +114,34 @@ export const marginBoxRowStyle = {
 };
 
 export const marginBoxStyle = {
-    height: '50px',
-    width: '60px',
-    margin: '5px 15px 5px 5px',
-    border: '2px dashed #808080'
+  height: '50px',
+  width: '60px',
+  margin: '5px 15px',
+  border: '2px dashed #808080'
 };
 
 export const dropdownStyle = {
-  display: 'block',
-  margin: 0,
-  width: '95%',
-  fontSize: 18,
-  appearance: 'none',
-  boxShadow: 'none',
-  borderRadius: 'none',
-  padding: 4
+  position: 'absolute',
+  top: 45,
+  left: 0,
+  padding: '12px 15px 15px',
+  animationTimingFunction: 'ease-out',
+  animationDuration: '0.15s',
+  animationIterationCount: 1,
+  animationFillMode: 'both',
+  backgroundColor: '#F7F7F7'
 };
 
 export const buttonStyleOptionStyle = {
   width: '45%',
   display: 'flex',
-  alignItems: 'center',
+  flexDirection: 'column',
   marginBottom: '10px'
 };
 
 export const checkboxStyle = {
-  marginRight: 10
+  marginRight: 10,
+  marginTop: 4
 };
 
 export const placeholderStyle = {
