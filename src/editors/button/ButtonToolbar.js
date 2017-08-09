@@ -11,48 +11,39 @@ import Italic from '../../editor-actions/Italic';
 import FontColor from '../../editor-actions/FontColor';
 import BackgroundColor from '../../editor-actions/BackgroundColor';
 import ButtonAction from '../../editor-actions/ButtonAction';
-import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
+import Margin from '../../editor-actions/Margin';
 import ButtonStyles from '../../editor-actions/ButtonStyles';
 
 const actions = [
   {
-    Component: Bold,
-    name: 'bold' 
-  },
-  {
-    Component: Italic,
-    name: 'italic' 
-  },
-  {
     Component: AlignmentBlock,
     name: 'alignment-block'
   },
+  // {
+  //   Component: FontColor,
+  //   name: 'font-color',
+  //   isButtonComponent: true
+  // },
+  // {
+  //   Component: BackgroundColor,
+  //   name: 'background-color'
+  // },
+  {
+    Component: Margin,
+    name: 'margin'
+  },
   {
     separator: true
-  },
-  {
-    Component: FontColor,
-    name: 'font-color'
-  },
-  {
-    Component: BackgroundColor,
-    name: 'background-color'
   },
   {
     Component: ButtonStyles,
     name: 'button-styles'
   },
   {
-    separator: true
-  },
-  {
     Component: ButtonAction,
     name: 'button-action'
   },
-  {
-    Component: HyperlinkBlock,
-    name: 'hyperlink-block'
-  }
+  
 ];
 
 export default function ButtonToolbar(props) {

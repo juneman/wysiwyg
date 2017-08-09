@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, textInputStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -36,16 +36,9 @@ export default class ImageSize extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
@@ -58,9 +51,9 @@ export default class ImageSize extends React.Component {
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Set Image Width (number in pixels)</div>
         <div style={{marginTop: 20}}>
-          <div>
-            <label>Width:</label><br/>
-            <input style={textInputStyle} value={width} placeholder="auto" onChange={(e) => this.handleInputChange(e, 'width')} />
+          <div style={ fieldGroupStyle }>
+            <label style={ labelStyle }>Width:</label>
+            <input style={ inputStyle } value={width} placeholder="auto" onChange={(e) => this.handleInputChange(e, 'width')} />
           </div>
           <div style={{textAlign: 'right', marginTop: 20}}>
             <Button onClick={(e) => this.handleSave(e)}>Update</Button>

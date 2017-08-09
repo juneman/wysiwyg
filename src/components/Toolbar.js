@@ -45,7 +45,8 @@ export class Toolbar extends React.Component {
       cloudinary,
       userProperties,
       sanitizeHtmlConfig,
-      aceEditorConfig
+      aceEditorConfig,
+      numPages
     } = this.props;
 
     const { hasRoomToRenderBelow } = this.state;
@@ -70,12 +71,14 @@ export class Toolbar extends React.Component {
               </div>
             );
           }
+          
           const toolbarProps = {
             localState,
             persistedState,
             onChange,
             cloudinary,
             userProperties,
+            numPages,
             sanitizeHtmlConfig,
             aceEditorConfig,
             hasRoomToRenderBelow,
@@ -84,6 +87,7 @@ export class Toolbar extends React.Component {
               dispatch(editorActions.toggleEditorAction(editorAction.name, isActive));
             }
           };
+
           return (
             <div key={editorAction.name} style={{gridColumn: index + 1, gridRow: 1}}>
               <editorAction.Component {...editorAction.props} {...toolbarProps} />

@@ -26,12 +26,13 @@ export class Row extends React.Component {
   }
 
   render() {
-    const { row, connectDragSource, isMovable, isOver } = this.props;
+    const { row, connectDragSource, isMovable, isOver, numPages } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
       return (
         <Zone
+          numPages={numPages}
           key={zone.get('id')}
           zone={zone}
           row={row}

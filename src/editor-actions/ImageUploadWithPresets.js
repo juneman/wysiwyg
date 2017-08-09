@@ -5,7 +5,7 @@ import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps, emojiPickerStyles} from '../helpers/styles/editor';
+import { getButtonProps, emojiPickerStyles, tabStyle, selectedTabStyle } from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 import ImageUploader from '../components/ImageUploader';
@@ -176,23 +176,6 @@ export default class ImageUploadWithPresets extends React.Component {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
     }
-
-    const tabStyle = {
-        cursor: 'pointer',
-        color: '#969696',
-        backgroundColor: '#fff',
-        textAlign: 'center',
-        fontWeight: 600,
-        width: '50%',
-        transition: 'background-color 0.15s ease-out, color 0.15s ease-out',
-        textTransform: 'capitalize',
-        padding: '5px 0'
-    };
-
-    const selectedTabStyle = {
-        color: '#fff',
-        backgroundColor: '#23baff'
-    };
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
