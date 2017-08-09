@@ -6,6 +6,7 @@ import HTMLParser from 'html-parse-stringify2';
 import striptags from 'striptags';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 import { getButtonStyleString, removeArrowStyle} from '../../helpers/styles/editor';
+import { BUTTON_ACTION_TYPES, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../../helpers/constants';
 
 export default class ButtonEditor extends React.Component {
 
@@ -135,7 +136,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonAction, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -160,11 +161,13 @@ export default class ButtonEditor extends React.Component {
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
-    if (href) {
+    if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
       buttonAttrs.href = href;
       buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
-    } else if (buttonAction) {
-      buttonAttrs['data-step'] = buttonAction.value;
+    } else if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
+      buttonAttrs['data-step'] = buttonActionType;
+    } else if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
+      buttonAttrs['data-step'] = stepIndex;
     }
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
@@ -197,7 +200,7 @@ export default class ButtonEditor extends React.Component {
     };
 
     const buttonWrapperChildren = [];
-    if (buttonAction && (buttonAction.value === 'prev' || buttonAction.value === 'next')) {
+    if (buttonActionType ==  BUTTON_ACTION_TYPES.PREVIOUS_PAGE || buttonActionType === BUTTON_ACTION_TYPES.NEXT_PAGE) {
       buttonWrapperChildren.push(removeArrowStyleObj);
     };
     buttonWrapperChildren.push(buttonObj);

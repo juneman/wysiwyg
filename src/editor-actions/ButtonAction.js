@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, textInputStyle, checkboxStyle, secondaryMenuTitleStyle, tabStyle, selectedTabStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle} from '../helpers/styles/editor';
-import { BUTTON_ACTION_TYPES, BUTTON_NAVIGATION_OPTIONS } from '../helpers/constants';
+import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, tabStyle, selectedTabStyle, selectMenuStyle, shortInputStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
+import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../helpers/constants';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
+import DropDownMenu from '../components/DropDownMenu';
 
 import ActionButton from '../icons/ActionButton';
 
@@ -18,12 +19,8 @@ export default class ButtonAction extends React.Component {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       isMenuOpen: props.isActive || false,
-      tabState: BUTTON_ACTION_TYPES.URL,
-      buttonAction: {
-        type: BUTTON_ACTION_TYPES.URL,
-        value: props.href || '',
-        isNewWindow: props.isNewWindow || false
-      }
+      buttonActionType: '',
+      stepIndex: 0
     };
   }
 
@@ -40,27 +37,26 @@ export default class ButtonAction extends React.Component {
     };
 
     const { persistedState } = nextProps;
-    const { buttonAction } = persistedState.toJS();
     const href = persistedState.get('href');
     const isNewWindow = persistedState.get('isNewWindow');
+    const stepIndex = persistedState.get('stepIndex');
+    const buttonActionType = persistedState.get('buttonActionType');
 
-    if (buttonAction && buttonAction.type === BUTTON_ACTION_TYPES.URL) {
+    if (href !== undefined) {
       update.href = href;
-      update.isNewWindow = isNewWindow;
-      update.buttonAction = {
-        type: BUTTON_ACTION_TYPES.URL,
-        value: href,
-        isNewWindow: isNewWindow
-      }
-    };
+    }
 
-    if (buttonAction && (buttonAction.type === BUTTON_ACTION_TYPES.NAVIGATION || buttonAction.type === BUTTON_ACTION_TYPES.STEPINDEX)) {
-      update.tabState = buttonAction.type;
-      update.buttonAction = {
-        type: buttonAction.type,
-        value: buttonAction.value
-      }
-    };
+    if (isNewWindow !== undefined) {
+      update.isNewWindow = isNewWindow;
+    }
+
+    if (buttonActionType !== undefined) {
+      update.buttonActionType = buttonActionType;
+    }
+
+    if (stepIndex !== undefined) {
+      update.stepIndex = stepIndex;
+    }
 
     if (Object.keys(update).length) {
       this.setState(update);
@@ -69,21 +65,14 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
-    const { href, isNewWindow, isMenuOpen, tabState, buttonAction } = this.state;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
@@ -98,41 +87,37 @@ export default class ButtonAction extends React.Component {
 
         <div style={{...titleStyles, marginBottom: '5px'}}>Button Actions</div>
 
-        <div style={buttonNavTypeWrapperStyle} className="button-action-nav-wrapper">
-            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.URL && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.URL)}>URL</span>
-            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.NAVIGATION && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.NAVIGATION)}>Type</span>
-            <span style={{...tabStyle, ...(tabState === BUTTON_ACTION_TYPES.STEPINDEX && selectedTabStyle) }} onClick={() => this.handleSelectActionMenu(BUTTON_ACTION_TYPES.STEPINDEX)}>Page</span>
+          <div style={buttonNavTypeMenuStyle}>
+            <DropDownMenu
+              className="form-control"
+              label="On click"
+              unsearchable
+              selectedValue={ buttonActionType }
+              hasRoomToRenderBelow={ hasRoomToRenderBelow }
+              options={ BUTTON_ACTION_TYPES_LIST }
+              onSelect={ (value) => this.handleAction(value) }/>
           </div>
 
-          { tabState === BUTTON_ACTION_TYPES.URL &&
+          { buttonActionType === BUTTON_ACTION_TYPES.URL &&
             <div style={buttonNavTypeMenuStyle}>
-              <label>Link to URL</label>
-              <input autoFocus type="text" style={textInputStyle} value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
-
-              <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
-              <label htmlFor="link-checkbox">Open In New Window</label>
+              <div style={ fieldGroupStyle }>
+                <label style={ labelStyle }>Link to URL</label>
+                <input autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+              </div>
+              <div style={{ marginTop: 5 }}>
+                <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+                <label htmlFor="link-checkbox">Open In New Window</label>
+              </div>
             </div>
           }
-          { tabState === BUTTON_ACTION_TYPES.NAVIGATION &&
+          { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
             <div style={buttonNavTypeMenuStyle}>
-              <label>Navigation Type</label>
-              <select value={buttonAction.value} style={selectMenuStyle} className="form-control" onChange={(e) => this.handleAction(e)}>
-                { BUTTON_NAVIGATION_OPTIONS.map((option) => {
-                  return (
-                    <option style={{marginLeft: '15px'}} key={option.value} value={option.value}>{option.name}</option>
-                  );
-                })}
-              </select>
-              
-            </div>
-          }
-          { tabState === BUTTON_ACTION_TYPES.STEPINDEX &&
-            <div style={buttonNavTypeMenuStyle}>
-              <label>Page number</label>
-              <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? buttonAction.value + 1 : ''} disabled={!hasMoreThanOneStep} style={shortInputStyle} onChange={(e) => this.handleAction(e)}/>
+              <div style={ fieldGroupStyle }>
+                <label style={ labelStyle }>Page number</label>
+                <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : ''} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
+              </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { `This group contains ${numPages} page${hasMoreThanOneStep ? 's' : ''}. ${hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : ''}`
-                }
+                { `This group contains ${ numPages || 'an unkonwn number of' } page${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : '' }` }
               </p>
             </div>
           }
@@ -166,10 +151,6 @@ export default class ButtonAction extends React.Component {
     }
   }
 
-  handleSelectActionMenu(actionType){
-    this.setState({ tabState: actionType })
-  }
-
   handleHref(e) {
     const href = e.target.value;
     this.setState({
@@ -188,62 +169,49 @@ export default class ButtonAction extends React.Component {
     });
   }
 
-  handleAction(e) {
+  handleStepIndex(e) {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { tabState } = this.state;
 
     const value = e.target.value;
     
-    if (tabState === BUTTON_ACTION_TYPES.STEPINDEX) {
-      this.setState({
-        buttonAction: {
-          type: BUTTON_ACTION_TYPES.STEPINDEX,
-          value: value - 1
-        }
-      });
-      return
-    };
+    this.setState({
+      stepIndex: value - 1
+    });
+  }
 
-    if (tabState === BUTTON_ACTION_TYPES.NAVIGATION) {
-      this.setState({
-        buttonAction: {
-          type: BUTTON_ACTION_TYPES.NAVIGATION,
-          value
-        }
-      });
-      return
-    };
-    
+  handleAction(value) {
+    const { localState, persistedState, onChange, onToggleActive } = this.props;
+
+    this.setState({
+      buttonActionType: value
+    });
+  }
+
+  getPersistedStateByButtonActionType(buttonActionType, persistedState) {
+    if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
+      return persistedState
+        .set('buttonActionType', buttonActionType)
+        .delete('href')
+        .delete('stepIndex')
+        .delete('isNewWindow');
+    }
+
+    if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
+      return persistedState
+        .set('href', hrefWithProtocol)
+        .set('isNewWindow', isNewWindow);
+    }
+
+    return persistedState;
   }
 
   saveAction() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isMenuOpen, isNewWindow, href, tabState, buttonAction } = this.state;
+    const { isMenuOpen, isNewWindow, href, buttonActionType } = this.state;
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
-    let newPersistedState;
-
-    switch (tabState) {
-      case BUTTON_ACTION_TYPES.NAVIGATION:
-        newPersistedState = persistedState
-        .set('buttonAction', buttonAction)
-        .delete('href')
-        .delete('isNewWindow');
-        break
-      case BUTTON_ACTION_TYPES.STEPINDEX:
-        newPersistedState = persistedState
-        .set('buttonAction', buttonAction)
-        .delete('href')
-        .delete('isNewWindow');
-        break
-      case BUTTON_ACTION_TYPES.URL:
-        newPersistedState = persistedState
-        .set('buttonAction', {type: BUTTON_ACTION_TYPES.URL, value: hrefWithProtocol, isNewWindow: isNewWindow})
-        .set('href', hrefWithProtocol)
-        .set('isNewWindow', isNewWindow);
-        break
-    };
+    const newPersistedState = getPersistedStateByButtonActionType(buttonActionType, persistedState);
 
     this.setState({
       isMenuOpen: !isMenuOpen
@@ -255,7 +223,6 @@ export default class ButtonAction extends React.Component {
       localState,
       persistedState: newPersistedState
     });
-
   }
 
 }
@@ -263,7 +230,7 @@ export default class ButtonAction extends React.Component {
 ButtonAction.propTypes = {
   href: PropTypes.string,
   isNewWindow: PropTypes.bool,
-  buttonAction: PropTypes.object,
+  buttonActionType: PropTypes.string,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
