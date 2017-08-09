@@ -128,13 +128,6 @@ export default class EditorSelector extends React.Component {
     const { allowedEditorTypes } = this.props;
     this.setHasRoomToRenderBelow();
 
-    const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
-      return (allowedEditorTypes.includes(editor.type));
-    });
-    const trimmedFormEditors = (allowedEditorTypes.isEmpty()) ? formEditors : formEditors.filter((editor) => {
-      return (editors.includes(editor));
-    });
-
     const editorUpdate = {};
     editorUpdate.textElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
         return (textEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
@@ -151,7 +144,6 @@ export default class EditorSelector extends React.Component {
     console.log('LOG editor selector did mount, elements to load?', editorUpdate)
 
     this.setState(editorUpdate)
-
   }
 
   componentDidUpdate() {
@@ -189,14 +181,6 @@ export default class EditorSelector extends React.Component {
       left: 130
     };
 
-    const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
-      return (allowedEditorTypes.includes(editor.type));
-    });
-
-    // const trimmedFormEditors = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
-    //     return (formEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
-    // })
-    const trimmedFormEditors = []
     return (
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
@@ -204,7 +188,6 @@ export default class EditorSelector extends React.Component {
               if ([category.content].length && !category.willExpand) {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
-
                 return (
                   <div key={category.name}>
                     {category.name}
@@ -217,11 +200,11 @@ export default class EditorSelector extends React.Component {
         </Menu>
 
         <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
-          { (showForm) ? (
+          { showForm &&
             <Menu style={{overflow: 'hidden'}}>
               Form editor here
             </Menu>
-          ) : null}
+          }
         </div>
       </div>
     );
