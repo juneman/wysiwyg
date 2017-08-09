@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { RichUtils } from 'draft-js';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import FontStyleButton from '../icons/FontStyleButton';
@@ -73,18 +73,12 @@ export default class TextStyle extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
+      ...dropdownStyle,
       padding: 10,
       width: 250,
-      height: 150,
+      height: 210,
       overflowY: 'scroll',
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;

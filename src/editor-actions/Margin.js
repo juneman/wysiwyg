@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, marginBoxStyle, marginBoxRowStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, marginBoxStyle, marginBoxRowStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
 
@@ -68,16 +68,9 @@ export default class Margin extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
-      width: 300,
+      ...dropdownStyle,
+      width: 340,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
@@ -90,24 +83,24 @@ export default class Margin extends React.Component {
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Surrounding Margin (in pixels)</div>
         <div style={{marginTop: 0}}>
-          <div style={{textAlign: 'center'}}>
-            <label>Top: </label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <label style={{ marginRight: 5 }}>Top: </label>
             <input autoFocus style={shortInputStyle} value={marginTop} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginTop')} />
           </div>
           <div className='row' style={marginBoxRowStyle}>
-            <div style={{width: '33%'}}>
-              <label>Left: </label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <label style={{ marginRight: 5 }}>Left: </label>
               <input style={shortInputStyle} value={marginLeft} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginLeft')} />
             </div>
             <div style={marginBoxStyle}>
             </div>
-            <div style={{width: '33%'}}>
-              <label>Right: </label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <label style={{ marginRight: 5 }}>Right: </label>
               <input style={shortInputStyle} value={marginRight} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginRight')} />
             </div>
           </div>
-          <div style={{textAlign: 'center', marginBottom: '10px'}}>
-            <label>Bottom: </label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+            <label style={{ marginRight: 5 }}>Bottom: </label>
             <input style={shortInputStyle} value={marginBottom} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginBottom')} />
           </div>
         </div>

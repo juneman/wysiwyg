@@ -48,16 +48,9 @@ export default class SelectFieldOptions extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;

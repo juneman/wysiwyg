@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, textInputStyle, shortInputStyle, buttonStyleOptionStyle, buttonStyleLabelStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, shortInputStyle, buttonStyleOptionStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 import AdvancedStylingButton from '../icons/AdvancedStylingButton';
@@ -37,16 +37,9 @@ export default class ButtonStyles extends React.Component {
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
-      position: 'absolute',
-      top: 45,
-      left: 0,
-      padding: 10,
+      ...dropdownStyle,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
-      animationTimingFunction: 'ease-out',
-      animationDuration: '0.15s',
-      animationIterationCount: 1,
-      animationFillMode: 'both'
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
@@ -65,21 +58,21 @@ export default class ButtonStyles extends React.Component {
         <div style={titleStyles}>Advanced Button Options (In Pixels)</div>
         <div>
 
-          <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <div style={buttonStyleOptionStyle}>
-              <label style={buttonStyleLabelStyle}>Roundness</label>
+              <label style={labelStyle}>Roundness</label>
               <input type="number" style={shortInputStyle} min={0} value={borderRadius} onChange={(e) => this.handleChange(e, 'borderRadius')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={buttonStyleLabelStyle}>Padding</label>
+              <label style={labelStyle}>Padding</label>
               <input type="number" style={shortInputStyle} min={0} value={padding} onChange={(e) => this.handleChange(e, 'padding')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={buttonStyleLabelStyle}>Font Size</label>
+              <label style={labelStyle}>Font Size</label>
               <input type="number" style={shortInputStyle} min={10} value={fontSize} onChange={(e) => this.handleChange(e, 'fontSize')} onClick={(e) => this.handleClick(e)} />
             </div>
             <div style={buttonStyleOptionStyle}>
-              <label style={buttonStyleLabelStyle}>Width</label>
+              <label style={labelStyle}>Width</label>
               <input type="number" style={shortInputStyle} min={25} value={width} onChange={(e) => this.handleChange(e, 'width')} onClick={(e) => this.handleClick(e)} />
             </div>
           </div>
