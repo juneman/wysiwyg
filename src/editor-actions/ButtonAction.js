@@ -187,7 +187,7 @@ export default class ButtonAction extends React.Component {
     });
   }
 
-  getPersistedStateByButtonActionType(buttonActionType, persistedState) {
+  getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
     if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
       return persistedState
         .set('buttonActionType', buttonActionType)
@@ -196,10 +196,20 @@ export default class ButtonAction extends React.Component {
         .delete('isNewWindow');
     }
 
+    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
+      return persistedState
+        .set('buttonActionType', buttonActionType)
+        .set('stepIndex')
+        .delete('href')
+        .delete('isNewWindow');
+    }
+
     if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
       return persistedState
-        .set('href', hrefWithProtocol)
-        .set('isNewWindow', isNewWindow);
+        .set('buttonActionType', buttonActionType)
+        .set('href', state.hrefWithProtocol)
+        .set('isNewWindow', state.isNewWindow)
+        .delete('stepIndex');
     }
 
     return persistedState;
@@ -211,7 +221,7 @@ export default class ButtonAction extends React.Component {
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
-    const newPersistedState = getPersistedStateByButtonActionType(buttonActionType, persistedState);
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow });
 
     this.setState({
       isMenuOpen: !isMenuOpen
