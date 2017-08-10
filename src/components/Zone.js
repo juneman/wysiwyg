@@ -120,7 +120,8 @@ export class Zone extends React.Component {
       persistedState,
       cloudinary,
       userProperties,
-      isOver
+      isOver,
+      numPages
     } = this.props;
 
     const type = zone.get('type');
@@ -196,7 +197,7 @@ export class Zone extends React.Component {
         break;
       case 'Button':
         editorNode = (<ButtonEditor {...editorProps} />);
-        toolbarNode = (<ButtonToolbar {...toolbarProps} />);
+        toolbarNode = (<ButtonToolbar numPages={numPages} {...toolbarProps} />);
         break;
       case 'HTML':
         editorNode = (<HtmlEditor {...editorProps} />);

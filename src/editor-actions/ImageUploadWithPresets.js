@@ -5,7 +5,7 @@ import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps, emojiPickerStyles} from '../helpers/styles/editor';
+import { getButtonProps, emojiPickerStyles, tabStyle, selectedTabStyle } from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 import ImageUploader from '../components/ImageUploader';
@@ -177,23 +177,6 @@ export default class ImageUploadWithPresets extends React.Component {
       delete dropdownStyles.top;
     }
 
-    const tabStyle = {
-        cursor: 'pointer',
-        color: '#969696',
-        backgroundColor: '#fff',
-        textAlign: 'center',
-        fontWeight: 600,
-        width: '50%',
-        transition: 'background-color 0.15s ease-out, color 0.15s ease-out',
-        textTransform: 'capitalize',
-        padding: '5px 0'
-    };
-
-    const selectedTabStyle = {
-        color: '#fff',
-        backgroundColor: '#23baff'
-    };
-
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={{display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #e1e1e1'}}>
@@ -221,7 +204,7 @@ export default class ImageUploadWithPresets extends React.Component {
 
         }
         { tabState == GALLERY_TYPES.HERO &&
-          <div style={{padding: '4px 8px', height: 150, overflowY: 'scroll'}}>
+          <div style={{padding: '4px 8px', height: 250, overflowY: 'scroll'}}>
             {
               Object.keys(presetGallery).map((key) =>
                 <div key={key} style={{marginTop: 4}}>
