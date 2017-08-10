@@ -116,6 +116,7 @@ export default class EditorSelector extends React.Component {
       showForm: false,
       primaryHoverMenu: '',
       secondaryMenuHover: '',
+      menuState: '',
       textElements: [],
       mediaElements: [],
       formElements: [],
@@ -152,7 +153,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover, textElements, mediaElements, formElements, advancedElements } = this.state;
+    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover, menuState, textElements, mediaElements, formElements, advancedElements } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -189,9 +190,10 @@ export default class EditorSelector extends React.Component {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (
-                  <div key={category.name}>
-                    {category.name}
-                    { this.renderSubMenuItems(this.state[category.content])}
+                  <div style={{textAlign: 'center', padding: '5px 0'}}key={category.name}>
+                    <hr style={{margin: '5px'}}/>
+                    <p onClick={() => this.onClickExpandMenu(category.name)} style={{color: 'rgb(96, 96, 96)', margin: '0', fontSize: '15px'}}>{category.name}</p>
+                    { menuState === category.name && this.renderSubMenuItems(this.state[category.content])}
                   </div>
                 )
               }
@@ -246,13 +248,18 @@ export default class EditorSelector extends React.Component {
     return contents;
   }
 
+  onClickExpandMenu(category) {
+    const { menuState } = this.state;
+    this.setState({menuState: menuState !== category && category});
+  }
+
   setHover(primaryHoverMenu, isOver, secondaryMenuHover) {
     const update = {};
     if (primaryHoverMenu !== this.state.primaryHoverMenu) {
-      update.primaryHoverMenu = (isOver) ? primaryHoverMenu : null;
+      update.primaryHoverMenu = isOver && primaryHoverMenu;
     }
     if (secondaryMenuHover !== this.state.secondaryMenuHover) {
-      update.secondaryMenuHover = (isOver) ? secondaryMenuHover : null;
+      update.secondaryMenuHover = isOver && secondaryMenuHover;
     }
     if (Object.keys(update).length) {
       this.setState(update);
