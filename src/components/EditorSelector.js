@@ -192,7 +192,11 @@ export default class EditorSelector extends React.Component {
                 return (
                   <div style={{textAlign: 'center', padding: '5px 0'}}key={category.name}>
                     <hr style={{margin: '5px'}}/>
-                    <p onClick={() => this.onClickExpandMenu(category.name)} style={{color: 'rgb(96, 96, 96)', margin: '0', fontSize: '15px'}}>{category.name}</p>
+                    <p 
+                      onMouseOver={() => this.onHoverExpandMenu(category.name)}
+                      onMouseOut={() => this.onHoverExpandMenu('')}
+                      style={{color: 'rgb(96, 96, 96)', margin: '0', fontSize: '15px'}}
+                      >{category.name}</p>
                     { menuState === category.name && this.renderSubMenuItems(this.state[category.content])}
                   </div>
                 )
@@ -248,7 +252,7 @@ export default class EditorSelector extends React.Component {
     return contents;
   }
 
-  onClickExpandMenu(category) {
+  onHoverExpandMenu(category) {
     const { menuState } = this.state;
     this.setState({menuState: menuState !== category && category});
   }
