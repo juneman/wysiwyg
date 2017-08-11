@@ -202,10 +202,12 @@ export default class EditorSelector extends React.Component {
                         </div> }
                     <p style={{margin: '0px', color: (menuState === category.name ? '#fff' : '#606060')}}>{category.name}
                     </p>
-                    <RightButton
-                      hideBackground={true}
-                      color={menuState === category.name ? '#fff' : '#C0C0C0'}
-                      textColor={menuState === category.name ? '#fff' : '#606060'}/>
+                    <div style={{position: 'absolute', right: 0}}>
+                      <RightButton
+                        hideBackground={true}
+                        color={menuState === category.name ? '#fff' : '#C0C0C0'}
+                        textColor={menuState === category.name ? '#fff' : '#606060'}/>
+                    </div>
                     <div style={secondaryMenuStyle}>
                       { menuState === category.name &&
                         <Menu style={{overflow: 'hidden'}}>
