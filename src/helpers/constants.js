@@ -1,3 +1,7 @@
+import FormButton from '../icons/FormButton';
+import MediaButton from '../icons/MediaButton';
+import EllipsisButton from '../icons/EllipsisButton';
+
 export const DRAGABLE_ITEMS = {
   ROW: 'row',
   ZONE: 'zone'
@@ -17,16 +21,19 @@ export const categories = [
   {
     name: 'Media',
     content: 'mediaElements',
+    icon: MediaButton,
     willExpand: true
   },
   {
     name: 'Forms',
     content: 'formElements',
+    icon: FormButton,
     willExpand: true
   },
   {
     name: 'Advanced',
     content: 'advancedElements',
+    icon: EllipsisButton,
     willExpand: true
   },
 ]
