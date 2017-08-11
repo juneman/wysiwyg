@@ -4,6 +4,7 @@ import { List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 
 import Menu from './Menu';
+import AddButton from '../icons/AddButton';
 import TextButton from '../icons/TextButton';
 import ImageButton from '../icons/ImageButton';
 import VideoButton from '../icons/VideoButton';
@@ -141,7 +142,6 @@ export default class EditorSelector extends React.Component {
     editorUpdate.advancedElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
         return (advancedEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
     })
-    console.log('LOG editor selector did mount, elements to load?', editorUpdate)
 
     this.setState(editorUpdate)
   }
@@ -189,13 +189,15 @@ export default class EditorSelector extends React.Component {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (
-                  <div style={{textAlign: 'center', padding: '5px 0', backgroundColor: (menuState === category.name && '#3498db')}}
+                  <div style={{backgroundColor: (menuState === category.name && '#3498db')}}
                     key={category.name}
                     onMouseEnter={() => this.onHoverExpandMenu(category.name)}
                     onMouseLeave={() => this.onHoverExpandMenu()}>
-                    <p 
-                      style={{color: (menuState === category.name && '#fff' : 'rgb(96, 96, 96)'), margin: '0', fontSize: '15px'}}
-                      >{category.name}</p>
+                    <AddButton 
+                      hideBackground={true}
+                      text={category.name}
+                      color={menuState === category.name ? '#fff' : '#C0C0C0'}
+                      textColor={menuState === category.name ? '#fff' : '#606060'}/>
                     <div style={secondaryMenuStyle}>
                       { menuState === category.name &&
                         <Menu style={{overflow: 'hidden'}}>
