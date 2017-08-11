@@ -176,10 +176,10 @@ export default class EditorSelector extends React.Component {
 
     const secondaryMenuStyle = {
       zIndex: 101,
-      width: 180,
+      width: 160,
       position: 'absolute',
-      top: 0,
-      left: 130
+      bottom: '5%',
+      left: 150
     };
 
     return (
@@ -190,35 +190,34 @@ export default class EditorSelector extends React.Component {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (
-                  <div style={{textAlign: 'center', padding: '5px 0'}}key={category.name}>
+                  <div style={{textAlign: 'center', padding: '5px 0'}}
+                    key={category.name}
+                    onMouseEnter={() => this.onHoverExpandMenu(category.name)}>
                     <hr style={{margin: '5px'}}/>
                     <p 
-                      onMouseOver={() => this.onHoverExpandMenu(category.name)}
-                      onMouseOut={() => this.onHoverExpandMenu('')}
                       style={{color: 'rgb(96, 96, 96)', margin: '0', fontSize: '15px'}}
                       >{category.name}</p>
-                    { menuState === category.name && this.renderSubMenuItems(this.state[category.content])}
+                    <div style={secondaryMenuStyle}>
+                      { menuState === category.name &&
+                        <Menu style={{overflow: 'hidden'}}>
+                          { this.renderSubMenuItems(this.state[category.content]) }
+                        </Menu>
+                      }
+                    </div>
                   </div>
+                  
                 )
               }
             })
           }
         </Menu>
-
-        <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
-          { showForm &&
-            <Menu style={{overflow: 'hidden'}}>
-              Form editor here
-            </Menu>
-          }
-        </div>
       </div>
     );
   }
 
   renderSubMenuItems(categoryContent) {
     const { primaryHoverMenu } = this.state;
-    
+
     const contents = categoryContent.map((editor) => {
       const isHover = editor.type === primaryHoverMenu;
       const style = {backgroundColor: isHover && '#3498db'};
@@ -233,8 +232,6 @@ export default class EditorSelector extends React.Component {
           <div
             className="menuItem"
             style={style}
-            ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
-            onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
             onMouseOver={() => this.setHover(editor.type, true)}
             onMouseOut={() => this.setHover(editor.type, false)}>
             <editor.Button
@@ -254,6 +251,7 @@ export default class EditorSelector extends React.Component {
 
   onHoverExpandMenu(category) {
     const { menuState } = this.state;
+
     this.setState({menuState: menuState !== category && category});
   }
 
