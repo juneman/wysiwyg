@@ -4,7 +4,7 @@ import { List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 
 import Menu from './Menu';
-import AddButton from '../icons/AddButton';
+import RightButton from '../icons/RightButton';
 import TextButton from '../icons/TextButton';
 import ImageButton from '../icons/ImageButton';
 import VideoButton from '../icons/VideoButton';
@@ -177,7 +177,7 @@ export default class EditorSelector extends React.Component {
       zIndex: 101,
       width: 160,
       position: 'absolute',
-      bottom: '5%',
+      bottom: '0',
       left: 150
     };
 
@@ -185,17 +185,25 @@ export default class EditorSelector extends React.Component {
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
           { categories.map((category) => {
-              if ([category.content].length && !category.willExpand) {
+              if (this.state[category.content].length && !category.willExpand || this.state[category.content].length === 1) {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (
-                  <div style={{backgroundColor: (menuState === category.name && '#3498db')}}
+                  this.state[category.content].length ? (<div style={{display: 'flex', alignItems: 'center', backgroundColor: (menuState === category.name && '#3498db'), zIndex: 102}}
                     key={category.name}
                     onMouseEnter={() => this.onHoverExpandMenu(category.name)}
                     onMouseLeave={() => this.onHoverExpandMenu()}>
-                    <AddButton 
+                    { category.icon &&
+                      <div style={{display: 'inline-flex', width: 36 }}>
+                        <category.icon
+                          hideBackground={true}
+                          color={menuState === category.name ? '#fff' : '#C0C0C0'}
+                          textColor={menuState === category.name ? '#fff' : '#606060'}/>
+                        </div> }
+                    <p style={{margin: '0px', color: (menuState === category.name ? '#fff' : '#606060')}}>{category.name}
+                    </p>
+                    <RightButton
                       hideBackground={true}
-                      text={category.name}
                       color={menuState === category.name ? '#fff' : '#C0C0C0'}
                       textColor={menuState === category.name ? '#fff' : '#606060'}/>
                     <div style={secondaryMenuStyle}>
@@ -205,7 +213,7 @@ export default class EditorSelector extends React.Component {
                         </Menu>
                       }
                     </div>
-                  </div>
+                  </div> ) : null
                 )
               }
             })
@@ -252,7 +260,9 @@ export default class EditorSelector extends React.Component {
 
   onHoverExpandMenu(category) {
     const { menuState } = this.state;
-    this.setState({menuState: menuState !== category && category});
+    if (menuState !== category) {
+      this.setState({menuState: category});
+    };
   }
 
   setHover(primaryHoverMenu, isOver) {
