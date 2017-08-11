@@ -235,7 +235,8 @@ export class Zone extends React.Component {
         style={containerStyle}
         onMouseOver={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
-        onDoubleClick={() => { if(!isEditingAny){ this.startEditing() }}}
+        onClick={() => { if(!isEditingAny){ this.startEditing(); }}}
+        onDoubleClick={() => { if(!isEditingAny){ this.startEditing(); }}}
         ref={(el) => this.wrapper = el}
       >
         <div className="zone" style={zoneStyle}>
@@ -325,7 +326,7 @@ export class Zone extends React.Component {
     const isComponentNew = !persistedState || !persistedState.size;
 
     if (isComponentNew) {
-      dispatch(rowActions.removeRow(row.get('id')));      
+      dispatch(rowActions.removeRow(row.get('id')));
     } else {
       this.cancelEditing();
     }
