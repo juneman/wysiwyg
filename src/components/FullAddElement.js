@@ -18,7 +18,7 @@ export default class FullAddElement extends React.Component {
 
     this.state = {
       showEditorSelector: false,
-      hoveringAddButton: false
+      isHoveringOverAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -30,10 +30,10 @@ export default class FullAddElement extends React.Component {
 
   render() {
     const { baseHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
-    const { showEditorSelector, hoveringAddButton } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton } = this.state;
 
     const fullScreenStyles = {
-      backgroundColor: `rgba(9,248,113, ${(hoveringAddButton) ? '0.15' : '0.05'})`,
+      backgroundColor: `rgba(9,248,113, ${(isHoveringOverAddButton) ? '0.15' : '0.05'})`,
       transition: 'background-color 0.15s ease-out',
       color: '#0bdc66',
       textAlign: 'center',
@@ -68,8 +68,8 @@ export default class FullAddElement extends React.Component {
               <div
                 style={{ cursor: 'pointer', height: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
                 onClick={ this.handleAddNew }
-                onMouseEnter={ () => this.setState({ hoveringAddButton: true }) }
-                onMouseLeave={ () => this.setState({ hoveringAddButton: false }) }>
+                onMouseEnter={ () => this.setState({ isHoveringOverAddButton: true }) }
+                onMouseLeave={ () => this.setState({ isHoveringOverAddButton: false }) }>
                 <div style={fullScreenStyles}>
                   <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <span ref={(addButton) => this.addButton = addButton}>
