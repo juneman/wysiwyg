@@ -2,6 +2,7 @@ const path = require('path');
 const host = 'localhost';
 const port = 8080;
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const PROJ_ROOT = __dirname,
       SCRIPTS_DIR = path.join(PROJ_ROOT, 'src'),
@@ -23,7 +24,10 @@ const baseConfig = {
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: `${ PROJ_ROOT }/package.json` }
+    ])
   ],
   resolve: {
     modules: [
