@@ -2,7 +2,7 @@ import React from 'react';
 
 import IconButton from './IconButton';
 
-export default class AdvancedStyling extends React.PureComponent {
+export default class RightButton extends React.PureComponent {
   render() {
     return (
       <IconButton
