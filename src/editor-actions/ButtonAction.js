@@ -92,6 +92,7 @@ export default class ButtonAction extends React.Component {
               className="form-control"
               label="On click"
               unsearchable
+              maxHeight={180}
               selectedValue={ buttonActionType }
               hasRoomToRenderBelow={ hasRoomToRenderBelow }
               options={ BUTTON_ACTION_TYPES_LIST }
