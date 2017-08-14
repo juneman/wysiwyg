@@ -86,6 +86,7 @@ export default class ButtonEditor extends React.Component {
         { (isEditing) ? 
             <a className="appcues-button appcues-button-success"
               style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}
+              suppressContentEditableWarning
               contentEditable
               onInput={ (e) => this.onChangeButtonText(e.target.textContent) }
               >{buttonText}

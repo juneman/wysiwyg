@@ -141,6 +141,7 @@ export default class RatingEditor extends React.Component {
                     <div className="rating-labels row">
                       <div className="col-md-6 left">
                         <small
+                          suppressContentEditableWarning
                           contentEditable
                           onInput={ (e) => this.onChangeLabel('leftRatingLabel', e.target.textContent) }
                           className="text-muted">
@@ -149,6 +150,7 @@ export default class RatingEditor extends React.Component {
                       </div>
                       <div className="col-md-6 right text-right">
                         <small
+                          suppressContentEditableWarning
                           contentEditable
                           onInput={ (e) => this.onChangeLabel('rightRatingLabel', e.target.textContent) }
                           className="text-muted">
