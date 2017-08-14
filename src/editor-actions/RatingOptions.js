@@ -78,7 +78,6 @@ export default class RatingOptions extends React.Component {
               className="form-control"
               label="Rating limit"
               unsearchable
-              maxHeight={150}
               selectedValue={ numOptions }
               hasRoomToRenderBelow={ hasRoomToRenderBelow }
               options={ allOptions }

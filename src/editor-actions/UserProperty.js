@@ -75,7 +75,6 @@ export default class UserProperty extends React.Component {
           <DropDownMenu
             className="form-control"
             defaultValue="Choose a fallback"
-            maxHeight={180}
             options={valueOptions}
             onSelect={(fallback) => this.handleSetValue(fallback)}/>
           </div>
