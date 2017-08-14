@@ -1,6 +1,6 @@
 import FormButton from '../icons/FormButton';
 import MediaButton from '../icons/MediaButton';
-import EllipsisButton from '../icons/EllipsisButton';
+import AdvancedCategoryButton from '../icons/AdvancedCategoryButton';
 
 export const DRAGABLE_ITEMS = {
   ROW: 'row',
@@ -30,7 +30,7 @@ export const categories = [
   {
     name: 'Advanced',
     content: 'advancedElements',
-    icon: EllipsisButton
+    icon: AdvancedCategoryButton
   },
 ];
 
