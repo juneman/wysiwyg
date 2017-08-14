@@ -22,7 +22,7 @@ export default class FullAddElement extends React.Component {
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
-    this.onClickCloseEditor = this.onClickCloseEditor.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
@@ -38,9 +38,9 @@ export default class FullAddElement extends React.Component {
     const isEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
 
     if (isEditorSelectorOpen) {
-      editor.addEventListener('click', this.onClickCloseEditor, true);
+      editor.addEventListener('click', this.onClick, true);
     } else if (isEditorSelectorClosed) {
-      editor.removeEventListener('click', this.onClickCloseEditor, true);
+      editor.removeEventListener('click', this.onClick, true);
     }
 
   }
@@ -116,7 +116,7 @@ export default class FullAddElement extends React.Component {
     );
   }
 
-  onClickCloseEditor(e) {
+  onClick(e) {
     e.preventDefault();
     const { showEditorSelector, isHoveringOverAddButton } = this.state;
     const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
