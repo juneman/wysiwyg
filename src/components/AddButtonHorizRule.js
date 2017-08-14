@@ -31,12 +31,12 @@ export default class AddButtonHorizRule extends React.Component {
 
     const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
 
-    const isEditorSelectorClosed = prevState.showEditorSelector && !showEditorSelector;
-    const isEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
+    const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
+    const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
 
-    if (isEditorSelectorOpen) {
+    if (didEditorSelectorOpen) {
       editor.addEventListener('click', this.onClick, true);
-    } else if (isEditorSelectorClosed) {
+    } else if (didEditorSelectorClose) {
       editor.removeEventListener('click', this.onClick, true);
     }
 
@@ -104,10 +104,8 @@ export default class AddButtonHorizRule extends React.Component {
   onClick(e) {
     e.preventDefault();
     const { showEditorSelector, isHoveringOverAddButton } = this.state;
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
-    
-    if (ReactDOM.findDOMNode(editor).contains(e.path[0]) && showEditorSelector && !isHoveringOverAddButton) {
 
+    if (showEditorSelector && !isHoveringOverAddButton) {
       this.setState({showEditorSelector: false});
     }
   }
