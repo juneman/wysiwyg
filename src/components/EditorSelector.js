@@ -185,7 +185,7 @@ export default class EditorSelector extends React.Component {
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
           { categories.map((category) => {
-              if (this.state[category.content].length && !category.willExpand || this.state[category.content].length === 1) {
+              if (this.state[category.content].length && this.state[category.content].length === 1) {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (

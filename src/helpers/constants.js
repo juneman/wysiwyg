@@ -15,32 +15,28 @@ export const GALLERY_TYPES = {
 export const categories = [
   {
     name: 'Text',
-    content: 'textElements',
-    willExpand: false
+    content: 'textElements'
   },
   {
     name: 'Media',
     content: 'mediaElements',
-    icon: MediaButton,
-    willExpand: true
+    icon: MediaButton
   },
   {
     name: 'Forms',
     content: 'formElements',
-    icon: FormButton,
-    willExpand: true
+    icon: FormButton
   },
   {
     name: 'Advanced',
     content: 'advancedElements',
-    icon: EllipsisButton,
-    willExpand: true
+    icon: EllipsisButton
   },
 ]
 
-export const textEditors = ['RichText']
-export const formEditors = ['TextInput', 'TextAreaInput', 'SelectionField', 'Rating'];
+export const textEditors = ['RichText'];
 export const mediaEditors = ['Image', 'Hero', 'Video'];
+export const formEditors = ['TextInput', 'TextAreaInput', 'SelectionField', 'Rating'];
 export const advancedEditors = ['Button', 'HTML'];
 
 export const BUTTON_ACTION_TYPES = {
