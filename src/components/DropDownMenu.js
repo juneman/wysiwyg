@@ -48,7 +48,7 @@ export default class DropDownMenu extends React.Component {
     }
 
     render() {
-        const { className, menuClassName, optionClassName, labelClassName, selectedClassName, title, label, style, options, renderOptionSubtextNode, disabled, actionable, hiddenCaret, create, success, left, imageHeight, defaultValue, unsearchable, searchPlaceholder, hasRoomToRenderBelow, maxHeight } = this.props;
+        const { className, menuClassName, optionClassName, labelClassName, selectedClassName, title, label, style, options, renderOptionSubtextNode, disabled, actionable, hiddenCaret, create, success, left, imageHeight, defaultValue, unsearchable, searchPlaceholder, hasRoomToRenderBelow } = this.props;
         const { selectedValue, isMenuOpen, searchTerm, isHoveringOverOptionByIndex } = this.state;
 
         const selectedOption = selectedValue !== undefined ? options.find((option) => option.value == selectedValue) : null;
@@ -65,7 +65,7 @@ export default class DropDownMenu extends React.Component {
 		        top: '100%',
 		        right: 0,
 		        backgroundColor: '#eee',
-		        maxHeight: maxHeight || 370,
+		        maxHeight:  300,
 		        overflowY: 'auto',
 		        borderRadius: 5,
 		        marginTop: -5,
