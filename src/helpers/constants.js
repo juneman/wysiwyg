@@ -32,7 +32,7 @@ export const categories = [
     content: 'advancedElements',
     icon: EllipsisButton
   },
-]
+];
 
 export const textEditors = ['RichText'];
 export const mediaEditors = ['Image', 'Hero', 'Video'];

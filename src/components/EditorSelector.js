@@ -116,7 +116,7 @@ export default class EditorSelector extends React.Component {
     this.state = {
       showForm: false,
       primaryHoverMenu: '',
-      menuState: '',
+      openSubMenu: '',
       textElements: [],
       mediaElements: [],
       formElements: [],
@@ -152,7 +152,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, menuState, textElements, mediaElements, formElements, advancedElements } = this.state;
+    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, openSubMenu, textElements, mediaElements, formElements, advancedElements } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -177,7 +177,7 @@ export default class EditorSelector extends React.Component {
       zIndex: 101,
       width: 160,
       position: 'absolute',
-      bottom: '0',
+      bottom: 0,
       left: 150
     };
 
@@ -189,7 +189,7 @@ export default class EditorSelector extends React.Component {
                 return this.renderSubMenuItems(this.state[category.content])
               } else {
                 return (
-                  this.state[category.content].length ? (<div style={{display: 'flex', alignItems: 'center', backgroundColor: (menuState === category.name && '#3498db'), zIndex: 102}}
+                  this.state[category.content].length ? (<div style={{display: 'flex', alignItems: 'center', backgroundColor: (openSubMenu === category.name && '#3498db'), zIndex: 102}}
                     key={category.name}
                     onMouseEnter={() => this.onHoverExpandMenu(category.name)}
                     onMouseLeave={() => this.onHoverExpandMenu()}>
@@ -197,19 +197,19 @@ export default class EditorSelector extends React.Component {
                       <div style={{display: 'inline-flex', width: 36 }}>
                         <category.icon
                           hideBackground={true}
-                          color={menuState === category.name ? '#fff' : '#C0C0C0'}
-                          textColor={menuState === category.name ? '#fff' : '#606060'}/>
+                          color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
+                          textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
                         </div> }
-                    <p style={{margin: '0px', color: (menuState === category.name ? '#fff' : '#606060')}}>{category.name}
+                    <p style={{margin: '0px', color: (openSubMenu === category.name ? '#fff' : '#606060')}}>{category.name}
                     </p>
                     <div style={{position: 'absolute', right: 0}}>
                       <RightButton
                         hideBackground={true}
-                        color={menuState === category.name ? '#fff' : '#C0C0C0'}
-                        textColor={menuState === category.name ? '#fff' : '#606060'}/>
+                        color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
+                        textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
                     </div>
                     <div style={secondaryMenuStyle}>
-                      { menuState === category.name &&
+                      { openSubMenu === category.name &&
                         <Menu style={{overflow: 'hidden'}}>
                           { this.renderSubMenuItems(this.state[category.content]) }
                         </Menu>
@@ -261,9 +261,9 @@ export default class EditorSelector extends React.Component {
   }
 
   onHoverExpandMenu(category) {
-    const { menuState } = this.state;
-    if (menuState !== category) {
-      this.setState({menuState: category});
+    const { openSubMenu } = this.state;
+    if (openSubMenu !== category) {
+      this.setState({openSubMenu: category});
     };
   }
 
