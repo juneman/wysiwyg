@@ -65,7 +65,7 @@ export default class DropDownMenu extends React.Component {
 		        top: '100%',
 		        right: 0,
 		        backgroundColor: '#eee',
-		        maxHeight: 370,
+		        maxHeight:  300,
 		        overflowY: 'auto',
 		        borderRadius: 5,
 		        marginTop: -5,

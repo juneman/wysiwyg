@@ -29,7 +29,7 @@ export default class UserProperty extends React.Component {
   }
 
   render() {
-    const { isActive, userProperties } = this.props;
+    const { isActive, userProperties, hasRoomToRenderBelow } = this.props;
     const { isMenuOpen, selectedProperty } = this.state;
 
     const buttonProps = getButtonProps(isActive);
@@ -40,11 +40,15 @@ export default class UserProperty extends React.Component {
       left: 0,
       padding: 10,
       width: 300,
-      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-bottom}`,
+      animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
       animationIterationCount: 1,
       animationFillMode: 'both'
+    };
+    if (!hasRoomToRenderBelow) {
+      dropdownStyles.bottom = dropdownStyles.top;
+      delete dropdownStyles.top;
     };
 
     const titleStyles = secondaryMenuTitleStyle;
@@ -52,12 +56,11 @@ export default class UserProperty extends React.Component {
     // Leave blank if nothing
     if (!userProperties || !userProperties.size) {
       return (<div></div>);
-    }
+    };
 
     const userPropertiesDropdown = [...(userProperties).map((userProperty) => {
       return userProperty.toJS();
     })].map((userProperty) => ({ label: userProperty.name, ...userProperty }));
-
 
     const valueOptions = !selectedProperty ? null : [ { label: "No fallback", value: null } , ...userPropertiesDropdown.find((userProperty) => userProperty.value == selectedProperty).options.map((option) => ({ label: option.name, value: option.name }))];
 
