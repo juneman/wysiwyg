@@ -117,7 +117,9 @@ export default class ButtonAction extends React.Component {
                 <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : ''} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { `This group contains ${ numPages || 'an unkonwn number of' } page${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : '' }` }
+                { 
+                  `This group contains ${ numPages === 1 && 'only' } ${ numPages || 'an unknown number of' } page${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : '' }`
+                }
               </p>
             </div>
           }
