@@ -19,61 +19,56 @@ import FormTextInputButton from '../icons/FormTextInputButton';
 import FormRatingButton from '../icons/FormRatingButton';
 import PrevNextButton from '../icons/PrevNextButton';
 
-import { categories, textEditors, formEditors, mediaEditors, advancedEditors } from '../helpers/constants';
+import { EDITOR_TYPES, categories } from '../helpers/constants';
 
 const MENU_HEIGHT_ALLOWANCE = 300;
 
-const editors = [
-  {
+const editors = {
+  [EDITOR_TYPES.TEXT]: {
     Button: TextButton,
     text: 'Text',
     type: 'RichText',
     category: 'Text'
   },
-  {
+  [EDITOR_TYPES.IMAGE]: {
     Button: ImageButton,
     text: 'Image',
     type: 'Image',
     category: 'Media'
   },
-  {
+  [EDITOR_TYPES.HERO]: {
     Button: HeroButton,
     text: 'Hero/Header',
     type: 'Hero',
     category: 'Media'
   },
-  {
+  [EDITOR_TYPES.VIDEO]: {
     Button: VideoButton,
     text: 'Video',
     type: 'Video',
     defaultAction: 'code',
     category: 'Media'
   },
-  {
+  [EDITOR_TYPES.HTML]: {
     Button: CodeButton,
     text: 'HTML',
     type: 'HTML',
     defaultAction: 'code',
     category: 'Advanced'
   },
-  {
-    Button: FormButton,
-    text: 'Form',
-    type: 'Form'
-  },
-  {
+  [EDITOR_TYPES.TEXTINPUT]: {
     Button: FormTextInputButton,
     text: 'Small Text Input',
     type: 'TextInput',
     category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.TEXTAREAINPUT]: {
     Button: FormTextInputButton,
     text: 'Big Text Area',
     type: 'TextAreaInput',
     category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.RADIO]: {
     Button: FormRadioButton,
     text: 'Radio Select',
     type: 'SelectionField',
@@ -90,19 +85,20 @@ const editors = [
       }
     ])
   },
-  {
+  [EDITOR_TYPES.RATING]: {
     Button: FormRatingButton,
     text: 'Rating',
     type: 'Rating',
     category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.BUTTON]: {
     Button: ButtonButton,
     text: 'Button',
     type: 'Button',
     category: 'Advanced'
   }
-];
+};
+
 
 /**
  * A React component that displays the dropdown menu
@@ -114,36 +110,14 @@ export default class EditorSelector extends React.Component {
     super(props);
 
     this.state = {
-      showForm: false,
       primaryHoverMenu: '',
       openSubMenu: '',
-      textElements: [],
-      mediaElements: [],
-      formElements: [],
-      advancedElements: [],
       hasRoomToRenderBelow: true
     };
   }
 
   componentDidMount() {
-    const { allowedEditorTypes } = this.props;
     this.setHasRoomToRenderBelow();
-
-    const editorUpdate = {};
-    editorUpdate.textElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
-        return (textEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
-    })
-    editorUpdate.mediaElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
-        return (mediaEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
-    })
-    editorUpdate.formElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
-        return (formEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
-    })
-    editorUpdate.advancedElements = !allowedEditorTypes.isEmpty() && editors.filter((editor) => {
-        return (advancedEditors.includes(editor.type) && allowedEditorTypes.includes(editor.type))
-    })
-
-    this.setState(editorUpdate)
   }
 
   componentDidUpdate() {
@@ -152,7 +126,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, openSubMenu, textElements, mediaElements, formElements, advancedElements } = this.state;
+    const { hasRoomToRenderBelow, primaryHoverMenu, openSubMenu, textElements, mediaElements, formElements, advancedElements } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -181,25 +155,39 @@ export default class EditorSelector extends React.Component {
       left: 150
     };
 
+    const editorMenu = categories.map((category) => {
+      return {
+        name: category.name,
+        icon: category.icon,
+        items: category.content.filter((editor) => { 
+          return allowedEditorTypes.includes(editor)
+        })
+      }
+    });
+
     return (
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
-          { categories.map((category) => {
-              if (this.state[category.content].length && this.state[category.content].length === 1) {
-                return this.renderSubMenuItems(this.state[category.content])
-              } else {
-                return (
-                  this.state[category.content].length ? (<div style={{display: 'flex', alignItems: 'center', backgroundColor: (openSubMenu === category.name && '#3498db'), zIndex: 102}}
+          { 
+            editorMenu.map((category) => {
+              if (category.items.length === 1) {
+                return this.renderSubMenuItems(category.items)
+              }
+              else {
+                return ( category.items.length ?
+                  <div style={{display: 'flex', alignItems: 'center', backgroundColor: (openSubMenu === category.name && '#3498db'), zIndex: 102}}
                     key={category.name}
                     onMouseEnter={() => this.onHoverExpandMenu(category.name)}
                     onMouseLeave={() => this.onHoverExpandMenu()}>
                     { category.icon &&
                       <div style={{display: 'inline-flex', width: 36 }}>
-                        <category.icon
+                        { category.icon && <category.icon
                           hideBackground={true}
                           color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
                           textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
-                        </div> }
+                        }
+                      </div>
+                    }
                     <p style={{margin: '0px', color: (openSubMenu === category.name ? '#fff' : '#606060')}}>{category.name}
                     </p>
                     <div style={{position: 'absolute', right: 0}}>
@@ -211,14 +199,14 @@ export default class EditorSelector extends React.Component {
                     <div style={secondaryMenuStyle}>
                       { openSubMenu === category.name &&
                         <Menu style={{overflow: 'hidden'}}>
-                          { this.renderSubMenuItems(this.state[category.content]) }
+                          { this.renderSubMenuItems(category.items) }
                         </Menu>
                       }
                     </div>
-                  </div> ) : null
+                  </div> : null
                 )
               }
-            })
+            }) 
           }
         </Menu>
       </div>
@@ -230,26 +218,27 @@ export default class EditorSelector extends React.Component {
     const { primaryHoverMenu } = this.state;
 
     const contents = categoryContent.map((editor) => {
-      const isHover = editor.type === primaryHoverMenu;
+      const isHover = editors[editor].type === primaryHoverMenu;
       const style = {backgroundColor: isHover && '#3498db'};
+      const editorElement = editors[editor];
       return (
         <a href="#"
-          key={editor.text}
+          key={editorElement.text}
           style={{textDecoration: 'none'}}
           onClick={(e) => {
             e.preventDefault();
-            onSelect(editor.type, editor.rows, editor.defaultAction);
+            onSelect(editorElement.type, editorElement.rows, editorElement.defaultAction);
           }}>
           <div
             className="menuItem"
             style={style}
-            onMouseOver={() => this.setHover(editor.type, true)}
+            onMouseOver={() => this.setHover(editorElement.type, true)}
             onMouseOut={() => this.setHover('', false)}>
-            <editor.Button
+            <editorElement.Button
               hideBackground={true}
               color={isHover ? '#fff' : '#C0C0C0'}
               textColor={isHover ? '#fff' : '#606060'}
-              text={editor.text}
+              text={editorElement.text}
               textStyle={{ fontSize: 15 }}
               cursor="pointer"/>
           </div>
