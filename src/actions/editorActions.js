@@ -1,13 +1,5 @@
 import Actions from '../helpers/actionConstants';
 
-export function screenResize(browserWidth, browserHeight) {
-  return {
-    type: Actions.EDITOR_BROWSER_RESIZE,
-    browserWidth,
-    browserHeight
-  };
-}
-
 export function startEditing(zone) {
   return {
     type: Actions.EDITOR_EDITING_START,

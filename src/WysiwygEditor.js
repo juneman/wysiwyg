@@ -74,11 +74,8 @@ export class WysiwygEditor extends React.Component {
 
     // The store is created in the contructor so it's scoped to this instance of the WysiwygEditor
     this.store = finalCreateStore(reducer);
-    this.store.dispatch(editorActions.screenResize(window.innerWidth, window.innerHeight));
-    window.addEventListener('resize', () => {
-      this.store.dispatch(editorActions.screenResize(window.innerWidth, window.innerHeight));
-    });
   }
+
   render() {
     return (
       <Provider store={this.store}>
@@ -86,10 +83,12 @@ export class WysiwygEditor extends React.Component {
       </Provider>
     );
   }
+
   closeAll() {
     this.store.dispatch(editorActions.setCloseAll());
   }
 }
+
 WysiwygEditor.propTypes = {
   height: PropTypes.string,
   width: PropTypes.number,
