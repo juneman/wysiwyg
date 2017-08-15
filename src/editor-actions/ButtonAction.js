@@ -19,7 +19,7 @@ export default class ButtonAction extends React.Component {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       isMenuOpen: props.isActive || false,
-      buttonActionType: '',
+      buttonActionType: BUTTON_ACTION_TYPES.NEXT_PAGE,
       stepIndex: 0
     };
   }
@@ -117,7 +117,7 @@ export default class ButtonAction extends React.Component {
                 <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : ''} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { `This group contains ${ numPages || 'an unkonwn number of' } page${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific page.' : '' }` }
+                { `This group contains ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific step.' : '' }` }
               </p>
             </div>
           }
