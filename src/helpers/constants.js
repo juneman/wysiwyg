@@ -28,21 +28,21 @@ export const EDITOR_TYPES = {
 export const categories = [
   {
     name: 'Text',
-    content: ['RichText']
+    content: [EDITOR_TYPES.TEXT]
   },
   {
     name: 'Media',
-    content: ['Image', 'Hero', 'Video'],
+    content: [EDITOR_TYPES.IMAGE, EDITOR_TYPES.HERO, EDITOR_TYPES.VIDEO],
     icon: MediaButton
   },
   {
     name: 'Forms',
-    content: ['TextInput', 'TextAreaInput', 'SelectionField', 'Rating'],
+    content: [EDITOR_TYPES.TEXTINPUT, EDITOR_TYPES.TEXTAREAINPUT, EDITOR_TYPES.RADIO, EDITOR_TYPES.RATING],
     icon: FormButton
   },
   {
     name: 'Advanced',
-    content: ['Button', 'HTML'],
+    content: [EDITOR_TYPES.BUTTON, EDITOR_TYPES.HTML],
     icon: AdvancedCategoryButton
   },
 ];
