@@ -2,7 +2,6 @@ import Actions from '../helpers/actionConstants';
 import { fromJS, Map } from 'immutable';
 
 const initialState = fromJS({
-  screenSize: {},
   canvasPosition: {},
   basePadding: 0,
   activeZoneId: null,
@@ -34,12 +33,6 @@ export default function editorSelector(state = initialState, action) {
   }
 
   switch(action.type) {
-    case Actions.EDITOR_BROWSER_RESIZE:
-      newState = newState.set('screenSize', Map({
-        width: action.browserWidth,
-        height: action.browserHeight
-      }));
-      break;
     case Actions.EDITOR_EDITING_START:
       newState = newState
         .set('isCanvasInEditMode', true)
