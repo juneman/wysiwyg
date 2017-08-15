@@ -93,7 +93,6 @@ export default class ButtonAction extends React.Component {
               label="On click"
               unsearchable
               selectedValue={ buttonActionType }
-              hasRoomToRenderBelow={ hasRoomToRenderBelow }
               options={ BUTTON_ACTION_TYPES_LIST }
               onSelect={ (value) => this.handleAction(value) }/>
           </div>

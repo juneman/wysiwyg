@@ -79,7 +79,6 @@ export default class RatingOptions extends React.Component {
               label="Rating limit"
               unsearchable
               selectedValue={ numOptions }
-              hasRoomToRenderBelow={ hasRoomToRenderBelow }
               options={ allOptions }
               onSelect={ (value) => this.handleRatingLimit(value) }/>
           </div>
