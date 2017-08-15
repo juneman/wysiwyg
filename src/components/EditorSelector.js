@@ -126,7 +126,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, primaryHoverMenu, openSubMenu, textElements, mediaElements, formElements, advancedElements } = this.state;
+    const { hasRoomToRenderBelow, primaryHoverMenu, openSubMenu } = this.state;
 
     const menuStyle = {
       zIndex: 100,
