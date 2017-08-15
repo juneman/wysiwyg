@@ -1,3 +1,7 @@
+import FormButton from '../icons/FormButton';
+import MediaButton from '../icons/MediaButton';
+import AdvancedCategoryButton from '../icons/AdvancedCategoryButton';
+
 export const DRAGABLE_ITEMS = {
   ROW: 'row',
   ZONE: 'zone'
@@ -7,6 +11,41 @@ export const GALLERY_TYPES = {
   HERO: 'gallery',
   EMOJI: 'emoji'
 };
+
+export const EDITOR_TYPES = {
+  TEXT: 'RichText',
+  IMAGE: 'Image',
+  HERO: 'Hero',
+  VIDEO: 'Video',
+  HTML: 'HTML',
+  TEXTINPUT: 'TextInput',
+  TEXTAREAINPUT: 'TextAreaInput',
+  RADIO: 'SelectionField',
+  RATING: 'Rating',
+  BUTTON: 'Button'
+}
+
+export const categories = [
+  {
+    name: 'Text',
+    content: [EDITOR_TYPES.TEXT]
+  },
+  {
+    name: 'Media',
+    content: [EDITOR_TYPES.IMAGE, EDITOR_TYPES.HERO, EDITOR_TYPES.VIDEO],
+    icon: MediaButton
+  },
+  {
+    name: 'Forms',
+    content: [EDITOR_TYPES.TEXTINPUT, EDITOR_TYPES.TEXTAREAINPUT, EDITOR_TYPES.RADIO, EDITOR_TYPES.RATING],
+    icon: FormButton
+  },
+  {
+    name: 'Advanced',
+    content: [EDITOR_TYPES.BUTTON, EDITOR_TYPES.HTML],
+    icon: AdvancedCategoryButton
+  },
+];
 
 export const BUTTON_ACTION_TYPES = {
   URL: 'url',

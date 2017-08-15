@@ -4,6 +4,7 @@ import { List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 
 import Menu from './Menu';
+import RightButton from '../icons/RightButton';
 import TextButton from '../icons/TextButton';
 import ImageButton from '../icons/ImageButton';
 import VideoButton from '../icons/VideoButton';
@@ -18,55 +19,60 @@ import FormTextInputButton from '../icons/FormTextInputButton';
 import FormRatingButton from '../icons/FormRatingButton';
 import PrevNextButton from '../icons/PrevNextButton';
 
+import { EDITOR_TYPES, categories } from '../helpers/constants';
+
 const MENU_HEIGHT_ALLOWANCE = 300;
 
-const editors = [
-  {
+const editors = {
+  [EDITOR_TYPES.TEXT]: {
     Button: TextButton,
     text: 'Text',
-    type: 'RichText'
+    type: 'RichText',
+    category: 'Text'
   },
-  {
+  [EDITOR_TYPES.IMAGE]: {
     Button: ImageButton,
     text: 'Image',
-    type: 'Image'
+    type: 'Image',
+    category: 'Media'
   },
-  {
+  [EDITOR_TYPES.HERO]: {
+    Button: HeroButton,
+    text: 'Hero/Header',
+    type: 'Hero',
+    category: 'Media'
+  },
+  [EDITOR_TYPES.VIDEO]: {
     Button: VideoButton,
     text: 'Video',
     type: 'Video',
-    defaultAction: 'code'
+    defaultAction: 'code',
+    category: 'Media'
   },
-  {
-    Button: HeroButton,
-    text: 'Hero/Header',
-    type: 'Hero'
-  },
-  {
+  [EDITOR_TYPES.HTML]: {
     Button: CodeButton,
     text: 'HTML',
     type: 'HTML',
-    defaultAction: 'code'
+    defaultAction: 'code',
+    category: 'Advanced'
   },
-  {
-    Button: FormButton,
-    text: 'Form',
-    type: 'Form'
-  },
-  {
+  [EDITOR_TYPES.TEXTINPUT]: {
     Button: FormTextInputButton,
     text: 'Small Text Input',
-    type: 'TextInput'
+    type: 'TextInput',
+    category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.TEXTAREAINPUT]: {
     Button: FormTextInputButton,
     text: 'Big Text Area',
-    type: 'TextAreaInput'
+    type: 'TextAreaInput',
+    category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.RADIO]: {
     Button: FormRadioButton,
     text: 'Radio Select',
     type: 'SelectionField',
+    category: 'Forms',
     rows: fromJS([
       {
         id: uuid(),
@@ -79,19 +85,20 @@ const editors = [
       }
     ])
   },
-  {
+  [EDITOR_TYPES.RATING]: {
     Button: FormRatingButton,
     text: 'Rating',
-    type: 'Rating'
+    type: 'Rating',
+    category: 'Forms'
   },
-  {
+  [EDITOR_TYPES.BUTTON]: {
     Button: ButtonButton,
     text: 'Button',
-    type: 'Button'
+    type: 'Button',
+    category: 'Advanced'
   }
-];
+};
 
-const formEditors = [];
 
 /**
  * A React component that displays the dropdown menu
@@ -103,9 +110,8 @@ export default class EditorSelector extends React.Component {
     super(props);
 
     this.state = {
-      showForm: false,
       primaryHoverMenu: '',
-      secondaryMenuHover: '',
+      openSubMenu: '',
       hasRoomToRenderBelow: true
     };
   }
@@ -120,7 +126,7 @@ export default class EditorSelector extends React.Component {
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, showForm, primaryHoverMenu, secondaryMenuHover } = this.state;
+    const { hasRoomToRenderBelow, primaryHoverMenu, openSubMenu } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -143,99 +149,119 @@ export default class EditorSelector extends React.Component {
 
     const secondaryMenuStyle = {
       zIndex: 101,
-      width: 180,
+      width: 160,
       position: 'absolute',
-      top: 0,
-      left: 130
+      bottom: 0,
+      left: 150
     };
 
-    const trimmedEditors = (allowedEditorTypes.isEmpty()) ? editors : editors.filter((editor) => {
-      return (allowedEditorTypes.includes(editor.type));
-    });
-    const trimmedFormEditors = (allowedEditorTypes.isEmpty()) ? formEditors : formEditors.filter((editor) => {
-      return (allowedEditorTypes.includes(editor.text));
+    const editorMenu = categories.map((category) => {
+      return {
+        name: category.name,
+        icon: category.icon,
+        items: category.content.filter((editor) => { 
+          return allowedEditorTypes.includes(editor)
+        })
+      }
     });
 
     return (
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
-          { trimmedEditors.map((editor) => {
-            const isHover = (editor.text === primaryHoverMenu) ? true : false;
-            const style = {
-              backgroundColor: isHover ? '#3498db' : null
-            };
-            return (
-              <a href="#"
-                key={editor.text}
-                style={{textDecoration: 'none'}}
-                onClick={(editor.type === 'Form') ? (e) => e.preventDefault() : (e) => {
-                  e.preventDefault();
-                  onSelect(editor.type, editor.rows, editor.defaultAction);
-                }}
-              >
-                <div
-                  className="menuItem"
-                  style={style}
-                  ref={(wrapper) => this[`wrapper${editor.type}`] = wrapper}
-                  onMouseEnter={(editor.type === 'Form') ? () => this.setState({showForm: true}) : () => this.setState({showForm: false})}
-                  onMouseOver={() => this.setHover(editor.text, true)}
-                  onMouseOut={() => this.setHover(editor.text, false)}
-                >
-                  <editor.Button
-                    hideBackground={true}
-                    color={isHover ? '#fff' : '#C0C0C0'}
-                    textColor={isHover ? '#fff' : '#606060'}
-                    text={editor.text}
-                    textStyle={{ fontSize: 15 }}
-                    cursor="pointer"
-                  />
-                </div>
-
-              </a>
-            );
-          })}
+          { 
+            editorMenu.map((category) => {
+              if (category.items.length === 1) {
+                return this.renderSubMenuItems(category.items)
+              }
+              else {
+                return ( category.items.length ?
+                  <div style={{display: 'flex', alignItems: 'center', backgroundColor: (openSubMenu === category.name && '#3498db'), zIndex: 102}}
+                    key={category.name}
+                    onMouseEnter={() => this.onHoverExpandMenu(category.name)}
+                    onMouseLeave={() => this.onHoverExpandMenu()}>
+                    { category.icon &&
+                      <div style={{display: 'inline-flex', width: 36 }}>
+                        { category.icon && <category.icon
+                          hideBackground={true}
+                          color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
+                          textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
+                        }
+                      </div>
+                    }
+                    <p style={{margin: '0px', color: (openSubMenu === category.name ? '#fff' : '#606060')}}>{category.name}
+                    </p>
+                    <div style={{position: 'absolute', right: 0}}>
+                      <RightButton
+                        hideBackground={true}
+                        color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
+                        textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
+                    </div>
+                    <div style={secondaryMenuStyle}>
+                      { openSubMenu === category.name &&
+                        <Menu style={{overflow: 'hidden'}}>
+                          { this.renderSubMenuItems(category.items) }
+                        </Menu>
+                      }
+                    </div>
+                  </div> : null
+                )
+              }
+            }) 
+          }
         </Menu>
-        <div ref={(el) => this.secondaryMenu = el} style={secondaryMenuStyle}>
-          { (showForm) ? (
-            <Menu style={{overflow: 'hidden'}}>
-              { trimmedFormEditors.map((editor) => {
-                const isHover = (editor.text === secondaryMenuHover) ? true : false;
-                const style = {
-                  backgroundColor: isHover ? '#3498db' : null
-                };
-                return (
-                  <div
-                    className="secondaryMenuItem"
-                    style={style}
-                    key={editor.text}
-                    onMouseOver={() => this.setHover('Form', true, editor.text)}
-                    onMouseOut={() => this.setHover('Form', false, editor.text)}
-                  >
-                    <editor.Button
-                      hideBackground={true}
-                      color={isHover ? '#fff' : '#C0C0C0'}
-                      textColor={isHover ? '#fff' : '#606060'}
-                      text={editor.text}
-                      onClick={() => onSelect(editor.type, editor.rows, editor.defaultAction)}
-                    />
-                  </div>
-                );
-              })}
-            </Menu>
-          ) : null}
-        </div>
       </div>
     );
   }
 
-  setHover(primaryHoverMenu, isOver, secondaryMenuHover) {
+  renderSubMenuItems(categoryContent) {
+    const { onSelect } = this.props;
+    const { primaryHoverMenu } = this.state;
+
+    const contents = categoryContent.map((editor) => {
+      const isHover = editors[editor].type === primaryHoverMenu;
+      const style = {backgroundColor: isHover && '#3498db'};
+      const editorElement = editors[editor];
+      return (
+        <a href="#"
+          key={editorElement.text}
+          style={{textDecoration: 'none'}}
+          onClick={(e) => {
+            e.preventDefault();
+            onSelect(editorElement.type, editorElement.rows, editorElement.defaultAction);
+          }}>
+          <div
+            className="menuItem"
+            style={style}
+            onMouseOver={() => this.setHover(editorElement.type, true)}
+            onMouseOut={() => this.setHover('', false)}>
+            <editorElement.Button
+              hideBackground={true}
+              color={isHover ? '#fff' : '#C0C0C0'}
+              textColor={isHover ? '#fff' : '#606060'}
+              text={editorElement.text}
+              textStyle={{ fontSize: 15 }}
+              cursor="pointer"/>
+          </div>
+        </a>
+      );
+    })
+
+    return contents;
+  }
+
+  onHoverExpandMenu(category) {
+    const { openSubMenu } = this.state;
+    if (openSubMenu !== category) {
+      this.setState({openSubMenu: category});
+    };
+  }
+
+  setHover(primaryHoverMenu, isOver) {
     const update = {};
     if (primaryHoverMenu !== this.state.primaryHoverMenu) {
-      update.primaryHoverMenu = (isOver) ? primaryHoverMenu : null;
+      update.primaryHoverMenu = isOver && primaryHoverMenu;
     }
-    if (secondaryMenuHover !== this.state.secondaryMenuHover) {
-      update.secondaryMenuHover = (isOver) ? secondaryMenuHover : null;
-    }
+
     if (Object.keys(update).length) {
       this.setState(update);
     }
