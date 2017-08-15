@@ -64,7 +64,7 @@ const editors = {
   },
   [EDITOR_TYPES.TEXTAREAINPUT]: {
     Button: FormTextInputButton,
-    text: 'Big Text Area',
+    text: 'Big Text Input',
     type: 'TextAreaInput',
     category: 'Forms'
   },
