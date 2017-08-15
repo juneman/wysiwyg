@@ -26,23 +26,19 @@ export const BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS = [
 
 export const BUTTON_ACTION_TYPES_LIST = [
   {
-    label: 'Do nothing',
-    value: ''
-  },
-  {
     label: 'Go to URL',
     value: BUTTON_ACTION_TYPES.URL
   },
   {
-    label: 'Go to Next Page',
+    label: 'Go to Next Step',
     value: BUTTON_ACTION_TYPES.NEXT_PAGE
   },
   {
-    label: 'Go to Previous Page',
+    label: 'Go to Previous Step',
     value: BUTTON_ACTION_TYPES.PREVIOUS_PAGE
   },
   {
-    label: 'Go to Custom Page',
+    label: 'Go to Custom Step',
     value: BUTTON_ACTION_TYPES.CUSTOM_PAGE
   },
   {
@@ -50,7 +46,7 @@ export const BUTTON_ACTION_TYPES_LIST = [
     value: BUTTON_ACTION_TYPES.END_FLOW
   },
   {
-    label: 'Skip to Next Step Group',
+    label: 'Skip to Next Group',
     value: BUTTON_ACTION_TYPES.NEXT_GROUP
   }
 ];
