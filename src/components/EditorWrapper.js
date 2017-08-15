@@ -7,6 +7,7 @@ import OkButton from '../icons/OkButton';
 import EditButton from '../icons/EditButton';
 import CancelButton from '../icons/CancelButton';
 import DeleteButton from '../icons/DeleteButton';
+const MENU_WIDTH_ALLOWANCE = 300;
 
 /**
  * A React component that wraps a Zone component when
@@ -18,13 +19,24 @@ export default class EditorWrapper extends React.Component {
     super(props);
 
     this.state = {
-      position: Map(),
-      toolbarPosition: Map()
+      hasRoomToRenderRight: true
     };
   }
 
+
   componentDidMount() {
-    this.setBoundingBox();
+    this.setHasRoomToRenderRight();
+  }
+
+  componentDidUpdate() {
+    this.setHasRoomToRenderRight();
+  }
+
+  setHasRoomToRenderRight() {
+    const hasRoomToRenderRight = ((window.innerWidth - this.wrapper.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    if (hasRoomToRenderRight != this.state.hasRoomToRenderRight){
+      this.setState({ hasRoomToRenderRight });
+    } 
   }
 
   render() {
@@ -39,6 +51,8 @@ export default class EditorWrapper extends React.Component {
       onEdit,
       disableDeleteButton
     } = this.props;
+
+    const { hasRoomToRenderRight } = this.state;
 
     const hoverButtonStyles = {
       position: 'absolute',
@@ -64,6 +78,18 @@ export default class EditorWrapper extends React.Component {
       zIndex: 100
     };
 
+    const editorWrapperStyles = {
+      position: 'absolute',
+      bottom: -50,
+      left: -20,
+      marginTop: 10,
+      display: 'flex'
+    };
+    if (!hasRoomToRenderRight) {
+      editorWrapperStyles.right = editorWrapperStyles.left;
+      delete editorWrapperStyles.left;
+    }
+
     const applyAnimationWithDelay = (delay, styles={}) => ({
       ...styles,
       animationName: 'editor-slide-in-bottom',
@@ -81,7 +107,7 @@ export default class EditorWrapper extends React.Component {
       buttons = (
         <div className="editing">
           { children }
-          <div name="EditorWrapperEditingActionsContainer" style={{ position: 'absolute', bottom: -50, left: -20, marginTop: 10, display: 'flex' }}>
+          <div name="EditorWrapperEditingActionsContainer" style={ editorWrapperStyles }>
             { toolbarNode &&
               <div name="EditorWrapperEditingToolbar" style={ applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
                 { toolbarNode }
@@ -131,25 +157,6 @@ export default class EditorWrapper extends React.Component {
         {(buttons) ? buttons : children}
       </div>
     );
-  }
-
-  setBoundingBox() {
-    const update = {};
-    if (this.wrapper) {
-      const position = convertBoundingBox(this.wrapper.getBoundingClientRect());
-      if (!position.equals(this.state.position)) {
-        update.position = position;
-      }
-    }
-    if (this.toolbar) {
-      const toolbarPosition = convertBoundingBox(this.toolbar.getBoundingClientRect());
-      if (!toolbarPosition.equals(this.state.toolbarPosition)) {
-        update.toolbarPosition = toolbarPosition;
-      }
-    }
-    if (Object.keys(update).length) {
-      this.setState(update);
-    }
   }
 }
 
