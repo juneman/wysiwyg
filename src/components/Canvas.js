@@ -150,7 +150,6 @@ export class Canvas extends React.Component {
 
     return (
       <div className="canvas"
-        suppressContentEditableWarning={true}
         style={ canvasStyles }
         ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }

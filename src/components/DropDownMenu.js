@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 import DropDownButton from './DropDownButton';
 
-const MAX_MENU_HEIGHT = 370;
+const MAX_MENU_HEIGHT = 300;
 
 export default class DropDownMenu extends React.Component {
 

@@ -19,10 +19,32 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
     this.setBoundingBox();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { showEditorSelector } = this.state;
+
+    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+
+    const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
+    const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
+
+    if (didEditorSelectorOpen) {
+      editor.addEventListener('click', this.onClick, true);
+    } else if (didEditorSelectorClose) {
+      editor.removeEventListener('click', this.onClick, true);
+    }
+
+  }
+
+  componentWillUnmount() {
+    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    editor.removeEventListener('click', this.onClick);
   }
 
   render() {
@@ -79,8 +101,19 @@ export default class AddButtonHorizRule extends React.Component {
     );
   }
 
+  onClick(e) {
+    e.preventDefault();
+    const { showEditorSelector, isHoveringOverAddButton } = this.state;
+
+    if (showEditorSelector && !isHoveringOverAddButton) {
+      this.setState({showEditorSelector: false});
+    }
+  }
+
   handleAddNew() {
-    this.setState({ showEditorSelector: !this.state.showEditorSelector });
+    const { showEditorSelector } = this.state;
+
+    this.setState({ showEditorSelector: !showEditorSelector });
   }
 
   setBoundingBox() {
