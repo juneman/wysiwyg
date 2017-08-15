@@ -117,7 +117,7 @@ export default class ButtonAction extends React.Component {
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 { 
-                  `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific step.' : '' }`
+                  `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
                 }
               </p>
             </div>
