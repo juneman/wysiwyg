@@ -12,32 +12,40 @@ export const GALLERY_TYPES = {
   EMOJI: 'emoji'
 };
 
+export const EDITOR_TYPES = {
+  TEXT: 'RichText',
+  IMAGE: 'Image',
+  HERO: 'Hero',
+  VIDEO: 'Video',
+  HTML: 'HTML',
+  TEXTINPUT: 'TextInput',
+  TEXTAREAINPUT: 'TextAreaInput',
+  RADIO: 'SelectionField',
+  RATING: 'Rating',
+  BUTTON: 'Button'
+}
+
 export const categories = [
   {
     name: 'Text',
-    content: 'textElements'
+    content: ['RichText']
   },
   {
     name: 'Media',
-    content: 'mediaElements',
+    content: ['Image', 'Hero', 'Video'],
     icon: MediaButton
   },
   {
     name: 'Forms',
-    content: 'formElements',
+    content: ['TextInput', 'TextAreaInput', 'SelectionField', 'Rating'],
     icon: FormButton
   },
   {
     name: 'Advanced',
-    content: 'advancedElements',
+    content: ['Button', 'HTML'],
     icon: AdvancedCategoryButton
   },
 ];
-
-export const textEditors = ['RichText'];
-export const mediaEditors = ['Image', 'Hero', 'Video'];
-export const formEditors = ['TextInput', 'TextAreaInput', 'SelectionField', 'Rating'];
-export const advancedEditors = ['Button', 'HTML'];
 
 export const BUTTON_ACTION_TYPES = {
   URL: 'url',
