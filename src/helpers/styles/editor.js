@@ -129,7 +129,8 @@ export const dropdownStyle = {
   animationDuration: '0.15s',
   animationIterationCount: 1,
   animationFillMode: 'both',
-  backgroundColor: '#F7F7F7'
+  backgroundColor: '#F7F7F7',
+  zIndex: 10
 };
 
 export const buttonStyleOptionStyle = {
