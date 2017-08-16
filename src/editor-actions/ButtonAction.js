@@ -197,10 +197,10 @@ export default class ButtonAction extends React.Component {
         .delete('isNewWindow');
     }
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
+    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && state.stepIndex) {
       return persistedState
         .set('buttonActionType', buttonActionType)
-        .set('stepIndex')
+        .set('stepIndex', state.stepIndex)
         .delete('href')
         .delete('isNewWindow');
     }
@@ -223,7 +223,7 @@ export default class ButtonAction extends React.Component {
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
     const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow });
-
+    console.log('LOG SAVING BTN ACTION', newPersistedState)
     this.setState({
       isMenuOpen: !isMenuOpen
     });
