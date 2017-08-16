@@ -223,7 +223,7 @@ export default class ButtonAction extends React.Component {
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
     const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow });
-    console.log('LOG SAVING BTN ACTION', newPersistedState)
+
     this.setState({
       isMenuOpen: !isMenuOpen
     });
