@@ -197,10 +197,10 @@ export default class ButtonAction extends React.Component {
         .delete('isNewWindow');
     }
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
+    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && state.stepIndex) {
       return persistedState
         .set('buttonActionType', buttonActionType)
-        .set('stepIndex')
+        .set('stepIndex', state.stepIndex)
         .delete('href')
         .delete('isNewWindow');
     }
