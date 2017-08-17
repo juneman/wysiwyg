@@ -112,12 +112,12 @@ export default class ButtonAction extends React.Component {
           { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
-                <label style={ labelStyle }>Page number</label>
+                <label style={ labelStyle }>Step number</label>
                 <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : ''} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 { 
-                  `This group contains ${ numPages === 1 && 'only' } ${ numPages || 'an unknown number of' } step{ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users that specific step.' : '' }`
+                  `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
                 }
               </p>
             </div>
@@ -197,10 +197,10 @@ export default class ButtonAction extends React.Component {
         .delete('isNewWindow');
     }
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
+    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && state.stepIndex) {
       return persistedState
         .set('buttonActionType', buttonActionType)
-        .set('stepIndex')
+        .set('stepIndex', state.stepIndex)
         .delete('href')
         .delete('isNewWindow');
     }
