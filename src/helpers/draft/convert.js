@@ -13,7 +13,7 @@ export const decorator = new CompositeDecorator([
 export function convertFromHTML(htmlContent) {
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style.color) {
+      if (nodeName === 'span' && node.style && node.style.color) {
         return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
       } else {
         return currentStyle;
@@ -46,7 +46,7 @@ export function convertFromHTML(htmlContent) {
           break;
       }
 
-      if (node.style.textAlign) {
+      if (node.style && node.style.textAlign) {
         return {
           type: nodeType,
           data: {
