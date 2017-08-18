@@ -35,7 +35,8 @@ export class Canvas extends React.Component {
       sanitizeHtml,
       disableAddButton,
       aceEditorConfig,
-      basePadding
+      basePadding,
+      shouldDisableXSS
     } = this.props;
 
     window.editorShadowRoot = this.wrapper.getRootNode();
@@ -63,6 +64,9 @@ export class Canvas extends React.Component {
     if (sanitizeHtml && !sanitizeHtml.isEmpty()) {
       dispatch(editorActions.setSanitizeHtmlConfig(sanitizeHtml));
     }
+
+    dispatch(editorActions.setShouldDisableXSS(shouldDisableXSS === true));
+
     if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
       dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
@@ -337,6 +341,7 @@ Canvas.propTypes = {
   style: PropTypes.object,
   onSave: PropTypes.func,
   dispatch: PropTypes.func.isRequired,
+  shouldDisableXSS: PropTypes.bool.isRequired,
   rows: PropTypes.instanceOf(List),
   internalRows: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,

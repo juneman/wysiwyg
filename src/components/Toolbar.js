@@ -44,6 +44,7 @@ export class Toolbar extends React.Component {
       dispatch,
       cloudinary,
       userProperties,
+      shouldDisableXSS,
       sanitizeHtmlConfig,
       aceEditorConfig,
       numPages
@@ -80,6 +81,7 @@ export class Toolbar extends React.Component {
             userProperties,
             numPages,
             sanitizeHtmlConfig,
+            shouldDisableXSS,
             aceEditorConfig,
             hasRoomToRenderBelow,
             isActive: (selectedAction === editorAction.name),
@@ -108,7 +110,8 @@ Toolbar.propTypes = {
   userProperties: PropTypes.instanceOf(List).isRequired,
   selectedAction: PropTypes.string,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map).isRequired,
-  aceEditorConfig: PropTypes.instanceOf(Map).isRequired
+  aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
+  shouldDisableXSS: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {
@@ -117,7 +120,8 @@ function mapStateToProps(state) {
     cloudinary: state.editor.get('cloudinary'),
     userProperties: state.editor.get('userProperties'),
     sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig'),
-    aceEditorConfig: state.editor.get('aceEditorConfig')
+    aceEditorConfig: state.editor.get('aceEditorConfig'),
+    shouldDisableXSS: state.editor.get('shouldDisableXSS')
   };
 }
 

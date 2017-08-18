@@ -95,6 +95,7 @@ WysiwygEditor.propTypes = {
   onSave: PropTypes.func,
   rows: PropTypes.array,
   basePadding: PropTypes.number,
+  shouldDisableXSS: PropTypes.bool.isRequired,
   cloudinary: PropTypes.shape({
     accountId: PropTypes.string.isRequired,
     userId: PropTypes.string.isRequired,

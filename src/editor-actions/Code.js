@@ -98,12 +98,24 @@ export default class Code extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, sanitizeHtmlConfig, overrideSanitizeHtmlConfig } = this.props;
+    const { localState, persistedState, onChange, shouldDisableXSS, sanitizeHtmlConfig, overrideSanitizeHtmlConfig } = this.props;
     const { content, isSaved } = this.state;
+
+    let mergedSanitizeHtmlConfig = { ...(overrideSanitizeHtmlConfig || sanitizeHtmlConfig.toJS()) };
+
+    if (shouldDisableXSS) {
+      mergedSanitizeHtmlConfig.exclusiveFilter =
+        (node) => {
+          const isNodeAScript = node.tag.toLowerCase() === 'script';
+          const doesNodeHaveEventHandlers = Object.keys(node.attribs || {}).some((key) => key.startsWith("on"));
+          const doesNodeHaveJavascriptContent = Object.keys(node.attribs || {}).some((key) => node.attribs[key].startsWith("javascript:"));
+          return isNodeAScript || doesNodeHaveEventHandlers || doesNodeHaveJavascriptContent;
+        };
+    }
 
     const cleanHtml =
       sanitizeHtml(
-        content, overrideSanitizeHtmlConfig || sanitizeHtmlConfig.toJS()
+        content, mergedSanitizeHtmlConfig
       ).replace(/[\t ]+\/\>/g, "/>");
 
     const trimmedContent = content.replace(/[\t ]+\/\>/g, "/>");
@@ -136,6 +148,7 @@ Code.propTypes = {
   title: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map),
+  shouldDisableXSS: PropTypes.bool.isRequired,
   overrideSanitizeHtmlConfig: PropTypes.object,
   aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
   hasRoomToRenderBelow: PropTypes.bool
