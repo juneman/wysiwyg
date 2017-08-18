@@ -18,6 +18,7 @@ const initialState = fromJS({
   userProperties: [],
   allowedEditorTypes: [],
   aceEditorConfig: {},
+  shouldDisableXSS: false,
   sanitizeHtmlConfig: {
     allowedTags: false,
     allowedAttributes: false,
@@ -99,7 +100,10 @@ export default function editorSelector(state = initialState, action) {
       break;
     case Actions.EDITOR_SET_BASE_PADDING:
       newState = newState.set('basePadding', action.basePadding);
-      break;    
+      break;
+    case Actions.EDITOR_SHOULD_DISABLE_XSS:
+      newState = newState.set('shouldDisableXSS', action.shouldDisableXSS);
+      break;
     case Actions.ROWS_REPLACE_ALL:
       if (action.activeZoneId) {
         newState = newState

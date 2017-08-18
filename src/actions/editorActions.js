@@ -136,3 +136,10 @@ export function setAceEditorConfig(aceEditorConfig) {
     aceEditorConfig
   };
 }
+
+export function setShouldDisableXSS(shouldDisableXSS) {
+  return {
+    type: Actions.EDITOR_SHOULD_DISABLE_XSS,
+    shouldDisableXSS
+  };
+}
