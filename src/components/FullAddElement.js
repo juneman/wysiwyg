@@ -45,6 +45,11 @@ export default class FullAddElement extends React.Component {
 
   }
 
+  componentWillUnmount() {
+    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    editor.removeEventListener('click', this.onClick, true);
+  }
+
   render() {
     const { baseHeight, allowedEditorTypes, onSelectEditorType, internalAllowedEditorTypes, onUpload } = this.props;
     const { showEditorSelector, isHoveringOverAddButton } = this.state;
@@ -119,7 +124,7 @@ export default class FullAddElement extends React.Component {
   onClick(e) {
     e.preventDefault();
     const { showEditorSelector, isHoveringOverAddButton } = this.state;
-    
+
     if (showEditorSelector && !isHoveringOverAddButton) {
       this.setState({showEditorSelector: false});
     }
