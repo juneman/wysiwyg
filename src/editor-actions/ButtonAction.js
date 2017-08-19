@@ -113,7 +113,7 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
                 <label style={ labelStyle }>Step number</label>
-                <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : ''} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
+                <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 { 
@@ -171,17 +171,14 @@ export default class ButtonAction extends React.Component {
   }
 
   handleStepIndex(e) {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
-
     const value = e.target.value;
-    
+
     this.setState({
       stepIndex: value - 1
     });
   }
 
   handleAction(value) {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
 
     this.setState({
       buttonActionType: value
@@ -189,6 +186,9 @@ export default class ButtonAction extends React.Component {
   }
 
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
+    const { numPages } = this.props;
+    const { stepIndex } = this.state;
+
     if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
       return persistedState
         .set('buttonActionType', buttonActionType)
@@ -197,10 +197,10 @@ export default class ButtonAction extends React.Component {
         .delete('isNewWindow');
     }
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && state.stepIndex) {
+    if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && stepIndex !== undefined) {
       return persistedState
         .set('buttonActionType', buttonActionType)
-        .set('stepIndex', state.stepIndex)
+        .set('stepIndex', stepIndex)
         .delete('href')
         .delete('isNewWindow');
     }
