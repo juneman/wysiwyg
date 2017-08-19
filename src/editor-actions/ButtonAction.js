@@ -186,7 +186,6 @@ export default class ButtonAction extends React.Component {
   }
 
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
-    const { numPages } = this.props;
     const { stepIndex } = this.state;
 
     if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
