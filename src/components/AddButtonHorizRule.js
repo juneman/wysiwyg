@@ -44,7 +44,8 @@ export default class AddButtonHorizRule extends React.Component {
 
   componentWillUnmount() {
     const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
-    editor.removeEventListener('click', this.onClick);
+    editor.removeEventListener('click', this.onClick, true);
+
   }
 
   render() {
