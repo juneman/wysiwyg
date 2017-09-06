@@ -113,43 +113,43 @@ export default class ImageUploadWithPresets extends React.Component {
       'image': [
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581442/appcues-dev/tk9kgigdjpvwfbstigqy.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/c_lfill,q_90,w_800/v1496931466/14981/qdorltjp5lsiv5rdb0ur.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/v1504649782/tk9kgigdjpvwfbstigqy_ghfv6h.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/v1504649795/qdorltjp5lsiv5rdb0ur_jjdypn.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581529/appcues-dev/x4uc1yzmd0dhh6ljcste.png',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097446/appcues-dev/qfqtt1rzcfuniw1u5kvv.png'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/x4uc1yzmd0dhh6ljcste.png',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/qfqtt1rzcfuniw1u5kvv.png'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500580947/appcues-dev/zgpyya23z1muz25ohgza.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097510/appcues-dev/lwrxgeujaakvarxdqxsr.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/zgpyya23z1muz25ohgza.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/lwrxgeujaakvarxdqxsr.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581353/appcues-dev/csxijdtxrxqkip3cscqv.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097550/appcues-dev/bplefflfgzq8qzc5mjq5.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/csxijdtxrxqkip3cscqv.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/bplefflfgzq8qzc5mjq5.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581210/appcues-dev/vsudv3f31erwrtrh3kxq.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097598/appcues-dev/ho7i9ttcmnf1ezq7lofy.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/vsudv3f31erwrtrh3kxq.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/ho7i9ttcmnf1ezq7lofy.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581160/appcues-dev/ruj5ysoiqmuqkxwllmix.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097625/appcues-dev/bew13cceknmxg1uuhvy9.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/ruj5ysoiqmuqkxwllmix.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/bew13cceknmxg1uuhvy9.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581076/appcues-dev/byxg9ket5bsid4piamuv.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097649/appcues-dev/ipxsa7xctutqma2gikrz.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/byxg9ket5bsid4piamuv.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/ipxsa7xctutqma2gikrz.jpg'
         },
         {
           type: 'url',
-          src: '//res.cloudinary.com/appcues-dev/image/upload/v1500581019/appcues-dev/fyye2tcrtoyyxrl2lupm.jpg',
-          fullResSrc: '//res.cloudinary.com/appcues-dev/image/upload/v1501097667/appcues-dev/io9imwcj5ymmofy2yesy.jpg'
+          src: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/fyye2tcrtoyyxrl2lupm.jpg',
+          fullResSrc: '//res.cloudinary.com/dnjrorsut/image/upload/prod_hosted/appcues-dev/io9imwcj5ymmofy2yesy.jpg'
         }
       ]
     };
