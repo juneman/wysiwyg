@@ -22,7 +22,8 @@ export const EDITOR_TYPES = {
   TEXTAREAINPUT: 'TextAreaInput',
   RADIO: 'SelectionField',
   RATING: 'Rating',
-  BUTTON: 'Button'
+  BUTTON: 'Button',
+  EMOJI: 'Emoji'
 }
 
 export const categories = [
@@ -32,7 +33,7 @@ export const categories = [
   },
   {
     name: 'Media',
-    content: [EDITOR_TYPES.IMAGE, EDITOR_TYPES.HERO, EDITOR_TYPES.VIDEO],
+    content: [EDITOR_TYPES.IMAGE, EDITOR_TYPES.HERO, EDITOR_TYPES.EMOJI, EDITOR_TYPES.VIDEO],
     icon: MediaButton
   },
   {
