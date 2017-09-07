@@ -9,7 +9,6 @@ export const DRAGABLE_ITEMS = {
 
 export const GALLERY_TYPES = {
   HERO: 'gallery',
-  EMOJI: 'emoji'
 };
 
 export const EDITOR_TYPES = {

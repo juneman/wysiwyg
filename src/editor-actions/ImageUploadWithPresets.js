@@ -1,17 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps, emojiPickerStyles, tabStyle, selectedTabStyle } from '../helpers/styles/editor';
+import { getButtonProps, tabStyle, selectedTabStyle } from '../helpers/styles/editor';
 
 import ImageButton from '../icons/ImageButton';
 import ImageUploader from '../components/ImageUploader';
 import { GALLERY_TYPES } from '../helpers/constants';
-
-const BASE_SVG_URL = '//twemoji.maxcdn.com/2/svg/';
 
 
 export default class ImageUploadWithPresets extends React.Component {
@@ -23,7 +20,7 @@ export default class ImageUploadWithPresets extends React.Component {
       position: Map(),
       isMenuOpen: props.isActive || false,
       tabState: (props.galleryType) ? props.galleryType : 'upload',
-      dropdownWidth: (props.galleryType == GALLERY_TYPES.EMOJI) ? 570 : 440,
+      dropdownWidth: 440,
       hasRoomToRenderRight: true
     };
   }
@@ -187,22 +184,6 @@ export default class ImageUploadWithPresets extends React.Component {
           }
           <span style={  {...tabStyle, ...(tabState == 'upload') ? selectedTabStyle : {}} }  onClick={ () => this.setTabView('upload') }>Upload image</span>
         </div>
-        { tabState == GALLERY_TYPES.EMOJI &&
-            <div style={{padding: '4px 8px'}}>
-                <style>
-                    { emojiPickerStyles }
-                </style>
-                <Picker
-                    autoFocus
-                    perLine={15}
-                    color="#23baff"
-                    set='twitter'
-                    onClick={(emoji) => this.pickEmoji(emoji)}
-                    style={{width: '100%'}}
-                    />
-            </div>
-
-        }
         { tabState == GALLERY_TYPES.HERO &&
           <div style={{padding: '4px 8px', height: 250, overflowY: 'scroll'}}>
             {
@@ -291,32 +272,6 @@ export default class ImageUploadWithPresets extends React.Component {
       persistedState: newPersistedState
     });
 
-  }
-
-  pickEmoji(emoji) {
-      const { localState, persistedState, onChange } = this.props;
-      let url;
-      //check to make sure that our
-      //saved url matches what the twemoji cdn expects.
-      if ((emoji.unified.match(new RegExp("-", "g")) || []).length == 1) {
-          //Removes variant values introduced by emojiMart
-          url =  `${BASE_SVG_URL}${emoji.unified.split('-fe0f')[0]}.svg`;
-      } else if ((emoji.unified.match(new RegExp("20e3", "g")) || []).length == 1) {
-           //Removes variant values introduced by emojiMart, and leading 00's
-           url =  `${BASE_SVG_URL}${emoji.unified.slice(2).split('-fe0f')[0]}-20e3.svg`;
-      } else {
-          url = `${BASE_SVG_URL}${emoji.unified}.svg`;
-      }
-
-      let newPersistedState = persistedState
-        .set('url', url)
-        .set('width', 250)
-        .set('textAlign', 'center');
-
-      onChange({
-        localState,
-        persistedState: newPersistedState
-      });
   }
 
   handleUpload(imageDetails) {
