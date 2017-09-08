@@ -10,7 +10,6 @@ export default class ImageEditor extends React.Component {
   render() {
     const { persistedState, isEditing, onClickEmptyState } = this.props;
     const { url, height, width, heightOverride, widthOverride, textAlign, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
-    console.log('here are ur props', this.props);
 
     const dropzoneStyle = {
       paddingBottom: 30,
@@ -167,6 +166,7 @@ ImageEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   localState: PropTypes.instanceOf(Map).isRequired,
-  canvasPosition: PropTypes.instanceOf(Map).isRequired
+  canvasPosition: PropTypes.instanceOf(Map).isRequired,
+  onClickEmptyState: PropTypes.func.isRequired
 };
 

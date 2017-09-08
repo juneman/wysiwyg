@@ -5,11 +5,9 @@ import { Picker } from 'emoji-mart';
 
 import Menu from '../components/Menu';
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { getButtonProps, emojiPickerStyles, tabStyle, selectedTabStyle } from '../helpers/styles/editor';
+import { getButtonProps, emojiPickerStyles } from '../helpers/styles/editor';
 
 import EmojiButton from '../icons/EmojiButton';
-import ImageUploader from '../components/ImageUploader';
-import { GALLERY_TYPES } from '../helpers/constants';
 
 const BASE_SVG_URL = '//twemoji.maxcdn.com/2/svg/';
 
@@ -22,8 +20,7 @@ export default class EmojiSelector extends React.Component {
     this.state = {
       position: Map(),
       isMenuOpen: props.isActive || false,
-      tabState: (props.galleryType) ? props.galleryType : 'upload',
-      dropdownWidth: (props.galleryType == GALLERY_TYPES.EMOJI) ? 570 : 440,
+      dropdownWidth: 440,
       hasRoomToRenderRight: true,
       selectedItemKey: null
     };
@@ -97,15 +94,6 @@ export default class EmojiSelector extends React.Component {
     );
   }
 
-  setTabView(selectedTab) {
-    const { tabState } = this.state;
-
-    if (selectedTab == tabState) return null;
-
-    this.setState({
-      tabState: selectedTab
-    });
-  }
 
   pickEmoji(emoji) {
       const { localState, persistedState, onChange } = this.props;

@@ -177,7 +177,7 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-bar:first-child {
   background: #e9e9e9;
   border-radius: 4px;
-  width: 50%;
+  width: 70%;
   display: inline-block;
   height: 36px;
 }
@@ -236,7 +236,7 @@ export const emojiPickerStyles = `.emoji-mart,
 }
 
 .emoji-mart-search {
-  width: 50%;
+  width: 30%;
   height: 36px;
   display: inline-flex;
   vertical-align: bottom;
