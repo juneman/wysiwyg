@@ -8,9 +8,6 @@ import EmojiSelector from '../../editor-actions/EmojiSelector';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import Margin from '../../editor-actions/Margin';
-import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
-
-import { GALLERY_TYPES } from '../../helpers/constants';
 
 export default function EmojiToolbar(props) {
 
@@ -32,10 +29,6 @@ export default function EmojiToolbar(props) {
     {
       Component: AlignmentBlock,
       name: 'alignment-block'
-    },
-    {
-      Component: HyperlinkBlock,
-      name: 'hyperlink-block'
     },
     {
       Component: Margin,
