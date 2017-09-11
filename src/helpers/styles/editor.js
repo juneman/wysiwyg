@@ -48,7 +48,7 @@ export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) =
   let buttonStyleString = 'text-align:center;';
 
   if (borderRadius) {
-    buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`; 
+    buttonStyleString = buttonStyleString + `border-radius:${borderRadius}px;`;
   }
 
   buttonStyleString = buttonStyleString + `padding:${padding ? (padding + 'px') : '8px 18px'};`;
@@ -59,7 +59,7 @@ export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) =
   if (width) {
     buttonStyleString = buttonStyleString + `width:${width}px;`;
   }
-  
+
   return buttonStyleString
 };
 
@@ -177,7 +177,7 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-bar:first-child {
   background: #e9e9e9;
   border-radius: 4px;
-  width: 50%;
+  width: 70%;
   display: inline-block;
   height: 36px;
 }
@@ -198,7 +198,7 @@ export const emojiPickerStyles = `.emoji-mart,
   position: relative;
   flex: 1;
   text-align: center;
-  padding: 8px 4px 4px;
+  padding: 8px 0 4px;
   overflow: hidden;
   transition: color .1s ease-out;
 }
@@ -236,7 +236,7 @@ export const emojiPickerStyles = `.emoji-mart,
 }
 
 .emoji-mart-search {
-  width: 50%;
+  width: 30%;
   height: 36px;
   display: inline-flex;
   vertical-align: bottom;

@@ -6,6 +6,7 @@ import uuid from 'uuid/v4';
 import Menu from './Menu';
 import RightButton from '../icons/RightButton';
 import TextButton from '../icons/TextButton';
+import EmojiButton from '../icons/EmojiButton';
 import ImageButton from '../icons/ImageButton';
 import VideoButton from '../icons/VideoButton';
 import CodeButton from '../icons/CodeButton';
@@ -40,6 +41,12 @@ const editors = {
     Button: HeroButton,
     text: 'Hero/Header',
     type: 'Hero',
+    category: 'Media'
+  },
+  [EDITOR_TYPES.EMOJI]: {
+    Button: EmojiButton,
+    text: 'Emoji',
+    type: 'Emoji',
     category: 'Media'
   },
   [EDITOR_TYPES.VIDEO]: {
@@ -159,7 +166,7 @@ export default class EditorSelector extends React.Component {
       return {
         name: category.name,
         icon: category.icon,
-        items: category.content.filter((editor) => { 
+        items: category.content.filter((editor) => {
           return allowedEditorTypes.includes(editor)
         })
       }
@@ -168,7 +175,7 @@ export default class EditorSelector extends React.Component {
     return (
       <div ref={(el) => this.wrapper = el} style={{position: 'absolute', ...menuStyle}}>
         <Menu style={{overflow: 'hidden'}}>
-          { 
+          {
             editorMenu.map((category) => {
               if (category.items.length === 1) {
                 return this.renderSubMenuItems(category.items)
@@ -206,7 +213,7 @@ export default class EditorSelector extends React.Component {
                   </div> : null
                 )
               }
-            }) 
+            })
           }
         </Menu>
       </div>
