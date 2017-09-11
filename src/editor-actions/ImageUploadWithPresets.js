@@ -22,7 +22,8 @@ export default class ImageUploadWithPresets extends React.Component {
       isMenuOpen: props.isActive || false,
       tabState: (props.galleryType) ? props.galleryType : 'upload',
       dropdownWidth: 440,
-      hasRoomToRenderRight: true
+      hasRoomToRenderRight: true,
+      selectedItemKey: null
     };
   }
 
@@ -40,7 +41,7 @@ export default class ImageUploadWithPresets extends React.Component {
 
 
   render() {
-    const { isMenuOpen, tabState, dropdownWidth, hasRoomToRenderRight } = this.state;
+    const { isMenuOpen, tabState, dropdownWidth, hasRoomToRenderRight, selectedItemKey } = this.state;
     const { isActive, hasRoomToRenderBelow, galleryType } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -85,17 +86,34 @@ export default class ImageUploadWithPresets extends React.Component {
                   <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
                     {
                       presetGallery[key].map((galleryItem, i) => {
+                        const imageKey = `${key}-${i}`;
                         const style = {
                           backgroundImage: `${galleryItem.type}(${galleryItem.src})`,
                           backgroundSize: 'cover',
                           flexBasis: 100,
+                          margin: '3px',
                           height: 50,
                           cursor: 'pointer',
-                          margin: '0 3px 5px 3px',
+                          position: 'relative'
+                        };
+
+                        const selectedItemIndicator = {
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translateY(-50%) translateX(-50%)',
+                          width: 8,
+                          height: 8,
+                          background: '#fff',
+                          borderRadius: 8
                         };
 
                         return (
-                          <div style={style} onClick={ () => this.selectFromGallery(galleryItem) } key={`${galleryItem.type}-${i}`}></div>
+                          <div style={style} onClick={ () => this.selectFromGallery(galleryItem, imageKey) } key={imageKey}>
+                            { (imageKey === selectedItemKey) &&
+                              <div className="selectedItemIndicator" style={selectedItemIndicator} />
+                            }
+                          </div>
                         );
                       })
                     }
@@ -140,9 +158,12 @@ export default class ImageUploadWithPresets extends React.Component {
     });
   }
 
-  selectFromGallery(selectedItem) {
+  selectFromGallery(selectedItem, key) {
     const { localState, persistedState, onChange, maxWidth } = this.props;
 
+    this.setState({
+      selectedItemKey: key
+    });
 
     let newPersistedState = persistedState
       .set('backgroundType', selectedItem.type)
