@@ -13,6 +13,9 @@ import RichTextToolbar from '../editors/richtext/RichTextToolbar';
 import ImageEditor from '../editors/image/ImageEditor';
 import ImageToolbar from '../editors/image/ImageToolbar';
 
+import EmojiEditor from '../editors/emoji/EmojiEditor'
+import EmojiToolbar from '../editors/emoji/EmojiToolbar';
+
 import ButtonEditor from '../editors/button/ButtonEditor';
 import ButtonToolbar from '../editors/button/ButtonToolbar';
 
@@ -194,6 +197,10 @@ export class Zone extends React.Component {
       case 'Image':
         editorNode = (<ImageEditor {...editorProps} />);
         toolbarNode = (<ImageToolbar {...toolbarProps} />);
+        break;
+      case 'Emoji':
+        editorNode = (<EmojiEditor {...editorProps} onClickEmptyState={ () => dispatch(editorActions.toggleEditorAction('emoji-selector', true)) }/>);
+        toolbarNode = (<EmojiToolbar {...toolbarProps} />);
         break;
       case 'Button':
         editorNode = (<ButtonEditor {...editorProps} />);
