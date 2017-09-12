@@ -19,13 +19,16 @@ export default class ButtonEditor extends React.Component {
 
     const marginTop = persistedState.get('marginTop');
     const marginBottom = persistedState.get('marginBottom');
+    const buttonActionType = persistedState.get('buttonActionType');
 
     const isMarginTopSet = marginTop || marginTop === 0;
     const isMarginBottomSet = marginBottom || marginBottom === 0;
+    const defaultButtonAction = buttonActionType !== 0 &&  !buttonActionType && BUTTON_ACTION_TYPES.NEXT_PAGE;
 
     const newPersistedState = persistedState
       .set('marginTop', isMarginTopSet ? marginTop : 5)
       .set('marginBottom', isMarginBottomSet ? marginBottom : 5)
+      .set('buttonActionType', defaultButtonAction || buttonActionType)
 
     onChange({
       localState: localState,
@@ -162,17 +165,22 @@ export default class ButtonEditor extends React.Component {
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
-      buttonAttrs.href = href;
-      buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
-    } else if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
-      buttonAttrs['data-step'] = buttonActionType;
-    } else if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
-      buttonAttrs['data-step'] = stepIndex;
+    switch (buttonActionType) {
+      case BUTTON_ACTION_TYPES.URL:
+        buttonAttrs.href = href;
+        buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
+        break;
+      case BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType):
+        buttonAttrs['data-step'] = buttonActionType;
+        break;
+      case BUTTON_ACTION_TYPES.CUSTOM_PAGE:
+        buttonAttrs['data-step'] = stepIndex;
+        break;
+      default:
+        buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_PAGE;
     }
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
-
     
     const buttonObj = {
       type: 'tag',
