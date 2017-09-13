@@ -73,6 +73,7 @@ export default class DropDownMenu extends React.Component {
         right: 0,
         backgroundColor: '#eee',
         maxHeight: 370,
+        width: 270,
         overflowY: 'auto',
         borderRadius: 5,
         marginTop: -5,
@@ -85,7 +86,7 @@ export default class DropDownMenu extends React.Component {
       },
       dropDownMenuOption: {
         cursor: 'pointer',
-        width: 200,
+        width: 'inherit',
         display: 'flex',
         flexShrink: 0,
         alignItems: 'flex-start',
@@ -141,7 +142,7 @@ export default class DropDownMenu extends React.Component {
     if (isMenuOpen) {
       styles.dropDownMenu = {
         ...styles.dropDownMenu,
-        marginTop: 15,
+        marginTop: 5,
         opacity: 1,
         pointerEvents: 'all'
       }
