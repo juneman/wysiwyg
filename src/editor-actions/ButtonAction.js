@@ -135,7 +135,7 @@ export default class ButtonAction extends React.Component {
                 <label style={ labelStyle }>Flow ID</label>
                 <input type="text" min={1} value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
               </div>
-              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of the published flow to trigger from clicking this button.
+              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this button.
               </p>
             </div>
           }
