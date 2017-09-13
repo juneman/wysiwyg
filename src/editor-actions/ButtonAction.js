@@ -20,7 +20,8 @@ export default class ButtonAction extends React.Component {
       isNewWindow: props.isNewWindow || false,
       isMenuOpen: props.isActive || false,
       buttonActionType: BUTTON_ACTION_TYPES.NEXT_PAGE,
-      stepIndex: 0
+      stepIndex: 0,
+      flowId: ''
     };
   }
 
@@ -41,6 +42,7 @@ export default class ButtonAction extends React.Component {
     const isNewWindow = persistedState.get('isNewWindow');
     const stepIndex = persistedState.get('stepIndex');
     const buttonActionType = persistedState.get('buttonActionType');
+    const flowId = persistedState.get('flowId')
 
     if (href !== undefined) {
       update.href = href;
@@ -58,6 +60,10 @@ export default class ButtonAction extends React.Component {
       update.stepIndex = stepIndex;
     }
 
+    if (flowId) {
+      update.flowId = flowId
+    }
+
     if (Object.keys(update).length) {
       this.setState(update);
     };
@@ -65,7 +71,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex } = this.state;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -119,6 +125,17 @@ export default class ButtonAction extends React.Component {
                 { 
                   `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
                 }
+              </p>
+            </div>
+          }
+
+          { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
+            <div style={buttonNavTypeMenuStyle}>
+              <div style={ fieldGroupStyle }>
+                <label style={ labelStyle }>Flow ID</label>
+                <input type="text" min={1} value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
+              </div>
+              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of the published flow to trigger from clicking this button.
               </p>
             </div>
           }
@@ -185,6 +202,16 @@ export default class ButtonAction extends React.Component {
     });
   }
 
+  handleAppcuesShow(e) {
+    const value = e.target.value;
+
+    this.setState({
+      buttonActionType: BUTTON_ACTION_TYPES.APPCUES,
+      flowId: value
+    });
+
+  }
+
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
     const { stepIndex } = this.state;
 
@@ -212,16 +239,25 @@ export default class ButtonAction extends React.Component {
         .delete('stepIndex');
     }
 
+    if (buttonActionType == BUTTON_ACTION_TYPES.APPCUES) {
+      return persistedState
+        .set('buttonActionType', buttonActionType)
+        .set('flowId', state.flowId)
+        .delete('href')
+        .delete('isNewWindow')
+        .delete('stepIndex');
+    }
+
     return persistedState;
   }
 
   saveAction() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isMenuOpen, isNewWindow, href, buttonActionType } = this.state;
+    const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow, flowId });
 
     this.setState({
       isMenuOpen: !isMenuOpen
