@@ -85,8 +85,8 @@ export const fieldGroupStyle = {
 };
 
 export const buttonNavTypeMenuStyle = {
-  padding: '2px 10px',
-  marginTop: '5px'
+  marginTop: '15px',
+  marginBottom: '10px'
 };
 
 export const inputStyle = {

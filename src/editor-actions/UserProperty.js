@@ -38,7 +38,7 @@ export default class UserProperty extends React.Component {
       position: 'absolute',
       top: 45,
       left: 0,
-      padding: 10,
+      padding: '10px 15px 15px 15px',
       width: 300,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
