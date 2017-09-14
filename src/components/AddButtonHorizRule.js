@@ -74,7 +74,6 @@ export default class AddButtonHorizRule extends React.Component {
 
     const addButtonStyle = {
       position: 'absolute',
-
       top: '-2px',
       cursor: 'pointer',
       zIndex: 10,
@@ -103,8 +102,8 @@ export default class AddButtonHorizRule extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
             style={addButtonStyle}
-            onMouseEnter={() => this.setState({ isHoveringOverAddButton: true })}
-            onMouseLeave={() => this.setState({ isHoveringOverAddButton: false })}
+            onMouseOver={() => this.setState({ isHoveringOverAddButton: true })}
+            onMouseOut={() => this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
