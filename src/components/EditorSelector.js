@@ -139,7 +139,7 @@ export default class EditorSelector extends React.Component {
       zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-200px + 50%)',
+      left: 'calc(-90px + 50%)',
       animationName: `editor-slide-${(showEditorSelector) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
