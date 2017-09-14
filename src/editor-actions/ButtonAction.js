@@ -19,6 +19,7 @@ export default class ButtonAction extends React.Component {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       isMenuOpen: props.isActive || false,
+      isFlowSkipping: props.isFlowSkipping || false,
       buttonActionType: BUTTON_ACTION_TYPES.NEXT_PAGE,
       stepIndex: 0,
       flowId: ''
@@ -40,6 +41,7 @@ export default class ButtonAction extends React.Component {
     const { persistedState } = nextProps;
     const href = persistedState.get('href');
     const isNewWindow = persistedState.get('isNewWindow');
+    const isFlowSkipping = persistedState.get('isFlowSkipping');
     const stepIndex = persistedState.get('stepIndex');
     const buttonActionType = persistedState.get('buttonActionType');
     const flowId = persistedState.get('flowId')
@@ -50,6 +52,10 @@ export default class ButtonAction extends React.Component {
 
     if (isNewWindow !== undefined) {
       update.isNewWindow = isNewWindow;
+    }
+
+    if (isFlowSkipping !== undefined) {
+      update.isFlowSkipping = isFlowSkipping;
     }
 
     if (buttonActionType !== undefined) {
@@ -71,7 +77,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId } = this.state;
+    const { href, isNewWindow, isMenuOpen, isFlowSkipping, buttonActionType, stepIndex, flowId } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -133,10 +139,14 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
                 <label style={ labelStyle }>Flow ID</label>
-                <input type="text" min={1} value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
+                <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this button.
               </p>
+              <div style={{ marginTop: 5 }}>
+                <input id="close-checkbox" type="checkbox" style={checkboxStyle} checked={isFlowSkipping} onChange={(e) => this.handleIsFlowSkipping(e)} />
+                <label htmlFor="close-checkbox">Close This Step on Flow Trigger</label>
+              </div>
             </div>
           }
 
@@ -187,6 +197,13 @@ export default class ButtonAction extends React.Component {
     });
   }
 
+  handleIsFlowSkipping(e) {
+    const isFlowSkipping = e.target.checked;
+    this.setState({
+      isFlowSkipping
+    });
+  }
+
   handleStepIndex(e) {
     const value = e.target.value;
 
@@ -219,8 +236,10 @@ export default class ButtonAction extends React.Component {
       return persistedState
         .set('buttonActionType', buttonActionType)
         .delete('href')
+        .delete('flowId')
         .delete('stepIndex')
-        .delete('isNewWindow');
+        .delete('isNewWindow')
+        .delete('isFlowSkipping');
     }
 
     if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE && stepIndex !== undefined) {
@@ -228,7 +247,9 @@ export default class ButtonAction extends React.Component {
         .set('buttonActionType', buttonActionType)
         .set('stepIndex', stepIndex)
         .delete('href')
-        .delete('isNewWindow');
+        .delete('flowId')
+        .delete('isNewWindow')
+        .delete('isFlowSkipping');
     }
 
     if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
@@ -236,13 +257,16 @@ export default class ButtonAction extends React.Component {
         .set('buttonActionType', buttonActionType)
         .set('href', state.hrefWithProtocol)
         .set('isNewWindow', state.isNewWindow)
-        .delete('stepIndex');
+        .delete('stepIndex')
+        .delete('flowId')
+        .delete('isFlowSkipping');
     }
 
     if (buttonActionType == BUTTON_ACTION_TYPES.APPCUES) {
       return persistedState
         .set('buttonActionType', buttonActionType)
         .set('flowId', state.flowId)
+        .set('isFlowSkipping', state.isFlowSkipping)
         .delete('href')
         .delete('isNewWindow')
         .delete('stepIndex');
@@ -253,11 +277,11 @@ export default class ButtonAction extends React.Component {
 
   saveAction() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
+    const { isMenuOpen, isNewWindow, isFlowSkipping, href, buttonActionType, flowId } = this.state;
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow, flowId });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow, isFlowSkipping, flowId });
 
     this.setState({
       isMenuOpen: !isMenuOpen
