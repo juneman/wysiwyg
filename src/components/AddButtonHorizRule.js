@@ -70,7 +70,8 @@ export default class AddButtonHorizRule extends React.Component {
       background: '#00b850',
       transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
       opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
-      transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`    };
+      transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`
+    };
 
     const addButtonStyle = {
       position: 'absolute',
