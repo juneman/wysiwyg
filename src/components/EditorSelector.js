@@ -139,7 +139,7 @@ export default class EditorSelector extends React.Component {
       zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-80px + 50%)',
+      left: 'calc(-200px + 50%)',
       animationName: `editor-slide-${(showEditorSelector) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
@@ -149,7 +149,7 @@ export default class EditorSelector extends React.Component {
     };
 
     if (hasRoomToRenderBelow) {
-      menuStyle.top = 8;
+      menuStyle.top = 5;
     } else {
       menuStyle.bottom = 48;
     }
