@@ -56,7 +56,7 @@ export default class AddButtonHorizRule extends React.Component {
       height: 1,
       border: 0,
       position: 'relative',
-      top: -20,
+      top: 15,
       width: '100%',
       zIndex: 2,
       padding: 0,
@@ -64,8 +64,8 @@ export default class AddButtonHorizRule extends React.Component {
       pointerEvents: 'none',
       background: '#00b850',
       transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
-      opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
-      transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`
+      opacity: .5,
+      transform: `scale(1, 3)`
     };
 
     const containerStyle = {
@@ -82,7 +82,7 @@ export default class AddButtonHorizRule extends React.Component {
       <div className="add-row" style={containerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
-            style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`, transition: 'all 0.15s ease-out' }}
+            style={{ position: 'absolute', right: '-45px', top: '-2px', cursor: 'pointer', zIndex: 10, transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`, transition: 'all 0.15s ease-out' }}
             onMouseEnter={() => this.setState({ isHoveringOverAddButton: true })}
             onMouseLeave={() => this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
