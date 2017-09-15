@@ -53,7 +53,8 @@ export const BUTTON_ACTION_TYPES = {
   PREVIOUS_PAGE: 'prev',
   CUSTOM_PAGE: 'custom',
   END_FLOW: 'skip',
-  NEXT_GROUP: 'end'
+  NEXT_GROUP: 'end',
+  APPCUES: 'appcues'
 };
 
 export const BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS = [
@@ -87,5 +88,9 @@ export const BUTTON_ACTION_TYPES_LIST = [
   {
     label: 'Skip to Next Group',
     value: BUTTON_ACTION_TYPES.NEXT_GROUP
+  },
+  {
+    label: 'Trigger Appcues Flow',
+    value: BUTTON_ACTION_TYPES.APPCUES
   }
 ];
