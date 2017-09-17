@@ -140,7 +140,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -175,6 +175,9 @@ export default class ButtonEditor extends React.Component {
         break;
       case BUTTON_ACTION_TYPES.CUSTOM_PAGE:
         buttonAttrs['data-step'] = stepIndex;
+        break;
+      case BUTTON_ACTION_TYPES.APPCUES:
+        buttonAttrs['onclick'] = `window.parent.Appcues.show('${ flowId }')`;
         break;
       default:
         buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_PAGE;

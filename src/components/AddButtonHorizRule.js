@@ -4,6 +4,10 @@ import { List } from 'immutable';
 
 import AddButtonContainer from './AddButtonContainer';
 
+// Distance threshold before button repositions to
+// opposite side
+const BUTTON_POSITION_ALLOWANCE = 100;
+
 /**
  * A React component renders an Add button to
  * add a new row to the Canvas
@@ -15,7 +19,8 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.state = {
       showEditorSelector: false,
-      isHoveringOverAddButton: false
+      isHoveringOverAddButton: false,
+      hasRoomToRenderOnRight: true
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -24,10 +29,12 @@ export default class AddButtonHorizRule extends React.Component {
 
   componentDidMount() {
     this.setBoundingBox();
+    this.setHasRoomToRenderOnRight();
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { showEditorSelector } = this.state;
+    this.setHasRoomToRenderOnRight();
 
     const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
 
@@ -50,13 +57,13 @@ export default class AddButtonHorizRule extends React.Component {
 
   render() {
     const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
-    const { showEditorSelector, isHoveringOverAddButton } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton, hasRoomToRenderOnRight } = this.state;
 
     const hrStyle = {
       height: 1,
       border: 0,
       position: 'relative',
-      top: -20,
+      top: 15,
       width: '100%',
       zIndex: 2,
       padding: 0,
@@ -67,6 +74,21 @@ export default class AddButtonHorizRule extends React.Component {
       opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
       transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`
     };
+
+    const addButtonStyle = {
+      position: 'absolute',
+      top: '-2px',
+      cursor: 'pointer',
+      zIndex: 10,
+      transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`,
+      transition: 'all 0.15s ease-out'
+    };
+
+    if (hasRoomToRenderOnRight) {
+      addButtonStyle.right = '-45px'
+    } else {
+      addButtonStyle.left = '-45px'
+    }
 
     const containerStyle = {
       position: 'absolute',
@@ -82,9 +104,9 @@ export default class AddButtonHorizRule extends React.Component {
       <div className="add-row" style={containerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
           <div
-            style={{ cursor: 'pointer', zIndex: 10, transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`, transition: 'all 0.15s ease-out' }}
-            onMouseEnter={() => this.setState({ isHoveringOverAddButton: true })}
-            onMouseLeave={() => this.setState({ isHoveringOverAddButton: false })}
+            style={addButtonStyle}
+            onMouseOver={() => this.setState({ isHoveringOverAddButton: true })}
+            onMouseOut={() => this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
@@ -115,6 +137,13 @@ export default class AddButtonHorizRule extends React.Component {
     const { showEditorSelector } = this.state;
 
     this.setState({ showEditorSelector: !showEditorSelector });
+  }
+
+  setHasRoomToRenderOnRight() {
+    const hasRoomToRenderOnRight = ((window.innerWidth - this.addButton.parentElement.getBoundingClientRect().right) > BUTTON_POSITION_ALLOWANCE);
+    if (hasRoomToRenderOnRight != this.state.hasRoomToRenderOnRight){
+      this.setState({ hasRoomToRenderOnRight });
+    }
   }
 
   setBoundingBox() {

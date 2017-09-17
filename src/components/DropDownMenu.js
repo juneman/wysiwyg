@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom';
 
 import DropDownButton from './DropDownButton';
+import DownButton from '../icons/DownButton';
+import RightButton from '../icons/RightButton';
 
 const MAX_MENU_HEIGHT = 300;
 
@@ -71,6 +73,7 @@ export default class DropDownMenu extends React.Component {
         right: 0,
         backgroundColor: '#eee',
         maxHeight: 370,
+        width: 270,
         overflowY: 'auto',
         borderRadius: 5,
         marginTop: -5,
@@ -83,7 +86,7 @@ export default class DropDownMenu extends React.Component {
       },
       dropDownMenuOption: {
         cursor: 'pointer',
-        width: 200,
+        width: 'inherit',
         display: 'flex',
         flexShrink: 0,
         alignItems: 'flex-start',
@@ -124,6 +127,9 @@ export default class DropDownMenu extends React.Component {
         cursor: 'text',
         fontSize: '14px',
         color: '#666'
+      },
+      label: {
+        textAlign: 'left'
       }
     };
     if (!hasRoomToRenderBelow) {
@@ -136,7 +142,7 @@ export default class DropDownMenu extends React.Component {
     if (isMenuOpen) {
       styles.dropDownMenu = {
         ...styles.dropDownMenu,
-        marginTop: 15,
+        marginTop: 5,
         opacity: 1,
         pointerEvents: 'all'
       }
@@ -201,8 +207,17 @@ export default class DropDownMenu extends React.Component {
                 )
               }
             </div>
-            <div className={ styles.label }>
-              <span>{ label && `${ label }: ` }<span>{ selectedOption ? selectedOption.label : defaultValue }</span><i className="fa fa-caret-down"></i></span>
+            <div style={ styles.label }>
+              <span>{ label && `${ label }: ` }
+                <span>{ selectedOption ? selectedOption.label : defaultValue }</span>
+                <span style={{display: 'inline-flex', position: 'absolute', right: '0px', height: '20px'}}>
+                  { isMenuOpen ? 
+                    <DownButton iconStyle={{color: 'grey'}}/> :
+                    <RightButton iconStyle={{color: 'grey'}}/>
+                  }
+                </span>
+              </span>
+
             </div>
           </div>
       </DropDownButton>

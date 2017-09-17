@@ -24,7 +24,7 @@ export default class DropDownButton extends React.Component {
             cursor: 'pointer',
             borderRadius: 4,
             color: '#999',
-            border: '2px solid #CCC',
+            border: '1px solid #CCC',
             fontSize: '15px',
             fontWeight: '500',
             boxSizing: 'border-box'
