@@ -4,6 +4,8 @@ import { List } from 'immutable';
 
 import AddButtonContainer from './AddButtonContainer';
 
+// Distance threshold before button repositions to
+// opposite side
 const BUTTON_POSITION_ALLOWANCE = 100;
 
 /**
