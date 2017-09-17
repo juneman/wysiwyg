@@ -167,8 +167,8 @@ export default class DropDownMenu extends React.Component {
         title={ title }
         forceHover={ isMenuOpen }
         onClick={ () => this.toggleDropDownMenu() }>
-          <div ref={ (el) => this.wrapper = el } style={ styles.dropDownMenuContainer }>
-            <div style={ styles.dropDownMenu }>
+          <div style={ styles.dropDownMenuContainer }>
+            <div style={ styles.dropDownMenu } ref={ (el) => this.wrapper = el }>
               { options.length > 5 && !unsearchable &&
                 <div onMouseUpCapture={ (e) => this.onSearchBarMouseUp(e) } style={ styles.searchBar }>
                   <input
