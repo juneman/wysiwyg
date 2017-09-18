@@ -170,7 +170,7 @@ export default class ButtonEditor extends React.Component {
         buttonAttrs.href = href;
         buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
         break;
-      case BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType):
+      case BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType) && buttonActionType:
         buttonAttrs['data-step'] = buttonActionType;
         break;
       case BUTTON_ACTION_TYPES.CUSTOM_PAGE:
