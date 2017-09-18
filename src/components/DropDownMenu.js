@@ -28,11 +28,9 @@ export default class DropDownMenu extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { options, onSelect } = this.props;
     const selectedValueChanged = nextProps.selectedValue != this.state.selectedValue;
     if (selectedValueChanged) {
       this.setState({ selectedValue: nextProps.selectedValue });
-
     }
   }
 
