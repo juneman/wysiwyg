@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils } from 'draft-js';
-import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
@@ -30,10 +30,21 @@ export default class RichTextEditor extends React.Component {
 
   onMouseUp(e) {
     e.preventDefault();
+    const { localState, isEditing } = this.props;
 
-    if (this.wrapper && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
-        this.editor.blur()
+    if (isEditing) {
+
+      const editorState = localState.get('editorState');
+      const newSelection = getResetSelection(editorState);
+
+      if (this.editor && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
+          this.editor.blur();
+          const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState))
+          this.handleEditorStateChange(newEditorState);
+      }
+
     }
+    
   }
 
   componentWillReceiveProps(nextProps) {

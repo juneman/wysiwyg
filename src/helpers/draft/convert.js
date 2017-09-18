@@ -110,3 +110,19 @@ export function blockStyleFn(contentBlock) {
     return `align-${textAlign}`;
   }
 }
+
+export function getResetSelection(editorState) {
+
+  const firstBlock = editorState.getCurrentContent().getFirstBlock();
+  const firstBlockKey = firstBlock.getKey();
+
+  const currentSelection = editorState.getSelection();
+  const newSelection = currentSelection
+    .set('anchorKey', firstBlockKey)
+    .set('focusKey', firstBlockKey)
+    .set('anchorOffset', 0)
+    .set('focusOffset', 0)
+    .set('isBackward', false)
+
+    return newSelection
+}
