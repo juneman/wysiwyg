@@ -28,9 +28,11 @@ export default class DropDownMenu extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { options, onSelect } = this.props;
     const selectedValueChanged = nextProps.selectedValue != this.state.selectedValue;
     if (selectedValueChanged) {
       this.setState({ selectedValue: nextProps.selectedValue });
+
     }
   }
 
@@ -72,9 +74,10 @@ export default class DropDownMenu extends React.Component {
         top: '100%',
         right: 0,
         backgroundColor: '#eee',
-        maxHeight: 370,
+        maxHeight: 250,
         width: 270,
         overflowY: 'auto',
+        overflowX: 'hidden',
         borderRadius: 5,
         marginTop: -5,
         flexDirection: 'column',
@@ -230,7 +233,6 @@ export default class DropDownMenu extends React.Component {
       this.setState({ hasRoomToRenderBelow });
     }
   }
-
 
   selectOptionByIndex(index) {
     const { options, onSelect } = this.props;
