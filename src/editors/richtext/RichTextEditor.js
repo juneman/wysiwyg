@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils } from 'draft-js';
@@ -6,6 +7,11 @@ import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn 
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onMouseUp = this.onMouseUp.bind(this);
+  }
 
   componentWillMount() {
     const { persistedState } = this.props;
@@ -14,6 +20,20 @@ export default class RichTextEditor extends React.Component {
       EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
       : EditorState.createEmpty(decorator);
     this.handleEditorStateChange(initialEditorState);
+  }
+
+  componentDidMount() {
+    if (this.wrapper) {
+      window.addEventListener('mouseup', this.onMouseUp, true)
+    }
+  }
+
+  onMouseUp(e) {
+    e.preventDefault();
+
+    if (this.wrapper && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
+        this.editor.blur()
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,6 +55,10 @@ export default class RichTextEditor extends React.Component {
         this.handleEditorStateChange(newEditorState);
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('mouseup', this.onMouseUp, true)
   }
 
   render() {
