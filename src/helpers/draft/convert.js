@@ -20,6 +20,7 @@ export function convertFromPastedHTML(htmlContent) {
       }
     },
     htmlToEntity: (nodeName, node) => {
+      console.log('Stuf ENTITY?', node)
       const entity = linkToEntity(nodeName, node);
       return entity;
     },
