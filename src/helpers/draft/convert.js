@@ -10,11 +10,59 @@ export const decorator = new CompositeDecorator([
   LinkDecorator
 ]);
 
+export function convertFromPastedHTML(htmlContent) {
+  return draftConvertFromHTML({
+    htmlToStyle: (nodeName, node, currentStyle) => {
+      if (nodeName === 'span' && node.style && node.style.color) {
+        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
+      } else {
+        return currentStyle;
+      }
+    },
+    htmlToEntity: (nodeName, node) => {
+      const entity = linkToEntity(nodeName, node);
+      return entity;
+    },
+    textToEntity: () => {
+      return [];
+    },
+    htmlToBlock: (nodeName, node) => {
+      let nodeType = 'unstyled';
+      switch(nodeName) {
+        case 'h1':
+          nodeType = 'header-one';
+          break;
+        case 'h2':
+          nodeType = 'header-two';
+          break;
+        case 'h3':
+          nodeType = 'header-three';
+          break;
+        case 'h4':
+          nodeType = 'header-four';
+          break;
+        case 'h5':
+          nodeType = 'header-five';
+          break;
+      }
+      console.log('STUFF checking node', node)
+      console.log('STUFF node children', node.childNodes)
+      if (node.style && node.style.textAlign) {
+        return {
+          type: nodeType,
+          data: {
+            textAlign: node.style.textAlign
+          }
+        };
+      }
+    }
+  })(htmlContent);
+}
+
 export function convertFromHTML(htmlContent) {
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
       if (nodeName === 'span' && node.style && node.style.color) {
-        console.log('STUF node style color?', nodeName, node.style.color)
         return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
       } else {
         return currentStyle;
@@ -48,8 +96,6 @@ export function convertFromHTML(htmlContent) {
       }
 
       if (node.style && node.style.textAlign) {
-        // console.log('STUF htmltoblock', node)
-        // console.log('STUF node children?', node.childNodes)
         return {
           type: nodeType,
           data: {

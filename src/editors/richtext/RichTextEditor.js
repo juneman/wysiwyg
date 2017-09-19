@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils, ContentState, Modifier } from 'draft-js';
-import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { decorator, convertFromHTML, convertFromPastedHTML,  convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
@@ -31,6 +31,7 @@ export default class RichTextEditor extends React.Component {
       // If editorState changes from the toolbar, push any changes up the chain
       const oldEditorState = this.props.localState.get('editorState');
       const newEditorState = nextProps.localState.get('editorState');
+
       if (oldEditorState !== newEditorState) {
         this.handleEditorStateChange(newEditorState);
       }
@@ -104,15 +105,22 @@ export default class RichTextEditor extends React.Component {
   }
 
   handlePastedText(text, html, editorState) {
-    const { persistedState, localState } = this.props;
+    const { persistedState, localState, onChange } = this.props;
     const containsHTML = /<[a-z][\s\S]*>/i.test(html);
-    console.log('STUF contains HTML?', containsHTML);
 
     if (containsHTML) {
-      const newEditorState = EditorState.createWithContent(convertFromHTML(html), decorator)
-      this.handleEditorStateChange(newEditorState);
-      
-      // this.onChange(EditorState.push(editorState, newState, 'insert-fragment'));
+
+      const newEditorState = EditorState.createWithContent(convertFromPastedHTML(html), decorator);
+      const newLocalState = localState.set('editorState', newEditorState)
+
+      const newPersistedState = persistedState.set('content', html)
+
+      onChange({
+        persistedState: newPersistedState,
+        localState: newLocalState,
+        html: this.generateHTML(newPersistedState)
+      })
+
       return true;
     } else {
       return false;
