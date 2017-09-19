@@ -105,12 +105,18 @@ export default class RichTextEditor extends React.Component {
 
   handlePastedText(text, html, editorState) {
     const { persistedState, localState } = this.props;
-    console.log('STUF text?', html)
-    const newEditorState = EditorState.createWithContent(convertFromHTML(html), decorator)
-    this.handleEditorStateChange(newEditorState);
-    
-    // this.onChange(EditorState.push(editorState, newState, 'insert-fragment'));
-    return true;
+    const containsHTML = /<[a-z][\s\S]*>/i.test(html);
+    console.log('STUF contains HTML?', containsHTML);
+
+    if (containsHTML) {
+      const newEditorState = EditorState.createWithContent(convertFromHTML(html), decorator)
+      this.handleEditorStateChange(newEditorState);
+      
+      // this.onChange(EditorState.push(editorState, newState, 'insert-fragment'));
+      return true;
+    } else {
+      return false;
+    }
 
   }
 
