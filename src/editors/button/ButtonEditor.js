@@ -23,7 +23,7 @@ export default class ButtonEditor extends React.Component {
 
     const isMarginTopSet = marginTop || marginTop === 0;
     const isMarginBottomSet = marginBottom || marginBottom === 0;
-    const defaultButtonAction = buttonActionType !== 0 && !buttonActionType && BUTTON_ACTION_TYPES.NEXT_PAGE;
+    const defaultButtonAction = !buttonActionType && BUTTON_ACTION_TYPES.NEXT_PAGE;
 
     const newPersistedState = persistedState
       .set('marginTop', isMarginTopSet ? marginTop : 5)
