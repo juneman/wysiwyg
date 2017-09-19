@@ -45,16 +45,22 @@ export function convertFromPastedHTML(htmlContent) {
           nodeType = 'header-five';
           break;
       }
-      console.log('STUFF checking node', node)
-      console.log('STUFF node children', node.childNodes)
-      if (node.style && node.style.textAlign) {
-        return {
-          type: nodeType,
-          data: {
-            textAlign: node.style.textAlign
-          }
-        };
+      if (node.childNodes.length === 1 && node.childNodes[0].nodeName === '#text') {
+
+        const textContent = node.childNodes[0].textContent;
+        const isBlank = /^\s+$/.test(textContent);
+
+        // Don't convert elements that contain all whitespace content
+        if (node.style && node.style.textAlign && !isBlank) {
+          return {
+            type: nodeType,
+            data: {
+              textAlign: node.style.textAlign
+            }
+          };
+        }
       }
+
     }
   })(htmlContent);
 }

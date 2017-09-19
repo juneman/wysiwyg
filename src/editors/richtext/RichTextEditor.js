@@ -109,7 +109,7 @@ export default class RichTextEditor extends React.Component {
     const containsHTML = /<[a-z][\s\S]*>/i.test(html);
 
     if (containsHTML) {
-
+      console.log('STUFF CLIPBOARD', html)
       const newEditorState = EditorState.createWithContent(convertFromPastedHTML(html), decorator);
       const newLocalState = localState.set('editorState', newEditorState)
 
@@ -122,6 +122,7 @@ export default class RichTextEditor extends React.Component {
       })
 
       return true;
+
     } else {
       return false;
     }
