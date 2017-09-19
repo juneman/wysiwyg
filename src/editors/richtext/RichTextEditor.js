@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, ContentState, Modifier } from 'draft-js';
 import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
@@ -77,6 +77,7 @@ export default class RichTextEditor extends React.Component {
                   return 'not-handled';
                 }
               }
+              handlePastedText={(text, html, editorState) => this.handlePastedText(text, html, editorState)}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
           ) : null
@@ -100,6 +101,17 @@ export default class RichTextEditor extends React.Component {
     if (this.editor) {
       this.editor.focus();
     }
+  }
+
+  handlePastedText(text, html, editorState) {
+    const { persistedState, localState } = this.props;
+    console.log('STUF text?', html)
+    const newEditorState = EditorState.createWithContent(convertFromHTML(html), decorator)
+    this.handleEditorStateChange(newEditorState);
+    
+    // this.onChange(EditorState.push(editorState, newState, 'insert-fragment'));
+    return true;
+
   }
 
   handleEditorStateChange(editorState) {
