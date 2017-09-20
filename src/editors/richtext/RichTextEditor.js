@@ -14,6 +14,7 @@ export default class RichTextEditor extends React.Component {
       EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
       : EditorState.createEmpty(decorator);
     this.handleEditorStateChange(initialEditorState);
+
   }
 
   componentWillReceiveProps(nextProps) {

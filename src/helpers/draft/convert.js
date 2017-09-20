@@ -1,8 +1,9 @@
 /* eslint react/display-name: 0 */  // Not exporting React components here
 import React from 'react';
+import { Map } from 'immutable';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
-import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { CompositeDecorator } from 'draft-js';
+import { LinkDecorator, linkToEntity, entityToLink, textToEntity } from '../../helpers/draft/LinkDecorator';
+import { CompositeDecorator, DefaultDraftBlockRenderMap } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 
@@ -13,16 +14,16 @@ export const decorator = new CompositeDecorator([
 export function convertFromPastedHTML(htmlContent) {
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color) {
+      if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
         return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
       } else {
         return currentStyle;
       }
     },
     htmlToEntity: (nodeName, node) => {
-      console.log('Stuf ENTITY?', node)
       const entity = linkToEntity(nodeName, node);
       return entity;
+      
     },
     textToEntity: () => {
       return [];
@@ -45,22 +46,50 @@ export function convertFromPastedHTML(htmlContent) {
         case 'h5':
           nodeType = 'header-five';
           break;
+        case 'ul':
+          nodeType = 'unordered-list-item';
+          break;
       }
-      if (node.childNodes.length === 1 && node.childNodes[0].nodeName === '#text') {
+      const data = {};
+      // console.log('STUFF checking nodes', nodeName)
+      if (node.children.length < 1) {
 
-        const textContent = node.childNodes[0].textContent;
+        const textContent = node.innerText;
         const isBlank = /^\s+$/.test(textContent);
-
         // Don't convert elements that contain all whitespace content
-        if (node.style && node.style.textAlign && !isBlank) {
-          return {
-            type: nodeType,
-            data: {
-              textAlign: node.style.textAlign
-            }
-          };
+        if (isBlank) {
+          return;
         }
       }
+      if (node.style && node.style.textAlign && nodeType !== 'unordered-list-item') {
+        data.textAlign = node.style.textAlign;
+
+        
+        return {
+          type: nodeType,
+          data: {
+            textAlign: node.style.textAlign,
+            color: node.style.color && node.style.color !== 'inherit' ? node.style.color : 'inherit'
+          }
+        };
+      }
+      //console.log('STUF node data?', nodeName, node.style)
+      // if (node.style) {
+      //   if (node.style.textAlign) {
+      //     data.textAlign = node.style.textAlign;
+
+      //     if (node.style.color) {
+      //       data.color = node.style.color;
+      //     }
+
+      //     console.log('STUFF returning node', nodeType, node.childNodes,data)
+      //     return {
+      //       type: nodeType,
+      //       data: data
+      //     }
+      //   }
+
+      //}
 
     }
   })(htmlContent);
@@ -106,7 +135,8 @@ export function convertFromHTML(htmlContent) {
         return {
           type: nodeType,
           data: {
-            textAlign: node.style.textAlign
+            textAlign: node.style.textAlign,
+            color: node.style.color && node.style.color !== 'inherit' ? node.style.color : 'inherit'
           }
         };
       }
@@ -162,7 +192,9 @@ export function customStyleFn(style) {
 
 export function blockStyleFn(contentBlock) {
   const { textAlign } = contentBlock.getData().toJS();
+
   if (textAlign) {
     return `align-${textAlign}`;
   }
+  
 }
