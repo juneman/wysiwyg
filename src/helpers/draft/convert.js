@@ -94,8 +94,6 @@ export function convertFromPastedHTML(htmlContent) {
         case 'h5':
           nodeType = 'header-five';
           break;
-        case 'img':
-          nodeType = 'image';
         case 'br':
           return;
       }
@@ -111,7 +109,7 @@ export function convertFromPastedHTML(htmlContent) {
         }
       }
 
-      const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'pre';
+      const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol';
 
       if (node.style && node.style.textAlign && isNotNestedBlock) {        
         return {
@@ -150,8 +148,6 @@ export function convertToHTML(editorState) {
             return <h4 {...styleProps} />;
           case 'header-five':
             return <h5 {...styleProps} />;
-          case 'image':
-            return <img {...styleProps} />;
           default:
             return <p {...styleProps} />;
         }
