@@ -59,7 +59,7 @@ export default class RichTextEditor extends React.Component {
     if (marginLeft) {
       wrapperStyle.marginLeft = marginLeft;
     };
-
+//
     return (
       <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
         { (isEditing) ? (
@@ -110,7 +110,6 @@ export default class RichTextEditor extends React.Component {
     const containsHTML = /<[a-z][\s\S]*>/i.test(html);
 
     if (containsHTML) {
-      console.log('STUFF CLIPBOARD', html)
       const newEditorState = EditorState.createWithContent(convertFromPastedHTML(html), decorator);
       const newLocalState = localState.set('editorState', newEditorState)
 
@@ -121,7 +120,6 @@ export default class RichTextEditor extends React.Component {
         localState: newLocalState,
         html: this.generateHTML(newPersistedState)
       })
-
       return true;
 
     } else {

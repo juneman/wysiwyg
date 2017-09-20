@@ -95,6 +95,8 @@ export function convertFromPastedHTML(htmlContent) {
         case 'h5':
           nodeType = 'header-five';
           break;
+        case 'br':
+          return;
       }
 
       if (node.children.length < 1) {
