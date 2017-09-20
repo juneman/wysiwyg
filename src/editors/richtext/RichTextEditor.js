@@ -60,6 +60,7 @@ export default class RichTextEditor extends React.Component {
 
     return (
       <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
+        <style>{'.rich-text strong{color: inherit !important;}'}</style>
         { (isEditing) ? (
           (editorState) ? (
             <Editor
@@ -147,7 +148,8 @@ export default class RichTextEditor extends React.Component {
 
     const stylesTag = (styles && styles.length) ? ` style="${styles}"` : '';
 
-    const html = `<div class="rich-text"${stylesTag}><div>${content}</div></div>`;
+    const styleOverride = `<style>.rich-text strong{color:inherit !important;}</style>`;
+    const html = `<div class="rich-text"${stylesTag}>${styleOverride}<div>${content}</div></div>`;
     return html;
   }
 
