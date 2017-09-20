@@ -3,7 +3,7 @@ import React from 'react';
 import { Map } from 'immutable';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
 import { LinkDecorator, linkToEntity, entityToLink, textToEntity } from '../../helpers/draft/LinkDecorator';
-import { CompositeDecorator, DefaultDraftBlockRenderMap } from 'draft-js';
+import { CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 
@@ -11,89 +11,6 @@ export const decorator = new CompositeDecorator([
   LinkDecorator
 ]);
 
-export function convertFromPastedHTML(htmlContent) {
-  return draftConvertFromHTML({
-    htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
-        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-      } else {
-        return currentStyle;
-      }
-    },
-    htmlToEntity: (nodeName, node) => {
-      const entity = linkToEntity(nodeName, node);
-      return entity;
-      
-    },
-    textToEntity: () => {
-      return [];
-    },
-    htmlToBlock: (nodeName, node) => {
-      let nodeType = 'unstyled';
-      switch(nodeName) {
-        case 'h1':
-          nodeType = 'header-one';
-          break;
-        case 'h2':
-          nodeType = 'header-two';
-          break;
-        case 'h3':
-          nodeType = 'header-three';
-          break;
-        case 'h4':
-          nodeType = 'header-four';
-          break;
-        case 'h5':
-          nodeType = 'header-five';
-          break;
-        case 'ul':
-          nodeType = 'unordered-list-item';
-          break;
-      }
-      const data = {};
-      // console.log('STUFF checking nodes', nodeName)
-      if (node.children.length < 1) {
-
-        const textContent = node.innerText;
-        const isBlank = /^\s+$/.test(textContent);
-        // Don't convert elements that contain all whitespace content
-        if (isBlank) {
-          return;
-        }
-      }
-      if (node.style && node.style.textAlign && nodeType !== 'unordered-list-item') {
-        data.textAlign = node.style.textAlign;
-
-        
-        return {
-          type: nodeType,
-          data: {
-            textAlign: node.style.textAlign,
-            color: node.style.color && node.style.color !== 'inherit' ? node.style.color : 'inherit'
-          }
-        };
-      }
-      //console.log('STUF node data?', nodeName, node.style)
-      // if (node.style) {
-      //   if (node.style.textAlign) {
-      //     data.textAlign = node.style.textAlign;
-
-      //     if (node.style.color) {
-      //       data.color = node.style.color;
-      //     }
-
-      //     console.log('STUFF returning node', nodeType, node.childNodes,data)
-      //     return {
-      //       type: nodeType,
-      //       data: data
-      //     }
-      //   }
-
-      //}
-
-    }
-  })(htmlContent);
-}
 
 export function convertFromHTML(htmlContent) {
   return draftConvertFromHTML({
@@ -135,11 +52,73 @@ export function convertFromHTML(htmlContent) {
         return {
           type: nodeType,
           data: {
-            textAlign: node.style.textAlign,
-            color: node.style.color && node.style.color !== 'inherit' ? node.style.color : 'inherit'
+            textAlign: node.style.textAlign
           }
         };
       }
+    }
+  })(htmlContent);
+}
+
+export function convertFromPastedHTML(htmlContent) {
+  return draftConvertFromHTML({
+    htmlToStyle: (nodeName, node, currentStyle) => {
+      if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
+        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
+      } else {
+        return currentStyle;
+      }
+    },
+    htmlToEntity: (nodeName, node) => {
+      const entity = linkToEntity(nodeName, node);
+      return entity;
+      
+    },
+    textToEntity: () => {
+      return [];
+    },
+    htmlToBlock: (nodeName, node) => {
+      let nodeType = 'unstyled';
+      switch(nodeName) {
+        case 'h1':
+          nodeType = 'header-one';
+          break;
+        case 'h2':
+          nodeType = 'header-two';
+          break;
+        case 'h3':
+          nodeType = 'header-three';
+          break;
+        case 'h4':
+          nodeType = 'header-four';
+          break;
+        case 'h5':
+          nodeType = 'header-five';
+          break;
+      }
+
+      if (node.children.length < 1) {
+
+        const textContent = node.innerText;
+        const isBlank = /^\s+$/.test(textContent);
+
+        // Don't convert elements that contain only whitespace content
+        if (isBlank) {
+          return;
+        }
+      }
+
+      const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'pre';
+
+      if (node.style && node.style.textAlign && isNotNestedBlock) {        
+        return {
+          type: nodeType,
+          data: {
+            textAlign: node.style.textAlign
+          }
+        };
+      }
+
     }
   })(htmlContent);
 }
