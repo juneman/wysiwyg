@@ -1,8 +1,7 @@
 /* eslint react/display-name: 0 */  // Not exporting React components here
 import React from 'react';
-import { Map } from 'immutable';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
-import { LinkDecorator, linkToEntity, entityToLink, textToEntity } from '../../helpers/draft/LinkDecorator';
+import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
 import { CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
@@ -95,6 +94,8 @@ export function convertFromPastedHTML(htmlContent) {
         case 'h5':
           nodeType = 'header-five';
           break;
+        case 'img':
+          nodeType = 'image';
         case 'br':
           return;
       }
@@ -149,6 +150,8 @@ export function convertToHTML(editorState) {
             return <h4 {...styleProps} />;
           case 'header-five':
             return <h5 {...styleProps} />;
+          case 'image':
+            return <img {...styleProps} />;
           default:
             return <p {...styleProps} />;
         }
@@ -164,6 +167,16 @@ export function convertToHTML(editorState) {
 export function customStyleFn(style) {
   const styleNames = style.toJS();
   return styleNames.reduce((styles, styleName) => {
+    if (styleName === 'CODE') {
+      styles.color = '#c7254e';
+      styles.padding = '2px 4px';
+      styles.fontSize = '90%';
+      styles.backgroundColor = 'rgba(249,242,244,0.7)';
+      styles.borderRadius = '4px';
+    }
+    if (styleName === 'CODE' || styleName === 'PRE') {
+      styles.fontFamily = 'Menlo,Monaco,Consolas,"Courier New",monospace';
+    }
     if(styleName.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
       styles.color = styleName.split(CUSTOM_STYLE_PREFIX_COLOR)[1];
     }
@@ -173,9 +186,7 @@ export function customStyleFn(style) {
 
 export function blockStyleFn(contentBlock) {
   const { textAlign } = contentBlock.getData().toJS();
-
   if (textAlign) {
     return `align-${textAlign}`;
   }
-  
 }

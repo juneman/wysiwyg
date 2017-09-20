@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState, RichUtils, ContentState, Modifier } from 'draft-js';
-import { decorator, convertFromHTML, convertFromPastedHTML,  convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { Editor, EditorState, RichUtils } from 'draft-js';
+import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
@@ -59,7 +59,7 @@ export default class RichTextEditor extends React.Component {
     if (marginLeft) {
       wrapperStyle.marginLeft = marginLeft;
     };
-//
+
     return (
       <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
         { (isEditing) ? (
