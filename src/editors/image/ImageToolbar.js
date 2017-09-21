@@ -8,6 +8,7 @@ import ImageUpload from '../../editor-actions/ImageUpload';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import Margin from '../../editor-actions/Margin';
+import ImageOnClick from '../../editor-actions/ImageOnClick';
 import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
 
 import { GALLERY_TYPES } from '../../helpers/constants';
@@ -40,6 +41,10 @@ export default function ImageToolbar(props) {
     {
       Component: Margin,
       name: 'margin'
+    },
+    {
+      Component: ImageOnClick,
+      name: 'image-onclick'
     }
   ];
 
