@@ -19,6 +19,7 @@ export default class ButtonEditor extends React.Component {
 
     const marginTop = persistedState.get('marginTop');
     const marginBottom = persistedState.get('marginBottom');
+    const buttonActionType = persistedState.get('buttonActionType');
 
     const isMarginTopSet = marginTop || marginTop === 0;
     const isMarginBottomSet = marginBottom || marginBottom === 0;
@@ -26,6 +27,7 @@ export default class ButtonEditor extends React.Component {
     const newPersistedState = persistedState
       .set('marginTop', isMarginTopSet ? marginTop : 5)
       .set('marginBottom', isMarginBottomSet ? marginBottom : 5)
+      .set('buttonActionType', buttonActionType || BUTTON_ACTION_TYPES.NEXT_PAGE)
 
     onChange({
       localState: localState,
@@ -137,7 +139,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -162,17 +164,25 @@ export default class ButtonEditor extends React.Component {
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
-    if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
-      buttonAttrs.href = href;
-      buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
-    } else if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
-      buttonAttrs['data-step'] = buttonActionType;
-    } else if (buttonActionType == BUTTON_ACTION_TYPES.CUSTOM_PAGE) {
-      buttonAttrs['data-step'] = stepIndex;
+    switch (buttonActionType) {
+      case BUTTON_ACTION_TYPES.URL:
+        buttonAttrs.href = href;
+        buttonAttrs.target = (isNewWindow) ? '_blank' : '_self';
+        break;
+      case BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType) && buttonActionType:
+        buttonAttrs['data-step'] = buttonActionType;
+        break;
+      case BUTTON_ACTION_TYPES.CUSTOM_PAGE:
+        buttonAttrs['data-step'] = stepIndex;
+        break;
+      case BUTTON_ACTION_TYPES.APPCUES:
+        buttonAttrs['onclick'] = `window.parent.Appcues.show('${ flowId }')`;
+        break;
+      default:
+        buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_PAGE;
     }
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
-
     
     const buttonObj = {
       type: 'tag',
