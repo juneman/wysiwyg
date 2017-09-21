@@ -71,12 +71,17 @@ export function convertFromPastedHTML(htmlContent) {
     htmlToEntity: (nodeName, node) => {
       const entity = linkToEntity(nodeName, node);
       return entity;
-      
     },
     textToEntity: () => {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
+
+      // Don't convert table elements
+      if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') {
+        return;
+      }
+
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
@@ -99,7 +104,6 @@ export function convertFromPastedHTML(htmlContent) {
       }
 
       if (node.children.length < 1) {
-
         const textContent = node.innerText;
         const isBlank = /^\s+$/.test(textContent);
 
@@ -111,7 +115,7 @@ export function convertFromPastedHTML(htmlContent) {
 
       const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'blockquote';
 
-      if (node.style && node.style.textAlign && isNotNestedBlock) {        
+      if (node.style && node.style.textAlign && isNotNestedBlock) {
         return {
           type: nodeType,
           data: {
@@ -163,7 +167,6 @@ export function convertToHTML(editorState) {
 export function customStyleFn(style) {
   const styleNames = style.toJS();
   return styleNames.reduce((styles, styleName) => {
-    console.log('STUF checking styles', styles, styleName)
     if (styleName === 'CODE') {
       styles.color = '#c7254e';
       styles.padding = '2px 4px';

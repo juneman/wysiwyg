@@ -114,7 +114,6 @@ export default class RichTextEditor extends React.Component {
     if (containsHTML) {
       const newEditorState = EditorState.createWithContent(convertFromPastedHTML(html), decorator);
       const newLocalState = localState.set('editorState', newEditorState)
-      console.log('STUF checking clipboard:', html)
       const newPersistedState = persistedState.set('content', html)
 
       onChange({
