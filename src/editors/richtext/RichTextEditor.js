@@ -61,7 +61,9 @@ export default class RichTextEditor extends React.Component {
     };
 
     return (
-      <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
+      <div className="rich-text"
+        ref={(el) => this.wrapper = el}
+        style={{ zIndex: 999999090999009090990909, ...wrapperStyle}}>
         { (isEditing) ? (
           (editorState) ? (
             <Editor
