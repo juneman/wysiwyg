@@ -66,7 +66,8 @@ export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) =
 export const buttonNavTypeWrapperStyle = {
   cursor: 'pointer',
   display: 'flex',
-  justifyContent: 'space-around'
+  justifyContent: 'space-evenly',
+  ['-webkit-font-smoothing']: 'antialiased'
 };
 
 export const labelStyle = {
@@ -130,7 +131,8 @@ export const dropdownStyle = {
   animationIterationCount: 1,
   animationFillMode: 'both',
   backgroundColor: '#F7F7F7',
-  zIndex: 10
+  zIndex: 10,
+  ['-webkit-font-smoothing']: 'antialiased'
 };
 
 export const buttonStyleOptionStyle = {
