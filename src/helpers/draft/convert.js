@@ -109,7 +109,7 @@ export function convertFromPastedHTML(htmlContent) {
         }
       }
 
-      const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol';
+      const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'blockquote';
 
       if (node.style && node.style.textAlign && isNotNestedBlock) {        
         return {
@@ -163,6 +163,7 @@ export function convertToHTML(editorState) {
 export function customStyleFn(style) {
   const styleNames = style.toJS();
   return styleNames.reduce((styles, styleName) => {
+    console.log('STUF checking styles', styles, styleName)
     if (styleName === 'CODE') {
       styles.color = '#c7254e';
       styles.padding = '2px 4px';
