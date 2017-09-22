@@ -11,6 +11,7 @@ import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
 const MENU_HEIGHT_ALLOWANCE = 400;
+const MENU_WIDTH_ALLOWANCE = 250;
 
 export default class Code extends React.Component {
 
@@ -19,6 +20,8 @@ export default class Code extends React.Component {
 
     this.state = {
       hasRoomToRenderBelow: true,
+      hasRoomToRenderRight: true,
+      offset: 0,
       content: '',
       isSaved: true
     };
@@ -28,7 +31,7 @@ export default class Code extends React.Component {
     const content = this.props.persistedState.get('content') || '';
     
     if (this.html) {
-      this.setHasRoomToRenderBelow();
+      this.setAceEditorPosition();
     }
 
     this.setState({
@@ -38,6 +41,9 @@ export default class Code extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) {
+      return true;
+    }
+    if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) {
       return true;
     }
     if (this.props.persistedState !== nextProps.persistedState) {
@@ -50,7 +56,7 @@ export default class Code extends React.Component {
 
   render() {
     const { persistedState, title, aceEditorConfig, localState } = this.props;
-    const { isSaved, hasRoomToRenderBelow } = this.state;
+    const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, offset } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
       position: 'absolute',
@@ -65,16 +71,20 @@ export default class Code extends React.Component {
       delete dropdownStyles.top;
     } 
 
+    if (!hasRoomToRenderRight) {
+      dropdownStyles.left = offset - 40;
+    }
+
     const titleStyles = secondaryMenuTitleStyle;
 
     const aceEditorProps = Object.assign({}, {
       name: 'code-editor',
-      editorProps: { $blockScrolling: true },
+      editorProps: { $blockScrolling: false },
       showGutter: false,
       key: "helloEditor",
       wrapEnabled: true,
       showPrintMargin: false,
-      width: '600px',
+      width: '700px',
       height: '200px'
     },
       aceEditorConfig.toJS(), // Let the user override items above
@@ -107,14 +117,21 @@ export default class Code extends React.Component {
     );
   }
 
-  setHasRoomToRenderBelow() {
+
+  setAceEditorPosition() {
+    const updates = {};
     const hasRoomToRenderBelow = ((window.innerHeight - this.html.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
-    console.log('LOGG setting hasRoomToRenderBelow CODE')
-    console.log('LOGG html boundaries', this.html.parentElement.getBoundingClientRect())
-    console.log('LOGG window height', window.innerHeight)
-    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
-      this.setState({ hasRoomToRenderBelow });
+    updates.hasRoomToRenderBelow = hasRoomToRenderBelow;
+
+    const hasRoomToRenderRight = ((window.innerWidth - this.html.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    updates.hasRoomToRenderRight = hasRoomToRenderRight;
+
+    if (!hasRoomToRenderRight) {
+      const offset = window.innerWidth - this.html.parentElement.getBoundingClientRect().right;
+      updates.offset = offset;
     }
+ 
+    this.setState({ ...updates });
   }
 
   handleSave() {
