@@ -17,40 +17,29 @@ export default class ImageOnClick extends React.Component {
 
     this.state = {
       isMenuOpen: props.isActive || false,
-      actionType: IMG_ACTION_TYPES.GO_TO_URL,
+      actionType: props.flowId ? IMG_ACTION_TYPES.SHOW_APPCUES_FLOW : IMG_ACTION_TYPES.GO_TO_URL,
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       flowId: ''
     };
   }
 
-  componentWillReceiveProps(nextProps){
-    const update = {};
-    if (nextProps.isActive !== this.props.isActive) {
-      update.isMenuOpen = nextProps.isActive;
-    };
-
-    const { persistedState } = nextProps;
+  componentDidUpdate(prevProps, prevState) {
+    const { persistedState } = this.props;
     const href = persistedState.get('href');
     const isNewWindow = persistedState.get('isNewWindow');
-    const flowId = persistedState.get('flowId')
+    const flowId = persistedState.get('flowId');
 
-    if (href !== undefined) {
-      update.href = href;
+    const isHrefSet = href && href !== prevState.href;
+    if (isHrefSet) {
+      this.setState({href, isNewWindow})
     }
 
-    if (isNewWindow !== undefined) {
-      update.isNewWindow = isNewWindow;
-    }
+    const isFlowIdSet = flowId && flowId !== prevState.flowId;
+    if (isFlowIdSet) (
+      this.setState({flowId, actionType: IMG_ACTION_TYPES.SHOW_APPCUES_FLOW})
+    )
 
-    if (flowId) {
-      update.flowId = flowId;
-      update.actionType = IMG_ACTION_TYPES.SHOW_APPCUES_FLOW;
-    }
-
-    if (Object.keys(update).length) {
-      this.setState(update);
-    };
   }
 
   render() {
@@ -115,7 +104,7 @@ export default class ImageOnClick extends React.Component {
           </div>
           
         <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button className="btn" onClick={this.saveAction}>Save</Button>
+          <Button className="btn" onClick={() => this.saveAction()}>Save</Button>
         </div>
 
       </Menu>
@@ -205,10 +194,18 @@ export default class ImageOnClick extends React.Component {
 
     setTimeout(() => onToggleActive(false), 200);
 
-    onChange({
-      localState,
-      persistedState: newPersistedState
-    });
+    if (actionType === IMG_ACTION_TYPES.GO_TO_URL && !href && flowId) {
+      return;
+    }
+    if (actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW && !flowId && href) {
+      return;
+    } else {
+      onChange({
+        localState,
+        persistedState: newPersistedState
+      });
+    }
+    
   }
 
 }
