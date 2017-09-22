@@ -34,8 +34,13 @@ export default class RichTextEditor extends React.Component {
 
     if (isEditing) {
 
+      const hasToolbarElement = document.getElementById('appcues-host').shadowRoot.firstChild.getElementsByClassName('resolved')[0].shadowRoot.firstChild.querySelectorAll('[name="EditorWrapperEditingToolbar"]').length;
+
+      if (hasToolbarElement) {
+        return
+      }
+
       const editorState = localState.get('editorState');
-      const newSelection = getResetSelection(editorState);
 
       if (this.editor && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
           this.editor.blur();
