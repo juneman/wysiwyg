@@ -17,7 +17,7 @@ export default class ImageOnClick extends React.Component {
 
     this.state = {
       isMenuOpen: props.isActive || false,
-      actionType: IMG_ACTION_TYPES.URL,
+      actionType: IMG_ACTION_TYPES.GO_TO_URL,
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
       flowId: ''
@@ -45,7 +45,7 @@ export default class ImageOnClick extends React.Component {
 
     if (flowId) {
       update.flowId = flowId;
-      update.actionType = IMG_ACTION_TYPES.APPCUES;
+      update.actionType = IMG_ACTION_TYPES.SHOW_APPCUES_FLOW;
     }
 
     if (Object.keys(update).length) {
@@ -79,18 +79,18 @@ export default class ImageOnClick extends React.Component {
       <Menu style={dropdownStyles}>
           <div style={buttonNavTypeWrapperStyle}>
             <div
-              onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.URL)}
-              style={{  ...tabStyle, ...(actionType === IMG_ACTION_TYPES.URL && selectedTabStyle), flexGrow: 1,  }}>
+              onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.GO_TO_URL)}
+              style={{  ...tabStyle, ...(actionType === IMG_ACTION_TYPES.GO_TO_URL && selectedTabStyle), flexGrow: 1,  }}>
                 Go to URL
             </div>
             <div
-              onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.APPCUES)}
-              style={{ ...tabStyle, ...(actionType === IMG_ACTION_TYPES.APPCUES && selectedTabStyle),flexGrow: 1 }}>
+              onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.SHOW_APPCUES_FLOW)}
+              style={{ ...tabStyle, ...(actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW && selectedTabStyle),flexGrow: 1 }}>
                 Trigger Flow
             </div>
           </div>
           <div style={buttonNavTypeMenuStyle}>
-            { actionType === IMG_ACTION_TYPES.URL &&
+            { actionType === IMG_ACTION_TYPES.GO_TO_URL &&
                 <div>
                   <div style={{ ...row, flexDirection: 'column' }}>
                     <label style={ labelStyle }>URL</label>
@@ -102,7 +102,7 @@ export default class ImageOnClick extends React.Component {
                   </div>
                 </div>
             }
-            { actionType === IMG_ACTION_TYPES.APPCUES &&
+            { actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW &&
               <div>
                 <div style={ fieldGroupStyle }>
                   <label style={ labelStyle }>Flow ID</label>
@@ -178,17 +178,17 @@ export default class ImageOnClick extends React.Component {
 
     const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
 
-    if (currentActionType === IMG_ACTION_TYPES.URL) {
-      return persistedState
-        .set('href', (href && hrefWithProtocol))
-        .set('isNewWindow', isNewWindow)
-        .delete('flowId')
-    }
-    if (currentActionType === IMG_ACTION_TYPES.APPCUES) {
-      return persistedState
-        .set('flowId', flowId)
-        .delete('href')
-        .delete('isNewWindow')
+    switch (currentActionType) {
+      case IMG_ACTION_TYPES.GO_TO_URL:
+        return persistedState
+          .set('href', (href && hrefWithProtocol))
+          .set('isNewWindow', isNewWindow)
+          .delete('flowId');
+      case IMG_ACTION_TYPES.SHOW_APPCUES_FLOW:
+        return persistedState
+          .set('flowId', flowId)
+          .delete('href')
+          .delete('isNewWindow');
     }
 
   }
