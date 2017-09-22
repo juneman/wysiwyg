@@ -116,17 +116,10 @@ export default class ImageEditor extends React.Component {
       type: 'tag',
       name: 'a',
       voidElement: false,
-      attrs: {
-        // href,
-        // target: (isNewWindow) ? '_blank' : '_self'
-      },
+      attrs: {},
       children: [imageAst]
     };
-// if (flowId && flowId.indexOf('-') === 0) {
-    //   imageAttr['onclick'] = `window.parent.Appcues.show('${flowId}')`;
-    //   imageAttr['data']
 
-    // }
     if (href) {
       linkAst.attrs.href = href
       linkAst.attrs.target = (isNewWindow) ? '_blank' : '_parent';
