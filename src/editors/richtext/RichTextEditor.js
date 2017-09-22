@@ -34,12 +34,18 @@ export default class RichTextEditor extends React.Component {
 
     if (isEditing) {
 
-      const editorState = localState.get('editorState');
-      const newSelection = getResetSelection(editorState);
+      // If mouseUp happened over a Toolbar element,
+      // don't reset editor focus.
+      const hasToolbarElement = document.getElementById('appcues-host').shadowRoot.firstChild.getElementsByClassName('resolved')[0].shadowRoot.firstChild.querySelectorAll('[name="EditorWrapperEditingToolbar"]').length;
+
+      if (hasToolbarElement) {
+        return;
+      }
 
       if (this.editor && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
           this.editor.blur();
-          const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState))
+          const editorState = localState.get('editorState');
+          const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState));
           this.handleEditorStateChange(newEditorState);
       }
 
