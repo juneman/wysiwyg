@@ -177,6 +177,7 @@ export default class ButtonEditor extends React.Component {
         break;
       case BUTTON_ACTION_TYPES.APPCUES:
         buttonAttrs['onclick'] = `window.parent.Appcues.show('${ flowId }')`;
+        buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_GROUP;
         break;
       default:
         buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_PAGE;
