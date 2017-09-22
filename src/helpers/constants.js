@@ -96,6 +96,6 @@ export const BUTTON_ACTION_TYPES_LIST = [
 ];
 
 export const IMG_ACTION_TYPES = {
-  URL: 'url',
-  APPCUES: 'appcues'
+  GO_TO_URL: 'url',
+  SHOW_APPCUES_FLOW: 'appcues'
 };
