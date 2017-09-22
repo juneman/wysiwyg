@@ -10,12 +10,15 @@ import 'brace/theme/monokai';
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
+const MENU_HEIGHT_ALLOWANCE = 400;
+
 export default class Code extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      hasRoomToRenderBelow: true,
       content: '',
       isSaved: true
     };
@@ -23,13 +26,18 @@ export default class Code extends React.Component {
 
   componentDidMount() {
     const content = this.props.persistedState.get('content') || '';
+    
+    if (this.html) {
+      this.setHasRoomToRenderBelow();
+    }
+
     this.setState({
       content
     });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.hasRoomToRenderBelow !== nextProps.hasRoomToRenderBelow) {
+    if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) {
       return true;
     }
     if (this.props.persistedState !== nextProps.persistedState) {
@@ -41,15 +49,17 @@ export default class Code extends React.Component {
   }
 
   render() {
-    const { persistedState, title, aceEditorConfig, localState, hasRoomToRenderBelow } = this.props;
-    const { isSaved } = this.state;
+    const { persistedState, title, aceEditorConfig, localState } = this.props;
+    const { isSaved, hasRoomToRenderBelow } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
       left: 0,
-      padding: 10
+      padding: 10,
+      ['-webkit-font-smoothing']: 'antialiased'
     };
+
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
@@ -64,8 +74,8 @@ export default class Code extends React.Component {
       key: "helloEditor",
       wrapEnabled: true,
       showPrintMargin: false,
-      width: '520px',
-      height: '400px'
+      width: '600px',
+      height: '200px'
     },
       aceEditorConfig.toJS(), // Let the user override items above
     {
@@ -79,7 +89,7 @@ export default class Code extends React.Component {
     return (
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
-          <div style={titleStyles}>{title}</div>
+          <div ref={(el) => this.html = el} style={titleStyles}>{title}</div>
           <AceEditor
             { ...aceEditorProps }
           />
@@ -95,6 +105,16 @@ export default class Code extends React.Component {
         </Menu>
       </div>
     );
+  }
+
+  setHasRoomToRenderBelow() {
+    const hasRoomToRenderBelow = ((window.innerHeight - this.html.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    console.log('LOGG setting hasRoomToRenderBelow CODE')
+    console.log('LOGG html boundaries', this.html.parentElement.getBoundingClientRect())
+    console.log('LOGG window height', window.innerHeight)
+    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
+      this.setState({ hasRoomToRenderBelow });
+    }
   }
 
   handleSave() {
