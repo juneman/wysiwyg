@@ -115,7 +115,7 @@ export default class ImageOnClick extends React.Component {
           </div>
           
         <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button className="btn" onClick={(e) => this.saveAction(e)}>Save</Button>
+          <Button className="btn" onClick={this.saveAction}>Save</Button>
         </div>
 
       </Menu>
