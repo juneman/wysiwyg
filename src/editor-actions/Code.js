@@ -21,7 +21,7 @@ export default class Code extends React.Component {
     this.state = {
       hasRoomToRenderBelow: true,
       hasRoomToRenderRight: true,
-      offset: 0,
+      leftOffset: 0,
       content: '',
       isSaved: true
     };
@@ -56,7 +56,7 @@ export default class Code extends React.Component {
 
   render() {
     const { persistedState, title, aceEditorConfig, localState } = this.props;
-    const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, offset } = this.state;
+    const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, leftOffset } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
       position: 'absolute',
@@ -72,7 +72,7 @@ export default class Code extends React.Component {
     } 
 
     if (!hasRoomToRenderRight) {
-      dropdownStyles.left = offset - 40;
+      dropdownStyles.left = leftOffset - 40;
     }
 
     const titleStyles = secondaryMenuTitleStyle;
@@ -127,8 +127,8 @@ export default class Code extends React.Component {
     updates.hasRoomToRenderRight = hasRoomToRenderRight;
 
     if (!hasRoomToRenderRight) {
-      const offset = window.innerWidth - this.html.parentElement.getBoundingClientRect().right;
-      updates.offset = offset;
+      const leftOffset = window.innerWidth - this.html.parentElement.getBoundingClientRect().right;
+      updates.leftOffset = leftOffset;
     }
  
     this.setState({ ...updates });
