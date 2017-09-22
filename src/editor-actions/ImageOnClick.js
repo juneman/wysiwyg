@@ -186,7 +186,7 @@ export default class ImageOnClick extends React.Component {
 
     if (currentActionType === IMG_ACTION_TYPES.URL) {
       return persistedState
-        .set('href', hrefWithProtocol)
+        .set('href', (href && hrefWithProtocol))
         .set('isNewWindow', isNewWindow)
         .delete('flowId')
     }

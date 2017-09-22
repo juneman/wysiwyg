@@ -5,6 +5,7 @@ import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { placeholderStyle } from '../../helpers/styles/editor';
 import ImageUploader from '../../components/ImageUploader';
+import { BUTTON_ACTION_TYPES } from '../../helpers/constants';
 
 export default class ImageEditor extends React.Component {
 
@@ -66,7 +67,7 @@ export default class ImageEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
 
     if (!url) {
       return '';
@@ -116,11 +117,24 @@ export default class ImageEditor extends React.Component {
       name: 'a',
       voidElement: false,
       attrs: {
-        href,
-        target: (isNewWindow) ? '_blank' : '_self'
+        // href,
+        // target: (isNewWindow) ? '_blank' : '_self'
       },
       children: [imageAst]
     };
+// if (flowId && flowId.indexOf('-') === 0) {
+    //   imageAttr['onclick'] = `window.parent.Appcues.show('${flowId}')`;
+    //   imageAttr['data']
+
+    // }
+    if (href) {
+      linkAst.attrs.href = href
+      linkAst.attrs.target = (isNewWindow) ? '_blank' : '_parent';
+    }
+    if (flowId) {
+      linkAst.attrs['onclick'] = `window.parent.Appcues.show('${flowId}')`;
+      linkAst.attrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_GROUP;
+    }
 
     const ast = [
       {
@@ -128,7 +142,7 @@ export default class ImageEditor extends React.Component {
         name: 'div',
         attrs: wrapperAttrs,
         voidElement: false,
-        children: [(href) ? linkAst : imageAst]
+        children: [(href || flowId) ? linkAst : imageAst]
       }
     ];
 
