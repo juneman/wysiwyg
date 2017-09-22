@@ -29,12 +29,6 @@ export default class ImageOnClick extends React.Component {
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
     };
-    if (nextProps.href !== this.props.href) {
-      update.href = nextProps.href;
-    };
-    if (nextProps.isNewWindow !== this.props.isNewWindow) {
-      update.isNewWindow = nextProps.isNewWindow;
-    };
 
     const { persistedState } = nextProps;
     const href = persistedState.get('href');
