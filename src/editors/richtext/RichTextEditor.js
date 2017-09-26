@@ -81,7 +81,7 @@ export default class RichTextEditor extends React.Component {
 
     const content = (persistedState.get('content')) || '';
 
-    const wrapperStyle = {};
+    const wrapperStyle = { zIndex: 2147483647 };
     if (marginTop) {
       wrapperStyle.marginTop = marginTop;
     };
@@ -98,7 +98,7 @@ export default class RichTextEditor extends React.Component {
     return (
       <div className="rich-text"
         ref={(el) => this.wrapper = el}
-        style={{ zIndex: 2147483647, ...wrapperStyle}}>
+        style={wrapperStyle}>
         <style>{'.rich-text strong{color: inherit !important;}'}</style>
         { (isEditing) ? (
           (editorState) ? (
