@@ -16,9 +16,8 @@ export function convertFromHTML(htmlContent) {
     htmlToStyle: (nodeName, node, currentStyle) => {
       if (nodeName === 'span' && node.style && node.style.color) {
         return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-      } else {
-        return currentStyle;
       }
+      return currentStyle;
     },
     htmlToEntity: (nodeName, node) => {
       const entity = linkToEntity(nodeName, node);
@@ -64,9 +63,8 @@ export function convertFromPastedHTML(htmlContent) {
     htmlToStyle: (nodeName, node, currentStyle) => {
       if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
         return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-      } else {
-        return currentStyle;
       }
+      return currentStyle;
     },
     htmlToEntity: (nodeName, node) => {
       const entity = linkToEntity(nodeName, node);
@@ -78,7 +76,7 @@ export function convertFromPastedHTML(htmlContent) {
       if (node.children.length < 1  && isBlank) return;
 
       // Don't convert table elements
-      if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
+      if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return false;
 
       let nodeType = 'unstyled';
       switch(nodeName) {
