@@ -145,6 +145,8 @@ export default class RichTextEditor extends React.Component {
 
   handlePastedText(text, html, editorState) {
     const { persistedState, localState, onChange } = this.props;
+
+    // Regex search for HTML tags within html clipboard content
     const containsHTML = /<[a-z][\s\S]*>/i.test(html);
 
     if (containsHTML) {
@@ -165,11 +167,8 @@ export default class RichTextEditor extends React.Component {
         html: this.generateHTML(newPersistedState)
       })
       return true;
-
-    } else {
-      return false;
-    }
-
+    } 
+    return false
   }
 
   handleEditorStateChange(editorState) {
