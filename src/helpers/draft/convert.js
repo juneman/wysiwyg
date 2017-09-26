@@ -1,8 +1,8 @@
 /* eslint react/display-name: 0 */  // Not exporting React components here
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
-import { LinkDecorator, linkToEntity, entityToWhitespace, whitespaceToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { CompositeDecorator } from 'draft-js';
+import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
+import { EditorState, ContentState, CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 
@@ -20,14 +20,10 @@ export function convertFromHTML(htmlContent) {
       }
     },
     htmlToEntity: (nodeName, node) => {
-      if (nodeName === '#text') {
-        const newEntity = whitespaceToEntity(node);
-        return newEntity;
-      }
       const entity = linkToEntity(nodeName, node);
       return entity;
     },
-    textToEntity: (text, createEntity) => {
+    textToEntity: () => {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
@@ -71,6 +67,7 @@ export function convertToHTML(editorState) {
     },
     blockToHTML: (block) => {
       if (block.data && Object.keys(block.data).length) {
+        
         const styleProps = {
           style: block.data
         };
@@ -89,13 +86,8 @@ export function convertToHTML(editorState) {
             return <p {...styleProps} />;
         }
       }
-      //console.log('LOGG2 unchanged block', block)
     },
     entityToHTML: (entity, originalText) => {
-      if (entity.type === 'SPACE') {
-        const spaceEntity = entityToWhitespace(entity, originalText);
-        return spaceEntity;
-      }
       originalText = entityToLink(entity, originalText);
       return originalText;
     }
@@ -134,3 +126,13 @@ export function getResetSelection(editorState) {
 
     return newSelection
 }
+
+export function trimContentWhitespace(editorState) {
+  const key = editorState.getSelection().getFocusKey();
+  const block = editorState.getCurrentContent().getBlockForKey(key);
+  const newText = block.getText().trim();
+  const newBlock = block.set('text', newText);
+  const newContentState = ContentState.createFromBlockArray([newBlock])
+
+  return EditorState.createWithContent(newContentState, decorator)
+} 
