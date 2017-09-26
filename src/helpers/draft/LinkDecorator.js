@@ -60,3 +60,32 @@ export function entityToLink(entity, originalText) {
   }
   return originalText;
 }
+
+export function whitespaceToEntity(textNode) {
+  const leadingPattern = /^[\s]*/g;
+  const originalText = textNode.data;
+  const leadingWhiteSpaceMatch = originalText.match(leadingPattern)
+  console.log('LOGG4 checking pattern', leadingWhiteSpaceMatch)
+  if (leadingWhiteSpaceMatch && leadingWhiteSpaceMatch.length && leadingWhiteSpaceMatch[0].length >= 1) {
+    return Entity.create(
+      'SPACE',
+      'MUTABLE',
+      {
+        space: leadingWhiteSpaceMatch[0].length
+      }
+    );
+  }
+
+}
+
+export function entityToWhitespace(entity, originalText) {
+  if (entity.type === 'SPACE') {
+    return (
+      <span>
+        <span style={{ display: 'inline-block', width: `${entity.data.space * 2}px` }} />
+        {originalText}
+      </span>
+    );
+  }
+  return originalText;
+}

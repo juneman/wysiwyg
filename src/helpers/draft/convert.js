@@ -1,7 +1,7 @@
 /* eslint react/display-name: 0 */  // Not exporting React components here
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
-import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
+import { LinkDecorator, linkToEntity, entityToWhitespace, whitespaceToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
 import { CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
@@ -20,10 +20,14 @@ export function convertFromHTML(htmlContent) {
       }
     },
     htmlToEntity: (nodeName, node) => {
+      if (nodeName === '#text') {
+        const newEntity = whitespaceToEntity(node);
+        return newEntity;
+      }
       const entity = linkToEntity(nodeName, node);
       return entity;
     },
-    textToEntity: () => {
+    textToEntity: (text, createEntity) => {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
@@ -70,7 +74,6 @@ export function convertToHTML(editorState) {
         const styleProps = {
           style: block.data
         };
-
         switch(block.type) {
           case 'header-one':
             return <h1 {...styleProps} />;
@@ -86,8 +89,13 @@ export function convertToHTML(editorState) {
             return <p {...styleProps} />;
         }
       }
+      //console.log('LOGG2 unchanged block', block)
     },
     entityToHTML: (entity, originalText) => {
+      if (entity.type === 'SPACE') {
+        const spaceEntity = entityToWhitespace(entity, originalText);
+        return spaceEntity;
+      }
       originalText = entityToLink(entity, originalText);
       return originalText;
     }
