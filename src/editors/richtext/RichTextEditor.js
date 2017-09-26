@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, Modifier } from 'draft-js';
 import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
@@ -148,7 +148,14 @@ export default class RichTextEditor extends React.Component {
     const containsHTML = /<[a-z][\s\S]*>/i.test(html);
 
     if (containsHTML) {
-      const newEditorState = EditorState.createWithContent(convertFromPastedHTML(html), decorator);
+      const newContent = convertFromPastedHTML(html).getBlockMap();
+      const newContentState = Modifier.replaceWithFragment(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        newContent
+      );
+
+      const newEditorState = EditorState.push(editorState, newContentState);
       const newLocalState = localState.set('editorState', newEditorState)
       const newPersistedState = persistedState.set('content', html)
 
