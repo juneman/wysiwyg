@@ -67,10 +67,10 @@ export function convertToHTML(editorState) {
     },
     blockToHTML: (block) => {
       if (block.data && Object.keys(block.data).length) {
-        
         const styleProps = {
           style: block.data
         };
+
         switch(block.type) {
           case 'header-one':
             return <h1 {...styleProps} />;
