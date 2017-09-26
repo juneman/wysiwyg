@@ -72,8 +72,10 @@ export function convertFromPastedHTML(htmlContent) {
       const entity = linkToEntity(nodeName, node);
       return entity;
     },
-    
     htmlToBlock: (nodeName, node) => {
+      const textContent = node.innerText;
+      const isBlank = /^\s+$/.test(textContent);
+      if (node.children.length < 1  && isBlank) return;
 
       // Don't convert table elements
       if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') {
@@ -99,16 +101,6 @@ export function convertFromPastedHTML(htmlContent) {
           break;
         case 'br':
           return;
-      }
-
-      if (node.children.length < 1) {
-        const textContent = node.innerText;
-        const isBlank = /^\s+$/.test(textContent);
-
-        // Don't convert elements that contain only whitespace content
-        if (isBlank) {
-          return;
-        }
       }
 
       const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'blockquote';
