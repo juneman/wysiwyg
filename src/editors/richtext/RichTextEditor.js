@@ -141,8 +141,8 @@ export default class RichTextEditor extends React.Component {
   handleEditorStateChange(editorState) {
     const { persistedState, localState } = this.props;
 
-    const newEditorState = trimContentWhitespace(editorState)
-    const htmlContent = convertToHTML(newEditorState);
+
+    const htmlContent = convertToHTML(editorState);
 
     const newPersistedState = persistedState.set('content', htmlContent);
 

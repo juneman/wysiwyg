@@ -128,11 +128,37 @@ export function getResetSelection(editorState) {
 }
 
 export function trimContentWhitespace(editorState) {
-  const key = editorState.getSelection().getFocusKey();
-  const block = editorState.getCurrentContent().getBlockForKey(key);
-  const newText = block.getText().trim();
-  const newBlock = block.set('text', newText);
-  const newContentState = ContentState.createFromBlockArray([newBlock])
+  const currentContentState = editorState.getCurrentContent();
+  const currentContentBlocks = currentContentState.getBlocksAsArray();
+  const currentContentBlocksArray = currentContentBlocks.map( (block) => block.getKey());
 
-  return EditorState.createWithContent(newContentState, decorator)
+  // const currentSelection = editorState.getSelection()
+  // const key = currentSelection && currentSelection.getHasFocus() && currentSelection.getStartKey();
+  // const currentBlock = currentContentState.getBlockForKey(key);
+
+  // const newText = currentBlock && currentBlock.getText().trim();
+  // const newBlock = currentBlock && currentBlock.set('text', newText);
+
+  const newBlocks = currentContentBlocksArray.map((blockKey, i) => {
+      const currentBlock = currentContentState.getBlockForKey(blockKey);
+      console.log('LOGG current block', currentBlock)
+      const newText = currentBlock && currentBlock.getText().trim();
+      const newBlock = currentBlock && currentBlock.set('text', newText);
+      return newBlock;
+
+  });
+
+  if (currentContentBlocks !== newBlocks) {
+    const newContentState = ContentState.createFromBlockArray(newBlocks)
+
+    return EditorState.createWithContent(newContentState, decorator)
+  }
+  
 } 
+// const newBlocks = currentContentBlocksArray.map((blockKey, i) => {
+//       if (blockKey === key) {
+//         return newBlock;
+//       } else {
+//         return currentContentBlocks[i];
+//       }
+//   });
