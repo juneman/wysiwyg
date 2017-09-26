@@ -72,9 +72,7 @@ export function convertFromPastedHTML(htmlContent) {
       const entity = linkToEntity(nodeName, node);
       return entity;
     },
-    textToEntity: () => {
-      return [];
-    },
+    
     htmlToBlock: (nodeName, node) => {
 
       // Don't convert table elements
