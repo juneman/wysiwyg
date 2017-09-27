@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { Editor, EditorState, RichUtils, Modifier } from 'draft-js';
-import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection, trimContentWhitespace } from '../../helpers/draft/convert';
+import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
@@ -179,7 +179,6 @@ export default class RichTextEditor extends React.Component {
 
   handleEditorStateChange(editorState) {
     const { persistedState, localState } = this.props;
-
 
     const htmlContent = convertToHTML(editorState);
 
