@@ -85,23 +85,23 @@ export default class Margin extends React.Component {
         <div style={{marginTop: 0}}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <label style={{ marginRight: 5 }}>Top: </label>
-            <input autoFocus style={shortInputStyle} value={marginTop} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginTop')} />
+            <input autoFocus style={shortInputStyle} value={marginTop} type='number' max={200} placeholder="0" onClickCapture={this.handleClick} onChange={(e) => this.handleInputChange(e, 'marginTop')} />
           </div>
           <div className='row' style={marginBoxRowStyle}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <label style={{ marginRight: 5 }}>Left: </label>
-              <input style={shortInputStyle} value={marginLeft} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginLeft')} />
+              <input style={shortInputStyle} value={marginLeft} type='number' max={100} placeholder="0" onClickCapture={this.handleClick} onChange={(e) => this.handleInputChange(e, 'marginLeft')} />
             </div>
             <div style={marginBoxStyle}>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <label style={{ marginRight: 5 }}>Right: </label>
-              <input style={shortInputStyle} value={marginRight} type='number' max={100} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginRight')} />
+              <input style={shortInputStyle} value={marginRight} type='number' max={100} placeholder="0" onClickCapture={this.handleClick} onChange={(e) => this.handleInputChange(e, 'marginRight')} />
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
             <label style={{ marginRight: 5 }}>Bottom: </label>
-            <input style={shortInputStyle} value={marginBottom} type='number' max={200} placeholder="0" onChange={(e) => this.handleInputChange(e, 'marginBottom')} />
+            <input style={shortInputStyle} value={marginBottom} type='number' max={200} placeholder="0" onClickCapture={this.handleClick} onChange={(e) => this.handleInputChange(e, 'marginBottom')} />
           </div>
         </div>
       </Menu>
@@ -127,6 +127,10 @@ export default class Margin extends React.Component {
     } else {
       onToggleActive(!isActive);
     }
+  }
+
+  handleClick(e) {
+    e.target.focus();
   }
 
   handleInputChange(e, name) {
