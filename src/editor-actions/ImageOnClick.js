@@ -191,8 +191,6 @@ export default class ImageOnClick extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { actionType, isMenuOpen, flowId, href, isNewWindow } = this.state;
 
-    const newPersistedState = this.getNewState(actionType);
-
     this.setState({
       isMenuOpen: !isMenuOpen
     });
@@ -208,6 +206,8 @@ export default class ImageOnClick extends React.Component {
     if (actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW && !flowId && href) {
       return;
     }
+
+    const newPersistedState = this.getNewState(actionType);
 
     onChange({
       localState,
