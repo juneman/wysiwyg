@@ -27,6 +27,12 @@ export function convertFromHTML(htmlContent) {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
+      const textContent = node.innerText;
+      const hasLeadingWhitespace = /^\s+/.test(textContent);
+      const hasTrailingWhitespace = /\s+$/.test(textContent);
+      if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+        node.innerText = node.innerText.trim();
+      }
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
@@ -73,7 +79,15 @@ export function convertFromPastedHTML(htmlContent) {
     htmlToBlock: (nodeName, node) => {
       const textContent = node.innerText;
       const isBlank = /^\s+$/.test(textContent);
-      if (node.children.length < 1  && isBlank) return;
+      if (node.children.length < 1) {
+        if (isBlank) return;
+
+        const hasLeadingWhitespace = /^\s+/.test(textContent);
+        const hasTrailingWhitespace = /\s+$/.test(textContent);
+        if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+          node.innerText = node.innerText.trim();
+        }
+      }
 
       // Don't convert table elements
       if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
@@ -122,6 +136,9 @@ export function convertToHTML(editorState) {
       }
     },
     blockToHTML: (block) => {
+      if (block.text.length) {
+        block.text = block.text.trim()
+      }
       if (block.data && Object.keys(block.data).length) {
         const styleProps = {
           style: block.data
@@ -192,39 +209,3 @@ export function getResetSelection(editorState) {
 
     return newSelection
 }
-
-export function trimContentWhitespace(editorState) {
-  const currentContentState = editorState.getCurrentContent();
-  const currentContentBlocks = currentContentState.getBlocksAsArray();
-  const currentContentBlocksArray = currentContentBlocks.map( (block) => block.getKey());
-
-  // const currentSelection = editorState.getSelection()
-  // const key = currentSelection && currentSelection.getHasFocus() && currentSelection.getStartKey();
-  // const currentBlock = currentContentState.getBlockForKey(key);
-
-  // const newText = currentBlock && currentBlock.getText().trim();
-  // const newBlock = currentBlock && currentBlock.set('text', newText);
-
-  const newBlocks = currentContentBlocksArray.map((blockKey, i) => {
-      const currentBlock = currentContentState.getBlockForKey(blockKey);
-      console.log('LOGG current block', currentBlock)
-      const newText = currentBlock && currentBlock.getText().trim();
-      const newBlock = currentBlock && currentBlock.set('text', newText);
-      return newBlock;
-
-  });
-
-  if (currentContentBlocks !== newBlocks) {
-    const newContentState = ContentState.createFromBlockArray(newBlocks)
-
-    return EditorState.createWithContent(newContentState, decorator)
-  }
-  
-} 
-// const newBlocks = currentContentBlocksArray.map((blockKey, i) => {
-//       if (blockKey === key) {
-//         return newBlock;
-//       } else {
-//         return currentContentBlocks[i];
-//       }
-//   });
