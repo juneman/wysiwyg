@@ -81,7 +81,7 @@ export default class RichTextEditor extends React.Component {
 
     const content = (persistedState.get('content')) || '';
 
-    const wrapperStyle = { zIndex: 2147483647 };
+    const wrapperStyle = { zIndex: 483647 };
     if (marginTop) {
       wrapperStyle.marginTop = marginTop;
     };
