@@ -76,7 +76,7 @@ export function convertFromPastedHTML(htmlContent) {
       if (node.children.length < 1  && isBlank) return;
 
       // Don't convert table elements
-      if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return false;
+      if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
 
       let nodeType = 'unstyled';
       switch(nodeName) {
