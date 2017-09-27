@@ -10,6 +10,7 @@ export function getButtonProps(isActive) {
 }
 
 export const tabStyle = {
+  flexGrow: 1,
   cursor: 'pointer',
   color: '#969696',
   backgroundColor: '#fff',
