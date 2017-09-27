@@ -30,7 +30,7 @@ export default class ImageOnClick extends React.Component {
     const isNewWindow = persistedState.get('isNewWindow');
     const flowId = persistedState.get('flowId');
 
-    const isHrefSet = href && href !== prevState.href;
+    const isHrefSet = href && !prevState.href && href !== prevState.href;
     if (isHrefSet) {
       this.setState({href})
     }
@@ -40,10 +40,10 @@ export default class ImageOnClick extends React.Component {
       this.setState({isNewWindow})
     }
 
-    const isFlowIdSet = flowId && flowId !== prevState.flowId;
-    if (isFlowIdSet) (
-      this.setState({flowId, actionType: IMG_ACTION_TYPES.SHOW_APPCUES_FLOW})
-    )
+    const isFlowIdSet = flowId && !prevState.flowId && flowId !== prevState.flowId;
+    if (isFlowIdSet) {
+      this.setState({flowId: flowId, actionType: IMG_ACTION_TYPES.SHOW_APPCUES_FLOW})
+    }
 
   }
 
@@ -88,7 +88,7 @@ export default class ImageOnClick extends React.Component {
                 <div>
                   <div style={{ ...row, flexDirection: 'column' }}>
                     <label style={ labelStyle }>URL</label>
-                    <input autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+                    <input autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHrefInput(e)} />
                   </div>
                   <div style={{ ...row, alignItems: 'center' }}>
                     <input id="link-checkbox" type="checkbox" style={ checkboxStyle } checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
@@ -100,7 +100,7 @@ export default class ImageOnClick extends React.Component {
               <div>
                 <div style={ fieldGroupStyle }>
                   <label style={ labelStyle }>Flow ID</label>
-                  <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
+                  <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleFlowIdInput(e)}/>
                 </div>
                 <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this image.
                 </p>
@@ -141,7 +141,7 @@ export default class ImageOnClick extends React.Component {
     this.setState({ actionType });
   }
 
-  handleHref(e) {
+  handleHrefInput(e) {
     const href = e.target.value;
     this.setState({
       href
@@ -159,7 +159,7 @@ export default class ImageOnClick extends React.Component {
     });
   }
 
-  handleAppcuesShow(e) {
+  handleFlowIdInput(e) {
     const value = e.target.value;
     this.setState({
       flowId: value
