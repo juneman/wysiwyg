@@ -83,7 +83,7 @@ export default class DropDownMenu extends React.Component {
         transition: 'opacity 0.15s ease-out, margin-top 0.2s ease-out',
         pointerEvents: 'none',
         color: '#666',
-        zIndex: 15
+        zIndex: 150
       },
       dropDownMenuOption: {
         cursor: 'pointer',
