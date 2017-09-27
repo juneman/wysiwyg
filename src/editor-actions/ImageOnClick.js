@@ -191,7 +191,7 @@ export default class ImageOnClick extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { actionType, isMenuOpen, flowId, href, isNewWindow } = this.state;
 
-    const newPersistedState = this.getNewState(actionType)
+    const newPersistedState = this.getNewState(actionType);
 
     this.setState({
       isMenuOpen: !isMenuOpen
@@ -199,18 +199,20 @@ export default class ImageOnClick extends React.Component {
 
     setTimeout(() => onToggleActive(false), 200);
 
+    // Prevent user from losing flowId when saving on URL tab with blank URL
     if (actionType === IMG_ACTION_TYPES.GO_TO_URL && !href && flowId) {
       return;
     }
+
+    // Prevent user from losing URL when saving on Appcues Show tab with blank flowId
     if (actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW && !flowId && href) {
       return;
-    } else {
-      onChange({
-        localState,
-        persistedState: newPersistedState
-      });
     }
-    
+
+    onChange({
+      localState,
+      persistedState: newPersistedState
+    });
   }
 
 }
