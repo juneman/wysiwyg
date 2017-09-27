@@ -32,7 +32,12 @@ export default class ImageOnClick extends React.Component {
 
     const isHrefSet = href && href !== prevState.href;
     if (isHrefSet) {
-      this.setState({href, isNewWindow})
+      this.setState({href})
+    }
+
+    const isNewWindowSet = isNewWindow && isNewWindow !== prevState.isNewWindow;
+    if (isNewWindowSet) {
+      this.setState({isNewWindow})
     }
 
     const isFlowIdSet = flowId && flowId !== prevState.flowId;
@@ -64,17 +69,17 @@ export default class ImageOnClick extends React.Component {
       display: 'flex'
     };
 
-    const dropdownNodes = isActive ? (
+    const dropdownNodes = isActive && (
       <Menu style={dropdownStyles}>
           <div style={buttonNavTypeWrapperStyle}>
             <div
               onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.GO_TO_URL)}
-              style={{  ...tabStyle, ...(actionType === IMG_ACTION_TYPES.GO_TO_URL && selectedTabStyle), flexGrow: 1,  }}>
+              style={{  ...tabStyle, ...(actionType === IMG_ACTION_TYPES.GO_TO_URL ? selectedTabStyle : {}) }}>
                 Go to URL
             </div>
             <div
               onClick={() => this.selectOnClickAction(IMG_ACTION_TYPES.SHOW_APPCUES_FLOW)}
-              style={{ ...tabStyle, ...(actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW && selectedTabStyle),flexGrow: 1 }}>
+              style={{ ...tabStyle, ...(actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW ? selectedTabStyle : {}) }}>
                 Trigger Flow
             </div>
           </div>
@@ -104,11 +109,11 @@ export default class ImageOnClick extends React.Component {
           </div>
           
         <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button className="btn" onClick={() => this.saveAction()}>Save</Button>
+          <Button onClick={() => this.saveAction()}>Save</Button>
         </div>
 
       </Menu>
-    ) : null;
+    );
 
     return (
       <div>
