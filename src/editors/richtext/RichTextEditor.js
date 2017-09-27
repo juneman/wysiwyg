@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection, trimContentWhitespace } from '../../helpers/draft/convert';
+import { Editor, EditorState, RichUtils, Modifier } from 'draft-js';
+import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection, trimContentWhitespace } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
 export default class RichTextEditor extends React.Component {
@@ -69,6 +69,7 @@ export default class RichTextEditor extends React.Component {
       // If editorState changes from the toolbar, push any changes up the chain
       const oldEditorState = this.props.localState.get('editorState');
       const newEditorState = nextProps.localState.get('editorState');
+
       if (oldEditorState !== newEditorState) {
         this.handleEditorStateChange(newEditorState);
       }
@@ -86,7 +87,7 @@ export default class RichTextEditor extends React.Component {
 
     const content = (persistedState.get('content')) || '';
 
-    const wrapperStyle = {};
+    const wrapperStyle = { zIndex: 483647 };
     if (marginTop) {
       wrapperStyle.marginTop = marginTop;
     };
@@ -101,7 +102,9 @@ export default class RichTextEditor extends React.Component {
     };
 
     return (
-      <div className="rich-text" ref={(el) => this.wrapper = el} style={wrapperStyle}>
+      <div className="rich-text"
+        ref={(el) => this.wrapper = el}
+        style={wrapperStyle}>
         <style>{'.rich-text strong{color: inherit !important;}'}</style>
         { (isEditing) ? (
           (editorState) ? (
@@ -120,6 +123,7 @@ export default class RichTextEditor extends React.Component {
                   return 'not-handled';
                 }
               }
+              handlePastedText={(text, html, editorState) => this.handlePastedText(text, html, editorState)}
               onChange={(editorState) => this.handleEditorStateChange(editorState)}
             />
           ) : null
@@ -143,6 +147,34 @@ export default class RichTextEditor extends React.Component {
     if (this.editor) {
       this.editor.focus();
     }
+  }
+
+  handlePastedText(text, html, editorState) {
+    const { persistedState, localState, onChange } = this.props;
+
+    // Regex search for HTML tags within html clipboard content
+    const containsHTML = /<[a-z][\s\S]*>/i.test(html);
+
+    if (containsHTML) {
+      const newContent = convertFromPastedHTML(html).getBlockMap();
+      const newContentState = Modifier.replaceWithFragment(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        newContent
+      );
+
+      const newEditorState = EditorState.push(editorState, newContentState);
+      const newLocalState = localState.set('editorState', newEditorState)
+      const newPersistedState = persistedState.set('content', html)
+
+      onChange({
+        persistedState: newPersistedState,
+        localState: newLocalState,
+        html: this.generateHTML(newPersistedState)
+      })
+      return true;
+    } 
+    return false
   }
 
   handleEditorStateChange(editorState) {

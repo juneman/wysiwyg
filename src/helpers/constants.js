@@ -94,3 +94,8 @@ export const BUTTON_ACTION_TYPES_LIST = [
     value: BUTTON_ACTION_TYPES.APPCUES
   }
 ];
+
+export const IMG_ACTION_TYPES = {
+  GO_TO_URL: 'url',
+  SHOW_APPCUES_FLOW: 'appcues'
+};

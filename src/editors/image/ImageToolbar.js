@@ -8,7 +8,7 @@ import ImageUpload from '../../editor-actions/ImageUpload';
 import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import Margin from '../../editor-actions/Margin';
-import HyperlinkBlock from '../../editor-actions/HyperlinkBlock';
+import ImageOnClick from '../../editor-actions/ImageOnClick';
 
 import { GALLERY_TYPES } from '../../helpers/constants';
 
@@ -34,13 +34,14 @@ export default function ImageToolbar(props) {
       name: 'alignment-block'
     },
     {
-      Component: HyperlinkBlock,
-      name: 'hyperlink-block'
+      Component: ImageOnClick,
+      name: 'image-onclick'
     },
     {
       Component: Margin,
       name: 'margin'
-    }
+    },
+    
   ];
 
   return (
