@@ -10,12 +10,19 @@ import 'brace/theme/monokai';
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
+const MENU_HEIGHT_ALLOWANCE = 400;
+const MENU_WIDTH_ALLOWANCE = 250;
+
 export default class Code extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      hasRoomToRenderBelow: true,
+      hasRoomToRenderRight: true,
+      hasCheckedPosition: false,
+      leftOffset: 0,
       content: '',
       isSaved: true
     };
@@ -23,37 +30,53 @@ export default class Code extends React.Component {
 
   componentDidMount() {
     const content = this.props.persistedState.get('content') || '';
+
+    if (this._menuTitle) {
+      this.setAceEditorPosition();
+    }
+
     this.setState({
       content
     });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.hasRoomToRenderBelow !== nextProps.hasRoomToRenderBelow) {
-      return true;
-    }
-    if (this.props.persistedState !== nextProps.persistedState) {
-      return true;
-    }
+    if (!this.state.hasCheckedPosition && this._html) { return true; }
+    if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) { return true; }
+    if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) { return true; }
+
+    if (this.props.persistedState !== nextProps.persistedState) { return true; }
     if (this.props.localState !== nextProps.localState) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
     return false;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.state.hasCheckedPosition && this._html) {
+      this.setAceEditorPosition();
+    }
+  }
+
   render() {
-    const { persistedState, title, aceEditorConfig, localState, hasRoomToRenderBelow } = this.props;
-    const { isSaved } = this.state;
+    const { persistedState, title, aceEditorConfig, localState } = this.props;
+    const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, leftOffset } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
       position: 'absolute',
       top: 45,
       left: 0,
-      padding: 10
+      padding: 10,
+      ['-webkit-font-smoothing']: 'antialiased'
     };
+
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
     } 
+
+    if (!hasRoomToRenderRight) {
+      dropdownStyles.left = leftOffset - 40;
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
@@ -64,8 +87,8 @@ export default class Code extends React.Component {
       key: "helloEditor",
       wrapEnabled: true,
       showPrintMargin: false,
-      width: '520px',
-      height: '400px'
+      width: '700px',
+      height: '200px'
     },
       aceEditorConfig.toJS(), // Let the user override items above
     {
@@ -79,7 +102,7 @@ export default class Code extends React.Component {
     return (
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
-          <div style={titleStyles}>{title}</div>
+          <div ref={(el) => this._menuTitle = el} style={titleStyles}>{title}</div>
           <AceEditor
             { ...aceEditorProps }
           />
@@ -95,6 +118,24 @@ export default class Code extends React.Component {
         </Menu>
       </div>
     );
+  }
+
+  setAceEditorPosition() {
+    const { hasCheckedPosition } = this.state;
+
+    const updates = { hasCheckedPosition: true };
+    const hasRoomToRenderBelow = ((window.innerHeight - this._menuTitle.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    updates.hasRoomToRenderBelow = hasRoomToRenderBelow;
+
+    const hasRoomToRenderRight = ((window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    updates.hasRoomToRenderRight = hasRoomToRenderRight;
+
+    if (!hasRoomToRenderRight) {
+      const leftOffset = window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right;
+      updates.leftOffset = leftOffset;
+    }
+
+    this.setState({ ...updates });
   }
 
   handleSave() {
