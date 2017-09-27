@@ -21,6 +21,7 @@ export default class Code extends React.Component {
     this.state = {
       hasRoomToRenderBelow: true,
       hasRoomToRenderRight: true,
+      hasCheckedPosition: false,
       leftOffset: 0,
       content: '',
       isSaved: true
@@ -29,8 +30,8 @@ export default class Code extends React.Component {
 
   componentDidMount() {
     const content = this.props.persistedState.get('content') || '';
-    
-    if (this.html) {
+
+    if (this._menuTitle) {
       this.setAceEditorPosition();
     }
 
@@ -40,18 +41,20 @@ export default class Code extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) {
-      return true;
-    }
-    if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) {
-      return true;
-    }
-    if (this.props.persistedState !== nextProps.persistedState) {
-      return true;
-    }
+    if (!this.state.hasCheckedPosition && this._html) { return true; }
+    if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) { return true; }
+    if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) { return true; }
+
+    if (this.props.persistedState !== nextProps.persistedState) { return true; }
     if (this.props.localState !== nextProps.localState) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
     return false;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.state.hasCheckedPosition && this._html) {
+      this.setAceEditorPosition();
+    }
   }
 
   render() {
@@ -79,7 +82,7 @@ export default class Code extends React.Component {
 
     const aceEditorProps = Object.assign({}, {
       name: 'code-editor',
-      editorProps: { $blockScrolling: false },
+      editorProps: { $blockScrolling: true },
       showGutter: false,
       key: "helloEditor",
       wrapEnabled: true,
@@ -99,7 +102,7 @@ export default class Code extends React.Component {
     return (
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
-          <div ref={(el) => this.html = el} style={titleStyles}>{title}</div>
+          <div ref={(el) => this._menuTitle = el} style={titleStyles}>{title}</div>
           <AceEditor
             { ...aceEditorProps }
           />
@@ -117,20 +120,21 @@ export default class Code extends React.Component {
     );
   }
 
-
   setAceEditorPosition() {
-    const updates = {};
-    const hasRoomToRenderBelow = ((window.innerHeight - this.html.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    const { hasCheckedPosition } = this.state;
+
+    const updates = { hasCheckedPosition: true };
+    const hasRoomToRenderBelow = ((window.innerHeight - this._menuTitle.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     updates.hasRoomToRenderBelow = hasRoomToRenderBelow;
 
-    const hasRoomToRenderRight = ((window.innerWidth - this.html.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    const hasRoomToRenderRight = ((window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
     updates.hasRoomToRenderRight = hasRoomToRenderRight;
 
     if (!hasRoomToRenderRight) {
-      const leftOffset = window.innerWidth - this.html.parentElement.getBoundingClientRect().right;
+      const leftOffset = window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right;
       updates.leftOffset = leftOffset;
     }
- 
+
     this.setState({ ...updates });
   }
 
