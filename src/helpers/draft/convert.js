@@ -2,7 +2,7 @@
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
 import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { EditorState, ContentState, CompositeDecorator } from 'draft-js';
+import { CompositeDecorator } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 

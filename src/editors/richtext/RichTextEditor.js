@@ -20,6 +20,7 @@ export default class RichTextEditor extends React.Component {
       EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
       : EditorState.createEmpty(decorator);
     this.handleEditorStateChange(initialEditorState);
+
   }
 
   componentDidMount() {
@@ -183,7 +184,6 @@ export default class RichTextEditor extends React.Component {
     const htmlContent = convertToHTML(editorState);
 
     const newPersistedState = persistedState.set('content', htmlContent);
-
     const newLocalState = localState.set('editorState', editorState);
 
     this.props.onChange({
