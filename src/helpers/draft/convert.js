@@ -31,6 +31,8 @@ export function convertFromHTML(htmlContent) {
       const hasLeadingWhitespace = /^\s+/.test(textContent);
       const hasTrailingWhitespace = /\s+$/.test(textContent);
       if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+        // Draft will not convert leading and trailing whitespace to HTML, yet, will still save it. We will strip
+        // the whitespace so that editing content will match preview/published content.
         node.innerText = node.innerText.trim();
       }
       let nodeType = 'unstyled';
@@ -84,7 +86,7 @@ export function convertFromPastedHTML(htmlContent) {
 
         const hasLeadingWhitespace = /^\s+/.test(textContent);
         const hasTrailingWhitespace = /\s+$/.test(textContent);
-        if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+        if (hasLeadingWhitespace || hasTrailingWhitespace) {
           node.innerText = node.innerText.trim();
         }
       }
