@@ -27,6 +27,14 @@ export function convertFromHTML(htmlContent) {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
+      const textContent = node.innerText;
+      const hasLeadingWhitespace = /^\s+/.test(textContent);
+      const hasTrailingWhitespace = /\s+$/.test(textContent);
+      if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+        // Draft will not convert leading and trailing whitespace to HTML, yet, will still save it. We will strip
+        // the whitespace so that editing content will match preview/published content.
+        node.innerText = node.innerText.trim();
+      }
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
@@ -73,7 +81,15 @@ export function convertFromPastedHTML(htmlContent) {
     htmlToBlock: (nodeName, node) => {
       const textContent = node.innerText;
       const isBlank = /^\s+$/.test(textContent);
-      if (node.children.length < 1  && isBlank) return;
+      if (node.children.length < 1) {
+        if (isBlank) return;
+
+        const hasLeadingWhitespace = /^\s+/.test(textContent);
+        const hasTrailingWhitespace = /\s+$/.test(textContent);
+        if (hasLeadingWhitespace || hasTrailingWhitespace) {
+          node.innerText = node.innerText.trim();
+        }
+      }
 
       // Don't convert table elements
       if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
@@ -122,6 +138,9 @@ export function convertToHTML(editorState) {
       }
     },
     blockToHTML: (block) => {
+      if (block.text.length) {
+        block.text = block.text.trim()
+      }
       if (block.data && Object.keys(block.data).length) {
         const styleProps = {
           style: block.data
