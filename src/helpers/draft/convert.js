@@ -28,13 +28,34 @@ export function convertFromHTML(htmlContent) {
     },
     htmlToBlock: (nodeName, node) => {
       const textContent = node.innerText;
+
+      // Draft will not convert leading and trailing whitespace to HTML, yet, will still save it. We will strip
+      // the whitespace so that editing content will match preview/published content.
       const hasLeadingWhitespace = /^\s+/.test(textContent);
       const hasTrailingWhitespace = /\s+$/.test(textContent);
-      if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
-        // Draft will not convert leading and trailing whitespace to HTML, yet, will still save it. We will strip
-        // the whitespace so that editing content will match preview/published content.
+
+      // Handle whitespace in a single, unstyled block.
+      if (node.childNodes.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
         node.innerText = node.innerText.trim();
       }
+
+      // Handle whitespace in blocks with inline styling.
+      if (nodeName === 'p' && node.childNodes.length >=  1) {
+        if (hasLeadingWhitespace) {
+          let firstChildNode = node.childNodes[0];
+          const leadingWhitespace = firstChildNode.textContent.match(/^\s+/)[0];
+          const trimmedFirstChildNode = firstChildNode.textContent.substr(leadingWhitespace.length);
+          firstChildNode.textContent = trimmedFirstChildNode;
+        }
+
+        if (hasTrailingWhitespace) {
+          let lastChildNode = node.childNodes[node.childNodes.length - 1];
+          const trailingWhitespace = lastChildNode.textContent.match(/\s+$/);
+          const trimmedLastChildNode = lastChildNode.textContent.substr(0, trailingWhitespace.index);
+          lastChildNode.textContent = trimmedLastChildNode;
+        }
+      }
+
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
@@ -81,7 +102,7 @@ export function convertFromPastedHTML(htmlContent) {
     htmlToBlock: (nodeName, node) => {
       const textContent = node.innerText;
       const isBlank = /^\s+$/.test(textContent);
-      if (node.children.length < 1) {
+      if (node.childNodes.length < 1) {
         if (isBlank) return;
 
         const hasLeadingWhitespace = /^\s+/.test(textContent);
