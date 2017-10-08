@@ -35,23 +35,29 @@ export function convertFromHTML(htmlContent) {
       const hasTrailingWhitespace = /\s+$/.test(textContent);
 
       // Handle whitespace in a single, unstyled block.
-      if (node.childNodes.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+      if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
         node.innerText = node.innerText.trim();
       }
 
       // Handle whitespace in blocks with inline styling.
       if (nodeName === 'p' && node.childNodes.length >=  1) {
-        if (hasLeadingWhitespace) {
-          let firstChildNode = node.childNodes[0];
-          const leadingWhitespace = firstChildNode.textContent.match(/^\s+/)[0];
-          const trimmedFirstChildNode = firstChildNode.textContent.substr(leadingWhitespace.length);
+        let firstChildNode = node.childNodes[0];
+        const firstChildNodeText = firstChildNode.textContent;
+        const firstChildNodeHasLeadingWhitespace = /^\s+/.test(firstChildNodeText);
+
+        if (firstChildNodeHasLeadingWhitespace) {
+          const leadingWhitespace = firstChildNodeText.match(/^\s+/)[0];
+          const trimmedFirstChildNode = firstChildNodeText.substr(leadingWhitespace.length);
           firstChildNode.textContent = trimmedFirstChildNode;
         }
 
-        if (hasTrailingWhitespace) {
-          let lastChildNode = node.childNodes[node.childNodes.length - 1];
-          const trailingWhitespace = lastChildNode.textContent.match(/\s+$/);
-          const trimmedLastChildNode = lastChildNode.textContent.substr(0, trailingWhitespace.index);
+        let lastChildNode = node.childNodes[node.childNodes.length - 1];
+        const lastChildNodeText = lastChildNode.textContent;
+        const lastChildNodeHasTrailingWhitespace = /\s+$/.test(lastChildNodeText);
+
+        if (lastChildNodeHasTrailingWhitespace) {
+          const trailingWhitespace = lastChildNodeText.match(/\s+$/);
+          const trimmedLastChildNode = lastChildNodeText.substr(0, trailingWhitespace.index);
           lastChildNode.textContent = trimmedLastChildNode;
         }
       }
