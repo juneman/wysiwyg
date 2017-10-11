@@ -35,12 +35,13 @@ export function convertFromHTML(htmlContent) {
       const hasTrailingWhitespace = /\s+$/.test(textContent);
 
       // Handle whitespace in a single, unstyled block.
-      if (node.children.length < 1 && (hasLeadingWhitespace || hasTrailingWhitespace)) {
+      if (node.children.length < 1 && !node.parentNode.textContent && (hasLeadingWhitespace || hasTrailingWhitespace)) {
         node.innerText = node.innerText.trim();
       }
 
-      // Handle whitespace in blocks with inline styling.
-      if (nodeName === 'p' && node.childNodes.length >=  1) {
+      // Handle whitespace in blocks with inline styling. We target only the paragraph element
+      // because Draft defaults 'unstyled' nodes to paragraph elements during convert.
+      if (nodeName === 'p' && node.childNodes.length >= 1) {
         let firstChildNode = node.childNodes[0];
         const firstChildNodeText = firstChildNode.textContent;
         const firstChildNodeHasLeadingWhitespace = /^\s+/.test(firstChildNodeText);
@@ -106,10 +107,12 @@ export function convertFromPastedHTML(htmlContent) {
       return entity;
     },
     htmlToBlock: (nodeName, node) => {
-      const textContent = node.innerText;
-      const isBlank = /^\s+$/.test(textContent);
-      if (node.childNodes.length < 1) {
-        if (isBlank) return;
+
+      // Target single, non-inline nodes and trim their whitespace.
+      if (node.children.length < 1 && !node.parentNode.textContent) {
+        const textContent = node.innerText;
+        const isBlank = /^\s+$/.test(textContent);
+        if (isBlank) return false;
 
         const hasLeadingWhitespace = /^\s+/.test(textContent);
         const hasTrailingWhitespace = /\s+$/.test(textContent);
@@ -166,7 +169,7 @@ export function convertToHTML(editorState) {
     },
     blockToHTML: (block) => {
       if (block.text.length) {
-        block.text = block.text.trim()
+        //block.text = block.text.trim()
       }
       if (block.data && Object.keys(block.data).length) {
         const styleProps = {
