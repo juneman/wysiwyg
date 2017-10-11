@@ -169,7 +169,7 @@ export function convertToHTML(editorState) {
     },
     blockToHTML: (block) => {
       if (block.text.length) {
-        //block.text = block.text.trim()
+        block.text = block.text.trim()
       }
       if (block.data && Object.keys(block.data).length) {
         const styleProps = {
