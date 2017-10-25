@@ -236,7 +236,7 @@ export default class ButtonAction extends React.Component {
     if (buttonActionType == BUTTON_ACTION_TYPES.URL) {
       return persistedState
         .set('buttonActionType', buttonActionType)
-        .set('href', state.hrefWithProtocol)
+        .set('href', state.href)
         .set('isNewWindow', state.isNewWindow)
         .delete('stepIndex')
         .delete('flowId');
@@ -258,9 +258,7 @@ export default class ButtonAction extends React.Component {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
 
-    const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
-
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { hrefWithProtocol, isNewWindow, flowId });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, flowId });
 
     this.setState({
       isMenuOpen: !isMenuOpen
