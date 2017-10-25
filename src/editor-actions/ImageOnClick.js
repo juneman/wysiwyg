@@ -170,12 +170,10 @@ export default class ImageOnClick extends React.Component {
     const { persistedState } = this.props;
     const { flowId, href, isNewWindow } = this.state;
 
-    const hrefWithProtocol = (href.includes('://') || href.includes('//')) ? href : '//' + href;
-
     switch (currentActionType) {
       case IMG_ACTION_TYPES.GO_TO_URL:
         return persistedState
-          .set('href', (href && hrefWithProtocol))
+          .set('href', href)
           .set('isNewWindow', isNewWindow)
           .delete('flowId');
       case IMG_ACTION_TYPES.SHOW_APPCUES_FLOW:
