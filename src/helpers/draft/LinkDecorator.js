@@ -44,7 +44,7 @@ export function linkToEntity(nodeName, node) {
   if (nodeName === 'a') {
 
     // We want to pull the literal href value provided by users.
-    const href = node.attributes.getNamedItem('href').value;
+    const href = node.getAttribute('href');
 
     return Entity.create(
       'LINK',
