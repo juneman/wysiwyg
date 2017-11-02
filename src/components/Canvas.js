@@ -24,6 +24,13 @@ import * as editorActions from '../actions/editorActions';
  */
 export class Canvas extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      rowsLoaded: false
+    };
+  }
+
   componentDidMount() {
     const {
       dispatch,
@@ -70,11 +77,17 @@ export class Canvas extends React.Component {
     if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
       dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
+
+    this.setState({
+      rowsLoaded: true
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const { dispatch } = this.props;
-    if (nextProps.internalRows !== this.props.internalRows) {
+    const { rowsLoaded } = this.state;
+
+    if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
       this.save(nextProps.internalRows);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
