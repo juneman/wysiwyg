@@ -151,8 +151,6 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       onChange: (update) => {
-        // const html = update.html || this.activeEditor.generateHTML(update.persistedState);
-
         dispatch(editorActions.updateDraft({
           localState: update.localState,
           draftPersistedState: update.persistedState,
