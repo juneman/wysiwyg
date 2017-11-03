@@ -15,11 +15,14 @@ import Canvas from './components/Canvas';
 import rows from './reducers/rows';
 import editorSelector from './reducers/editorSelector';
 import editor from './reducers/editor';
+import zones from './reducers/zones';
+
 
 const reducer = combineReducers({
   rows,
   editorSelector,
-  editor
+  editor,
+  zones
 });
 
 function transformImmutableStateToJS (state) {

@@ -88,7 +88,7 @@ export class Canvas extends React.Component {
     const { rowsLoaded } = this.state;
 
     if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
-      this.save(nextProps.internalRows);
+      this.save(nextProps.internalRows, nextProps.internalZones);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
       dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
@@ -291,13 +291,16 @@ export class Canvas extends React.Component {
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
   }
 
-  buildHtml(rows) {
+  buildHtml(rows, zonesWithHtml) {
     let html = '';
     rows.forEach((row) => {
       const zones = row.get('zones');
       let zoneBlocks = [];
       if (zones && zones.size) {
-        zoneBlocks = zones.map(zone => zone.get('html'));
+        zoneBlocks = zones.map(zone => {
+          const zoneId = zone.get('id');
+          return zonesWithHtml.has(zoneId) ? zonesWithHtml.get(zoneId).get('html') : "";
+        });
       }
       html += `
         <div class="row-container">
@@ -310,12 +313,12 @@ export class Canvas extends React.Component {
     return html;
   }
 
-  save(internalRows) {
+  save(internalRows, internalZones) {
     const { onSave, style } = this.props;
 
     if (onSave) {
       // Build the final HTML
-      const rowsHtml = this.buildHtml(internalRows);
+      const rowsHtml = this.buildHtml(internalRows, internalZones);
 
       // Rendering here with ReactDOMServer to convert the optional style object to CSS
       const html = flattenHTML(
@@ -357,6 +360,7 @@ Canvas.propTypes = {
   shouldDisableXSS: PropTypes.bool.isRequired,
   rows: PropTypes.instanceOf(List),
   internalRows: PropTypes.instanceOf(List).isRequired,
+  internalZones: PropTypes.instanceOf(Map).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
@@ -384,7 +388,9 @@ function mapStateToProps(state, ownProps) {
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
 
     // Internal mappings some of the above properties
+
     internalRows: state.rows,
+    internalZones: state.zones,
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
 
     canvasPosition: state.editor.get('canvasPosition'),
