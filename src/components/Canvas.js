@@ -331,20 +331,8 @@ export class Canvas extends React.Component {
       const ast = HTMLParser.parse(html);
 
       // Flatten the Immutable object before pushing it up to the public API
-      const rowsWithoutHtml = internalRows.toJS().map(row => {
-        // HTML shouldn't be persisted
-        delete row.html;
-        if (row.zones && row.zones.length) {
-          row.zones = row.zones.map(zone => {
-            delete zone.html;
-            return zone;
-          });
-        }
-        return row;
-      });
-
       onSave({
-        rows: rowsWithoutHtml,
+        rows: internalRows.toJS(),
         ast,
         html: HTMLParser.stringify(ast)
       });
