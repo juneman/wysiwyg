@@ -14,10 +14,3 @@ export function convertBoundingBox(boundingBox) {
     width
   });
 }
-
-export function flattenHTML(htmlString) {
-  if (!htmlString || !htmlString.length) {
-    return htmlString;
-  }
-  return htmlString.replace(/ {2}/g, '').replace(/(\r\n|\r|\n)/g, '');
-}

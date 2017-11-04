@@ -52,7 +52,7 @@ export default class RichTextEditor extends React.Component {
       }
 
     }
-    
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -174,7 +174,7 @@ export default class RichTextEditor extends React.Component {
         html: this.generateHTML(newPersistedState)
       })
       return true;
-    } 
+    }
     return false
   }
 
