@@ -36,7 +36,7 @@ export default class AddButtonHorizRule extends React.Component {
     const { showEditorSelector } = this.state;
     this.setHasRoomToRenderOnRight();
 
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    const editor = document.getElementById('appcues-host');
 
     const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
     const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
@@ -50,7 +50,7 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   componentWillUnmount() {
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    const editor = document.getElementById('appcues-host');
     editor.removeEventListener('click', this.onClick, true);
 
   }

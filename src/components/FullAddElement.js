@@ -32,7 +32,7 @@ export default class FullAddElement extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { showEditorSelector } = this.state;
 
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    const editor = document.getElementById('appcues-host');
 
     const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
     const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
@@ -46,7 +46,7 @@ export default class FullAddElement extends React.Component {
   }
 
   componentWillUnmount() {
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
+    const editor = document.getElementById('appcues-host');
     editor.removeEventListener('click', this.onClick, true);
   }
 
