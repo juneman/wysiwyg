@@ -33,7 +33,6 @@ export default class FullAddElement extends React.Component {
     const { showEditorSelector } = this.state;
 
     const editor = document.getElementById('appcues-host');
-
     const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
     const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
 

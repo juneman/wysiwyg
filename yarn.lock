@@ -1623,12 +1623,12 @@ domutils@^1.5.1:
     immutable "~3.7.4"
     invariant "^2.2.1"
 
-draft-js@brandcast/draft-js#6bb0b87c9f1730578b93ce7058fe3dffec6ad3fa:
-  version "0.10.0"
-  resolved "https://codeload.github.com/brandcast/draft-js/tar.gz/6bb0b87c9f1730578b93ce7058fe3dffec6ad3fa"
+draft-js@brandcast/draft-js-built#003f24b:
+  version "0.10.3"
+  resolved "https://codeload.github.com/brandcast/draft-js-built/tar.gz/003f24b3e26d63b93875db151bb93e70afe9305b"
   dependencies:
-    fbjs "^0.8.3"
-    immutable "~3.7.4"
+    fbjs "^0.8.15"
+    immutable "^4.0.0-rc.9"
     object-assign "^4.1.0"
 
 ecc-jsbn@~0.1.1:
@@ -2030,7 +2030,7 @@ faye-websocket@~0.11.0:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fbjs@^0.8.16, fbjs@^0.8.3, fbjs@^0.8.9:
+fbjs@^0.8.15, fbjs@^0.8.16, fbjs@^0.8.9:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -2577,6 +2577,10 @@ ignore@^3.2.0:
 immutable@^3.8.1:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
+
+immutable@^4.0.0-rc.9:
+  version "4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.9.tgz#1e6e0094e649013ec3742d2b5aeeca5eeda4f0bf"
 
 immutable@~3.7.4:
   version "3.7.6"
