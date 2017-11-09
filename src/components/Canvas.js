@@ -24,6 +24,13 @@ import * as editorActions from '../actions/editorActions';
  */
 export class Canvas extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      rowsLoaded: false
+    };
+  }
+
   componentDidMount() {
     const {
       dispatch,
@@ -70,12 +77,18 @@ export class Canvas extends React.Component {
     if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
       dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
     }
+
+    this.setState({
+      rowsLoaded: true
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const { dispatch } = this.props;
-    if (nextProps.internalRows !== this.props.internalRows) {
-      this.save(nextProps.internalRows);
+    const { rowsLoaded } = this.state;
+
+    if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
+      this.save(nextProps.internalRows, nextProps.internalZones);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
       dispatch(editorActions.setCloudinarySettings(nextProps.cloudinary));
@@ -278,13 +291,16 @@ export class Canvas extends React.Component {
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
   }
 
-  buildHtml(rows) {
+  buildHtml(rows, zonesWithHtml) {
     let html = '';
     rows.forEach((row) => {
       const zones = row.get('zones');
       let zoneBlocks = [];
       if (zones && zones.size) {
-        zoneBlocks = zones.map(zone => zone.get('html'));
+        zoneBlocks = zones.map(zone => {
+          const zoneId = zone.get('id');
+          return zonesWithHtml.has(zoneId) ? zonesWithHtml.get(zoneId).get('html') : "";
+        });
       }
       html += `
         <div class="row-container">
@@ -297,12 +313,12 @@ export class Canvas extends React.Component {
     return html;
   }
 
-  save(internalRows) {
+  save(internalRows, internalZones) {
     const { onSave, style } = this.props;
 
     if (onSave) {
       // Build the final HTML
-      const rowsHtml = this.buildHtml(internalRows);
+      const rowsHtml = this.buildHtml(internalRows, internalZones);
 
       // Rendering here with ReactDOMServer to convert the optional style object to CSS
       const html = flattenHTML(
@@ -315,20 +331,8 @@ export class Canvas extends React.Component {
       const ast = HTMLParser.parse(html);
 
       // Flatten the Immutable object before pushing it up to the public API
-      const rowsWithoutHtml = internalRows.toJS().map(row => {
-        // HTML shouldn't be persisted
-        delete row.html;
-        if (row.zones && row.zones.length) {
-          row.zones = row.zones.map(zone => {
-            delete zone.html;
-            return zone;
-          });
-        }
-        return row;
-      });
-
       onSave({
-        rows: rowsWithoutHtml,
+        rows: internalRows.toJS(),
         ast,
         html: HTMLParser.stringify(ast)
       });
@@ -344,6 +348,7 @@ Canvas.propTypes = {
   shouldDisableXSS: PropTypes.bool.isRequired,
   rows: PropTypes.instanceOf(List),
   internalRows: PropTypes.instanceOf(List).isRequired,
+  internalZones: PropTypes.instanceOf(Map).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
   userProperties: PropTypes.instanceOf(List).isRequired,
   sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
@@ -371,7 +376,9 @@ function mapStateToProps(state, ownProps) {
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
 
     // Internal mappings some of the above properties
+
     internalRows: state.rows,
+    internalZones: state.zones,
     internalAllowedEditorTypes: state.editor.get('allowedEditorTypes'),
 
     canvasPosition: state.editor.get('canvasPosition'),
