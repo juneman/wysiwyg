@@ -54,6 +54,7 @@ export const BUTTON_ACTION_TYPES = {
   CUSTOM_PAGE: 'custom',
   END_FLOW: 'skip',
   NEXT_GROUP: 'end',
+  END_STEP_AND_FLOW: 'end-flow',
   APPCUES: 'appcues'
 };
 
