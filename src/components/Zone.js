@@ -176,13 +176,15 @@ export class Zone extends React.Component {
           return;
         }
 
-        const html = this.activeEditor.generateHTML(update.persistedState);
+        if(this.activeEditor) {
+          const html = this.activeEditor.generateHTML(update.persistedState);
 
-        dispatch(editorActions.updateDraft({
-          localState: update.localState,
-          draftPersistedState: update.persistedState,
-          html
-        }));
+          dispatch(editorActions.updateDraft({
+            localState: update.localState,
+            draftPersistedState: update.persistedState,
+            html
+          }));
+        }
       }
     };
 

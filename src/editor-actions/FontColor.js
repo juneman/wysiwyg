@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { ChromePicker } from 'react-color';
 import { ColorPicker } from '../components/ColorPicker';
 import { RichUtils, EditorState } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
@@ -61,18 +60,13 @@ export default class FontColor extends React.Component {
     }
 
     const titleStyles = secondaryMenuTitleStyle;
-    console.log(selectedColor)
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Select a Font Color</div>
         <ColorPicker
           color={ selectedColor }
-          onChange={ this.handleColorInput.bind(this) }
-        />
-        <ChromePicker
-          color={selectedColor}
-          onChangeComplete={(color) => this.handleColor(color)}
+          saveUpdatedHexValue={ this.handleColorInput.bind(this) }
         />
       </Menu>
     ) : null;
@@ -99,6 +93,7 @@ export default class FontColor extends React.Component {
 
   }
 
+
   setCurrentInlineColor() {
     const { localState } = this.props;
     const editorState = localState.get('editorState');
@@ -123,7 +118,6 @@ export default class FontColor extends React.Component {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-    console.log(color);
 
     const styles = editorState.getCurrentInlineStyle().toJS();
     let nextEditorState = styles.reduce((state, styleKey) => {
