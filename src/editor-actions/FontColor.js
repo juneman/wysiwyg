@@ -66,7 +66,7 @@ export default class FontColor extends React.Component {
         <div style={titleStyles}>Select a Font Color</div>
         <ColorPicker
           color={ selectedColor }
-          saveUpdatedHexValue={ this.handleColorInput.bind(this) }
+          saveUpdatedHexValue={ (color) => this.handleColor(color) }
         />
       </Menu>
     ) : null;
