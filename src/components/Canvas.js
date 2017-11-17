@@ -299,7 +299,17 @@ export class Canvas extends React.Component {
       if (zones && zones.size) {
         zoneBlocks = zones.map(zone => {
           const zoneId = zone.get('id');
-          return zonesWithHtml.has(zoneId) ? zonesWithHtml.get(zoneId).get('html') : "";
+          const zoneHTML = zonesWithHtml.has(zoneId) ? zonesWithHtml.get(zoneId).get('html') : "";
+          const zoneWidth = `${ 100 / (zones.size|| 1) }%`;
+          return `
+            <div class="zone-container" style="display: inline-block; width: ${ zoneWidth }">
+              <div class="zone">
+                <div class="zone-content">
+                  ${zoneHTML}
+                </div>
+              </div>
+            </div>
+          `;
         });
       }
       html += `

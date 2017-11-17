@@ -303,21 +303,9 @@ export class Zone extends React.Component {
       html = this.activeEditor.generateHTML(persistedState);
     }
 
-    const zoneWidth = `${ 100 / row.get('zones').size }%`;
-
-    const zoneHtml = `
-      <div class="zone-container" style="display: inline-block; width: ${ zoneWidth }">
-        <div class="zone">
-          <div class="zone-content">
-            ${html || ''}
-          </div>
-        </div>
-      </div>
-    `;
-
     const updatedZone = zone.set('persistedState', persistedState);
 
-    dispatch(zoneActions.updateZoneHtml(zone.get('id'), zoneHtml));
+    dispatch(zoneActions.updateZoneHtml(zone.get('id'), html));
     dispatch(editorActions.updateZone(row, updatedZone));
   }
 
