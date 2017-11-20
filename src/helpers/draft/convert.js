@@ -23,8 +23,13 @@ export function convertFromHTML(htmlContent) {
 
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color) {
-        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
+      if (node instanceof HTMLElement && node.style) {
+        if (nodeName === 'span' && node.style.color && node.style.color !== 'inherit') {
+          currentStyle = currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
+        }
+        if (node.style.fontWeight === 'normal') {
+          currentStyle = currentStyle.remove('BOLD');
+        }
       }
       return currentStyle;
     },
