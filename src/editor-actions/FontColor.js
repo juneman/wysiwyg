@@ -49,9 +49,7 @@ export default class FontColor extends React.Component {
 
     const dropdownStyles = {
       ...dropdownStyle,
-      paddingBottom: 5,
-      paddingLeft: 5,
-      paddingRight: 5,
+      padding: 5,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
@@ -59,7 +57,10 @@ export default class FontColor extends React.Component {
       delete dropdownStyles.top;
     }
 
-    const titleStyles = secondaryMenuTitleStyle;
+    const titleStyles = {
+      ...secondaryMenuTitleStyle,
+      marginBottom: 5
+    };
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
