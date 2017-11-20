@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { CompactPicker } from 'react-color';
+import { ColorPicker } from '../components/ColorPicker';
 import { RichUtils, EditorState } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 import tinyColor from 'tinycolor2';
@@ -18,7 +18,8 @@ export default class FontColor extends React.Component {
     super(props);
 
     this.state = {
-      isMenuOpen: props.isActive || false
+      isMenuOpen: props.isActive || false,
+      selectedColor: '#000'
     };
   }
 
@@ -28,13 +29,14 @@ export default class FontColor extends React.Component {
         isMenuOpen: nextProps.isActive
       });
     }
+
+    this.setCurrentInlineColor();
   }
 
   render() {
     const { isActive, hasRoomToRenderBelow } = this.props;
-    const { isMenuOpen } = this.state;
+    const { isMenuOpen, selectedColor } = this.state;
 
-    const selectedColor = this.getCurrentInlineColor();
     const buttonProps = {
       hideBackground: true,
       color: selectedColor,
@@ -62,9 +64,9 @@ export default class FontColor extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Select a Font Color</div>
-        <CompactPicker
-          color={selectedColor}
-          onChangeComplete={(color) => this.handleColor(color)}
+        <ColorPicker
+          color={ selectedColor }
+          saveUpdatedHexValue={ (color) => this.handleColor(color) }
         />
       </Menu>
     ) : null;
@@ -91,7 +93,8 @@ export default class FontColor extends React.Component {
 
   }
 
-  getCurrentInlineColor() {
+
+  setCurrentInlineColor() {
     const { localState } = this.props;
     const editorState = localState.get('editorState');
     if (editorState) {
@@ -99,18 +102,23 @@ export default class FontColor extends React.Component {
       if (styles.length) {
         const styleIndex = styles.findIndex((style) => style.indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0);
         if (styleIndex !== -1) {
-          return styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+          this.setState({
+            selectedColor: styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length)
+          });
         }
       }
     }
-    return '#000';
+  }
+
+  handleColorInput(color) {
+    this.handleColor({hex: color});
   }
 
   handleColor(color) {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-    
+
     const styles = editorState.getCurrentInlineStyle().toJS();
     let nextEditorState = styles.reduce((state, styleKey) => {
       if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
