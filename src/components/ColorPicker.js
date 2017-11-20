@@ -6,16 +6,30 @@ import {  inputStyle } from '../helpers/styles/editor';
 
 
 class ColorPicker extends React.Component {
-  componentWillUpdate(nextProps) {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      inputVal: props.hex
+    };
+  }
+
+  componentWillUpdate(nextProps, nextState) {
     const { hex, saveUpdatedHexValue } = this.props;
 
     if (hex != nextProps.hex) {
       saveUpdatedHexValue({hex: nextProps.hex});
+      this.setState({inputVal: nextProps.hex});
+    } else if (hex != nextState.inputVal) {
+      saveUpdatedHexValue({hex: nextState.inputVal});
     }
   }
 
   render() {
-    const { color, saveUpdatedHexValue, onChange } = this.props;
+    const { onChange } = this.props;
+    const { inputVal } = this.state;
+
     return (
       <section>
           <section style={{position: 'relative', height: '80px', margin: '4px 0'}}>
@@ -34,8 +48,8 @@ class ColorPicker extends React.Component {
             style={ inputStyle }
             autoFocus
             onClickCapture={ (e) => e.target.focus() }
-            value={ color }
-            onChange={ (e) => saveUpdatedHexValue({hex: e.target.value}) }/>
+            value={ inputVal }
+            onChange={ (e) => this.setState({inputVal: e.target.value}) }/>
       </section>);
   }
 }
