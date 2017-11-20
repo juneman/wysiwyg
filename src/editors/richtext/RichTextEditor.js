@@ -52,7 +52,7 @@ export default class RichTextEditor extends React.Component {
       }
 
     }
-
+    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -174,7 +174,7 @@ export default class RichTextEditor extends React.Component {
         html: this.generateHTML(newPersistedState)
       })
       return true;
-    }
+    } 
     return false
   }
 
@@ -198,7 +198,7 @@ export default class RichTextEditor extends React.Component {
     const width = persistedState.get('width');
     const content = persistedState.get('content') || '';
 
-    const { marginTop, marginRight, marginBottom, marginLeft, color } = persistedState.toJS();
+    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     let styles = '';
     if (height) {

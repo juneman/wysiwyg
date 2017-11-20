@@ -43,7 +43,7 @@ const actions = [
     Component: ButtonAction,
     name: 'button-action'
   },
-
+  
 ];
 
 export default function ButtonToolbar(props) {
