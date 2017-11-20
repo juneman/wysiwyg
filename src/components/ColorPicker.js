@@ -20,14 +20,23 @@ class ColorPicker extends React.Component {
 
     if (hex != nextProps.hex) {
       saveUpdatedHexValue({hex: nextProps.hex});
-      this.setState({inputVal: nextProps.hex});
     } else if (hex != nextState.inputVal) {
       saveUpdatedHexValue({hex: nextState.inputVal});
     }
   }
 
-  render() {
+  onClickVal(val) {
     const { onChange } = this.props;
+
+    this.setState({
+      inputVal: val.hex
+    });
+
+    onChange(val);
+  }
+
+  render() {
+
     const { inputVal } = this.state;
 
     return (
@@ -35,13 +44,13 @@ class ColorPicker extends React.Component {
           <section style={{position: 'relative', height: '80px', margin: '4px 0'}}>
             <Saturation
               {...this.props}
-              onChangeComplete={ (val) => onChange(val)}
+              onChangeComplete={ (val) => this.onClickVal(val)}
               direction='horizontal'/>
           </section>
           <section style={{position: 'relative', height: '10px', margin: '4px 0'}}>
             <Hue
               {...this.props}
-              onChangeComplete={ (val) => onChange(val) }
+              onChangeComplete={ (val) => this.onClickVal(val) }
               direction='horizontal'/>
           </section>
           <input
