@@ -28,7 +28,6 @@ export default function rows(state = List(), action) {
       newState = newState.splice(rowIndex, 1);
       break;
     case Actions.ROWS_REMOVE_ONE_ZONE:
-      console.log('hi');
       newState = newState
         .map((row) => {
           if (!row.get('zones') || !row.get('zones').size) {
