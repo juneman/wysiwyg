@@ -27,6 +27,21 @@ export default function rows(state = List(), action) {
       }
       newState = newState.splice(rowIndex, 1);
       break;
+    case Actions.ROWS_REMOVE_ONE_ZONE:
+      console.log('hi');
+      newState = newState
+        .map((row) => {
+          if (!row.get('zones') || !row.get('zones').size) {
+            return row;
+          }
+          const zoneIndex = row.get('zones').findIndex((zone) => zone.get('id') === action.zone.get('id'));
+          if (zoneIndex === -1) {
+            return row;
+          }
+
+          return row.deleteIn(['zones', zoneIndex]);
+        });
+      break;
     case Actions.EDITOR_UPDATE_ZONE:
       newState = newState
         .map((row) => {

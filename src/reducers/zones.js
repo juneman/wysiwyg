@@ -12,6 +12,9 @@ export default function zones(state = Map(), action) {
     case Actions.ZONES_UPDATE_HTML:
       newState = newState.merge(Map({ [action.id]: Map({ html: action.html }) }));
       break;
+    case Actions.ZONES_REMOVE_ONE:
+      newState = newState.delete(action.id);
+      break;
   }
 
   return newState;
