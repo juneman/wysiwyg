@@ -14,7 +14,7 @@ export const decorator = new CompositeDecorator([
 ]);
 
 
-export function convertFromHTML(htmlContent) {
+export function convertFromHTML(htmlContent, convertOptions = {}) {
   // We add zero-width spaces (unicode 200B) to get the browser to render a line
   // break for a <br> and to give empty unstyled blocks (<p> tags) a size (see
   // convertToHTML() below). When editing, we don't really want those zero-width
@@ -68,37 +68,14 @@ export function convertFromHTML(htmlContent) {
           }
         };
       }
-    }
+    },
+    ...convertOptions
   })(htmlContent);
 }
 
 export function convertFromPastedHTML(htmlContent) {
-  return draftConvertFromHTML({
-    htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
-        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-      }
-      return currentStyle;
-    },
-    htmlToEntity: (nodeName, node) => {
-      const entity = linkToEntity(nodeName, node);
-      return entity;
-    },
+  return convertFromHTML(htmlContent, {
     htmlToBlock: (nodeName, node) => {
-      const textContent = node.innerText;
-      const isBlank = /^\s+$/.test(textContent);
-
-      // Target single, non-inline nodes and trim their whitespace.
-      if (node.children.length < 1) {
-        if (isBlank) return;
-
-        const hasLeadingWhitespace = /^\s+/.test(textContent);
-        const hasTrailingWhitespace = /\s+$/.test(textContent);
-        if (hasLeadingWhitespace || hasTrailingWhitespace) {
-          node.innerText = node.innerText.trim();
-        }
-      }
-
       // Don't convert table elements
       if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
 
@@ -135,7 +112,7 @@ export function convertFromPastedHTML(htmlContent) {
       }
 
     }
-  })(htmlContent);
+  });
 }
 
 export function convertToHTML(editorState) {
