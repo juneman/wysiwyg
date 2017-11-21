@@ -110,6 +110,8 @@ export function convertFromHTML(htmlContent, convertOptions = {}) {
 }
 
 export function convertFromPastedHTML(htmlContent) {
+  // Strip tabs from pasted content for now.
+  htmlContent = htmlContent.replace(/\t/g, '');
   return convertFromHTML(htmlContent, {
     htmlToBlock: (nodeName, node) => {
       // Don't convert table elements
@@ -146,7 +148,6 @@ export function convertFromPastedHTML(htmlContent) {
           }
         };
       }
-
     }
   });
 }
