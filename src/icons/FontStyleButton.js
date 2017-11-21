@@ -12,7 +12,7 @@ export default class FontStyleButton extends React.PureComponent {
         }
         viewBox="0 0 48 32"
         iconStyle={{
-          width: 24
+          width: 22
         }}
         {...this.props}
       />
