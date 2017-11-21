@@ -9,6 +9,10 @@ export const NBSP = "\xA0";
 export const ZWSP = "\u200B";
 export const ZWSP_RE = new RegExp(ZWSP, "g");
 
+// https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
+var boldValues = ['bold', 'bolder', '500', '600', '700', '800', '900'];
+var notBoldValues = ['light', 'lighter', '100', '200', '300', '400'];
+
 export const decorator = new CompositeDecorator([
   LinkDecorator
 ]);
@@ -24,12 +28,44 @@ export function convertFromHTML(htmlContent, convertOptions = {}) {
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
       if (node instanceof HTMLElement && node.style) {
-        if (nodeName === 'span' && node.style.color && node.style.color !== 'inherit') {
-          currentStyle = currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-        }
-        if (node.style.fontWeight === 'normal') {
-          currentStyle = currentStyle.remove('BOLD');
-        }
+        currentStyle = currentStyle.withMutations(function(style) {
+          const fontWeight = node.style.fontWeight;
+          const fontStyle = node.style.fontStyle;
+          const textDecoration = node.style.textDecoration;
+          const fontColor = node.style.color;
+
+          if (fontColor && fontColor !== 'inherit') {
+            style.add(`${CUSTOM_STYLE_PREFIX_COLOR}${fontColor}`);
+          }
+
+          if (boldValues.indexOf(fontWeight) >= 0) {
+            style.add('BOLD');
+          }
+          else if (notBoldValues.indexOf(fontWeight) >= 0) {
+            style.remove('BOLD');
+          }
+
+          if (fontStyle === 'italic') {
+            style.add('ITALIC');
+          }
+          else if (fontStyle === 'normal') {
+            style.remove('ITALIC');
+          }
+
+          if (textDecoration === 'underline') {
+            style.add('UNDERLINE');
+          }
+
+          if (textDecoration === 'line-through') {
+            style.add('STRIKETHROUGH');
+          }
+
+          if (textDecoration === 'none') {
+            style.remove('UNDERLINE');
+            style.remove('STRIKETHROUGH');
+          }
+
+        }).toOrderedSet();
       }
       return currentStyle;
     },
