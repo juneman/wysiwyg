@@ -153,6 +153,7 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       onChange: (update) => {
+        console.log('from editor');
         dispatch(editorActions.updateDraft({
           localState: update.localState,
           draftPersistedState: update.persistedState,
@@ -172,6 +173,7 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       onChange: (update) => {
+        console.log('from toolbar', this, this.activeEditor, isEditing);
         if (!isEditing) {
           return;
         }
