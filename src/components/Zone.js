@@ -136,7 +136,7 @@ export class Zone extends React.Component {
     const isEditingAnyStyle = (!isEditingAny) ? this.baseNotEditingAnyZoneStyle : null;
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
-    const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
+    const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isEditingAnyStyle, activeStateStyle, isOverStyle);
 
 
