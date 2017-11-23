@@ -14,12 +14,8 @@ class RowContainer extends React.Component {
   render() {
     const { connectDropTarget, isOver } = this.props;
 
-    const style = {
-      position: 'relative'
-    };
-
     return connectDropTarget(
-      <div className="row-container" style={style}>
+      <div className="row-container">
         <Row
           {...this.props}
         />
