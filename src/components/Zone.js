@@ -73,7 +73,6 @@ export class Zone extends React.Component {
     this.baseContainerStyle = {
       width: '100%',
       margin: '0 auto',
-      position: 'relative',
       display: 'inline-block'
     };
 
