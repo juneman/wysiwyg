@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { convertBoundingBox } from '../helpers/domHelpers';
 import * as rowActions from '../actions/rowActions';
 import * as editorActions from '../actions/editorActions';
+import * as zoneActions from '../actions/zoneActions';
 
 import RichTextEditor from '../editors/richtext/RichTextEditor';
 import RichTextToolbar from '../editors/richtext/RichTextToolbar';
@@ -94,9 +95,10 @@ export class Zone extends React.Component {
   }
 
   componentDidMount() {
-    // Force the underlying editor component to resave/regenerate the HTML with the old data
+    const { dispatch, zone, persistedState } = this.props;
+    // Force the underlying editor component to regenerate the HTML for this zone
     if (this.activeEditor) {
-      this.save();
+      dispatch(zoneActions.updateZoneHtml(zone.get('id'), this.activeEditor.generateHTML(persistedState)));
     }
     this.setBoundingBox();
     this.setFocus();
@@ -151,8 +153,6 @@ export class Zone extends React.Component {
       cloudinary,
       userProperties,
       onChange: (update) => {
-        // const html = update.html || this.activeEditor.generateHTML(update.persistedState);
-
         dispatch(editorActions.updateDraft({
           localState: update.localState,
           draftPersistedState: update.persistedState,
@@ -298,27 +298,14 @@ export class Zone extends React.Component {
     const { dispatch, zone, persistedState, row } = this.props;
     let { html } = this.props;
 
-    // Handles first mounting of a typed zone
+    // Handles a zone that for some reason has no generated HTML
     if (this.activeEditor && (!html || !html.length)) {
       html = this.activeEditor.generateHTML(persistedState);
     }
 
-    const zoneWidth = `${ 100 / row.get('zones').size }%`;
+    const updatedZone = zone.set('persistedState', persistedState);
 
-    const zoneHtml = `
-      <div class="zone-container" style="display: inline-block; width: ${ zoneWidth }">
-        <div class="zone">
-          <div class="zone-content">
-            ${html || ''}
-          </div>
-        </div>
-      </div>
-    `;
-
-    const updatedZone = zone
-      .set('persistedState', persistedState)
-      .set('html', zoneHtml);
-
+    dispatch(zoneActions.updateZoneHtml(zone.get('id'), html));
     dispatch(editorActions.updateZone(row, updatedZone));
   }
 
@@ -390,11 +377,12 @@ function mapStateToProps(state, ownProps) {
 
   // PersistedState is either a draft if we're actively editing
   // or the persistedState from the zone data if we're not in edit mode
-  const isEditing = state.editor.get('isCanvasInEditMode') && (state.editor.get('activeZoneId') === ownProps.zone.get('id')) ? true : false;
+  const zoneId = ownProps.zone.get('id');
+  const isEditing = state.editor.get('isCanvasInEditMode') && (state.editor.get('activeZoneId') === zoneId) ? true : false;
   const isEditingAny = state.editor.get('isCanvasInEditMode');
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
-  const html = (isEditing) ? state.editor.get('draftHtml') : ownProps.zone.get('html');
-  const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === ownProps.zone.get('id'))) ? true : false;
+  const html = (isEditing) ? state.editor.get('draftHtml') : (state.zones.has(zoneId) ? state.zones.get(zoneId).get('html') : null);
+  const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === zoneId)) ? true : false;
 
   return {
     localState: state.editor.get('localState'),
