@@ -7,3 +7,10 @@ export function updateZoneHtml(id, html) {
     html
   };
 }
+
+export function removeZone(id) {
+  return {
+    type: Actions.ZONES_REMOVE_ONE,
+    id
+  };
+}

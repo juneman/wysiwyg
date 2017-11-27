@@ -258,7 +258,7 @@ export class Zone extends React.Component {
               this.cancelEditing();
             }}
             onCancel={() => this.clickedCancel()}
-            onRemove={() => this.removeRow()}
+            onRemove={() => this.removeZone()}
             onMoveRowStart={() => {
               dispatch(editorActions.startMoving(row));
             }}
@@ -328,6 +328,18 @@ export class Zone extends React.Component {
   cancelEditing() {
     const { dispatch, zone } = this.props;
     dispatch(editorActions.cancelEditing(zone));
+  }
+
+  removeZone(){
+    const { row, zone, dispatch } = this.props;
+
+    if(row.get('zones').size == 1) {
+      this.removeRow();
+    } else if(confirm("Are you sure you want to delete this?")){
+      this.cancelEditing();
+      dispatch(rowActions.removeZone(row, zone));
+      dispatch(zoneActions.removeZone(zone.get('id')));
+    }
   }
 
   removeRow() {
