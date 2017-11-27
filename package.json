@@ -28,8 +28,8 @@
     "prop-types": "^15.5.8",
     "react-ace": "^4.2.1",
     "react-color": "^2.11.4",
-    "react-dnd": "^2.3.0",
-    "react-dnd-html5-backend": "^2.3.0",
+    "react-dnd": "^2.5.0",
+    "react-dnd-html5-backend": "^2.5.0",
     "react-dropzone": "^3.12.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
@@ -40,8 +40,8 @@
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react": "^brandcast/react-built#7c8fc6b",
+    "react-dom": "brandcast/react-dom-built#017534a"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
