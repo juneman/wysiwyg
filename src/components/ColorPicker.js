@@ -20,15 +20,20 @@ class ColorPicker extends React.Component {
     }, 150);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillReceiveProps(nextProps) {
     const { hex, saveUpdatedHexValue } = this.props;
 
     if (hex != nextProps.hex) {
       saveUpdatedHexValue({hex: nextProps.hex});
       this.setState({inputVal: nextProps.color});
-    } else if (hex != nextState.inputVal) {
-      saveUpdatedHexValue({hex: nextState.inputVal});
     }
+  }
+
+  updateInputField(value) {
+    const { saveUpdatedHexValue } = this.props;
+
+    this.setState({inputVal: value});
+    saveUpdatedHexValue({hex: value });
   }
 
   render() {
@@ -54,7 +59,7 @@ class ColorPicker extends React.Component {
             autoFocus
             onClickCapture={ (e) => e.target.focus() }
             value={ inputVal }
-            onChange={ (e) => this.setState({inputVal: e.target.value}) }/>
+            onChange={ (e) => this.updateInputField(e.target.value) }/>
       </section>);
   }
 }
