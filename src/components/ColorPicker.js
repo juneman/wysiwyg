@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CustomPicker } from 'react-color';
 import { Hue, Saturation } from 'react-color/lib/components/common';
-import {  inputStyle } from '../helpers/styles/editor';
+import { inputStyle } from '../helpers/styles/editor';
 import { debounce } from '../helpers/utils';
 
 
@@ -23,7 +23,6 @@ class ColorPicker extends React.Component {
   componentWillUpdate(nextProps, nextState) {
     const { hex, saveUpdatedHexValue } = this.props;
 
-
     if (hex != nextProps.hex) {
       saveUpdatedHexValue({hex: nextProps.hex});
       this.setState({inputVal: nextProps.color});
@@ -33,9 +32,8 @@ class ColorPicker extends React.Component {
   }
 
   render() {
-
-    const { inputVal } = this.state;
     const { onChange } = this.props;
+    const { inputVal } = this.state;
 
     return (
       <section>
@@ -63,13 +61,13 @@ class ColorPicker extends React.Component {
 
 
 ColorPicker.propTypes = {
-    color: PropTypes.string.isRequired,
-    saveUpdatedHexValue: PropTypes.func.isRequired,
-    onChange: PropTypes.func,
-    hex: PropTypes.string,
-    hsl: PropTypes.object,
-    rgb: PropTypes.object
-  };
+  color: PropTypes.string.isRequired,
+  saveUpdatedHexValue: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
+  hex: PropTypes.string,
+  hsl: PropTypes.object,
+  rgb: PropTypes.object
+};
 
 
 const wrapped = CustomPicker(ColorPicker);
