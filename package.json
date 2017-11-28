@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "description": "Appcues Editor",
   "main": "lib/bundle.js",
   "scripts": {
