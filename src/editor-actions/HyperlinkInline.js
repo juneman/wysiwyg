@@ -5,13 +5,41 @@ import { EditorState, RichUtils } from 'draft-js';
 
 import Hyperlink from './Hyperlink';
 
-export default class HyperlinkInline extends React.Component {
+class HyperlinkInline extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      linkKey: null
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const willLocalStateChange = this.props.localState !== nextProps.localState;
+
+    if (willLocalStateChange) {
+      const editorState = nextProps.localState.get('editorState');
+      let linkKey = null;
+      if (editorState) {
+        const contentState = editorState.getCurrentContent();
+        const startKey = editorState.getSelection().getStartKey();
+        const startOffset = editorState.getSelection().getStartOffset();
+        const isJustCursor = editorState.getSelection().isCollapsed();
+        const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+        linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset) || (isJustCursor ? blockWithLinkAtBeginning.getEntityAt(startOffset - 1) : null);
+      }
+      this.setState({ linkKey });
+    }
+  }
 
   render() {
     const { localState, isActive, onToggleActive, hasRoomToRenderBelow } = this.props;
+    const { linkKey } = this.state;
 
     let href = '';
     let isNewWindow = false;
+    let isUpdatingExistingLink = false;
 
     const editorState = localState.get('editorState');
 
@@ -40,30 +68,46 @@ export default class HyperlinkInline extends React.Component {
         isActive={ isActive }
         onToggleActive={ onToggleActive }
         hasRoomToRenderBelow={ hasRoomToRenderBelow }
+        isUpdatingExistingLink={ isUpdatingExistingLink }
         onChange={ (href, isNewWindow) => this.handleLink(href, isNewWindow) }
       />);
   }
 
   handleLink(href, isNewWindow) {
     const { localState, persistedState, onChange } = this.props;
-    
+    const { linkKey } = this.state;
+
     const editorState = localState.get('editorState');
     const contentState = editorState.getCurrentContent();
-    const contentStateWithEntity = contentState.createEntity(
-      'LINK',
-      'MUTABLE',
-      {
+    let newLocalState = localState;
+    let newEditorState = editorState;
+
+    if (!linkKey) {
+      const contentStateWithEntity = contentState.createEntity(
+        'LINK',
+        'MUTABLE',
+        {
+          href,
+          isNewWindow
+        }
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      newEditorState = EditorState.push(editorState, contentStateWithEntity, 'apply-entity');
+      newEditorState = RichUtils.toggleLink(
+        newEditorState,
+        newEditorState.getSelection(),
+        entityKey
+      );
+      newLocalState = localState.set('editorState', newEditorState);
+    }
+    else {
+      const nextCurrentContentState = contentState.replaceEntityData(linkKey, {
         href,
         isNewWindow
-      }
-    );
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
-    const newLocalState = localState.set('editorState', RichUtils.toggleLink(
-      newEditorState,
-      newEditorState.getSelection(),
-      entityKey
-    ));
+      });
+      newEditorState = EditorState.push(editorState, nextCurrentContentState, 'apply-entity');
+      newLocalState = localState.set('editorState', newEditorState);
+    }
 
     onChange({
       localState: newLocalState,
@@ -83,3 +127,5 @@ HyperlinkInline.propTypes = {
 };
 
 HyperlinkInline.actionName = 'hyperlink-inline';
+
+export default HyperlinkInline;
