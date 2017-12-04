@@ -60,6 +60,15 @@ export function toggleEditorAction(name, isActive) {
   };
 }
 
+export function toggleEditorInlineAction(name, isActive, state) {
+  return {
+    type: Actions.EDITOR_INLINE_ACTIONS_TOGGLE,
+    name,
+    isActive,
+    state
+  };
+}
+
 export function startMoving(row) {
   return {
     type: Actions.EDITOR_MOVING_ROW_START,

@@ -36,7 +36,7 @@ export default class EditorWrapper extends React.Component {
     const hasRoomToRenderRight = ((window.innerWidth - this.wrapper.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
     if (hasRoomToRenderRight != this.state.hasRoomToRenderRight){
       this.setState({ hasRoomToRenderRight });
-    } 
+    }
   }
 
   render() {
@@ -45,6 +45,7 @@ export default class EditorWrapper extends React.Component {
       isHover,
       children,
       toolbarNode,
+      inlineActionsNode,
       onSave,
       onCancel,
       onRemove,
@@ -147,6 +148,11 @@ export default class EditorWrapper extends React.Component {
               </div>
             </div>
           }
+          { isEditing && inlineActionsNode &&
+            <div name="EditorWrapperInlineEditingActions">
+              { inlineActionsNode }
+            </div>
+          }
         </div>
       </div>
     );
@@ -164,5 +170,6 @@ EditorWrapper.propTypes = {
   rowPosition: PropTypes.instanceOf(Map).isRequired,
   zonePosition: PropTypes.instanceOf(Map).isRequired,
   toolbarNode: PropTypes.node,
+  inlineActionsNode: PropTypes.node,
   disableDeleteButton: PropTypes.bool
 };
