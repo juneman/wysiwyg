@@ -81,3 +81,5 @@ HyperlinkInline.propTypes = {
   isActive: PropTypes.bool.isRequired,
   hasRoomToRenderBelow: PropTypes.bool
 };
+
+HyperlinkInline.actionName = 'hyperlink-inline';
