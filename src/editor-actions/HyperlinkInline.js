@@ -4,6 +4,7 @@ import { Map } from 'immutable';
 import { EditorState, RichUtils } from 'draft-js';
 
 import Hyperlink from './Hyperlink';
+import { convertToHTML } from '../helpers/draft/convert';
 
 class HyperlinkInline extends React.Component {
 
@@ -106,7 +107,7 @@ class HyperlinkInline extends React.Component {
 
     onChange({
       localState: newLocalState,
-      persistedState
+      persistedState: persistedState.set('content', convertToHTML(newEditorState))
     });
   }
 
