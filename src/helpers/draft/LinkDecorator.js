@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Entity } from 'draft-js';
+import Link from '../../components/entities/Link';
 
 function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
@@ -14,26 +15,6 @@ function findLinkEntities(contentBlock, callback, contentState) {
     callback
   );
 }
-
-const Link = (props) => {
-  const { contentState, entityKey, children } = props;
-
-  const { href, isNewWindow, color } = contentState.getEntity(entityKey).getData();
-  return (
-    <a style={{ color }} href={href} target={(isNewWindow) ? '_blank' : '_self'}>
-      { children }
-    </a>
-  );
-};
-
-Link.propTypes = {
-  contentState: PropTypes.object.isRequired,
-  entityKey: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.element
-  ]).isRequired
-};
 
 export const LinkDecorator = {
   strategy: findLinkEntities,
