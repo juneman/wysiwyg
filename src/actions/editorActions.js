@@ -60,6 +60,14 @@ export function toggleEditorAction(name, isActive) {
   };
 }
 
+export function toggleEditorActionIfCurrent(name, isActive) {
+  return {
+    type: Actions.EDITOR_ACTIONS_TOGGLE_IF_CURRENT,
+    name,
+    isActive
+  };
+}
+
 export function toggleEditorInlineAction(name, isActive, state) {
   return {
     type: Actions.EDITOR_INLINE_ACTIONS_TOGGLE,
