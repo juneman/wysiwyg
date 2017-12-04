@@ -45,19 +45,14 @@ class HyperlinkInline extends React.Component {
 
     if (editorState) {
       const selection = editorState.getSelection();
-      if (!selection.isCollapsed()) {
-        const contentState = editorState.getCurrentContent();
-        const startKey = editorState.getSelection().getStartKey();
-        const startOffset = editorState.getSelection().getStartOffset();
-        const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
-        const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
+      const contentState = editorState.getCurrentContent();
 
-        if (linkKey) {
-          const linkInstance = contentState.getEntity(linkKey);
-          const linkData = linkInstance.getData();
-          isNewWindow = linkData.isNewWindow;
-          href = linkData.href;
-        }
+      if (linkKey) {
+        const linkInstance = contentState.getEntity(linkKey);
+        const linkData = linkInstance.getData();
+        isNewWindow = linkData.isNewWindow;
+        href = linkData.href;
+        isUpdatingExistingLink = true;
       }
     }
 
