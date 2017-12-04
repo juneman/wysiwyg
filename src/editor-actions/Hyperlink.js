@@ -36,7 +36,7 @@ export default class Hyperlink extends React.Component {
   }
 
   render() {
-    const { isActive, hasRoomToRenderBelow } = this.props;
+    const { isActive, hasRoomToRenderBelow, isUpdatingExistingLink } = this.props;
     const { href, isNewWindow, isMenuOpen } = this.state;
 
     const buttonProps = getButtonProps(isActive);
@@ -60,7 +60,7 @@ export default class Hyperlink extends React.Component {
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Create a Link</div>
+        <div style={titleStyles}>{ isUpdatingExistingLink ? 'Update Link' : 'Create a Link' }</div>
         <div>
           <div style={{ ...row, flexDirection: 'column' }}>
             <label style={ labelStyle }>URL</label>
@@ -140,5 +140,6 @@ Hyperlink.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
+  isUpdatingExistingLink: PropTypes.bool.isRequired,
   hasRoomToRenderBelow: PropTypes.bool
 };
