@@ -29,7 +29,7 @@ build:
 
     - script:
         name: Build assets
-        code: npm run clean && ./node_modules/.bin/babel src -d lib && ./node_modules/.bin/webpack --config webpack.build.js
+        code: npm run build
 
 deploy:
     steps:
