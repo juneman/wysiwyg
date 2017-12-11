@@ -198,7 +198,7 @@ export default class RichTextEditor extends React.Component {
     const width = persistedState.get('width');
     const content = persistedState.get('content') || '';
 
-    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { marginTop, marginRight, marginBottom, marginLeft, color } = persistedState.toJS();
 
     let styles = '';
     if (height) {

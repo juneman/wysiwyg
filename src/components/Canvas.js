@@ -122,9 +122,6 @@ export class Canvas extends React.Component {
       numPages
     } = this.props;
 
-    const canvasStyles = Object.assign({}, {
-      position: 'relative',
-    }, style);
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
@@ -167,7 +164,7 @@ export class Canvas extends React.Component {
 
     return (
       <div className="canvas"
-        style={ canvasStyles }
+        style={ style }
         ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }
         { rowNodes }

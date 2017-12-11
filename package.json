@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg",
-  "version": "1.13.0",
+  "version": "1.17.1",
   "description": "Appcues Editor",
   "main": "lib/bundle.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
-    "build": "npm run clean && babel src -d lib && webpack --config webpack.build.js",
+    "build": "NODE_ENV=production npm run clean && babel src -d lib && webpack --config webpack.build.js",
     "watch": "npm run clean && babel src -d lib && webpack --config webpack.build.js --watch",
     "start": "NODE_ENV=development webpack-dev-server --config webpack.build.js --hot --inline --colors",
     "clean": "rm -rf lib && mkdir lib"
@@ -22,7 +22,7 @@
     "draft-convert": "github:appcues/draft-convert",
     "draft-js": "brandcast/draft-js-built#003f24b",
     "emoji-mart": "^1.0.1",
-    "html-parse-stringify2": "^1.2.1",
+    "html-parse-stringify2": "^2.0.1",
     "immutable": "^3.8.1",
     "node-object-hash": "^1.2.0",
     "prop-types": "^15.5.8",

@@ -73,7 +73,6 @@ export class Zone extends React.Component {
     this.baseContainerStyle = {
       width: '100%',
       margin: '0 auto',
-      position: 'relative',
       display: 'inline-block'
     };
 
@@ -137,7 +136,7 @@ export class Zone extends React.Component {
     const isEditingAnyStyle = (!isEditingAny) ? this.baseNotEditingAnyZoneStyle : null;
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
-    const containerStyle = (isEditing) ? { ...adjustedContainerStyle, zIndex: 10 } : adjustedContainerStyle;
+    const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
     const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isEditingAnyStyle, activeStateStyle, isOverStyle);
 
 
@@ -176,13 +175,15 @@ export class Zone extends React.Component {
           return;
         }
 
-        const html = this.activeEditor.generateHTML(update.persistedState);
+        if(this.activeEditor) {
+          const html = this.activeEditor.generateHTML(update.persistedState);
 
-        dispatch(editorActions.updateDraft({
-          localState: update.localState,
-          draftPersistedState: update.persistedState,
-          html
-        }));
+          dispatch(editorActions.updateDraft({
+            localState: update.localState,
+            draftPersistedState: update.persistedState,
+            html
+          }));
+        }
       }
     };
 
@@ -259,7 +260,7 @@ export class Zone extends React.Component {
               this.cancelEditing();
             }}
             onCancel={() => this.clickedCancel()}
-            onRemove={() => this.removeRow()}
+            onRemove={() => this.removeZone()}
             onMoveRowStart={() => {
               dispatch(editorActions.startMoving(row));
             }}
@@ -329,6 +330,18 @@ export class Zone extends React.Component {
   cancelEditing() {
     const { dispatch, zone } = this.props;
     dispatch(editorActions.cancelEditing(zone));
+  }
+
+  removeZone(){
+    const { row, zone, dispatch } = this.props;
+
+    if(row.get('zones').size == 1) {
+      this.removeRow();
+    } else if(confirm("Are you sure you want to delete this?")){
+      this.cancelEditing();
+      dispatch(rowActions.removeZone(row, zone));
+      dispatch(zoneActions.removeZone(zone.get('id')));
+    }
   }
 
   removeRow() {

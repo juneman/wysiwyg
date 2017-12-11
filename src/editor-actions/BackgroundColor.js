@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { CompactPicker } from 'react-color';
 import tinyColor from 'tinycolor2';
 
 import Menu from '../components/Menu';
+import { ColorPicker } from '../components/ColorPicker';
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
+
 
 import SquareButton from '../icons/SquareButton';
 
@@ -63,9 +64,9 @@ export default class BackgroundColor extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Select a Background Color</div>
-        <CompactPicker
-          onChangeComplete={(color) => this.handleColor(color)}
-          color={selectedColor}
+        <ColorPicker
+          color={ selectedColor }
+          saveUpdatedHexValue={ (color) => this.handleColor(color) }
         />
       </Menu>
     ) : null;

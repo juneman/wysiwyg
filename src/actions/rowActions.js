@@ -28,3 +28,11 @@ export function removeRow(id) {
     id
   };
 }
+
+export function removeZone(row, zone) {
+  return {
+    type: Actions.ROWS_REMOVE_ONE_ZONE,
+    row,
+    zone
+  };
+}
