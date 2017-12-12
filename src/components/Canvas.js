@@ -167,10 +167,38 @@ export class Canvas extends React.Component {
         style={ style }
         ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }
+        { this.renderDraftJSStyles() }
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
       </div>
+    );
+  }
+
+  renderDraftJSStyles() {
+    return(
+      <style>
+        {
+          `
+          .DraftEditor-root {
+            position: relative;
+          }
+
+          .public-DraftEditorPlaceholder-root {
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            opacity: 0.8;
+            transition: opacity 0.15s ease-out;
+          }
+
+          .public-DraftEditorPlaceholder-hasFocus {
+            opacity: 0.5;
+          }
+
+          `
+        }
+      </style>
     );
   }
 
