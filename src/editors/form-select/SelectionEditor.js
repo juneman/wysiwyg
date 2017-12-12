@@ -77,7 +77,6 @@ export default class SelectionEditor extends React.Component {
       wrapperStyle.marginLeft = marginLeft;
     };
 
-    console.log('optionz', options);
     return (
       <div>
         <style> {`
