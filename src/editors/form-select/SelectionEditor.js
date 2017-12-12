@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
 
@@ -39,7 +39,7 @@ export default class SelectionEditor extends React.Component {
     const editorState = localState.get('editorState');
 
     const label = persistedState.get('label');
-    const options = persistedState.get('options') || [];
+    const options = persistedState.get('options') || List();
     const optionString = (localState.get('options')) || options.join('\n') || '';
     const isRequired = persistedState.get('isRequired') || false;
 
@@ -77,6 +77,7 @@ export default class SelectionEditor extends React.Component {
       wrapperStyle.marginLeft = marginLeft;
     };
 
+    console.log('optionz', options);
     return (
       <div>
         <style> {`
@@ -181,10 +182,10 @@ export default class SelectionEditor extends React.Component {
     const options = e.currentTarget.value;
     const { persistedState, localState, onChange } = this.props;
 
-    const optionsArray = options
+    const optionsArray = List(options
       .split('\n')
       .map(option => option.trim())
-      .filter(option => option && option.length);
+      .filter(option => option && option.length));
 
     const newLocalState = localState.set('options', options);
     const newPersistedState = persistedState.set('options', optionsArray);
@@ -198,7 +199,7 @@ export default class SelectionEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { label = '', options = [], isRequired = false,  marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { label = '', options = List(), isRequired = false,  marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
     const requiredAttr = {};
     if (isRequired) {
