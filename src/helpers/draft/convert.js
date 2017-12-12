@@ -2,20 +2,70 @@
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
 import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { CompositeDecorator } from 'draft-js';
+import { CompositeDecorator, ContentState } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
+export const NBSP = "\xA0";
+export const ZWSP = "\u200B";
+export const ZWSP_RE = new RegExp(ZWSP, "g");
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
+var boldValues = ['bold', 'bolder', '500', '600', '700', '800', '900'];
+var notBoldValues = ['light', 'lighter', '100', '200', '300', '400'];
 
 export const decorator = new CompositeDecorator([
   LinkDecorator
 ]);
 
 
-export function convertFromHTML(htmlContent) {
+export function convertFromHTML(htmlContent, convertOptions = {}) {
+  // We add zero-width spaces (unicode 200B) to get the browser to render a line
+  // break for a <br> and to give empty unstyled blocks (<p> tags) a size (see
+  // convertToHTML() below). When editing, we don't really want those zero-width
+  // spaces in there, so just remove them here.
+  htmlContent = htmlContent.replace(ZWSP_RE, "");
+
   return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color) {
-        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
+      if (node instanceof HTMLElement && node.style) {
+        currentStyle = currentStyle.withMutations(function(style) {
+          const fontWeight = node.style.fontWeight;
+          const fontStyle = node.style.fontStyle;
+          const textDecoration = node.style.textDecoration;
+          const fontColor = node.style.color;
+
+          if (fontColor && fontColor !== 'inherit') {
+            style.add(`${CUSTOM_STYLE_PREFIX_COLOR}${fontColor}`);
+          }
+
+          if (boldValues.indexOf(fontWeight) >= 0) {
+            style.add('BOLD');
+          }
+          else if (notBoldValues.indexOf(fontWeight) >= 0) {
+            style.remove('BOLD');
+          }
+
+          if (fontStyle === 'italic') {
+            style.add('ITALIC');
+          }
+          else if (fontStyle === 'normal') {
+            style.remove('ITALIC');
+          }
+
+          if (textDecoration === 'underline') {
+            style.add('UNDERLINE');
+          }
+
+          if (textDecoration === 'line-through') {
+            style.add('STRIKETHROUGH');
+          }
+
+          if (textDecoration === 'none') {
+            style.remove('UNDERLINE');
+            style.remove('STRIKETHROUGH');
+          }
+
+        }).toOrderedSet();
       }
       return currentStyle;
     },
@@ -27,42 +77,6 @@ export function convertFromHTML(htmlContent) {
       return [];
     },
     htmlToBlock: (nodeName, node) => {
-      const textContent = node.innerText;
-
-      // Draft will not convert leading and trailing whitespace to HTML, yet, will still save it. We will strip
-      // the whitespace so that editing content will match preview/published content.
-      const hasLeadingWhitespace = /^\s+/.test(textContent);
-      const hasTrailingWhitespace = /\s+$/.test(textContent);
-
-      // Handle whitespace in a single, unstyled block.
-      if (node.children.length < 1 && !node.parentNode.textContent && (hasLeadingWhitespace || hasTrailingWhitespace)) {
-        node.innerText = node.innerText.trim();
-      }
-
-      // Handle whitespace in blocks with inline styling. We target only the paragraph element
-      // because Draft defaults 'unstyled' nodes to paragraph elements during convert.
-      if (nodeName === 'p' && node.childNodes.length >= 1) {
-        let firstChildNode = node.childNodes[0];
-        const firstChildNodeText = firstChildNode.textContent;
-        const firstChildNodeHasLeadingWhitespace = /^\s+/.test(firstChildNodeText);
-
-        if (firstChildNodeHasLeadingWhitespace) {
-          const leadingWhitespace = firstChildNodeText.match(/^\s+/)[0];
-          const trimmedFirstChildNode = firstChildNodeText.substr(leadingWhitespace.length);
-          firstChildNode.textContent = trimmedFirstChildNode;
-        }
-
-        let lastChildNode = node.childNodes[node.childNodes.length - 1];
-        const lastChildNodeText = lastChildNode.textContent;
-        const lastChildNodeHasTrailingWhitespace = /\s+$/.test(lastChildNodeText);
-
-        if (lastChildNodeHasTrailingWhitespace) {
-          const trailingWhitespace = lastChildNodeText.match(/\s+$/);
-          const trimmedLastChildNode = lastChildNodeText.substr(0, trailingWhitespace.index);
-          lastChildNode.textContent = trimmedLastChildNode;
-        }
-      }
-
       let nodeType = 'unstyled';
       switch(nodeName) {
         case 'h1':
@@ -90,37 +104,16 @@ export function convertFromHTML(htmlContent) {
           }
         };
       }
-    }
+    },
+    ...convertOptions
   })(htmlContent);
 }
 
 export function convertFromPastedHTML(htmlContent) {
-  return draftConvertFromHTML({
-    htmlToStyle: (nodeName, node, currentStyle) => {
-      if (nodeName === 'span' && node.style && node.style.color && node.style.color !== 'inherit') {
-        return currentStyle.add(`${CUSTOM_STYLE_PREFIX_COLOR}${node.style.color}`);
-      }
-      return currentStyle;
-    },
-    htmlToEntity: (nodeName, node) => {
-      const entity = linkToEntity(nodeName, node);
-      return entity;
-    },
+  // Strip tabs from pasted content for now.
+  htmlContent = htmlContent.replace(/\t/g, '');
+  return convertFromHTML(htmlContent, {
     htmlToBlock: (nodeName, node) => {
-      const textContent = node.innerText;
-      const isBlank = /^\s+$/.test(textContent);
-
-      // Target single, non-inline nodes and trim their whitespace.
-      if (node.children.length < 1) {
-        if (isBlank) return;
-
-        const hasLeadingWhitespace = /^\s+/.test(textContent);
-        const hasTrailingWhitespace = /\s+$/.test(textContent);
-        if (hasLeadingWhitespace || hasTrailingWhitespace) {
-          node.innerText = node.innerText.trim();
-        }
-      }
-
       // Don't convert table elements
       if (nodeName === 'table' || nodeName === 'tr' || nodeName === 'td' || nodeName === 'tbody') return;
 
@@ -142,7 +135,7 @@ export function convertFromPastedHTML(htmlContent) {
           nodeType = 'header-five';
           break;
         case 'br':
-          return;
+          return false;
       }
 
       const isNotNestedBlock = nodeName !== 'ul' && nodeName !== 'ol' && nodeName !== 'blockquote';
@@ -155,12 +148,35 @@ export function convertFromPastedHTML(htmlContent) {
           }
         };
       }
-
     }
-  })(htmlContent);
+  });
 }
 
 export function convertToHTML(editorState) {
+  const transformedContentState = ContentState.createFromBlockArray(
+    editorState.getCurrentContent().getBlockMap().map(block =>
+      block.update('text', text =>
+        text
+          // Replaces extra spaces with &nbsp; characters.
+          .replace(/ {2,}/g, match => NBSP.repeat(match.length))
+          // Replaces a leading space with &nbsp;
+          .replace(/^ /, NBSP)
+          // Replaces single trailing newlines with a newline and a zero-width
+          // space, so that the <br> that the newline turns into actually
+          // renders a line break in the browser. Normally a <br> followed by
+          // nothing will collapse and not cause a line break to be rendered.
+          // Adding the zero-width space (unicode 200B) after the <br> causes
+          // the browser to render the line break. See this SO question for
+          // more: https://stackoverflow.com/q/15008205
+          .replace(/\n/g, `\n${ZWSP}`)
+          // For empty paragraphs (created when the user hits Return but doesn't
+          // add any actual text afterwards), the browser will render the <p>
+          // tag with no height if there's no content inside. Add a zero-width
+          // space inside so that it has content and has a size.
+          .replace("", () => (block.getType() === 'unstyled' && block.getLength() === 0) ? ZWSP : "")
+      )
+    ).toArray()
+  );
   return draftConvertToHTML({
     styleToHTML: (style) => {
       if (style.indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0) {
@@ -168,9 +184,6 @@ export function convertToHTML(editorState) {
       }
     },
     blockToHTML: (block) => {
-      if (block.text.length) {
-        block.text = block.text.trim()
-      }
       if (block.data && Object.keys(block.data).length) {
         const styleProps = {
           style: block.data
@@ -196,7 +209,7 @@ export function convertToHTML(editorState) {
       originalText = entityToLink(entity, originalText);
       return originalText;
     }
-  })(editorState.getCurrentContent());
+  })(transformedContentState);
 }
 
 export function customStyleFn(style) {
