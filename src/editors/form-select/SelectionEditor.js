@@ -136,7 +136,7 @@ export default class SelectionEditor extends React.Component {
             </div>
           </form>
         ) : (
-          (options.length || label) ? (
+          (options.size > 0 || label) ? (
             <form className="step-action-form" style={wrapperStyle}>
               <div className="fields">
                 <div data-field-id={ zone.get('id') } className="field">
@@ -152,13 +152,13 @@ export default class SelectionEditor extends React.Component {
               </div>
             </form>
           ) : (
-            <div style={ placeholderStyle }>Click to add your options</div>          
+            <div style={ placeholderStyle }>Click to add your options</div>
           )
         )}
       </div>
     );
   }
-  
+
   // Instance Method
   focus() {
   }
@@ -299,7 +299,7 @@ export default class SelectionEditor extends React.Component {
                           }]
                         }
                       ]
-                    }, 
+                    },
                     {
                       type: 'tag',
                       name: 'div',

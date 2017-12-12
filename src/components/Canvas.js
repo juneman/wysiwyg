@@ -180,16 +180,22 @@ export class Canvas extends React.Component {
       <style>
         {
           `
+          .DraftEditor-root {
+            position: relative;
+          }
+
           .public-DraftEditorPlaceholder-root {
             position: absolute;
             z-index: 0;
+            top: 0;
+            opacity: 0.8;
+            transition: opacity 0.15s ease-out;
           }
 
-
-
-          .DraftEditorPlaceholder-hidden {
-            display: none;
+          .public-DraftEditorPlaceholder-hasFocus {
+            opacity: 0.5;
           }
+
           `
         }
       </style>
