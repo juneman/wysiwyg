@@ -79,18 +79,7 @@ const editors = {
     Button: FormRadioButton,
     text: 'Radio Select',
     type: 'SelectionField',
-    category: 'Forms',
-    rows: fromJS([
-      {
-        id: uuid(),
-        zones: [
-          {
-            id: uuid(),
-            type: 'SelectionField'
-          }
-        ]
-      }
-    ])
+    category: 'Forms'
   },
   [EDITOR_TYPES.RATING]: {
     Button: FormRatingButton,
