@@ -6,6 +6,23 @@ import { Editor, EditorState, RichUtils, Modifier } from 'draft-js';
 import { decorator, convertFromHTML, convertFromPastedHTML, convertToHTML, customStyleFn, blockStyleFn, getResetSelection } from '../../helpers/draft/convert';
 import { placeholderStyle } from '../../helpers/styles/editor';
 
+// We're making the .public-DraftEditor-content area larger so that mouse events
+// are less likely to occur outside of it. This makes selection of text very
+// difficult if the mouseup occurs outside. (There's probably a TODO here about
+// solutions to the selection issues). We also need to .DraftEditor-root area
+// bigger to match, so this doesn't cause positioning issues with the rich text
+// placeholder.
+const richTextEditorCSS = `
+  .rich-text strong{
+    color: inherit !important;
+  }
+
+  .rich-text .DraftEditor-root, .rich-text .public-DraftEditor-content {
+    margin: -30px -110px;
+    padding: 30px 110px;
+  }
+`;
+
 export default class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -106,7 +123,7 @@ export default class RichTextEditor extends React.Component {
       <div className="rich-text"
         ref={(el) => this.wrapper = el}
         style={wrapperStyle}>
-        <style>{'.rich-text strong{color: inherit !important;}'}</style>
+        <style>{richTextEditorCSS}</style>
         { (isEditing) ? (
           (editorState) ? (
             <Editor
@@ -198,7 +215,7 @@ export default class RichTextEditor extends React.Component {
     const width = persistedState.get('width');
     const content = persistedState.get('content') || '';
 
-    const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { marginTop, marginRight, marginBottom, marginLeft, color } = persistedState.toJS();
 
     let styles = '';
     if (height) {

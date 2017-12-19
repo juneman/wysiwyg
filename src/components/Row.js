@@ -44,7 +44,6 @@ export class Row extends React.Component {
     });
 
     const gridStyle = {
-      position: 'relative',
       gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
     };
 

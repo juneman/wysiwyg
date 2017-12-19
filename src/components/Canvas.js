@@ -8,7 +8,7 @@ import HTMLParser from 'html-parse-stringify2';
 import uuid from 'uuid/v4';
 import { Map, List, fromJS, is } from 'immutable';
 
-import { convertBoundingBox, flattenHTML } from '../helpers/domHelpers';
+import { convertBoundingBox } from '../helpers/domHelpers';
 
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
@@ -122,9 +122,6 @@ export class Canvas extends React.Component {
       numPages
     } = this.props;
 
-    const canvasStyles = Object.assign({}, {
-      position: 'relative',
-    }, style);
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
@@ -167,13 +164,36 @@ export class Canvas extends React.Component {
 
     return (
       <div className="canvas"
-        style={ canvasStyles }
+        style={ style }
         ref={ (el) => this.wrapper = el }>
         { this.renderKeyframeStyles() }
+        { this.renderDraftJSStyles() }
         { rowNodes }
         { fullScreenAddNode }
         { addButtonNode }
       </div>
+    );
+  }
+
+  renderDraftJSStyles() {
+    return(
+      <style>
+        {
+          `
+          .public-DraftEditorPlaceholder-root {
+            position: absolute;
+            z-index: 0;
+            opacity: 0.8;
+            transition: opacity 0.15s ease-out;
+          }
+
+          .public-DraftEditorPlaceholder-hasFocus {
+            opacity: 0.5;
+          }
+
+          `
+        }
+      </style>
     );
   }
 
@@ -331,12 +351,9 @@ export class Canvas extends React.Component {
       const rowsHtml = this.buildHtml(internalRows, internalZones);
 
       // Rendering here with ReactDOMServer to convert the optional style object to CSS
-      const html = flattenHTML(
-        ReactDOMServer.renderToStaticMarkup(
-          <div className="canvas" style={style}>|ROWS|</div>
-        )
-        .replace('|ROWS|', rowsHtml)
-      );
+      const html = ReactDOMServer.renderToStaticMarkup(
+        <div className="canvas" style={style}>|ROWS|</div>
+      ).replace('|ROWS|', rowsHtml);
 
       const ast = HTMLParser.parse(html);
 
