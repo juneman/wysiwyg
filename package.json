@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "brace": "^0.10.0",
-    "draft-convert": "github:appcues/draft-convert",
+    "draft-convert": "^2",
     "draft-js": "brandcast/draft-js-built#003f24b",
     "emoji-mart": "^1.0.1",
     "html-parse-stringify2": "^2.0.1",
