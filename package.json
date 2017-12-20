@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "posttest": "npm run lint",
     "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
-    "build": "NODE_ENV=production npm run clean && babel src -d lib && webpack --config webpack.build.js",
+    "build": "npm run clean && babel src -d lib && NODE_ENV=production webpack --config webpack.build.js",
     "watch": "npm run clean && babel src -d lib && webpack --config webpack.build.js --watch",
     "start": "NODE_ENV=development webpack-dev-server --config webpack.build.js --hot --inline --colors",
     "clean": "rm -rf lib && mkdir lib"
