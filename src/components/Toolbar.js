@@ -79,11 +79,11 @@ export class Toolbar extends React.Component {
             onChange,
             cloudinary,
             userProperties,
-            numPages,
             sanitizeHtmlConfig,
             shouldDisableXSS,
             aceEditorConfig,
             hasRoomToRenderBelow,
+            ...(numPages && {numPages}),
             isActive: (selectedAction === editorAction.name),
             onToggleActive: (isActive) => {
               dispatch(editorActions.toggleEditorAction(editorAction.name, isActive));
