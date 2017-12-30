@@ -23,7 +23,6 @@ export default class InputFieldOptions extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log('LOGGG input field options', this.props);
     if (nextProps.isActive !== this.props.isActive) {
       this.setState({
         isMenuOpen: nextProps.isActive
