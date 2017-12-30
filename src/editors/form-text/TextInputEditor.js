@@ -69,6 +69,9 @@ export default class TextInputEditor extends React.Component {
               pointer-events: none;
               color: #999;
             }
+            input {
+              font-family: inherit;
+            }
           `}
         </style>
         { isEditing ? (

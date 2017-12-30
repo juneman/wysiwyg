@@ -39,6 +39,7 @@ export default class InputFieldOptions extends React.Component {
     const dropdownStyles = {
       ...dropdownStyle,
       width: 300,
+      zIndex: 15,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
     };
     if (!hasRoomToRenderBelow) {
