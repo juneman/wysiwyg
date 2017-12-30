@@ -206,7 +206,8 @@ export default class TextInputEditor extends React.Component {
                   name: 'div',
                   attrs: {
                     class: 'form-field form-field-text',
-                    style: "marginTop: 0; padding: 0;",                    
+                    style: "marginTop: 0; padding: 0;",
+                    ['data-appcues-validation']: inputType || null,
                     ['data-appcues-required']: isRequired },
                   voidElement: false,
                   children: [
