@@ -133,8 +133,14 @@ export default class AddButtonHorizRule extends React.Component {
 
   handleAddNew() {
     const { showEditorSelector } = this.state;
+    const { onEditorMenuOpen, onEditorMenuClose } = this.props;
 
     this.setState({ showEditorSelector: !showEditorSelector });
+    if (showEditorSelector) {
+        onEditorMenuClose();
+    } else {
+        onEditorMenuOpen();
+    }
   }
 
   setHasRoomToRenderOnRight() {
@@ -154,5 +160,7 @@ export default class AddButtonHorizRule extends React.Component {
 AddButtonHorizRule.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  isHoveringOverContainer: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func
 };

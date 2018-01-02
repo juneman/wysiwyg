@@ -108,7 +108,7 @@ export class Canvas extends React.Component {
     if (!nextProps.aceEditorConfig.isEmpty() && !is(nextProps.aceEditorConfig, this.props.aceEditorConfig)) {
       dispatch(editorActions.setAceEditorConfig(nextProps.aceEditorConfig));
     }
-    if (nextProps.isInEditMode !== isInEditMode) {
+    if (nextProps.isInEditMode !== isInEditMode && !!nextProps.onEditStart && !!nextProps.onEditEnd) {
       nextProps.isInEditMode ? nextProps.onEditStart() : nextProps.onEditEnd();
     }
   }
@@ -122,13 +122,13 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       height,
       isHoveringOverContainer,
-      numPages
+      onEditorMenuOpen,
+      onEditorMenuClose
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
-          numPages={numPages}
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -161,6 +161,8 @@ export class Canvas extends React.Component {
         isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
+        onEditorMenuOpen={ onEditorMenuOpen }
+        onEditorMenuClose={ onEditorMenuClose }
       />
     ) : null;
 
@@ -395,7 +397,9 @@ Canvas.propTypes = {
   isHoveringOverContainer: PropTypes.bool,
   isInEditMode: PropTypes.bool,
   onEditStart: PropTypes.func,
-  onEditEnd: PropTypes.func
+  onEditEnd: PropTypes.func,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps) {
@@ -427,4 +431,3 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps)(Canvas);
-

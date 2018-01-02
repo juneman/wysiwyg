@@ -120,7 +120,9 @@ WysiwygEditor.propTypes = {
   maxRows: PropTypes.number,
   window: PropTypes.object,
   onEditStart: PropTypes.func,
-  onEditEnd: PropTypes.func
+  onEditEnd: PropTypes.func,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func
 };
 
 export default WysiwygEditor;
