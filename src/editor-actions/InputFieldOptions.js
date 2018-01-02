@@ -20,6 +20,8 @@ export default class InputFieldOptions extends React.Component {
       isMenuOpen: props.isActive || false,
       selectedInputType: props.persistedState.get('inputType') || INPUT_TYPES.TEXT
     };
+
+    this.handleSelectInputType = this.handleSelectInputType.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -69,7 +71,7 @@ export default class InputFieldOptions extends React.Component {
               unsearchable
               selectedValue={ selectedInputType }
               options={ INPUT_TYPES_LIST }
-              onSelect={ (value) => this.handleSelectInputType(value) }/>
+              onSelect={ this.handleSelectInputType }/>
           </div>
           <div style={{ ...row, flexDirection: 'column' }}>
             <label htmlFor="field-max-length" style={ labelStyle }>Maximum Length</label>
