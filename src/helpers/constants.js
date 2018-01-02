@@ -116,16 +116,16 @@ export const INPUT_TYPES_LIST = [
     value: 'text'
   },
   {
-    label: 'E-mail',
-    value: 'email'
-  },
-  {
     label: 'Number',
     value: 'number'
   },
   {
     label: 'Date',
     value: 'date'
+  },
+  {
+    label: 'E-mail',
+    value: 'email'
   },
   {
     label: 'Phone',
