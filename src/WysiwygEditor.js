@@ -118,7 +118,9 @@ WysiwygEditor.propTypes = {
   disableAddButton: PropTypes.bool,
   allowedEditorTypes: PropTypes.array,
   maxRows: PropTypes.number,
-  window: PropTypes.object
+  window: PropTypes.object,
+  onEditStart: PropTypes.func,
+  onEditEnd: PropTypes.func
 };
 
 export default WysiwygEditor;

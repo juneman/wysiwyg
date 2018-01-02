@@ -84,7 +84,7 @@ export class Canvas extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { dispatch } = this.props;
+    const { dispatch, isInEditMode } = this.props;
     const { rowsLoaded } = this.state;
 
     if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
@@ -107,6 +107,9 @@ export class Canvas extends React.Component {
     }
     if (!nextProps.aceEditorConfig.isEmpty() && !is(nextProps.aceEditorConfig, this.props.aceEditorConfig)) {
       dispatch(editorActions.setAceEditorConfig(nextProps.aceEditorConfig));
+    }
+    if (nextProps.isInEditMode !== isInEditMode) {
+      nextProps.isInEditMode ? nextProps.onEditStart() : nextProps.onEditEnd();
     }
   }
 
@@ -389,7 +392,10 @@ Canvas.propTypes = {
   maxRows: PropTypes.number,
   height: PropTypes.string,
   basePadding: PropTypes.number,
-  isHoveringOverContainer: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool,
+  isInEditMode: PropTypes.bool,
+  onEditStart: PropTypes.func,
+  onEditEnd: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps) {
@@ -401,6 +407,7 @@ function mapStateToProps(state, ownProps) {
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
     aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
+    isInEditMode: state.editor.get('isCanvasInEditMode'),
 
     // Internal mappings some of the above properties
 
