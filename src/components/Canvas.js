@@ -334,7 +334,7 @@ export class Canvas extends React.Component {
       }
       html += `
         <div class="row-container">
-          <div class="row">
+          <div class="row" style="display: flex;">
             ${zoneBlocks.join('\n')}
           </div>
         </div>
