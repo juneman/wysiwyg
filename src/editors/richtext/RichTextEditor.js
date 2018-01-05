@@ -47,7 +47,6 @@ export default class RichTextEditor extends React.Component {
   }
 
   onMouseUp(e) {
-    e.preventDefault();
     const { localState, isEditing } = this.props;
 
     if (isEditing) {
@@ -66,6 +65,7 @@ export default class RichTextEditor extends React.Component {
           const editorState = localState.get('editorState');
           const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState));
           this.handleEditorStateChange(newEditorState);
+          e.preventDefault();
       }
 
     }
