@@ -97,15 +97,19 @@ export default class FontColor extends React.Component {
 
   setCurrentInlineColor() {
     const { localState } = this.props;
+    const { selectedColor } = this.state;
     const editorState = localState.get('editorState');
     if (editorState) {
       const styles = editorState.getCurrentInlineStyle().toJS();
       if (styles.length) {
         const styleIndex = styles.findIndex((style) => style.indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0);
         if (styleIndex !== -1) {
-          this.setState({
-            selectedColor: styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length)
-          });
+          const newSelectedColor = styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+          if (selectedColor !== newSelectedColor) {
+            this.setState({
+              selectedColor: newSelectedColor
+            });
+          }
         }
       }
     }
