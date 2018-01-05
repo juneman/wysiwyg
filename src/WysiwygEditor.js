@@ -122,7 +122,9 @@ WysiwygEditor.propTypes = {
   onEditStart: PropTypes.func,
   onEditEnd: PropTypes.func,
   onEditorMenuOpen: PropTypes.func,
-  onEditorMenuClose: PropTypes.func
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func
 };
 
 export default WysiwygEditor;

@@ -33,6 +33,7 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector } = this.state;
     this.setHasRoomToRenderOnRight();
 
@@ -44,6 +45,12 @@ export default class AddButtonHorizRule extends React.Component {
       editor.addEventListener('click', this.onClick, true);
     } else if (didEditorSelectorClose) {
       editor.removeEventListener('click', this.onClick, true);
+    }
+
+    if (shouldCloseMenu && showEditorSelector) {
+      this.setState({ showEditorSelector: false });
+      resetShouldCloseMenu();
+      onEditorMenuClose();
     }
 
   }
@@ -162,5 +169,7 @@ AddButtonHorizRule.propTypes = {
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   isHoveringOverContainer: PropTypes.bool,
   onEditorMenuOpen: PropTypes.func,
-  onEditorMenuClose: PropTypes.func
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func
 };

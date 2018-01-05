@@ -123,7 +123,9 @@ export class Canvas extends React.Component {
       height,
       isHoveringOverContainer,
       onEditorMenuOpen,
-      onEditorMenuClose
+      onEditorMenuClose,
+      shouldCloseMenu,
+      resetShouldCloseMenu
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
@@ -166,6 +168,8 @@ export class Canvas extends React.Component {
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
         onEditorMenuOpen={ onEditorMenuOpen }
         onEditorMenuClose={ onEditorMenuClose }
+        shouldCloseMenu={ shouldCloseMenu }
+        resetShouldCloseMenu={ resetShouldCloseMenu }
       />
     ) : null;
 
@@ -402,7 +406,9 @@ Canvas.propTypes = {
   onEditStart: PropTypes.func,
   onEditEnd: PropTypes.func,
   onEditorMenuOpen: PropTypes.func,
-  onEditorMenuClose: PropTypes.func
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps) {
