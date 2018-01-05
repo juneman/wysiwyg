@@ -53,7 +53,13 @@ export default class RichTextEditor extends React.Component {
 
       // If mouseUp happened over a Toolbar element,
       // don't reset editor focus.
-      const toolbarElement = document.getElementById('appcues-host').getElementsByClassName('resolved')[0].shadowRoot.firstChild.querySelectorAll('[name="EditorWrapperEditingToolbar"]');
+      let toolbarElement = null;
+      if (this.wrapper) {
+        const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+        if (wrapperElement && wrapperElement.ownerDocument) {
+          toolbarElement = wrapperElement.ownerDocument.querySelectorAll('[name="EditorWrapperEditingToolbar"]');
+        }
+      }
       const hasToolbarElement = toolbarElement && toolbarElement.length;
 
       if (hasToolbarElement && ReactDOM.findDOMNode(toolbarElement[0]).contains(e.path[0])) {
