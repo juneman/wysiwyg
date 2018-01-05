@@ -42,7 +42,15 @@ export default class RichTextEditor extends React.Component {
 
   componentDidMount() {
     if (this.wrapper) {
-      window.addEventListener('mouseup', this.onMouseUp, true)
+      const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+      if (wrapperElement && wrapperElement.ownerDocument) {
+        wrapperElement.ownerDocument.defaultView.addEventListener(
+          "mouseup",
+          this.onMouseUp,
+          true
+        );
+      }
+      window.addEventListener("mouseup", this.onMouseUp, true);
     }
   }
 
@@ -102,6 +110,16 @@ export default class RichTextEditor extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('mouseup', this.onMouseUp, true)
+    if (this.wrapper) {
+      const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+      if (wrapperElement && wrapperElement.ownerDocument) {
+        wrapperElement.ownerDocument.defaultView.removeEventListener(
+          "mouseup",
+          this.onMouseUp,
+          true
+        );
+      }
+    }
   }
 
   render() {
