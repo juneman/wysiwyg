@@ -42,19 +42,32 @@ export default class RichTextEditor extends React.Component {
 
   componentDidMount() {
     if (this.wrapper) {
-      window.addEventListener('mouseup', this.onMouseUp, true)
+      const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+      if (wrapperElement && wrapperElement.ownerDocument) {
+        wrapperElement.ownerDocument.defaultView.addEventListener(
+          "mouseup",
+          this.onMouseUp,
+          true
+        );
+      }
+      window.addEventListener("mouseup", this.onMouseUp, true);
     }
   }
 
   onMouseUp(e) {
-    e.preventDefault();
     const { localState, isEditing } = this.props;
 
     if (isEditing) {
 
       // If mouseUp happened over a Toolbar element,
       // don't reset editor focus.
-      const toolbarElement = document.getElementById('appcues-host').getElementsByClassName('resolved')[0].shadowRoot.firstChild.querySelectorAll('[name="EditorWrapperEditingToolbar"]');
+      let toolbarElement = null;
+      if (this.wrapper) {
+        const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+        if (wrapperElement && wrapperElement.ownerDocument) {
+          toolbarElement = wrapperElement.ownerDocument.querySelectorAll('[name="EditorWrapperEditingToolbar"]');
+        }
+      }
       const hasToolbarElement = toolbarElement && toolbarElement.length;
 
       if (hasToolbarElement && ReactDOM.findDOMNode(toolbarElement[0]).contains(e.path[0])) {
@@ -66,6 +79,7 @@ export default class RichTextEditor extends React.Component {
           const editorState = localState.get('editorState');
           const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState));
           this.handleEditorStateChange(newEditorState);
+          e.preventDefault();
       }
 
     }
@@ -96,6 +110,16 @@ export default class RichTextEditor extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('mouseup', this.onMouseUp, true)
+    if (this.wrapper) {
+      const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
+      if (wrapperElement && wrapperElement.ownerDocument) {
+        wrapperElement.ownerDocument.defaultView.removeEventListener(
+          "mouseup",
+          this.onMouseUp,
+          true
+        );
+      }
+    }
   }
 
   render() {
