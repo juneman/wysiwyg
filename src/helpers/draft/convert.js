@@ -200,6 +200,20 @@ export function convertToHTML(editorState) {
             return <h4 {...styleProps} />;
           case 'header-five':
             return <h5 {...styleProps} />;
+          case 'unordered-list-item':
+            return {
+              start: '<li>',
+              end: '</li>',
+              nestStart: '<ul>',
+              nestEnd: '</ul>'
+            };
+          case 'ordered-list-item':
+            return {
+              start: '<li>',
+              end: '</li>',
+              nestStart: '<ol>',
+              nestEnd: '</ol>'
+            };
           default:
             return <p {...styleProps} />;
         }
