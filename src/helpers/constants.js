@@ -100,3 +100,39 @@ export const IMG_ACTION_TYPES = {
   GO_TO_URL: 'url',
   SHOW_APPCUES_FLOW: 'appcues'
 };
+
+export const INPUT_TYPES = {
+  TEXT: 'text',
+  EMAIL: 'email',
+  NUMBER: 'number',
+  DATE: 'date',
+  PHONE: 'tel',
+  URL: 'url'
+};
+
+export const INPUT_TYPES_LIST = [
+  {
+    label: 'Text',
+    value: 'text'
+  },
+  {
+    label: 'Number',
+    value: 'number'
+  },
+  {
+    label: 'Date',
+    value: 'date'
+  },
+  {
+    label: 'E-mail',
+    value: 'email'
+  },
+  {
+    label: 'Phone',
+    value: 'tel'
+  },
+  {
+    label: 'URL',
+    value: 'url'
+  }
+];

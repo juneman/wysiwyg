@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
 import { getButtonProps, secondaryMenuTitleStyle, inputStyle, labelStyle, checkboxStyle, buttonStyle, dropdownStyle } from '../helpers/styles/editor';
+import { INPUT_TYPES, INPUT_TYPES_LIST } from '../helpers/constants';
 import Menu from '../components/Menu';
 import Button from '../components/Button';
-
+import DropDownMenu from '../components/DropDownMenu';
 import SettingsButton from '../icons/SettingsButton';
 
 export default class InputFieldOptions extends React.Component {
@@ -16,8 +17,11 @@ export default class InputFieldOptions extends React.Component {
     this.state = {
       isRequired: props.persistedState.get('isRequired') || false,
       maxLength: props.persistedState.get('maxLength') || '',
-      isMenuOpen: props.isActive || false
+      isMenuOpen: props.isActive || false,
+      selectedInputType: props.persistedState.get('inputType') || INPUT_TYPES.TEXT
     };
+
+    this.handleSelectInputType = this.handleSelectInputType.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -29,7 +33,7 @@ export default class InputFieldOptions extends React.Component {
   }
 
   render() {
-    const { isRequired, maxLength, isMenuOpen } = this.state;
+    const { isRequired, maxLength, isMenuOpen, selectedInputType } = this.state;
     const { isActive, hasRoomToRenderBelow } = this.props;
 
     const buttonProps = getButtonProps(isActive);
@@ -37,6 +41,7 @@ export default class InputFieldOptions extends React.Component {
     const dropdownStyles = {
       ...dropdownStyle,
       width: 300,
+      zIndex: 15,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
     };
     if (!hasRoomToRenderBelow) {
@@ -54,19 +59,28 @@ export default class InputFieldOptions extends React.Component {
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Text Field Options</div>
-        <div>
+
           <div style={row}>
             <input id="field-is-required" type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label htmlFor="field-is-required">Required Field</label>
           </div>
+          <div style={{marginTop: 20}}>
+            <DropDownMenu
+              className="form-control"
+              label="Type"
+              unsearchable
+              selectedValue={ selectedInputType }
+              options={ INPUT_TYPES_LIST }
+              onSelect={ this.handleSelectInputType }/>
+          </div>
           <div style={{ ...row, flexDirection: 'column' }}>
-            <label style={ labelStyle }>Maximum Length</label>
-            <input style={ inputStyle } type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
+            <label htmlFor="field-max-length" style={ labelStyle }>Maximum Length</label>
+            <input id="field-max-length" style={ inputStyle } type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
           </div>
           <div style={{textAlign: 'right', ...row}}>
             <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
           </div>
-        </div>
+
       </Menu>
     ) : null;
 
@@ -105,6 +119,12 @@ export default class InputFieldOptions extends React.Component {
     e.target.focus();
   }
 
+  handleSelectInputType(value) {
+    this.setState({
+      selectedInputType: value
+    });
+  }
+
   handleMaxLength(e) {
     const maxLength = +e.target.value;
     this.setState({
@@ -117,11 +137,12 @@ export default class InputFieldOptions extends React.Component {
       e.preventDefault();
     }
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { isRequired, maxLength } = this.state;
+    const { isRequired, maxLength, selectedInputType } = this.state;
 
     const newPersistedState = persistedState
       .set('isRequired', isRequired)
-      .set('maxLength', maxLength);
+      .set('maxLength', maxLength)
+      .set('inputType', selectedInputType || INPUT_TYPES.TEXT);
 
     this.setState({
       isMenuOpen: false

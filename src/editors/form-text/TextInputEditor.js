@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import HTMLParser from 'html-parse-stringify2';
 import { Editor, EditorState, ContentState } from 'draft-js';
+import { INPUT_TYPES } from '../../helpers/constants';
 
 export default class TextInputEditor extends React.Component {
 
@@ -40,6 +41,7 @@ export default class TextInputEditor extends React.Component {
     const placeholder = (persistedState.get('placeholder'));
     const maxLength = (persistedState.get('maxLength')) || '';
     const isRequired = (persistedState.get('isRequired')) || false;
+    const inputType = (persistedState.get('inputType')) || INPUT_TYPES.TEXT;
 
     const { marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
 
@@ -67,6 +69,9 @@ export default class TextInputEditor extends React.Component {
               pointer-events: none;
               color: #999;
             }
+            input {
+              font-family: inherit;
+            }
           `}
         </style>
         { isEditing ? (
@@ -87,7 +92,7 @@ export default class TextInputEditor extends React.Component {
                     </label>
                   </div>
                   <div className="field-controls">
-                    <input name={ zone.get('id') } type="text" className="placeholder-value" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
+                    <input name={ zone.get('id') } type={inputType} className="placeholder-value" onChange={(e) => this.handleInputChange(e)} value={placeholder} placeholder="Add Placeholder Text" />
                   </div>
                 </div>
               </div>
@@ -102,7 +107,7 @@ export default class TextInputEditor extends React.Component {
                     <label htmlFor={ zone.get('id') } className="label-display">{(isRequired) ? '*' : ''} { label }</label>
                   </div>
                   <div className="field-controls">
-                    <input name={ zone.get('id') } type="text" required={isRequired} maxLength={maxLength} placeholder={ placeholder } className="placeholder-value" />
+                    <input name={ zone.get('id') } type={inputType} required={isRequired} maxLength={maxLength} placeholder={ placeholder } className="placeholder-value" />
                   </div>
                 </div>
               </div>
@@ -146,10 +151,10 @@ export default class TextInputEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { label, placeholder, isRequired = false, maxLength, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { label, placeholder, isRequired = false, maxLength, marginTop, marginRight, marginBottom, marginLeft, inputType } = persistedState.toJS();
 
     const inputAttrs = {
-      type: 'text',
+      type: inputType || 'text',
       class: 'form-control',
       ['data-field-id']: zone.get('id')
     };
@@ -204,7 +209,8 @@ export default class TextInputEditor extends React.Component {
                   name: 'div',
                   attrs: {
                     class: 'form-field form-field-text',
-                    style: "marginTop: 0; padding: 0;",                    
+                    style: "marginTop: 0; padding: 0;",
+                    ['data-appcues-validation']: inputType || null,
                     ['data-appcues-required']: isRequired },
                   voidElement: false,
                   children: [
