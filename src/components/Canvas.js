@@ -163,7 +163,7 @@ export class Canvas extends React.Component {
         isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => {
             this.addRow(type, rowsToAdd, defaultAction);
-            onEditorMenuClose();
+            onEditorMenuClose && onEditorMenuClose();
         } }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
         onEditorMenuOpen={ onEditorMenuOpen }

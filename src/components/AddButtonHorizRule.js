@@ -38,13 +38,16 @@ export default class AddButtonHorizRule extends React.Component {
     this.setHasRoomToRenderOnRight();
 
     const editor = document.getElementById('appcues-host');
+    const modalEditorFrame = document.getElementById('modal-editor-frame') ? document.getElementById('modal-editor-frame').contentDocument : null;
     const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
     const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
 
     if (didEditorSelectorOpen) {
-      editor.addEventListener('click', this.onClick, true);
+      modalEditorFrame && modalEditorFrame.addEventListener('click', this.onClick, true);
+      !modalEditorFrame && editor.addEventListener('click', this.onClick, true);
     } else if (didEditorSelectorClose) {
-      editor.removeEventListener('click', this.onClick, true);
+      modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
+      !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
     }
 
     if (shouldCloseMenu && showEditorSelector) {
@@ -57,7 +60,9 @@ export default class AddButtonHorizRule extends React.Component {
 
   componentWillUnmount() {
     const editor = document.getElementById('appcues-host');
-    editor.removeEventListener('click', this.onClick, true);
+    const modalEditorFrame = document.getElementById('modalEditorFrame') ? document.getElementById('modal-editor-frame').contentDocument : null;
+    modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
+    !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
   }
 
   render() {
@@ -132,7 +137,6 @@ export default class AddButtonHorizRule extends React.Component {
   onClick(e) {
     e.preventDefault();
     const { showEditorSelector, isHoveringOverAddButton } = this.state;
-
     if (showEditorSelector && !isHoveringOverAddButton) {
       this.setState({showEditorSelector: false});
     }
@@ -144,9 +148,9 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.setState({ showEditorSelector: !showEditorSelector });
     if (showEditorSelector) {
-        onEditorMenuClose();
+        onEditorMenuClose && onEditorMenuClose();
     } else {
-        onEditorMenuOpen();
+        onEditorMenuOpen && onEditorMenuOpen();
     }
   }
 
