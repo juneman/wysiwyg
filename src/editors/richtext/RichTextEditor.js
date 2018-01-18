@@ -43,7 +43,11 @@ export default class RichTextEditor extends React.Component {
   componentDidMount() {
     if (this.wrapper) {
       const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
-      if (wrapperElement && wrapperElement.ownerDocument) {
+      if (
+        wrapperElement &&
+        wrapperElement.ownerDocument &&
+        wrapperElement.ownerDocument.defaultView
+      ) {
         wrapperElement.ownerDocument.defaultView.addEventListener(
           "mouseup",
           this.onMouseUp,
@@ -109,7 +113,7 @@ export default class RichTextEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mouseup', this.onMouseUp, true)
+    window.removeEventListener('mouseup', this.onMouseUp, true);
     if (this.wrapper) {
       const wrapperElement = ReactDOM.findDOMNode(this.wrapper);
       if (wrapperElement && wrapperElement.ownerDocument && wrapperElement.ownerDocument.defaultView) {

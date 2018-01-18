@@ -96,7 +96,7 @@ export const hue = {
 
 function getWindow(el) {
   if (el && el.ownerDocument) {
-    return el.ownerDocument.defaultView;
+    return el.ownerDocument.defaultView || window;
   }
   return window;
 }
