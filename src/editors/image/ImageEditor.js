@@ -126,7 +126,7 @@ export default class ImageEditor extends React.Component {
     }
     if (flowId) {
       linkAst.attrs['onclick'] = `window.parent.Appcues.show('${flowId}')`;
-      linkAst.attrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_GROUP;
+      linkAst.attrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
     }
 
     const ast = [
