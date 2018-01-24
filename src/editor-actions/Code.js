@@ -72,7 +72,7 @@ export default class Code extends React.Component {
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     if (!hasRoomToRenderRight) {
       dropdownStyles.left = leftOffset - 40;
@@ -103,9 +103,11 @@ export default class Code extends React.Component {
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
           <div ref={(el) => this._menuTitle = el} style={titleStyles}>{title}</div>
-          <AceEditor
-            { ...aceEditorProps }
-          />
+          <textarea
+              style={{ backgroundColor: 'black', color: 'white', width: '700px',
+                       height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier' }}
+              value={ this.state.content }
+              onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave() ) }} />
           <div style={{textAlign: 'right', marginTop: 10}}>
             <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>
               { isSaved ?
