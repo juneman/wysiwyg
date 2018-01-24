@@ -27,6 +27,10 @@ export default class Code extends React.Component {
   componentDidMount() {
     const content = this.props.persistedState.get('content') || '';
 
+    if (this._menuTitle) {
+      this.setAceEditorPosition();
+    }
+
     this.setState({
       content
     });
@@ -43,6 +47,12 @@ export default class Code extends React.Component {
     if (this.state.content !== nextState.content) { console.log("hello"); return true; }
 
     return false;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.state.hasCheckedPosition && this._html) {
+      this.setAceEditorPosition();
+    }
   }
 
   render() {
@@ -90,6 +100,24 @@ export default class Code extends React.Component {
         </Menu>
       </div>
     );
+  }
+
+  setAceEditorPosition() {
+    const { hasCheckedPosition } = this.state;
+
+    const updates = { hasCheckedPosition: true };
+    const hasRoomToRenderBelow = ((window.innerHeight - this._menuTitle.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    updates.hasRoomToRenderBelow = hasRoomToRenderBelow;
+
+    const hasRoomToRenderRight = ((window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    updates.hasRoomToRenderRight = hasRoomToRenderRight;
+
+    if (!hasRoomToRenderRight) {
+      const leftOffset = window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right;
+      updates.leftOffset = leftOffset;
+    }
+
+    this.setState({ ...updates });
   }
 
   handleSave() {
