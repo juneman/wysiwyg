@@ -73,7 +73,8 @@ export default class Code extends React.Component {
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
           <div ref={(el) => this._menuTitle = el} style={titleStyles}>{title}</div>
           <textarea
-              style={{ backgroundColor: 'black', color: 'white', width: '700px',
+              style={{ background: 'transparent', padding: '12px', border: '2px solid rgba(255,255,255,0.3)',
+                       borderRadius: '4px', color: 'white', width: '700px',
                        height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier' }}
               value={ this.state.content }
               onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave ) }} />
