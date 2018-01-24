@@ -27,7 +27,6 @@
     "lodash": "^4.17.4",
     "node-object-hash": "^1.2.0",
     "prop-types": "^15.5.8",
-    "react-ace": "^4.2.1",
     "react-color": "^2.11.4",
     "react-dnd": "^2.5.0",
     "react-dnd-html5-backend": "^2.5.0",

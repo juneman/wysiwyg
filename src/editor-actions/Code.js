@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import sanitizeHtml from 'sanitize-html';
 
-import AceEditor from 'react-ace';
-import 'brace/mode/html';
-import 'brace/theme/monokai';
-
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 
@@ -31,10 +27,6 @@ export default class Code extends React.Component {
   componentDidMount() {
     const content = this.props.persistedState.get('content') || '';
 
-    if (this._menuTitle) {
-      this.setAceEditorPosition();
-    }
-
     this.setState({
       content
     });
@@ -48,17 +40,13 @@ export default class Code extends React.Component {
     if (this.props.persistedState !== nextProps.persistedState) { return true; }
     if (this.props.localState !== nextProps.localState) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
+    if (this.state.content !== nextState.content) { console.log("hello"); return true; }
+
     return false;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!this.state.hasCheckedPosition && this._html) {
-      this.setAceEditorPosition();
-    }
-  }
-
   render() {
-    const { persistedState, title, aceEditorConfig, localState } = this.props;
+    const { persistedState, title, localState } = this.props;
     const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, leftOffset } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
@@ -80,25 +68,6 @@ export default class Code extends React.Component {
 
     const titleStyles = secondaryMenuTitleStyle;
 
-    const aceEditorProps = Object.assign({}, {
-      name: 'code-editor',
-      editorProps: { $blockScrolling: true },
-      showGutter: false,
-      key: "helloEditor",
-      wrapEnabled: true,
-      showPrintMargin: false,
-      width: '700px',
-      height: '200px'
-    },
-      aceEditorConfig.toJS(), // Let the user override items above
-    {
-      mode: 'html',
-      theme: 'monokai',
-      onChange: (content) => {this.setState({content}, this.handleSave);},
-      focus: true,
-      value: content
-    });
-
     return (
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
@@ -107,7 +76,7 @@ export default class Code extends React.Component {
               style={{ backgroundColor: 'black', color: 'white', width: '700px',
                        height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier' }}
               value={ this.state.content }
-              onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave() ) }} />
+              onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave ) }} />
           <div style={{textAlign: 'right', marginTop: 10}}>
             <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>
               { isSaved ?
@@ -120,24 +89,6 @@ export default class Code extends React.Component {
         </Menu>
       </div>
     );
-  }
-
-  setAceEditorPosition() {
-    const { hasCheckedPosition } = this.state;
-
-    const updates = { hasCheckedPosition: true };
-    const hasRoomToRenderBelow = ((window.innerHeight - this._menuTitle.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
-    updates.hasRoomToRenderBelow = hasRoomToRenderBelow;
-
-    const hasRoomToRenderRight = ((window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
-    updates.hasRoomToRenderRight = hasRoomToRenderRight;
-
-    if (!hasRoomToRenderRight) {
-      const leftOffset = window.innerWidth - this._menuTitle.parentElement.getBoundingClientRect().right;
-      updates.leftOffset = leftOffset;
-    }
-
-    this.setState({ ...updates });
   }
 
   handleSave() {
@@ -193,6 +144,5 @@ Code.propTypes = {
   sanitizeHtmlConfig: PropTypes.instanceOf(Map),
   shouldDisableXSS: PropTypes.bool.isRequired,
   overrideSanitizeHtmlConfig: PropTypes.object,
-  aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
   hasRoomToRenderBelow: PropTypes.bool
 };
