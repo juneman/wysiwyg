@@ -44,7 +44,7 @@ export default class Code extends React.Component {
     if (this.props.persistedState !== nextProps.persistedState) { return true; }
     if (this.props.localState !== nextProps.localState) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
-    if (this.state.content !== nextState.content) { console.log("hello"); return true; }
+    if (this.state.content !== nextState.content) { return true; }
 
     return false;
   }
@@ -85,7 +85,7 @@ export default class Code extends React.Component {
           <textarea
               style={{ background: 'transparent', padding: '12px', border: '2px solid rgba(255,255,255,0.3)',
                        borderRadius: '4px', color: 'white', width: '700px',
-                       height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier' }}
+                       height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier, monospace' }}
               value={ this.state.content }
               onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave ) }} />
           <div style={{textAlign: 'right', marginTop: 10}}>
