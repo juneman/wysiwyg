@@ -150,9 +150,10 @@ export default class ImageEditor extends React.Component {
   handleUpload(imageDetails) {
     const { url, width } = imageDetails;
     const { localState, persistedState, onChange, canvasPosition } = this.props;
-    
+
+    const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
     let newPersistedState = persistedState
-      .set('url', url)
+      .set('url', urlWithoutProtocol)
       .set('width', width)
       .set('textAlign', 'center');
 
