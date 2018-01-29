@@ -107,7 +107,6 @@ WysiwygEditor.propTypes = {
     uploadUrl: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired
   }),
-  aceEditorConfig: PropTypes.object,
   userProperties: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired

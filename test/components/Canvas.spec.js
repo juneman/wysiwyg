@@ -43,7 +43,6 @@ describe('<Canvas />', () => {
       cloudinary: {},
       userProperties: [],
       allowedEditorTypes: [],
-      aceEditorConfig: {},
       sanitizeHtmlConfig: {
         allowedTags: false,
         allowedAttributes: false

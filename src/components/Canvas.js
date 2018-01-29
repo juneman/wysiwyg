@@ -41,7 +41,6 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       sanitizeHtml,
       disableAddButton,
-      aceEditorConfig,
       basePadding,
       shouldDisableXSS
     } = this.props;
@@ -74,10 +73,6 @@ export class Canvas extends React.Component {
 
     dispatch(editorActions.setShouldDisableXSS(shouldDisableXSS === true));
 
-    if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
-      dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
-    }
-
     this.setState({
       rowsLoaded: true
     });
@@ -104,9 +99,6 @@ export class Canvas extends React.Component {
     }
     if (!nextProps.sanitizeHtml.isEmpty() && !is(nextProps.sanitizeHtml, this.props.sanitizeHtml)) {
       dispatch(editorActions.setSanitizeHtmlConfig(nextProps.sanitizeHtml));
-    }
-    if (!nextProps.aceEditorConfig.isEmpty() && !is(nextProps.aceEditorConfig, this.props.aceEditorConfig)) {
-      dispatch(editorActions.setAceEditorConfig(nextProps.aceEditorConfig));
     }
     if (nextProps.isInEditMode !== isInEditMode && !!nextProps.onEditStart && !!nextProps.onEditEnd) {
       nextProps.isInEditMode ? nextProps.onEditStart() : nextProps.onEditEnd();
@@ -393,7 +385,6 @@ Canvas.propTypes = {
   sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  aceEditorConfig: PropTypes.instanceOf(Map),
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
@@ -419,7 +410,6 @@ function mapStateToProps(state, ownProps) {
     userProperties: (ownProps.userProperties && ownProps.userProperties.length) ? fromJS(ownProps.userProperties) : List(),
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
-    aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
     isInEditMode: state.editor.get('isCanvasInEditMode'),
 
     // Internal mappings some of the above properties
