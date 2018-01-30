@@ -17,7 +17,6 @@ const initialState = fromJS({
   cloudinary: {},
   userProperties: [],
   allowedEditorTypes: [],
-  aceEditorConfig: {},
   shouldDisableXSS: false,
   sanitizeHtmlConfig: {
     allowedTags: false,
@@ -88,9 +87,6 @@ export default function editorSelector(state = initialState, action) {
       break;
     case Actions.EDITOR_SETTINGS_SANITIZE_HTML:
       newState = newState.set('sanitizeHtmlConfig', action.sanitizeHtmlConfig);
-      break;
-    case Actions.EDITOR_SETTINGS_ACE_EDITOR:
-      newState = newState.set('aceEditorConfig', action.aceEditorConfig);
       break;
     case Actions.EDITOR_SETTINGS_ALLOWED_EDITOR_TYPES:
       newState = newState.set('allowedEditorTypes', action.allowedEditorTypes);

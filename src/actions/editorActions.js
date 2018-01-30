@@ -130,13 +130,6 @@ export function setCloseAll() {
   };
 }
 
-export function setAceEditorConfig(aceEditorConfig) {
-  return {
-    type: Actions.EDITOR_SETTINGS_ACE_EDITOR,
-    aceEditorConfig
-  };
-}
-
 export function setShouldDisableXSS(shouldDisableXSS) {
   return {
     type: Actions.EDITOR_SHOULD_DISABLE_XSS,

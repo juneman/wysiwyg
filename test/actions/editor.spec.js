@@ -169,13 +169,4 @@ describe('Editor Actions', () => {
     expect(editorActions.setCloseAll()).to.eql(expectedAction);
   });
 
-  it('should create an action to set aceEditorConfig', () => {
-    const aceEditorConfig = Map();
-    const expectedAction = {
-      type: types.EDITOR_SETTINGS_ACE_EDITOR,
-      aceEditorConfig
-    };
-    expect(editorActions.setAceEditorConfig(aceEditorConfig)).to.eql(expectedAction);
-  });
-
 });

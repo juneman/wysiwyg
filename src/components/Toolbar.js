@@ -31,7 +31,7 @@ export class Toolbar extends React.Component {
     const hasRoomToRenderBelow = ((window.innerHeight - this.toolbar.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
-    } 
+    }
   }
 
   render() {
@@ -46,7 +46,6 @@ export class Toolbar extends React.Component {
       userProperties,
       shouldDisableXSS,
       sanitizeHtmlConfig,
-      aceEditorConfig,
       numPages
     } = this.props;
 
@@ -72,7 +71,7 @@ export class Toolbar extends React.Component {
               </div>
             );
           }
-          
+
           const toolbarProps = {
             localState,
             persistedState,
@@ -81,7 +80,6 @@ export class Toolbar extends React.Component {
             userProperties,
             sanitizeHtmlConfig,
             shouldDisableXSS,
-            aceEditorConfig,
             hasRoomToRenderBelow,
             ...(numPages && {numPages}),
             isActive: (selectedAction === editorAction.name),
@@ -110,7 +108,6 @@ Toolbar.propTypes = {
   userProperties: PropTypes.instanceOf(List).isRequired,
   selectedAction: PropTypes.string,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map).isRequired,
-  aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
   shouldDisableXSS: PropTypes.bool.isRequired
 };
 
@@ -120,7 +117,6 @@ function mapStateToProps(state) {
     cloudinary: state.editor.get('cloudinary'),
     userProperties: state.editor.get('userProperties'),
     sanitizeHtmlConfig: state.editor.get('sanitizeHtmlConfig'),
-    aceEditorConfig: state.editor.get('aceEditorConfig'),
     shouldDisableXSS: state.editor.get('shouldDisableXSS')
   };
 }
