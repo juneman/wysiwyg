@@ -55,9 +55,6 @@ export default class ImageSize extends React.Component {
             <label style={ labelStyle }>Width:</label>
             <input style={ inputStyle } value={width} placeholder="auto" onChange={(e) => this.handleInputChange(e, 'width')} />
           </div>
-          <div style={{textAlign: 'right', marginTop: 20}}>
-            <Button onClick={(e) => this.handleSave(e)}>Update</Button>
-          </div>
         </div>
       </Menu>
     ) : null;
@@ -91,14 +88,11 @@ export default class ImageSize extends React.Component {
 
     if (!isNaN(parsedNumber)) {
       update[name] = parsedNumber;
-      this.setState(update);
+      this.setState(update, this.handleSave);
     }
   }
 
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  handleSave() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { width } = this.state;
 
@@ -106,12 +100,6 @@ export default class ImageSize extends React.Component {
       .set('width', width)
       .delete('widthOverride')
       .delete('heightOverride');
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,

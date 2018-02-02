@@ -107,10 +107,6 @@ export default class ImageOnClick extends React.Component {
               </div>
             }
           </div>
-          
-        <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button onClick={() => this.saveAction()}>Save</Button>
-        </div>
 
       </Menu>
     );
@@ -145,7 +141,7 @@ export default class ImageOnClick extends React.Component {
     const href = e.target.value;
     this.setState({
       href
-    });
+    }, this.saveAction);
   }
 
   handleClick(e) {
@@ -156,14 +152,14 @@ export default class ImageOnClick extends React.Component {
     const isNewWindow = e.target.checked;
     this.setState({
       isNewWindow
-    });
+    }, this.saveAction);
   }
 
   handleFlowIdInput(e) {
     const value = e.target.value;
     this.setState({
       flowId: value
-    });
+    }, this.saveAction);
   }
 
   getNewState(currentActionType) {

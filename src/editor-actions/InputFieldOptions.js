@@ -77,9 +77,6 @@ export default class InputFieldOptions extends React.Component {
             <label htmlFor="field-max-length" style={ labelStyle }>Maximum Length</label>
             <input id="field-max-length" style={ inputStyle } type="number" min="0" max="1000" step="1" value={maxLength} className="form-control" placeholder="None (Unlimited)" onChange={(e) => this.handleMaxLength(e)} onClick={(e) => this.handleClick(e)} />
           </div>
-          <div style={{textAlign: 'right', ...row}}>
-            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
-          </div>
 
       </Menu>
     ) : null;
@@ -112,7 +109,7 @@ export default class InputFieldOptions extends React.Component {
     const isRequired = e.target.checked;
     this.setState({
       isRequired
-    });
+    }, this.handleSave);
   }
 
   handleClick(e) {
@@ -122,20 +119,17 @@ export default class InputFieldOptions extends React.Component {
   handleSelectInputType(value) {
     this.setState({
       selectedInputType: value
-    });
+    }, this.handleSave);
   }
 
   handleMaxLength(e) {
     const maxLength = +e.target.value;
     this.setState({
       maxLength
-    });
+    }, this.handleSave);
   }
 
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  handleSave() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isRequired, maxLength, selectedInputType } = this.state;
 
@@ -143,12 +137,6 @@ export default class InputFieldOptions extends React.Component {
       .set('isRequired', isRequired)
       .set('maxLength', maxLength)
       .set('inputType', selectedInputType || INPUT_TYPES.TEXT);
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,

@@ -82,9 +82,6 @@ export default class RatingOptions extends React.Component {
               options={ allOptions }
               onSelect={ (value) => this.handleRatingLimit(value) }/>
           </div>
-          <div style={{textAlign: 'right', ...row}}>
-            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
-          </div>
         </div>
       </Menu>
     ) : null;
@@ -114,34 +111,25 @@ export default class RatingOptions extends React.Component {
   }
 
   handleRatingLimit(numOptions) {
-    this.setState({ 
+    this.setState({
       numOptions
-    });
+    }, this.handleSave);
   }
 
   handleIsRequired(e) {
     const isRequired = e.target.checked;
     this.setState({
       isRequired
-    });
+    }, this.handleSave);
   }
 
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  handleSave() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isRequired, numOptions } = this.state;
 
     const newPersistedState = persistedState
       .set('numOptions', numOptions)
       .set('isRequired', isRequired);
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,

@@ -71,9 +71,6 @@ export default class SelectFieldOptions extends React.Component {
             <input id="field-is-required" type="checkbox" style={checkboxStyle} checked={isRequired} onChange={(e) => this.handleIsRequired(e)} />
             <label htmlFor="field-is-required">Required Field</label>
           </div>
-          <div style={{textAlign: 'right', ...row}}>
-            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
-          </div>
         </div>
       </Menu>
     ) : null;
@@ -106,25 +103,16 @@ export default class SelectFieldOptions extends React.Component {
     const isRequired = e.target.checked;
     this.setState({
       isRequired
-    });
+    }, this.handleSave);
   }
 
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  handleSave() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
     const { isRequired, fieldType } = this.state;
 
     const newPersistedState = persistedState
       .set('isRequired', isRequired)
       .set('fieldType', fieldType);
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,
