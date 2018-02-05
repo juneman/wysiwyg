@@ -5,7 +5,6 @@ import { Map } from 'immutable';
 import { getButtonProps, secondaryMenuTitleStyle, inputStyle, labelStyle, checkboxStyle, buttonStyle, dropdownStyle } from '../helpers/styles/editor';
 import { INPUT_TYPES, INPUT_TYPES_LIST } from '../helpers/constants';
 import Menu from '../components/Menu';
-import Button from '../components/Button';
 import DropDownMenu from '../components/DropDownMenu';
 import SettingsButton from '../icons/SettingsButton';
 
@@ -130,7 +129,7 @@ export default class InputFieldOptions extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { isRequired, maxLength, selectedInputType } = this.state;
 
     const newPersistedState = persistedState

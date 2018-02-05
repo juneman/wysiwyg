@@ -4,7 +4,6 @@ import { Map } from 'immutable';
 
 import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
-import Button from '../components/Button';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
 
@@ -93,7 +92,7 @@ export default class ImageSize extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { width } = this.state;
 
     const newPersistedState = persistedState

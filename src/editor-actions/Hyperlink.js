@@ -5,7 +5,6 @@ import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, dropdownStyle, 
 import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
-import Button from '../components/Button';
 
 export default class Hyperlink extends React.Component {
 
@@ -114,7 +113,7 @@ export default class Hyperlink extends React.Component {
   }
 
   handleSave() {
-    const { onChange, onToggleActive } = this.props;
+    const { onChange } = this.props;
     const { isNewWindow, href } = this.state;
 
     onChange(href, isNewWindow);

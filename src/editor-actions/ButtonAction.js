@@ -5,7 +5,6 @@ import { Map } from 'immutable';
 import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
 import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../helpers/constants';
 import Menu from '../components/Menu';
-import Button from '../components/Button';
 import DropDownMenu from '../components/DropDownMenu';
 
 import ActionButton from '../icons/ActionButton';
@@ -251,7 +250,7 @@ export default class ButtonAction extends React.Component {
   }
 
   saveAction() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
 
     const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, flowId });

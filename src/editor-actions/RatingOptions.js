@@ -6,7 +6,6 @@ import { getButtonProps, secondaryMenuTitleStyle, dropdownStyle, checkboxStyle, 
 import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
-import Button from '../components/Button';
 import DropDownMenu from '../components/DropDownMenu';
 
 export default class RatingOptions extends React.Component {
@@ -124,7 +123,7 @@ export default class RatingOptions extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { isRequired, numOptions } = this.state;
 
     const newPersistedState = persistedState

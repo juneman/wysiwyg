@@ -6,7 +6,6 @@ import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, dropdownStyle, 
 import Menu from '../components/Menu';
 
 import SettingsButton from '../icons/SettingsButton';
-import Button from '../components/Button';
 
 export default class SelectFieldOptions extends React.Component {
 
@@ -107,7 +106,7 @@ export default class SelectFieldOptions extends React.Component {
   }
 
   handleSave() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { isRequired, fieldType } = this.state;
 
     const newPersistedState = persistedState
