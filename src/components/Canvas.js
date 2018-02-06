@@ -352,10 +352,14 @@ export class Canvas extends React.Component {
       // Build the final HTML
       const rowsHtml = this.buildHtml(internalRows, internalZones);
 
-      // Rendering here with ReactDOMServer to convert the optional style object to CSS
-      const html = ReactDOMServer.renderToStaticMarkup(
-        <div className="canvas" style={style}>|ROWS|</div>
-      ).replace('|ROWS|', rowsHtml);
+      let html = '';
+
+      if (rowsHtml){
+        // Rendering here with ReactDOMServer to convert the optional style object to CSS
+        html = ReactDOMServer.renderToStaticMarkup(
+          <div className="canvas" style={style}>|ROWS|</div>
+        ).replace('|ROWS|', rowsHtml);
+      }
 
       const ast = HTMLParser.parse(html);
 
