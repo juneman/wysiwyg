@@ -101,7 +101,7 @@ export const inputStyle = {
   lineHeight: '24px',
   fontSize: '14px',
   color: '#666'
-}
+};
 
 export const shortInputStyle = {
   ...inputStyle,

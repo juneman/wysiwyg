@@ -119,7 +119,6 @@ export default class FontColor extends React.Component {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-
     const styles = editorState.getCurrentInlineStyle().toJS();
     let nextEditorState = styles.reduce((state, styleKey) => {
       if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
