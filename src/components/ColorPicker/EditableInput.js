@@ -54,58 +54,6 @@ export class EditableInput extends (PureComponent || Component) {
     } else {
       this.props.onChange && this.props.onChange(e.target.value, e);
     }
-    this.setState({ value: e.target.value });
-  }
-
-  handleKeyDown = (e) => {
-    // In case `e.target.value` is a percentage remove the `%` character
-    // and update accordingly with a percentage
-    // https://github.com/casesandberg/react-color/issues/383
-    const stringValue = String(e.target.value);
-    const isPercentage = stringValue.indexOf('%') > -1;
-    const number = Number(stringValue.replace(/%/g, ''));
-    if (!isNaN(number)) {
-      const amount = this.props.arrowOffset || 1;
-
-      // Up
-      if (e.keyCode === 38) {
-        if (this.props.label !== null) {
-          this.props.onChange && this.props.onChange({ [this.props.label]: number + amount }, e);
-        } else {
-          this.props.onChange && this.props.onChange(number + amount, e);
-        }
-
-        if (isPercentage) {
-          this.setState({ value: `${ number + amount }%` });
-        } else {
-          this.setState({ value: number + amount });
-        }
-      }
-
-      // Down
-      if (e.keyCode === 40) {
-        if (this.props.label !== null) {
-          this.props.onChange && this.props.onChange({ [this.props.label]: number - amount }, e);
-        } else {
-          this.props.onChange && this.props.onChange(number - amount, e);
-        }
-
-        if (isPercentage) {
-          this.setState({ value: `${ number - amount }%` });
-        } else {
-          this.setState({ value: number - amount });
-        }
-      }
-    }
-  }
-
-  handleDrag = (e) => {
-    if (this.props.dragLabel) {
-      const newValue = Math.round(this.props.value + e.movementX);
-      if (newValue >= 0 && newValue <= this.props.dragMax) {
-        this.props.onChange && this.props.onChange({ [this.props.label]: newValue }, e);
-      }
-    }
   }
 
   handleMouseDown = (e) => {
@@ -113,17 +61,11 @@ export class EditableInput extends (PureComponent || Component) {
     const { value } = this.state;
 
     onChange && onChange(value, e);
-    if (this.props.dragLabel) {
-      e.preventDefault();
-      this.handleDrag(e);
-    }
     const win = this.getWindow();
     if (win) {
-        win.addEventListener('mousemove', this.handleDrag);
         win.addEventListener('mouseup', this.handleMouseUp);
         win.document.getElementById('hexInput').focus();
     }
-
   }
 
   handleMouseUp = () => {
@@ -133,7 +75,6 @@ export class EditableInput extends (PureComponent || Component) {
   unbindEventListeners = () => {
     const win = this.getWindow();
     if (win) {
-      win.removeEventListener('mousemove', this.handleDrag);
       win.removeEventListener('mouseup', this.handleMouseUp);
     }
   }
@@ -167,8 +108,7 @@ export class EditableInput extends (PureComponent || Component) {
           id="hexInput"
           style={ styles.input }
           ref={ input => this.input = input }
-          value={ this.state.value }
-          onKeyDown={ this.handleKeyDown }
+          value={ this.props.value }
           onChange={ this.handleChange }
           onBlur={ this.handleBlur }
           placeholder={ this.props.placeholder }
