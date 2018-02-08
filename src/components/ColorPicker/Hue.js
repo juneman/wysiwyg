@@ -1,3 +1,5 @@
+// This component was mostly scooped from the react-color library with the added
+// getWindow function to be compatible with iframes
 import React, { Component, PureComponent } from "react";
 import reactCSS from "reactcss";
 import { hue } from "../../helpers/color";
