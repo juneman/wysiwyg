@@ -48,7 +48,7 @@
 
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="appcues-host">
       <h1>Appcues WYSIWYG Demo</h1>
 
       <hr />
@@ -76,14 +76,14 @@
     </div>
 
     <!-- The webpack build excludes bundling React so it can be loaded separately here -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.js"></script>
+    <script src="../lib/react/react.development.js"></script>
+    <script src="../lib/react-dom/react-dom.development.js"></script>
 
     <!-- Babel Standalone is just on here to allow us to use JSX natively on this demo page without compiling with webpack -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.0/babel.js"></script>
 
     <!-- Webpack Dev Server dynamically compiles and serves the Canvas component from this path -->
-    <script src="/assets/index.js"></script>
+    <script src="../bundle.js"></script>
 
     <script type="text/babel">
       (function(WysiwygEditor) {
