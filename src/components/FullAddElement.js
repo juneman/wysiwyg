@@ -46,7 +46,7 @@ export default class FullAddElement extends React.Component {
 
   componentWillUnmount() {
     const editor = document.getElementById('appcues-host');
-    editor.removeEventListener('click', this.onClick, true);
+    editor && editor.removeEventListener('click', this.onClick, true);
   }
 
   render() {
