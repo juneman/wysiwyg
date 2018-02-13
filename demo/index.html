@@ -128,11 +128,16 @@
             style={{
               minHeight: 250
             }}
+            allowedEditorTypes={[
+              'Image', 'RichText', 'Hero', 'Emoji', 'Video', 'HTML',
+              'TextAreaInput', 'TextInput', 'SelectionField',
+              'Rating', 'Button'
+            ]}
           />, document.getElementById('simple')
-        )
+        );
 
         // Render Editor Tooltip
-        ReactDOM.render(
+        /*ReactDOM.render(
           <WysiwygEditor
             onSave={(content) => displayOutput('tooltip', content) }
             style={{
@@ -159,7 +164,7 @@
             }
             maxRows={1}
           />, document.getElementById('tooltip')
-        )
+        )*/
 
       }(WysiwygEditor.default));
     </script>
