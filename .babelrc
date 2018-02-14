@@ -1,14 +1,21 @@
 {
-  "presets":[
-    "es2015", "react"
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions"
+          ]
+        },
+        "modules": false,
+        "loose": true
+      }
+    ],
+    "stage-3",
+    "react"
   ],
   "plugins": [
-    "transform-object-rest-spread",
     "transform-class-properties"
-  ],
-  "env": {
-    "test": {
-      "plugins": [ "istanbul" ]
-    }
-  }
+  ]
 }
