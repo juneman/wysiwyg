@@ -44,7 +44,7 @@ export const selectMenuStyle = {
   cursor: 'pointer'
 };
 
-export const getButtonStyleString = (borderRadius=3, padding, fontSize, width) => {
+export const getButtonStyleString = (borderRadius, padding, fontSize, width) => {
 
   let buttonStyleString = 'text-align:center;';
 

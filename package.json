@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg",
-  "version": "1.18.1",
+  "version": "1.19.1",
   "description": "Appcues Editor",
   "main": "lib/bundle.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "coverage-report": "NODE_ENV=test nyc --reporter=html mocha --reporter=dot",
     "lint": "eslint .",
     "posttest": "npm run lint",
-    "dev": "webpack-dev-server --config webpack.dev.js --content-base demo/",
     "build": "npm run clean && babel src -d lib && NODE_ENV=production webpack --config webpack.build.js",
     "watch": "npm run clean && babel src -d lib && webpack --config webpack.build.js --watch",
     "start": "NODE_ENV=development webpack-dev-server --config webpack.build.js --hot --inline --colors",

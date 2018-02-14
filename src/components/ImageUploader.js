@@ -80,6 +80,9 @@ export class ImageUploader extends React.Component {
       return response.json();
     }).then((imageDetails) => {
       this.setState({ isUploading: false });
+
+      const urlWithoutProtocol = imageDetails.url.replace(/^https?\:\/\//i, "//");
+      imageDetails.url = urlWithoutProtocol;
       onUpload(imageDetails);
     }).catch((err) => {
       console.error('parsing failed', err);

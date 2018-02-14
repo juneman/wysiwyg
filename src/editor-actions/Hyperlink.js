@@ -5,7 +5,6 @@ import { getButtonProps, secondaryMenuTitleStyle, checkboxStyle, dropdownStyle, 
 import Menu from '../components/Menu';
 
 import LinkButton from '../icons/LinkButton';
-import Button from '../components/Button';
 
 export default class Hyperlink extends React.Component {
 
@@ -70,9 +69,6 @@ export default class Hyperlink extends React.Component {
             <input id="link-checkbox" type="checkbox" style={ checkboxStyle } checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
             <label htmlFor="link-checkbox">Open In New Window</label>
           </div>
-          <div style={{ textAlign: 'right', ...row }}>
-            <Button className="btn" onClick={(e) => this.handleSave(e)}>Save</Button>
-          </div>
         </div>
       </Menu>
     ) : null;
@@ -102,7 +98,7 @@ export default class Hyperlink extends React.Component {
     const isNewWindow = e.target.checked;
     this.setState({
       isNewWindow
-    });
+    }, this.handleSave);
   }
 
   handleClick(e) {
@@ -113,21 +109,12 @@ export default class Hyperlink extends React.Component {
     const href = e.target.value;
     this.setState({
       href
-    });
+    }, this.handleSave);
   }
 
-  handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const { onChange, onToggleActive } = this.props;
+  handleSave() {
+    const { onChange } = this.props;
     const { isNewWindow, href } = this.state;
-
-    this.setState({
-      isMenuOpen: false
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange(href, isNewWindow);
   }
