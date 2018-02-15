@@ -44,7 +44,7 @@ const baseConfig = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel-loader', exclude: /attr-accept/ }
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules(?!\/striptags)/ }
     ]
   }
 };
