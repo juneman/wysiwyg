@@ -24,7 +24,6 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
-    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
@@ -37,32 +36,12 @@ export default class AddButtonHorizRule extends React.Component {
     const { showEditorSelector } = this.state;
     this.setHasRoomToRenderOnRight();
 
-    const editor = document.getElementById('appcues-host');
-    const modalEditorFrame = document.getElementById('modal-editor-frame') ? document.getElementById('modal-editor-frame').contentDocument : null;
-    const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
-    const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
-
-    if (didEditorSelectorOpen) {
-      modalEditorFrame && modalEditorFrame.addEventListener('click', this.onClick, true);
-      !modalEditorFrame && editor.addEventListener('click', this.onClick, true);
-    } else if (didEditorSelectorClose) {
-      modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
-      !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
-    }
-
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
       resetShouldCloseMenu();
       onEditorMenuClose();
     }
 
-  }
-
-  componentWillUnmount() {
-    const editor = document.getElementById('appcues-host');
-    const modalEditorFrame = document.getElementById('modalEditorFrame') ? document.getElementById('modal-editor-frame').contentDocument : null;
-    modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
-    !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
   }
 
   render() {
@@ -132,14 +111,6 @@ export default class AddButtonHorizRule extends React.Component {
         </div>
       </div>
     );
-  }
-
-  onClick(e) {
-    e.preventDefault();
-    const { showEditorSelector, isHoveringOverAddButton } = this.state;
-    if (showEditorSelector && !isHoveringOverAddButton) {
-      this.setState({showEditorSelector: false});
-    }
   }
 
   handleAddNew() {
