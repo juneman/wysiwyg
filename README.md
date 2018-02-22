@@ -8,7 +8,7 @@ There is a demo included which uses [Webpack Dev Server](https://webpack.github.
 
  1. Make sure you're on a recent version of [node.js](https://nodejs.org/en/). There is an `.nvmrc` file in the project root, allowing you to type `nvm use` if you have [nvm](https://github.com/creationix/nvm) installed. That will reference the version of node that this library was authored with.
  1. `npm install`
- 2. `npm run dev`
+ 2. `npm start`
  3. Open [http://localhost:8080/](http://localhost:8080/)
 
 ### How the Demo Works

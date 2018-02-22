@@ -126,7 +126,7 @@ export default class ImageEditor extends React.Component {
     }
     if (flowId) {
       linkAst.attrs['onclick'] = `window.parent.Appcues.show('${flowId}')`;
-      linkAst.attrs['data-step'] = BUTTON_ACTION_TYPES.NEXT_GROUP;
+      linkAst.attrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
     }
 
     const ast = [
@@ -150,9 +150,10 @@ export default class ImageEditor extends React.Component {
   handleUpload(imageDetails) {
     const { url, width } = imageDetails;
     const { localState, persistedState, onChange, canvasPosition } = this.props;
-    
+
+    const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
     let newPersistedState = persistedState
-      .set('url', url)
+      .set('url', urlWithoutProtocol)
       .set('width', width)
       .set('textAlign', 'center');
 

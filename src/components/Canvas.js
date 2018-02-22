@@ -252,9 +252,11 @@ export class Canvas extends React.Component {
     const { url, height, width } = imageDetails;
     const { canvasPosition } = this.props;
 
+    const urlWithoutProtocol = url.replace(/^https?\:\/\//i, "//");
+
     // Make sure the uploaded image does not have a larger size than the canvas
-    let heightOverride = (height > canvasPosition.get('height')) ? canvasPosition.get('height') : undefined;
-    let widthOverride = (width > canvasPosition.get('width')) ? canvasPosition.get('width') : undefined;
+    let heightOverride = (height > canvasPosition.get('height')) ? canvasPosition.get('height') : null;
+    let widthOverride = (width > canvasPosition.get('width')) ? canvasPosition.get('width') : null;
 
     const rowsToAdd = fromJS([
       {
@@ -264,7 +266,7 @@ export class Canvas extends React.Component {
             id: uuid(),
             type: 'Image',
             persistedState: {
-              url,
+              url: urlWithoutProtocol,
               width,
               height,
               heightOverride,
@@ -354,10 +356,14 @@ export class Canvas extends React.Component {
       // Build the final HTML
       const rowsHtml = this.buildHtml(internalRows, internalZones);
 
-      // Rendering here with ReactDOMServer to convert the optional style object to CSS
-      const html = ReactDOMServer.renderToStaticMarkup(
-        <div className="canvas" style={style}>|ROWS|</div>
-      ).replace('|ROWS|', rowsHtml);
+      let html = '';
+
+      if (rowsHtml){
+        // Rendering here with ReactDOMServer to convert the optional style object to CSS
+        html = ReactDOMServer.renderToStaticMarkup(
+          <div className="canvas" style={style}>|ROWS|</div>
+        ).replace('|ROWS|', rowsHtml);
+      }
 
       const ast = HTMLParser.parse(html);
 

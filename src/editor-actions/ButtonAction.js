@@ -5,7 +5,6 @@ import { Map } from 'immutable';
 import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
 import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../helpers/constants';
 import Menu from '../components/Menu';
-import Button from '../components/Button';
 import DropDownMenu from '../components/DropDownMenu';
 
 import ActionButton from '../icons/ActionButton';
@@ -122,7 +121,7 @@ export default class ButtonAction extends React.Component {
                 <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                { 
+                {
                   `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
                 }
               </p>
@@ -139,10 +138,6 @@ export default class ButtonAction extends React.Component {
               </p>
             </div>
           }
-
-        <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button className="btn" onClick={(e) => this.saveAction(e)}>Save</Button>
-        </div>
 
       </Menu>
     ) : null;
@@ -173,7 +168,7 @@ export default class ButtonAction extends React.Component {
     const href = e.target.value;
     this.setState({
       href
-    });
+    }, this.saveAction);
   }
 
   handleClick(e) {
@@ -184,7 +179,7 @@ export default class ButtonAction extends React.Component {
     const isNewWindow = e.target.checked;
     this.setState({
       isNewWindow
-    });
+    }, this.saveAction);
   }
 
   handleStepIndex(e) {
@@ -192,14 +187,14 @@ export default class ButtonAction extends React.Component {
 
     this.setState({
       stepIndex: value - 1
-    });
+    }, this.saveAction);
   }
 
   handleAction(value) {
 
     this.setState({
       buttonActionType: value
-    });
+    }, this.saveAction);
   }
 
   handleAppcuesShow(e) {
@@ -208,7 +203,7 @@ export default class ButtonAction extends React.Component {
     this.setState({
       buttonActionType: BUTTON_ACTION_TYPES.APPCUES,
       flowId: value
-    });
+    }, this.saveAction);
 
   }
 
@@ -255,16 +250,10 @@ export default class ButtonAction extends React.Component {
   }
 
   saveAction() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
 
     const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, flowId });
-
-    this.setState({
-      isMenuOpen: !isMenuOpen
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     onChange({
       localState,

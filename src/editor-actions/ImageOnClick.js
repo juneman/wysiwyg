@@ -5,7 +5,6 @@ import { Map } from 'immutable';
 import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, tabStyle, selectedTabStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
 import {IMG_ACTION_TYPES } from '../helpers/constants';
 import Menu from '../components/Menu';
-import Button from '../components/Button';
 import DropDownMenu from '../components/DropDownMenu';
 
 import LinkButton from '../icons/LinkButton';
@@ -107,10 +106,6 @@ export default class ImageOnClick extends React.Component {
               </div>
             }
           </div>
-          
-        <div style={{textAlign: 'right', marginTop: '5px'}}>
-          <Button onClick={() => this.saveAction()}>Save</Button>
-        </div>
 
       </Menu>
     );
@@ -145,7 +140,7 @@ export default class ImageOnClick extends React.Component {
     const href = e.target.value;
     this.setState({
       href
-    });
+    }, this.saveAction);
   }
 
   handleClick(e) {
@@ -156,14 +151,14 @@ export default class ImageOnClick extends React.Component {
     const isNewWindow = e.target.checked;
     this.setState({
       isNewWindow
-    });
+    }, this.saveAction);
   }
 
   handleFlowIdInput(e) {
     const value = e.target.value;
     this.setState({
       flowId: value
-    });
+    }, this.saveAction);
   }
 
   getNewState(currentActionType) {
@@ -186,14 +181,8 @@ export default class ImageOnClick extends React.Component {
   }
 
   saveAction() {
-    const { localState, persistedState, onChange, onToggleActive } = this.props;
+    const { localState, persistedState, onChange } = this.props;
     const { actionType, isMenuOpen, flowId, href, isNewWindow } = this.state;
-
-    this.setState({
-      isMenuOpen: !isMenuOpen
-    });
-
-    setTimeout(() => onToggleActive(false), 200);
 
     // Prevent user from losing flowId when saving on URL tab with blank URL
     if (actionType === IMG_ACTION_TYPES.GO_TO_URL && !href && flowId) {
