@@ -47,7 +47,7 @@ export default class AddButtonHorizRule extends React.Component {
       !modalEditorFrame && editor.addEventListener('click', this.onClick, true);
     } else if (didEditorSelectorClose) {
       modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
-      !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
+      !modalEditorFrame && editor && editor.removeEventListener('click', this.onClick, true);
     }
 
     if (shouldCloseMenu && showEditorSelector) {
@@ -62,7 +62,7 @@ export default class AddButtonHorizRule extends React.Component {
     const editor = document.getElementById('appcues-host');
     const modalEditorFrame = document.getElementById('modalEditorFrame') ? document.getElementById('modal-editor-frame').contentDocument : null;
     modalEditorFrame && modalEditorFrame.removeEventListener('click', this.onClick, true);
-    !modalEditorFrame && editor.removeEventListener('click', this.onClick, true);
+    !modalEditorFrame && editor && editor.removeEventListener('click', this.onClick, true);
   }
 
   render() {
