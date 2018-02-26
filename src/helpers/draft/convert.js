@@ -157,10 +157,8 @@ export function convertToHTML(editorState) {
     editorState.getCurrentContent().getBlockMap().map(block =>
       block.update('text', text =>
         text
-          // Replaces extra spaces with &nbsp; characters.
-          .replace(/ {2,}/g, match => NBSP.repeat(match.length))
-          // Replaces a leading space with &nbsp;
-          .replace(/^ /, NBSP)
+          // Replaces spaces with &nbsp; characters.
+          .replace(/ +/g, match => NBSP.repeat(match.length))
           // Replaces single trailing newlines with a newline and a zero-width
           // space, so that the <br> that the newline turns into actually
           // renders a line break in the browser. Normally a <br> followed by
