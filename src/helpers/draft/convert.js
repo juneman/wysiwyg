@@ -166,7 +166,7 @@ export function convertToHTML(editorState) {
           // Adding the zero-width space (unicode 200B) after the <br> causes
           // the browser to render the line break. See this SO question for
           // more: https://stackoverflow.com/q/15008205
-          .replace(/\n/g, `\n${ZWSP}`)
+          .replace(/\n$/g, `\n${ZWSP}`)
           // For empty paragraphs (created when the user hits Return but doesn't
           // add any actual text afterwards), the browser will render the <p>
           // tag with no height if there's no content inside. Add a zero-width
