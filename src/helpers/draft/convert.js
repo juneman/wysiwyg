@@ -157,10 +157,8 @@ export function convertToHTML(editorState) {
     editorState.getCurrentContent().getBlockMap().map(block =>
       block.update('text', text =>
         text
-          // Replaces extra spaces with &nbsp; characters.
-          .replace(/ {2,}/g, match => NBSP.repeat(match.length))
-          // Replaces a leading space with &nbsp;
-          .replace(/^ /, NBSP)
+          // Replaces spaces with &nbsp; characters.
+          .replace(/ +/g, match => NBSP.repeat(match.length))
           // Replaces single trailing newlines with a newline and a zero-width
           // space, so that the <br> that the newline turns into actually
           // renders a line break in the browser. Normally a <br> followed by
@@ -168,7 +166,7 @@ export function convertToHTML(editorState) {
           // Adding the zero-width space (unicode 200B) after the <br> causes
           // the browser to render the line break. See this SO question for
           // more: https://stackoverflow.com/q/15008205
-          .replace(/\n/g, `\n${ZWSP}`)
+          .replace(/\n$/g, `\n${ZWSP}`)
           // For empty paragraphs (created when the user hits Return but doesn't
           // add any actual text afterwards), the browser will render the <p>
           // tag with no height if there's no content inside. Add a zero-width
