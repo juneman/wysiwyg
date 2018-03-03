@@ -15,26 +15,24 @@ export default class HyperlinkTooltip extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("click", this.onClickOut, true);
+    const doc = this.document || document;
+    doc.addEventListener("click", this.onClickOut, true);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("click", this.onClickOut, true);
+    const doc = this.document || document;
+    doc.removeEventListener("click", this.onClickOut, true);
   }
 
   onClickOut(e) {
     const { onToggleActive, node } = this.props;
 
     // Ignore clicks that occur on the link or tooltip.
-    // Shadow DOM changes the target of the event. Find the real target with
-    // event.composedPath() or event.path.
     const tooltipEl = findDOMNode(this.tooltipEl);
     const linkEl = findDOMNode(node);
-    const target =
-      (e.composedPath && e.composedPath()[0]) || (e.path && e.path[0]) || null;
     if (
-      (tooltipEl && tooltipEl.contains(target)) ||
-      (linkEl && linkEl.contains(target))
+      (tooltipEl && tooltipEl.contains(e.target)) ||
+      (linkEl && linkEl.contains(e.target))
     ) {
       return;
     }
@@ -110,7 +108,13 @@ export default class HyperlinkTooltip extends React.Component {
     };
 
     return (
-      <div ref={el => (this.tooltipEl = el)} style={containerStyle}>
+      <div
+        ref={el => {
+          this.tooltipEl = el;
+          this.document = el ? el.ownerDocument : null;
+        }}
+        style={containerStyle}
+      >
         <div style={arrowStyle} />
         <span
           style={{
