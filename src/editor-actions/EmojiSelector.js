@@ -112,7 +112,7 @@ export default class EmojiSelector extends React.Component {
 
       let newPersistedState = persistedState
         .set('url', url)
-        .set('width', 250)
+        .set('width', 50)
         .set('textAlign', 'center');
 
       onChange({
