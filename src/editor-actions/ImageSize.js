@@ -4,6 +4,7 @@ import { Map } from 'immutable';
 
 import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
+import ZoomSlider from '../components/ZoomSlider';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
 
@@ -18,6 +19,7 @@ export default class ImageSize extends React.Component {
       attributeToEdit: this.props.heroImage ? 'minHeight' : 'width',
       minHeight: persistedState.get('minHeight') || '',
       width: persistedState.get('width') || '',
+      zoom: persistedState.get('zoom') || '',
       isMenuOpen: props.isActive || false
     };
   }
@@ -34,6 +36,7 @@ export default class ImageSize extends React.Component {
     const { attributeToEdit, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow, heroImage } = this.props;
 
+    console.log(this.state.zoom);
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
@@ -58,6 +61,7 @@ export default class ImageSize extends React.Component {
           <div style={ fieldGroupStyle }>
             <label style={ labelStyle }>{attributeText}:</label>
             <input style={ inputStyle } value={attributeCurrentValue} placeholder="auto" onChange={(e) => this.handleInputChange(e, this.state.attributeToEdit)} />
+            <ZoomSlider handleChange={(e) => this.handleInputChange(e, 'zoom')} zoom={this.state.zoom} />
           </div>
         </div>
       </Menu>
@@ -86,7 +90,7 @@ export default class ImageSize extends React.Component {
   }
 
   handleInputChange(e, name) {
-    const val = e.currentTarget.value;
+    const val = name === 'zoom' ? e.value : e.currentTarget.value;
     const update = {};
     const parsedNumber = val && val.length ? parseInt(val) : val;
 
@@ -103,6 +107,7 @@ export default class ImageSize extends React.Component {
 
     const newPersistedState = persistedState
       .set(attributeToEdit, this.state[attributeToEdit])
+      .set('zoom', this.state.zoom)
       .delete('widthOverride')
       .delete('heightOverride');
 

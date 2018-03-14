@@ -41,6 +41,7 @@ export default class HeroEditor extends React.Component {
     const content = (persistedState.get('content')) || defaultContent;
 
     const minHeight = persistedState.get('minHeight') || 250;
+    const zoom = persistedState.get('zoom') ? `${persistedState.get('zoom')}%` : 'cover';
 
     const backgroundStyle = (url && backgroundType == 'url') ? `url(${url})` :
                             (gradient && backgroundType == 'linear-gradient') ? `linear-gradient(${gradient})` :
@@ -49,7 +50,7 @@ export default class HeroEditor extends React.Component {
     const wrapperStyle = {
       minHeight,
       backgroundImage: backgroundStyle,
-      backgroundSize: 'cover',
+      backgroundSize: zoom,
       textAlign: 'center'
     };
 
