@@ -36,7 +36,6 @@ export default class ImageSize extends React.Component {
     const { attributeToEdit, isMenuOpen } = this.state;
     const { isActive, hasRoomToRenderBelow, heroImage } = this.props;
 
-    console.log(this.state.zoom);
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {

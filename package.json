@@ -32,6 +32,7 @@
     "react-dnd-html5-backend": "^2.5.0",
     "react-dropzone": "^4.2.7",
     "react-redux": "^5.0.4",
+    "react-simple-range": "appcues/react-simple-range",
     "reactcss": "^1.2.3",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
