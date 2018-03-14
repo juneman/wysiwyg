@@ -60,7 +60,7 @@ export default class ImageSize extends React.Component {
           <div style={ fieldGroupStyle }>
             <label style={ labelStyle }>{attributeText}:</label>
             <input style={ inputStyle } value={attributeCurrentValue} placeholder="auto" onChange={(e) => this.handleInputChange(e, this.state.attributeToEdit)} />
-            <ZoomSlider handleChange={(e) => this.handleInputChange(e, 'zoom')} zoom={this.state.zoom} />
+            { heroImage ? <ZoomSlider handleChange={(e) => this.handleInputChange(e, 'zoom')} zoom={this.state.zoom} /> : null }
           </div>
         </div>
       </Menu>
