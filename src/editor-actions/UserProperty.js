@@ -75,7 +75,16 @@ export default class UserProperty extends React.Component {
       return userProperty.toJS();
     })].map((userProperty) => ({ label: userProperty.name, ...userProperty }));
 
-    const valueOptions = !selectedProperty ? null : [ { label: "No fallback", value: null }, ...userPropertiesDropdown.find((userProperty) => userProperty.value == selectedProperty).options.map((option) => ({ label: option.name, value: option.name })), { label: 'Custom text...', value: 'custom' }];
+    const valueOptions = !selectedProperty
+      ? null
+      : [
+          { label: "No fallback", value: null },
+          ...userPropertiesDropdown.find(
+              (userProperty) => userProperty.value == selectedProperty).options.map(
+                (option) => ({ label: option.name, value: option.name }
+            )),
+          { label: 'Custom text...', value: 'custom' }
+        ];
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
