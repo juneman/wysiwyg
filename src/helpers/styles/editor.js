@@ -320,3 +320,22 @@ export const emojiPickerStyles = `.emoji-mart,
 .emoji-mart-preview-emoji, .emoji-mart-preview-shortname, .emoji-mart-preview-emoticon, .emoji-mart-preview-skins, emoji-mart-title-label  {
   display: none;
 }`;
+
+export const editorButtonStyle = {
+  alignItems: 'center',
+  backgroundColor: '#23baff',
+  border: 'none',
+  borderRadius: '4px',
+  color: 'rgba(255, 255, 255, 0.9)',
+  cursor: 'pointer',
+  display: 'inline-flex', 
+  float: 'right',
+  fontSize: '15px',
+  fontWeight: 500,
+  justifyContent: 'center',
+  marginTop: '10px',
+  outline: 'none',
+  padding: '9px 12px 8px',
+  textAlign: 'center',
+  width: '40%',
+};
