@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class FocusableInput extends Component {
   constructor(props) {
@@ -36,10 +37,24 @@ class FocusableInput extends Component {
       <div
         onClick={this.focusInput}
         ref={container => (this.container = container)}>
-        <input id="focusableInput" style={inputStyles} onChange={(e) => handleChange(e.target.value, stateProperty)} value={value} placeholder={placeholder} />
+        <input 
+          id="focusableInput"
+          style={inputStyles}
+          onChange={(e) => handleChange(e.target.value, stateProperty)}
+          value={value}
+          placeholder={placeholder}
+        />
       </div>
     );
   }
 }
+
+FocusableInput.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  inputStyles: PropTypes.object.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  stateProperty: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+};
 
 export default FocusableInput;
