@@ -6,6 +6,7 @@ import Menu from '../../components/Menu';
 import Toolbar from '../../components/Toolbar';
 
 import ImageUploadWithPresets from '../../editor-actions/ImageUploadWithPresets';
+import ImageSize from '../../editor-actions/ImageSize';
 import FontColor from '../../editor-actions/FontColor';
 import TextStyle from '../../editor-actions/TextStyle';
 
@@ -25,6 +26,13 @@ export default function HeroToolbar(props) {
           galleryType: GALLERY_TYPES.HERO
         },
       name: 'image-upload-with-presets'
+    },
+    {
+      Component: ImageSize,
+      props: {
+        heroImage: true
+      },
+      name: 'image-size'
     },
     {
       Component: FontColor,
