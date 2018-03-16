@@ -5,23 +5,11 @@ class FocusableInput extends Component {
   constructor(props) {
     super(props);
 
-    this.getWindow = this.getWindow.bind(this);
     this.focusInput = this.focusInput.bind(this);
   }
 
   focusInput() {
-    const win = this.getWindow();
-    if(win) {
-      const input = win.document.getElementById('focusableInput');
-      input.focus();
-    }
-  }
-
-  getWindow() {
-    if (this.container && this.container.ownerDocument) {
-      return this.container.ownerDocument.defaultView;
-    }
-    return null;
+    this.input.focus();
   }
 
   render() {
@@ -29,22 +17,18 @@ class FocusableInput extends Component {
       handleChange, 
       inputStyles, 
       placeholder, 
-      stateProperty,
       value
     } = this.props;
 
     return (
-      <div
-        onClick={this.focusInput}
-        ref={container => (this.container = container)}>
         <input 
-          id="focusableInput"
+          ref={input => (this.input = input)}
           style={inputStyles}
-          onChange={(e) => handleChange(e.target.value, stateProperty)}
+          onChange={(e) => handleChange(e.target.value)}
           value={value}
           placeholder={placeholder}
+          onClick={() => {this.focusInput()}}
         />
-      </div>
     );
   }
 }
@@ -53,7 +37,6 @@ FocusableInput.propTypes = {
   handleChange: PropTypes.func.isRequired,
   inputStyles: PropTypes.object.isRequired,
   placeholder: PropTypes.string.isRequired,
-  stateProperty: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
 };
 

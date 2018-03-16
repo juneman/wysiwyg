@@ -106,8 +106,7 @@ export default class UserProperty extends React.Component {
             { fallbackProperty === 'custom' &&
             <FocusableInput
               inputStyles={propertyInputStyle}
-              handleChange={this.setSelectedValue}
-              stateProperty="customValue"
+              handleChange={(value) => this.setSelectedValue(value, 'customValue')}
               placeholder="Type custom text..."
               value={customValue}
             />
