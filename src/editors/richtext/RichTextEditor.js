@@ -80,9 +80,6 @@ export default class RichTextEditor extends React.Component {
 
       if (this.editor && !ReactDOM.findDOMNode(this.wrapper).contains(e.path[0])){
           this.editor.blur();
-          const editorState = localState.get('editorState');
-          const newEditorState = EditorState.forceSelection(editorState, getResetSelection(editorState));
-          this.handleEditorStateChange(newEditorState);
           e.preventDefault();
       }
 
