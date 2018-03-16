@@ -81,11 +81,12 @@ export default class HeroEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { canvasPosition } = this.props;
-    const { url, gradient, backgroundType, content } = persistedState.toJS();
+    const { url, gradient, backgroundType, content, minHeight } = persistedState.toJS();
     const contentAst = HTMLParser.parse(content || '');
     const wrapperStyles = [];
-    wrapperStyles.push('min-height:120px');
-    wrapperStyles.push('background-size:cover');
+    const zoom = persistedState.get('zoom') ? `${persistedState.get('zoom')}%` : 'cover';
+    wrapperStyles.push(`min-height:${minHeight}px`);
+    wrapperStyles.push(`background-size:${zoom}`);
     wrapperStyles.push('text-align:center');
 
     const backgroundStyle = (url && backgroundType == 'url') ? `url(${url})` :
