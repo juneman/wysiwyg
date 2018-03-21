@@ -9,7 +9,6 @@ const baseIconStyle = {
   strokeWidth: 0,
   stroke: 'currentColor',
   fill: 'currentColor',
-  zIndex: 10,
   transition: 'background-color 0.15s ease-in'
 };
 
@@ -71,7 +70,6 @@ export default class IconButton extends React.Component {
       height: 36,
       width: 36,
       padding: 5,
-      zIndex: 10,
       lineHeight: 0,
       display: 'flex',
       alignItems: 'center',
@@ -85,7 +83,6 @@ export default class IconButton extends React.Component {
     const combinedTextStyle = {
       fontSize: 16,
       color: '#0bdc66',
-      zIndex: 10,
       ...textStyle
     };
 
