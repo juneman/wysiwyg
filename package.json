@@ -42,8 +42,8 @@
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
-    "react": "brandcast/react-built#7c8fc6b",
-    "react-dom": "brandcast/react-dom-built#017534a"
+    "react": "brandcast/react-built#efc513",
+    "react-dom": "brandcast/react-dom-built#309731"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
