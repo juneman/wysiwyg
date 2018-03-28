@@ -64,7 +64,7 @@ export default class ImageEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft, altText } = persistedState.toJS();
 
     if (!url) {
       return '';
@@ -97,6 +97,9 @@ export default class ImageEditor extends React.Component {
     }
     if (width || widthOverride) {
       imageAttrs.style = `${ imageAttrs.style } width: ${ widthOverride || width }px`;
+    }
+    if(altText) {
+      imageAttrs.alt = `${altText}`
     }
 
     const imageAst = {
@@ -169,4 +172,3 @@ ImageEditor.propTypes = {
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
   onClickEmptyState: PropTypes.func.isRequired
 };
-
