@@ -111,7 +111,7 @@ export default class EditorWrapper extends React.Component {
               <EditButton
                 shadow={true}
                 color="#f4ad42"
-                onClick={() => onEdit()}
+                onClick={ onEdit }
               />
             </div>
           }
@@ -136,14 +136,14 @@ export default class EditorWrapper extends React.Component {
                   secondary
                   shadow={true}
                   color="#eee"
-                  onClick={ () => onCancel() } />
+                  onClick={ onCancel } />
                 { !disableDeleteButton &&
                   <DeleteButton
                     secondary
                     style={ applyAnimationWithDelay(0.15, { marginRight: 5 }) }
                     shadow={ true }
                     color="#eb6e5e"
-                    onClick={ () => onRemove() } />
+                    onClick={ onRemove } />
                 }
               </div>
             </div>
