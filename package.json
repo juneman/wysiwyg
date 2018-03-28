@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg",
-  "version": "1.19.4",
+  "version": "1.19.8",
   "description": "Appcues Editor",
   "main": "lib/bundle.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "react-dnd-html5-backend": "^2.5.0",
     "react-dropzone": "^4.2.7",
     "react-redux": "^5.0.4",
+    "react-simple-range": "appcues/react-simple-range",
     "reactcss": "^1.2.3",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
@@ -41,8 +42,8 @@
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
-    "react": "brandcast/react-built#7c8fc6b",
-    "react-dom": "brandcast/react-dom-built#017534a"
+    "react": "brandcast/react-built#efc513",
+    "react-dom": "brandcast/react-dom-built#309731"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -69,8 +70,8 @@
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "path": "^0.12.7",
-    "react": "brandcast/react-built#7c8fc6b",
-    "react-dom": "github:brandcast/react-dom-built#017534a",
+    "react": "brandcast/react-built#efc513",
+    "react-dom": "github:brandcast/react-dom-built#309731",
     "redux-devtools-extension": "^2.13.0",
     "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.2.3",

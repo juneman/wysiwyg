@@ -15,7 +15,7 @@ import RichTextInlineActions from '../editors/richtext/RichTextInlineActions';
 import ImageEditor from '../editors/image/ImageEditor';
 import ImageToolbar from '../editors/image/ImageToolbar';
 
-import EmojiEditor from '../editors/emoji/EmojiEditor'
+import EmojiEditor from '../editors/emoji/EmojiEditor';
 import EmojiToolbar from '../editors/emoji/EmojiToolbar';
 
 import ButtonEditor from '../editors/button/ButtonEditor';

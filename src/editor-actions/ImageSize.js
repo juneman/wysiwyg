@@ -4,6 +4,7 @@ import { Map } from 'immutable';
 
 import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
+import ZoomSlider from '../components/ZoomSlider';
 
 import SelectSizeButton from '../icons/SelectSizeButton';
 
@@ -15,7 +16,10 @@ export default class ImageSize extends React.Component {
     const { persistedState } = props;
 
     this.state = {
+      attributeToEdit: this.props.heroImage ? 'minHeight' : 'width',
+      minHeight: persistedState.get('minHeight') || '',
       width: persistedState.get('width') || '',
+      zoom: persistedState.get('zoom') || '',
       isMenuOpen: props.isActive || false
     };
   }
@@ -29,8 +33,8 @@ export default class ImageSize extends React.Component {
   }
 
   render() {
-    const { width, isMenuOpen } = this.state;
-    const { isActive, hasRoomToRenderBelow } = this.props;
+    const { attributeToEdit, isMenuOpen } = this.state;
+    const { isActive, hasRoomToRenderBelow, heroImage } = this.props;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -44,15 +48,19 @@ export default class ImageSize extends React.Component {
       delete dropdownStyles.top;
     }
 
+    const attributeText = heroImage ? 'Minimum Height' : 'Width';
+    const attributeCurrentValue = this.state[attributeToEdit];
+
     const titleStyles = secondaryMenuTitleStyle;
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
-        <div style={titleStyles}>Set Image Width (number in pixels)</div>
+        <div style={titleStyles}>Set Image {attributeText} (number in pixels)</div>
         <div style={{marginTop: 20}}>
           <div style={ fieldGroupStyle }>
-            <label style={ labelStyle }>Width:</label>
-            <input style={ inputStyle } value={width} placeholder="auto" onChange={(e) => this.handleInputChange(e, 'width')} />
+            <label style={ labelStyle }>{attributeText}:</label>
+            <input style={ inputStyle } value={attributeCurrentValue} placeholder="auto" onChange={(e) => this.handleInputChange(e, this.state.attributeToEdit)} />
+            { heroImage && <ZoomSlider handleChange={(e) => this.handleInputChange(e, 'zoom')} zoom={this.state.zoom} /> }
           </div>
         </div>
       </Menu>
@@ -81,7 +89,7 @@ export default class ImageSize extends React.Component {
   }
 
   handleInputChange(e, name) {
-    const val = e.currentTarget.value;
+    const val = name === 'zoom' ? e.value : e.currentTarget.value;
     const update = {};
     const parsedNumber = val && val.length ? parseInt(val) : val;
 
@@ -93,10 +101,12 @@ export default class ImageSize extends React.Component {
 
   handleSave() {
     const { localState, persistedState, onChange } = this.props;
-    const { width } = this.state;
+    
+    const { attributeToEdit } = this.state;
 
     const newPersistedState = persistedState
-      .set('width', width)
+      .set(attributeToEdit, this.state[attributeToEdit])
+      .set('zoom', this.state.zoom)
       .delete('widthOverride')
       .delete('heightOverride');
 
@@ -109,10 +119,15 @@ export default class ImageSize extends React.Component {
 }
 
 ImageSize.propTypes = {
+  heroImage: PropTypes.bool,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   hasRoomToRenderBelow: PropTypes.bool
+};
+
+ImageSize.defaultProps = {
+  heroImage: false
 };
