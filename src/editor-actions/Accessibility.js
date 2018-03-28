@@ -48,7 +48,7 @@ export default class Accessibility extends React.Component {
         <div style={titleStyles}>Accessibility Options</div>
         <div style={{marginTop: 20}}>
           <div>
-            <label style={ labelStyle }>Set Alt Text:</label>
+            <label style={ labelStyle }>Alt Text</label>
             <input style={ inputStyle } value={altText} onChange={(e) => this.handleTextInputChange(e, 'altText')}/>
           </div>
         </div>
