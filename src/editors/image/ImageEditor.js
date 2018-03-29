@@ -67,7 +67,7 @@ export default class ImageEditor extends React.Component {
   }
 
   generateHTML(persistedState) {
-    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
+    const { url, height, width, heightOverride, widthOverride, href, isNewWindow, textAlign, marginTop, marginRight, marginBottom, marginLeft, flowId, altText } = persistedState.toJS();
 
     if (!url) {
       return '';
@@ -80,7 +80,7 @@ export default class ImageEditor extends React.Component {
     if (textAlign) {
       wrapperAttrs.style = `text-align:${textAlign};`;
     }
-    
+
     if (marginTop) {
       wrapperAttrs.style = wrapperAttrs.style + `margin-top:${marginTop}px;`;
     };
@@ -100,6 +100,9 @@ export default class ImageEditor extends React.Component {
     }
     if (width || widthOverride) {
       imageAttrs.style = `${ imageAttrs.style } width: ${ widthOverride || width }px`;
+    }
+    if(altText) {
+      imageAttrs.alt = `${altText}`
     }
 
     const imageAst = {
@@ -178,4 +181,3 @@ ImageEditor.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   canvasPosition: PropTypes.instanceOf(Map).isRequired
 };
-
