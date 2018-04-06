@@ -9,6 +9,7 @@ import uuid from 'uuid/v4';
 import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
+import { EDITOR_TYPES } from '../helpers/constants';
 
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
@@ -281,7 +282,7 @@ export class Canvas extends React.Component {
   }
 
   addRow(type, rowsToAdd, defaultAction) {
-    const { dispatch } = this.props;
+    const { dispatch, internalRows } = this.props;
 
     rowsToAdd = rowsToAdd || fromJS([{
       id: uuid(),
@@ -289,7 +290,9 @@ export class Canvas extends React.Component {
         {
           id: uuid(),
           type,
-          persistedState: {}
+          persistedState: {
+            marginTop: (internalRows.size > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+          }
         }
       ]
     }]);
