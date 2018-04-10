@@ -117,12 +117,14 @@ export class Canvas extends React.Component {
       onEditorMenuOpen,
       onEditorMenuClose,
       shouldCloseMenu,
-      resetShouldCloseMenu
+      resetShouldCloseMenu,
+      numPages
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
+          numPages={numPages}
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -405,7 +407,8 @@ Canvas.propTypes = {
   onEditorMenuOpen: PropTypes.func,
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
-  resetShouldCloseMenu: PropTypes.func
+  resetShouldCloseMenu: PropTypes.func,
+  numPages: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
