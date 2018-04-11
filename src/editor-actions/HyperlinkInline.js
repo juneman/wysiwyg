@@ -17,7 +17,7 @@ class HyperlinkInline extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const willLocalStateChange = this.props.localState !== nextProps.localState;
+    const willLocalStateChange = !this.props.localState.equals(nextProps.localState);
 
     if (willLocalStateChange) {
       const editorState = nextProps.localState.get('editorState');
