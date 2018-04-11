@@ -17,15 +17,15 @@ import Margin from '../../editor-actions/Margin';
 const actions = [
   {
     Component: Bold,
-    name: 'bold' 
+    name: 'bold'
   },
   {
     Component: Italic,
-    name: 'italic' 
+    name: 'italic'
   },
   {
     Component: TextStyle,
-    name: 'text-style' 
+    name: 'text-style'
   },
   {
     Component: FontColor,
@@ -36,7 +36,7 @@ const actions = [
   },
   {
     Component: List,
-    name: 'list' 
+    name: 'list'
   },
   {
     Component: AlignmentInline,
@@ -47,11 +47,11 @@ const actions = [
   },
   {
     Component: HyperlinkInline,
-    name: 'hyperlink-inline' 
+    name: HyperlinkInline.actionName
   },
   {
     Component: UserProperty,
-    name: 'user-property' 
+    name: 'user-property'
   },
   {
       Component: Margin,

@@ -9,6 +9,7 @@ import uuid from 'uuid/v4';
 import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
+import { EDITOR_TYPES } from '../helpers/constants';
 
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
@@ -82,7 +83,7 @@ export class Canvas extends React.Component {
     const { dispatch, isInEditMode } = this.props;
     const { rowsLoaded } = this.state;
 
-    if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
+    if (rowsLoaded && !is(nextProps.internalRows, this.props.internalRows)) {
       this.save(nextProps.internalRows, nextProps.internalZones);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
@@ -117,12 +118,14 @@ export class Canvas extends React.Component {
       onEditorMenuOpen,
       onEditorMenuClose,
       shouldCloseMenu,
-      resetShouldCloseMenu
+      resetShouldCloseMenu,
+      numPages
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
+          numPages={numPages}
           key={row.get('id')}
           row={row}
           rowIndex={i}
@@ -281,7 +284,7 @@ export class Canvas extends React.Component {
   }
 
   addRow(type, rowsToAdd, defaultAction) {
-    const { dispatch } = this.props;
+    const { dispatch, internalRows } = this.props;
 
     rowsToAdd = rowsToAdd || fromJS([{
       id: uuid(),
@@ -289,7 +292,9 @@ export class Canvas extends React.Component {
         {
           id: uuid(),
           type,
-          persistedState: {}
+          persistedState: {
+            marginTop: (internalRows.size > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+          }
         }
       ]
     }]);
@@ -405,7 +410,8 @@ Canvas.propTypes = {
   onEditorMenuOpen: PropTypes.func,
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
-  resetShouldCloseMenu: PropTypes.func
+  resetShouldCloseMenu: PropTypes.func,
+  numPages: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {

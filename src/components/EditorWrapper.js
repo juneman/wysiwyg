@@ -36,7 +36,7 @@ export default class EditorWrapper extends React.Component {
     const hasRoomToRenderRight = ((window.innerWidth - this.wrapper.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
     if (hasRoomToRenderRight != this.state.hasRoomToRenderRight){
       this.setState({ hasRoomToRenderRight });
-    } 
+    }
   }
 
   render() {
@@ -45,6 +45,7 @@ export default class EditorWrapper extends React.Component {
       isHover,
       children,
       toolbarNode,
+      inlineActionsNode,
       onSave,
       onCancel,
       onRemove,
@@ -101,60 +102,58 @@ export default class EditorWrapper extends React.Component {
       animationDelay: `${delay}s`
     });
 
-    let buttons;
-
-    if (isEditing) {
-      buttons = (
-        <div className="editing">
-          { children }
-          <div name="EditorWrapperEditingActionsContainer" style={ editorWrapperStyles }>
-            { toolbarNode &&
-              <div name="EditorWrapperEditingToolbar" style={ applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
-                { toolbarNode }
-              </div>
-            }
-            <div name="EditorWrapperEditingActions" style={ editingButtonStyles }>
-              <OkButton
-                style={ applyAnimationWithDelay(0.05, {marginRight: 5}) }
-                shadow={true}
-                color="#00b850"
-                onClick={ onSave } />
-              <CancelButton
-                style={applyAnimationWithDelay(0.1, {marginRight: 5, opacity: 0.8})}
-                secondary
-                shadow={true}
-                color="#eee"
-                onClick={ () => onCancel() } />
-              { !disableDeleteButton && 
-                <DeleteButton
-                  secondary
-                  style={ applyAnimationWithDelay(0.15, { marginRight: 5 }) }
-                  shadow={ true }
-                  color="#eb6e5e"
-                  onClick={ () => onRemove() } />
-              }
-            </div>
-          </div>
-        </div>
-      );
-    } else if (isHover) {
-      buttons = (
-        <div className="hover">
-          <div style={hoverButtonStyles}>
-            <EditButton
-              shadow={true}
-              color="#f4ad42"
-              onClick={() => onEdit()}
-            />
-          </div>
-          {children}
-        </div>
-      );
-    }
-
+    const containerClass = isEditing ? "editing" : (isHover ? "hover" : "");
     return (
       <div name="EditorWrapper" className="zone-content" ref={(el) => this.wrapper = el}>
-        {(buttons) ? buttons : children}
+        <div className={ containerClass }>
+          { isHover &&
+            <div style={hoverButtonStyles}>
+              <EditButton
+                shadow={true}
+                color="#f4ad42"
+                onClick={ onEdit }
+              />
+            </div>
+          }
+          {
+            children
+          }
+          { isEditing &&
+            <div name="EditorWrapperEditingActionsContainer" style={ editorWrapperStyles }>
+              { toolbarNode &&
+                <div name="EditorWrapperEditingToolbar" style={ applyAnimationWithDelay(0, toolbarStyles) } ref={(el) => this.toolbar = el}>
+                  { toolbarNode }
+                </div>
+              }
+              <div name="EditorWrapperEditingActions" style={ editingButtonStyles }>
+                <OkButton
+                  style={ applyAnimationWithDelay(0.05, {marginRight: 5}) }
+                  shadow={true}
+                  color="#00b850"
+                  onClick={ onSave } />
+                <CancelButton
+                  style={applyAnimationWithDelay(0.1, {marginRight: 5, opacity: 0.8})}
+                  secondary
+                  shadow={true}
+                  color="#eee"
+                  onClick={ onCancel } />
+                { !disableDeleteButton &&
+                  <DeleteButton
+                    secondary
+                    style={ applyAnimationWithDelay(0.15, { marginRight: 5 }) }
+                    shadow={ true }
+                    color="#eb6e5e"
+                    onClick={ onRemove } />
+                }
+              </div>
+            </div>
+          }
+          { isEditing && inlineActionsNode &&
+            <div name="EditorWrapperInlineEditingActions">
+              { inlineActionsNode }
+            </div>
+          }
+        </div>
       </div>
     );
   }
@@ -171,5 +170,6 @@ EditorWrapper.propTypes = {
   rowPosition: PropTypes.instanceOf(Map).isRequired,
   zonePosition: PropTypes.instanceOf(Map).isRequired,
   toolbarNode: PropTypes.node,
+  inlineActionsNode: PropTypes.node,
   disableDeleteButton: PropTypes.bool
 };

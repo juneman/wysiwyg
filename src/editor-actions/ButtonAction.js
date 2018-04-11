@@ -45,8 +45,8 @@ export default class ButtonAction extends React.Component {
       if (persistedStateVal !== undefined) {
         update[property] = persistedStateVal;
       }
-
     });
+
 
     if (Object.keys(update).length) {
       this.setState(update);
@@ -107,7 +107,7 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
                 <label style={ labelStyle }>Step number</label>
-                <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
+                <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 {

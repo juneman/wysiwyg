@@ -74,7 +74,7 @@ export default class ButtonEditor extends React.Component {
     const buttonStyle = {};
     buttonStyleProps.forEach((key) => {
       if (persistedState.get(key)) {
-        buttonStyle[key] = persistedState.get(key);
+        buttonStyle[key] = `${persistedState.get(key)}px`;
       }
     });
 

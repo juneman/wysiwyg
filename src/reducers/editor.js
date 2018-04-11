@@ -9,6 +9,10 @@ const initialState = fromJS({
   movableRowId: null,
   hoverRowId: null,
   activeEditorAction: null,
+  activeEditorInlineAction: {
+    name: null,
+    state: null
+  },
   isCanvasInEditMode: false,
   disableAddButton: false,
   draftHtml: '',
@@ -72,6 +76,21 @@ export default function editorSelector(state = initialState, action) {
       break;
     case Actions.EDITOR_ACTIONS_TOGGLE:
       newState = newState.set('activeEditorAction', (action.isActive) ? action.name : null);
+      break;
+    case Actions.EDITOR_ACTIONS_TOGGLE_IF_CURRENT:
+      if (action.name === state.get('activeEditorAction')) {
+        newState = newState.set('activeEditorAction', (action.isActive) ? action.name : null);
+      }
+      break;
+    case Actions.EDITOR_INLINE_ACTIONS_TOGGLE:
+      let newInlineActionState = state.get('activeEditorInlineAction');
+      if (action.isActive) {
+        newInlineActionState = newInlineActionState.set('name', action.name).set('state', action.state || Map());
+      }
+      else {
+        newInlineActionState = newInlineActionState.set('name', null).set('state', null)
+      }
+      newState = newState.set('activeEditorInlineAction', newInlineActionState);
       break;
     case Actions.EDITOR_MOVING_ROW_START:
       newState = newState.set('movableRowId', action.row.get('id'));
