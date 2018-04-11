@@ -17,6 +17,7 @@ export default class ButtonAction extends React.Component {
     this.state = {
       href: props.href || '',
       isNewWindow: props.isNewWindow || false,
+      markCurrentFlowAsComplete: props.markCurrentFlowAsComplete || false,
       isMenuOpen: props.isActive || false,
       buttonActionType: BUTTON_ACTION_TYPES.NEXT_PAGE,
       stepIndex: 0,
@@ -26,51 +27,35 @@ export default class ButtonAction extends React.Component {
 
   componentWillReceiveProps(nextProps){
     const update = {};
-    if (nextProps.href !== this.props.href) {
-      update.href = nextProps.href;
-    };
-    if (nextProps.isNewWindow !== this.props.isNewWindow) {
-      update.isNewWindow = nextProps.isNewWindow;
-    };
-    if (nextProps.isActive !== this.props.isActive) {
-      update.isMenuOpen = nextProps.isActive;
-    };
-
     const { persistedState } = nextProps;
-    const href = persistedState.get('href');
-    const isNewWindow = persistedState.get('isNewWindow');
-    const stepIndex = persistedState.get('stepIndex');
-    const buttonActionType = persistedState.get('buttonActionType');
-    const flowId = persistedState.get('flowId')
 
-    if (href !== undefined) {
-      update.href = href;
-    }
+    [
+      'href',
+      'isNewWindow',
+      'stepIndex',
+      'buttonActionType',
+      'flowId',
+      'markCurrentFlowAsComplete'
+    ].forEach((property) => {
+      let persistedStateVal = persistedState.get(property);
 
-    if (isNewWindow !== undefined) {
-      update.isNewWindow = isNewWindow;
-    }
+      if(nextProps[property] !== this.props[property]) {
+        update[property] = nextProps[property];
+      }
+      if (persistedStateVal !== undefined) {
+        update[property] = persistedStateVal;
+      }
 
-    if (buttonActionType !== undefined) {
-      update.buttonActionType = buttonActionType;
-    }
-
-    if (stepIndex !== undefined) {
-      update.stepIndex = stepIndex;
-    }
-
-    if (flowId) {
-      update.flowId = flowId
-    }
+    });
 
     if (Object.keys(update).length) {
       this.setState(update);
-    };
+    }
   }
 
   render() {
-    const { persistedState, isActive, hasRoomToRenderBelow, numPages, isFirst, isLast } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId } = this.state;
+    const { isActive, hasRoomToRenderBelow, numPages } = this.props;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -82,20 +67,20 @@ export default class ButtonAction extends React.Component {
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
       delete dropdownStyles.top;
-    };
+    }
 
-    const titleStyles = secondaryMenuTitleStyle;
     const hasMoreThanOneStep = numPages > 1;
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
 
-        <div style={{...titleStyles, marginBottom: '5px'}}>Button Actions</div>
+        <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
 
           <div style={buttonNavTypeMenuStyle}>
+            <p htmlFor="button-action-menu" style={labelStyle}>Trigger Action</p>
             <DropDownMenu
               className="form-control"
-              label="On click"
+              id="button-action-menu"
               unsearchable
               selectedValue={ buttonActionType }
               options={ BUTTON_ACTION_TYPES_LIST }
@@ -105,12 +90,16 @@ export default class ButtonAction extends React.Component {
           { buttonActionType === BUTTON_ACTION_TYPES.URL &&
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
-                <label style={ labelStyle }>Link to URL</label>
-                <input autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+                <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
+                <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
               </div>
               <div style={{ marginTop: 5 }}>
                 <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
                 <label htmlFor="link-checkbox">Open In New Window</label>
+              </div>
+              <div style={{ marginTop: 5 }}>
+                <input id="mark-current-as-complete-checkbox" type="checkbox" style={checkboxStyle} checked={markCurrentFlowAsComplete} onChange={(e) => this.handleMarkCurrentFlowAsComplete(e)} />
+                <label htmlFor="mark-current-as-complete-checkbox">Mark flow in progress as complete</label>
               </div>
             </div>
           }
@@ -175,6 +164,13 @@ export default class ButtonAction extends React.Component {
     e.target.focus();
   }
 
+  handleMarkCurrentFlowAsComplete(e) {
+    const markCurrentFlowAsComplete = e.target.checked;
+    this.setState({
+      markCurrentFlowAsComplete
+    }, this.saveAction);
+  }
+
   handleIsNewWindow(e) {
     const isNewWindow = e.target.checked;
     this.setState({
@@ -213,6 +209,7 @@ export default class ButtonAction extends React.Component {
     if (BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS.includes(buttonActionType)) {
       return persistedState
         .set('buttonActionType', buttonActionType)
+        .delete('markCurrentFlowAsComplete')
         .delete('href')
         .delete('flowId')
         .delete('stepIndex')
@@ -223,6 +220,7 @@ export default class ButtonAction extends React.Component {
       return persistedState
         .set('buttonActionType', buttonActionType)
         .set('stepIndex', stepIndex)
+        .delete('markCurrentFlowAsComplete')
         .delete('href')
         .delete('flowId')
         .delete('isNewWindow');
@@ -233,6 +231,7 @@ export default class ButtonAction extends React.Component {
         .set('buttonActionType', buttonActionType)
         .set('href', state.href)
         .set('isNewWindow', state.isNewWindow)
+        .set('markCurrentFlowAsComplete', state.markCurrentFlowAsComplete)
         .delete('stepIndex')
         .delete('flowId');
     }
@@ -241,6 +240,7 @@ export default class ButtonAction extends React.Component {
       return persistedState
         .set('buttonActionType', buttonActionType)
         .set('flowId', state.flowId)
+        .delete('markCurrentFlowAsComplete')
         .delete('href')
         .delete('isNewWindow')
         .delete('stepIndex');
@@ -251,9 +251,9 @@ export default class ButtonAction extends React.Component {
 
   saveAction() {
     const { localState, persistedState, onChange } = this.props;
-    const { isMenuOpen, isNewWindow, href, buttonActionType, flowId } = this.state;
+    const { isNewWindow, href, buttonActionType, markCurrentFlowAsComplete, flowId } = this.state;
 
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, flowId });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, markCurrentFlowAsComplete, flowId });
 
     onChange({
       localState,
@@ -271,5 +271,8 @@ ButtonAction.propTypes = {
   persistedState: PropTypes.instanceOf(Map).isRequired,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired
+  markCurrentFlowAsComplete: PropTypes.bool,
+  isActive: PropTypes.bool.isRequired,
+  hasRoomToRenderBelow: PropTypes.bool,
+  numPages: PropTypes.number
 };

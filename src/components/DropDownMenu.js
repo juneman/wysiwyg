@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 import DropDownButton from './DropDownButton';
@@ -70,7 +70,7 @@ export default class DropDownMenu extends React.Component {
         display: 'flex',
         position: 'absolute',
         top: '100%',
-        right: 0,
+        left: 0,
         backgroundColor: '#eee',
         maxHeight: 250,
         width: 270,
@@ -146,7 +146,7 @@ export default class DropDownMenu extends React.Component {
         marginTop: 5,
         opacity: 1,
         pointerEvents: 'all'
-      }
+      };
 
       if (!hasRoomToRenderBelow) {
         styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
@@ -161,7 +161,7 @@ export default class DropDownMenu extends React.Component {
         style.backgroundColor = 'rgba(0,0,0,0.15)';
       }
       return style;
-    }
+    };
 
     return (
       <DropDownButton
