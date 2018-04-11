@@ -21,7 +21,9 @@ export default class ButtonAction extends React.Component {
       isMenuOpen: props.isActive || false,
       buttonActionType: BUTTON_ACTION_TYPES.NEXT_PAGE,
       stepIndex: 0,
-      flowId: ''
+      flowId: '',
+      eventName: '',
+      trackEvent: false
     };
   }
 
@@ -35,7 +37,9 @@ export default class ButtonAction extends React.Component {
       'stepIndex',
       'buttonActionType',
       'flowId',
-      'markCurrentFlowAsComplete'
+      'markCurrentFlowAsComplete',
+      'eventName',
+      'trackEvent'
     ].forEach((property) => {
       let persistedStateVal = persistedState.get(property);
 
@@ -47,7 +51,6 @@ export default class ButtonAction extends React.Component {
       }
     });
 
-
     if (Object.keys(update).length) {
       this.setState(update);
     }
@@ -55,7 +58,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { isActive, hasRoomToRenderBelow, numPages } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete } = this.state;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -128,6 +131,20 @@ export default class ButtonAction extends React.Component {
             </div>
           }
 
+          <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
+          <label htmlFor="track-event-checkbox">Track Event</label>
+
+          { trackEvent &&
+            <div style={buttonNavTypeMenuStyle}>
+              <div style={ fieldGroupStyle }>
+                <label style={ labelStyle }>Event Name</label>
+                <input type="text" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
+              </div>
+              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the event name to trigger from this button.
+              </p>
+            </div>
+          }
+
       </Menu>
     ) : null;
 
@@ -171,6 +188,13 @@ export default class ButtonAction extends React.Component {
     }, this.saveAction);
   }
 
+  handleAddEvent(e) {
+    const value = e.target.value;
+    this.setState({
+      eventName: value
+    }, this.saveAction);
+  }
+
   handleIsNewWindow(e) {
     const isNewWindow = e.target.checked;
     this.setState({
@@ -203,6 +227,13 @@ export default class ButtonAction extends React.Component {
 
   }
 
+  handleTrackEvent(e) {
+    const trackEvent = e.target.checked;
+    this.setState({
+      trackEvent
+    }, this.saveAction);
+  }
+
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
     const { stepIndex } = this.state;
 
@@ -210,6 +241,8 @@ export default class ButtonAction extends React.Component {
       return persistedState
         .set('buttonActionType', buttonActionType)
         .delete('markCurrentFlowAsComplete')
+        .set('eventName', state.eventName)
+        .set('trackEvent', state.trackEvent)
         .delete('href')
         .delete('flowId')
         .delete('stepIndex')
@@ -221,6 +254,8 @@ export default class ButtonAction extends React.Component {
         .set('buttonActionType', buttonActionType)
         .set('stepIndex', stepIndex)
         .delete('markCurrentFlowAsComplete')
+        .set('eventName', state.eventName)
+        .set('trackEvent', state.trackEvent)
         .delete('href')
         .delete('flowId')
         .delete('isNewWindow');
@@ -232,6 +267,8 @@ export default class ButtonAction extends React.Component {
         .set('href', state.href)
         .set('isNewWindow', state.isNewWindow)
         .set('markCurrentFlowAsComplete', state.markCurrentFlowAsComplete)
+        .set('eventName', state.eventName)
+        .set('trackEvent', state.trackEvent)
         .delete('stepIndex')
         .delete('flowId');
     }
@@ -241,6 +278,8 @@ export default class ButtonAction extends React.Component {
         .set('buttonActionType', buttonActionType)
         .set('flowId', state.flowId)
         .delete('markCurrentFlowAsComplete')
+        .set('eventName', state.eventName)
+        .set('trackEvent', state.trackEvent)
         .delete('href')
         .delete('isNewWindow')
         .delete('stepIndex');
@@ -251,9 +290,9 @@ export default class ButtonAction extends React.Component {
 
   saveAction() {
     const { localState, persistedState, onChange } = this.props;
-    const { isNewWindow, href, buttonActionType, markCurrentFlowAsComplete, flowId } = this.state;
+    const { isNewWindow, href, buttonActionType, markCurrentFlowAsComplete, flowId, eventName, trackEvent } = this.state;
 
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, markCurrentFlowAsComplete, flowId });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, markCurrentFlowAsComplete, flowId, eventName, trackEvent });
 
     onChange({
       localState,

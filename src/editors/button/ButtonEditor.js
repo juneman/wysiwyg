@@ -139,7 +139,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId, eventName, trackEvent } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -166,6 +166,9 @@ export default class ButtonEditor extends React.Component {
 
     if(markCurrentFlowAsComplete) {
       buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
+    }
+    if (trackEvent && eventName) {
+      buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
     }
 
     switch (buttonActionType) {
