@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { Map, List } from 'immutable';
 import { EditorState, Modifier } from 'draft-js';
 
-import { getButtonProps, secondaryMenuTitleStyle } from '../helpers/styles/editor';
-import Menu from '../components/Menu';
+import { editorButtonStyle, getButtonProps, inputStyle, secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import DropDownMenu from '../components/DropDownMenu';
+import FocusableInput from '../components/FocusableInput';
+import Menu from '../components/Menu';
 
 import UserPropertyButton from '../icons/UserPropertyButton';
 
@@ -16,8 +17,13 @@ export default class UserProperty extends React.Component {
 
     this.state = {
       isMenuOpen: props.isActive || false,
-      selectedProperty: null
+      selectedProperty: null,
+      fallbackProperty: null,
+      customValue: ''
     };
+
+    this.setSelectedValue = this.setSelectedValue.bind(this);
+    this.handleSetValue = this.handleSetValue.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -30,7 +36,7 @@ export default class UserProperty extends React.Component {
 
   render() {
     const { isActive, userProperties, hasRoomToRenderBelow } = this.props;
-    const { isMenuOpen, selectedProperty } = this.state;
+    const { isMenuOpen, selectedProperty, fallbackProperty, customValue } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -46,23 +52,39 @@ export default class UserProperty extends React.Component {
       animationIterationCount: 1,
       animationFillMode: 'both'
     };
+
+    const propertyInputStyle = {
+      ...inputStyle,
+      width: '100%',
+      marginTop: '10px'
+    };
+
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    };
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
 
     // Leave blank if nothing
     if (!userProperties || !userProperties.size) {
       return (<div></div>);
-    };
+    }
 
     const userPropertiesDropdown = [...(userProperties).map((userProperty) => {
       return userProperty.toJS();
     })].map((userProperty) => ({ label: userProperty.name, ...userProperty }));
 
-    const valueOptions = !selectedProperty ? null : [ { label: "No fallback", value: null } , ...userPropertiesDropdown.find((userProperty) => userProperty.value == selectedProperty).options.map((option) => ({ label: option.name, value: option.name }))];
+    const valueOptions = !selectedProperty
+      ? null
+      : [
+          { label: "No fallback", value: null },
+          ...userPropertiesDropdown.find(
+              (userProperty) => userProperty.value == selectedProperty).options.map(
+                (option) => ({ label: option.name, value: option.name }
+            )),
+          { label: 'Custom text...', value: 'custom' }
+        ];
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
@@ -72,14 +94,24 @@ export default class UserProperty extends React.Component {
           defaultValue="Choose a property"
           selectedValue={ selectedProperty }
           options={userPropertiesDropdown}
-          onSelect={(value) => this.setSelectedValue(value)}/>
+          onSelect={(value) => this.setSelectedValue(value, 'selectedProperty')}/>
         { valueOptions &&
           <div style={{ marginTop: 10 }}>
-          <DropDownMenu
-            className="form-control"
-            defaultValue="Choose a fallback"
-            options={valueOptions}
-            onSelect={(fallback) => this.handleSetValue(fallback)}/>
+            <DropDownMenu
+              className="form-control"
+              defaultValue="Choose a fallback"
+              selectedValue={ fallbackProperty }
+              options={valueOptions}
+              onSelect={(fallback) => this.setSelectedValue(fallback, 'fallbackProperty')}/>
+            { fallbackProperty === 'custom' &&
+            <FocusableInput
+              inputStyles={propertyInputStyle}
+              handleChange={(value) => this.setSelectedValue(value, 'customValue')}
+              placeholder="Type custom text..."
+              value={customValue}
+            />
+            }
+            <button style={editorButtonStyle} onClick={this.handleSetValue}>Insert</button>
           </div>
         }
       </Menu>
@@ -106,19 +138,20 @@ export default class UserProperty extends React.Component {
     }
   }
 
-  setSelectedValue(value) {
-    this.setState({ selectedProperty: value });
-  };
+  setSelectedValue(value, field) {
+    this.setState({ [field]: value });
+  }
 
-  handleSetValue(value) {
+  handleSetValue() {
     const { localState, persistedState, onChange, onToggleActive } = this.props;
-    const { selectedProperty } = this.state;
+    const { fallbackProperty, selectedProperty, customValue } = this.state;
 
     const editorState = localState.get('editorState');
     const selectionState = editorState.getSelection();
     const contentState = editorState.getCurrentContent();
 
-    const newValue = value ? `{{ ${ selectedProperty } | "${ value }" }}` : `{{ ${ selectedProperty } }}`;
+    const fallback = fallbackProperty === 'custom' ? customValue : fallbackProperty;
+    const newValue = fallback ? `{{ ${ selectedProperty } | "${ fallback }" }}` : `{{ ${ selectedProperty } }}`;
 
     const newContentState = (selectionState.isCollapsed())
       ? Modifier.insertText(contentState, selectionState, newValue)
@@ -131,7 +164,8 @@ export default class UserProperty extends React.Component {
     ));
 
     this.setState({
-      isMenuOpen: false,
+      customValue: '',
+      fallbackProperty: null,
       selectedProperty: null
     });
 
@@ -142,7 +176,6 @@ export default class UserProperty extends React.Component {
       persistedState
     });
   }
-
 }
 
 UserProperty.propTypes = {

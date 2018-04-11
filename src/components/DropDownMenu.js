@@ -212,10 +212,7 @@ export default class DropDownMenu extends React.Component {
               <span>{ label && `${ label }: ` }
                 <span>{ selectedOption ? selectedOption.label : defaultValue }</span>
                 <span style={{display: 'inline-flex', position: 'absolute', right: '0px', height: '20px'}}>
-                  { isMenuOpen ? 
-                    <DownButton iconStyle={{color: 'grey'}}/> :
-                    <RightButton iconStyle={{color: 'grey'}}/>
-                  }
+                  <DownButton iconStyle={{color: 'grey'}}/>
                 </span>
               </span>
 

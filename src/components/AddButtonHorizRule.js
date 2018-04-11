@@ -24,7 +24,6 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
-    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
@@ -33,25 +32,15 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector } = this.state;
     this.setHasRoomToRenderOnRight();
 
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
-
-    const didEditorSelectorClose = prevState.showEditorSelector && !showEditorSelector;
-    const didEditorSelectorOpen = !prevState.showEditorSelector && showEditorSelector;
-
-    if (didEditorSelectorOpen) {
-      editor.addEventListener('click', this.onClick, true);
-    } else if (didEditorSelectorClose) {
-      editor.removeEventListener('click', this.onClick, true);
+    if (shouldCloseMenu && showEditorSelector) {
+      this.setState({ showEditorSelector: false });
+      resetShouldCloseMenu();
+      onEditorMenuClose();
     }
-
-  }
-
-  componentWillUnmount() {
-    const editor = document.getElementById('appcues-host').shadowRoot.firstChild;
-    editor.removeEventListener('click', this.onClick, true);
 
   }
 
@@ -124,19 +113,16 @@ export default class AddButtonHorizRule extends React.Component {
     );
   }
 
-  onClick(e) {
-    e.preventDefault();
-    const { showEditorSelector, isHoveringOverAddButton } = this.state;
-
-    if (showEditorSelector && !isHoveringOverAddButton) {
-      this.setState({showEditorSelector: false});
-    }
-  }
-
   handleAddNew() {
     const { showEditorSelector } = this.state;
+    const { onEditorMenuOpen, onEditorMenuClose } = this.props;
 
     this.setState({ showEditorSelector: !showEditorSelector });
+    if (showEditorSelector) {
+        onEditorMenuClose && onEditorMenuClose();
+    } else {
+        onEditorMenuOpen && onEditorMenuOpen();
+    }
   }
 
   setHasRoomToRenderOnRight() {
@@ -156,5 +142,9 @@ export default class AddButtonHorizRule extends React.Component {
 AddButtonHorizRule.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  isHoveringOverContainer: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func
 };

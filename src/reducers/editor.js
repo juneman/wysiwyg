@@ -9,6 +9,10 @@ const initialState = fromJS({
   movableRowId: null,
   hoverRowId: null,
   activeEditorAction: null,
+  activeEditorInlineAction: {
+    name: null,
+    state: null
+  },
   isCanvasInEditMode: false,
   disableAddButton: false,
   draftHtml: '',
@@ -17,7 +21,6 @@ const initialState = fromJS({
   cloudinary: {},
   userProperties: [],
   allowedEditorTypes: [],
-  aceEditorConfig: {},
   shouldDisableXSS: false,
   sanitizeHtmlConfig: {
     allowedTags: false,
@@ -74,6 +77,21 @@ export default function editorSelector(state = initialState, action) {
     case Actions.EDITOR_ACTIONS_TOGGLE:
       newState = newState.set('activeEditorAction', (action.isActive) ? action.name : null);
       break;
+    case Actions.EDITOR_ACTIONS_TOGGLE_IF_CURRENT:
+      if (action.name === state.get('activeEditorAction')) {
+        newState = newState.set('activeEditorAction', (action.isActive) ? action.name : null);
+      }
+      break;
+    case Actions.EDITOR_INLINE_ACTIONS_TOGGLE:
+      let newInlineActionState = state.get('activeEditorInlineAction');
+      if (action.isActive) {
+        newInlineActionState = newInlineActionState.set('name', action.name).set('state', action.state || Map());
+      }
+      else {
+        newInlineActionState = newInlineActionState.set('name', null).set('state', null)
+      }
+      newState = newState.set('activeEditorInlineAction', newInlineActionState);
+      break;
     case Actions.EDITOR_MOVING_ROW_START:
       newState = newState.set('movableRowId', action.row.get('id'));
       break;
@@ -88,9 +106,6 @@ export default function editorSelector(state = initialState, action) {
       break;
     case Actions.EDITOR_SETTINGS_SANITIZE_HTML:
       newState = newState.set('sanitizeHtmlConfig', action.sanitizeHtmlConfig);
-      break;
-    case Actions.EDITOR_SETTINGS_ACE_EDITOR:
-      newState = newState.set('aceEditorConfig', action.aceEditorConfig);
       break;
     case Actions.EDITOR_SETTINGS_ALLOWED_EDITOR_TYPES:
       newState = newState.set('allowedEditorTypes', action.allowedEditorTypes);

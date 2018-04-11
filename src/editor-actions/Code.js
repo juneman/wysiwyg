@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, is } from 'immutable';
 import sanitizeHtml from 'sanitize-html';
-
-import AceEditor from 'react-ace';
-import 'brace/mode/html';
-import 'brace/theme/monokai';
 
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
@@ -45,9 +41,11 @@ export default class Code extends React.Component {
     if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) { return true; }
     if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) { return true; }
 
-    if (this.props.persistedState !== nextProps.persistedState) { return true; }
-    if (this.props.localState !== nextProps.localState) { return true; }
+    if (!is(this.props.persistedState, nextProps.persistedState)) { return true; }
+    if (!is(this.props.localState, nextProps.localState)) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
+    if (this.state.content !== nextState.content) { return true; }
+
     return false;
   }
 
@@ -58,7 +56,7 @@ export default class Code extends React.Component {
   }
 
   render() {
-    const { persistedState, title, aceEditorConfig, localState } = this.props;
+    const { persistedState, title, localState } = this.props;
     const { isSaved, hasRoomToRenderBelow, hasRoomToRenderRight, leftOffset } = this.state;
     const content = localState.get('content') || persistedState.get('content');
     const dropdownStyles = {
@@ -72,7 +70,7 @@ export default class Code extends React.Component {
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
-    } 
+    }
 
     if (!hasRoomToRenderRight) {
       dropdownStyles.left = leftOffset - 40;
@@ -80,32 +78,16 @@ export default class Code extends React.Component {
 
     const titleStyles = secondaryMenuTitleStyle;
 
-    const aceEditorProps = Object.assign({}, {
-      name: 'code-editor',
-      editorProps: { $blockScrolling: true },
-      showGutter: false,
-      key: "helloEditor",
-      wrapEnabled: true,
-      showPrintMargin: false,
-      width: '700px',
-      height: '200px'
-    },
-      aceEditorConfig.toJS(), // Let the user override items above
-    {
-      mode: 'html',
-      theme: 'monokai',
-      onChange: (content) => {this.setState({content}, this.handleSave);},
-      focus: true,
-      value: content
-    });
-
     return (
       <div>
         <Menu style={{ ...dropdownStyles, backgroundColor: '#272822' }} className="html-menu">
           <div ref={(el) => this._menuTitle = el} style={titleStyles}>{title}</div>
-          <AceEditor
-            { ...aceEditorProps }
-          />
+          <textarea
+              style={{ background: 'transparent', padding: '12px', border: '2px solid rgba(255,255,255,0.3)',
+                       borderRadius: '4px', color: 'white', width: '700px',
+                       height: '200px', outline: 'none', fontSize: '14px', fontFamily: 'Courier, monospace' }}
+              value={ this.state.content }
+              onChange={ (e) => { this.setState( { content: e.target.value }, this.handleSave ) }} />
           <div style={{textAlign: 'right', marginTop: 10}}>
             <span style={{ color:'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontStyle: 'italic', marginRight: 7 }}>
               { isSaved ?
@@ -191,6 +173,5 @@ Code.propTypes = {
   sanitizeHtmlConfig: PropTypes.instanceOf(Map),
   shouldDisableXSS: PropTypes.bool.isRequired,
   overrideSanitizeHtmlConfig: PropTypes.object,
-  aceEditorConfig: PropTypes.instanceOf(Map).isRequired,
   hasRoomToRenderBelow: PropTypes.bool
 };

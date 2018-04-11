@@ -28,7 +28,6 @@ describe('<Toolbar />', () => {
       cloudinary: {},
       userProperties: [],
       allowedEditorTypes: [],
-      aceEditorConfig: {},
       sanitizeHtmlConfig: {
         allowedTags: false,
         allowedAttributes: false
@@ -57,7 +56,7 @@ describe('<Toolbar />', () => {
           actions={[
             {
               Component: Bold,
-              name: 'bold' 
+              name: 'bold'
             }
           ]}
         />

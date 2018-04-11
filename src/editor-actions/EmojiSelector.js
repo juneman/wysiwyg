@@ -110,9 +110,13 @@ export default class EmojiSelector extends React.Component {
           url = `${BASE_SVG_URL}${emoji.unified}.svg`;
       }
 
+      const width = persistedState.get('width');
+      const newWidth = width ? width : 50;
+
       let newPersistedState = persistedState
         .set('url', url)
-        .set('width', 250)
+        .set('width', newWidth)
+        .set('altText', `${emoji.name} emoji`)
         .set('textAlign', 'center');
 
       onChange({

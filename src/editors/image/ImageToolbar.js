@@ -9,6 +9,8 @@ import AlignmentBlock from '../../editor-actions/AlignmentBlock';
 import ImageSize from '../../editor-actions/ImageSize';
 import Margin from '../../editor-actions/Margin';
 import ImageOnClick from '../../editor-actions/ImageOnClick';
+import Accessibility from '../../editor-actions/Accessibility';
+
 
 import { GALLERY_TYPES } from '../../helpers/constants';
 
@@ -41,7 +43,11 @@ export default function ImageToolbar(props) {
       Component: Margin,
       name: 'margin'
     },
-    
+    {
+      Component: Accessibility,
+      name: 'accessibility-button'
+    },
+
   ];
 
   return (

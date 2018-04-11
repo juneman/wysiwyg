@@ -40,7 +40,6 @@ export default class AddButtonContainer extends React.Component {
   render() {
     const { shadow, onSelectEditorType, internalAllowedEditorTypes, showEditorSelector } = this.props;
     const { isEditorSelectorVisible } = this.state;
-
     return (
       <div style={{ pointerEvents: 'all' }}>
         <AddButton shadow={ shadow } {...this.props}/>
@@ -70,4 +69,3 @@ AddButtonContainer.defaultProps = {
   style: {},
   showEditorSelector: false
 };
-

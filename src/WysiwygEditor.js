@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import * as editorActions from './actions/editorActions';
-import { DragDropContext } from 'react-dnd';
+import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { Iterable } from 'immutable';
 
@@ -82,7 +82,9 @@ export class WysiwygEditor extends React.Component {
   render() {
     return (
       <Provider store={this.store}>
-        <Canvas {...this.props} />
+        <DragDropContextProvider backend={ HTML5Backend } window={ this.props.window || window }>
+          <Canvas {...this.props} />
+        </DragDropContextProvider>
       </Provider>
     );
   }
@@ -105,7 +107,6 @@ WysiwygEditor.propTypes = {
     uploadUrl: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired
   }),
-  aceEditorConfig: PropTypes.object,
   userProperties: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
@@ -115,7 +116,14 @@ WysiwygEditor.propTypes = {
   closeAll: PropTypes.bool,
   disableAddButton: PropTypes.bool,
   allowedEditorTypes: PropTypes.array,
-  maxRows: PropTypes.number
+  maxRows: PropTypes.number,
+  window: PropTypes.object,
+  onEditStart: PropTypes.func,
+  onEditEnd: PropTypes.func,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func
 };
 
-export default DragDropContext(HTML5Backend)(WysiwygEditor);
+export default WysiwygEditor;

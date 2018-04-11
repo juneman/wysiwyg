@@ -28,20 +28,20 @@ export default class ButtonAction extends React.Component {
     const update = {};
     if (nextProps.href !== this.props.href) {
       update.href = nextProps.href;
-    };
+    }
     if (nextProps.isNewWindow !== this.props.isNewWindow) {
       update.isNewWindow = nextProps.isNewWindow;
-    };
+    }
     if (nextProps.isActive !== this.props.isActive) {
       update.isMenuOpen = nextProps.isActive;
-    };
+    }
 
     const { persistedState } = nextProps;
     const href = persistedState.get('href');
     const isNewWindow = persistedState.get('isNewWindow');
     const stepIndex = persistedState.get('stepIndex');
     const buttonActionType = persistedState.get('buttonActionType');
-    const flowId = persistedState.get('flowId')
+    const flowId = persistedState.get('flowId');
 
     if (href !== undefined) {
       update.href = href;
@@ -60,12 +60,12 @@ export default class ButtonAction extends React.Component {
     }
 
     if (flowId) {
-      update.flowId = flowId
+      update.flowId = flowId;
     }
 
     if (Object.keys(update).length) {
       this.setState(update);
-    };
+    }
   }
 
   render() {
@@ -82,7 +82,7 @@ export default class ButtonAction extends React.Component {
     if (!hasRoomToRenderBelow) {
       dropdownStyles.bottom = dropdownStyles.top + 55;
       delete dropdownStyles.top;
-    };
+    }
 
     const titleStyles = secondaryMenuTitleStyle;
     const hasMoreThanOneStep = numPages > 1;
@@ -118,7 +118,7 @@ export default class ButtonAction extends React.Component {
             <div style={buttonNavTypeMenuStyle}>
               <div style={ fieldGroupStyle }>
                 <label style={ labelStyle }>Step number</label>
-                <input type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
+                <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>
                 {

@@ -9,6 +9,7 @@ import uuid from 'uuid/v4';
 import { Map, List, fromJS, is } from 'immutable';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
+import { EDITOR_TYPES } from '../helpers/constants';
 
 import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
@@ -41,7 +42,6 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       sanitizeHtml,
       disableAddButton,
-      aceEditorConfig,
       basePadding,
       shouldDisableXSS
     } = this.props;
@@ -74,20 +74,16 @@ export class Canvas extends React.Component {
 
     dispatch(editorActions.setShouldDisableXSS(shouldDisableXSS === true));
 
-    if (aceEditorConfig && !aceEditorConfig.isEmpty()) {
-      dispatch(editorActions.setAceEditorConfig(aceEditorConfig));
-    }
-
     this.setState({
       rowsLoaded: true
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { dispatch } = this.props;
+    const { dispatch, isInEditMode } = this.props;
     const { rowsLoaded } = this.state;
 
-    if (rowsLoaded && (nextProps.internalRows !== this.props.internalRows)) {
+    if (rowsLoaded && !is(nextProps.internalRows, this.props.internalRows)) {
       this.save(nextProps.internalRows, nextProps.internalZones);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
@@ -105,8 +101,8 @@ export class Canvas extends React.Component {
     if (!nextProps.sanitizeHtml.isEmpty() && !is(nextProps.sanitizeHtml, this.props.sanitizeHtml)) {
       dispatch(editorActions.setSanitizeHtmlConfig(nextProps.sanitizeHtml));
     }
-    if (!nextProps.aceEditorConfig.isEmpty() && !is(nextProps.aceEditorConfig, this.props.aceEditorConfig)) {
-      dispatch(editorActions.setAceEditorConfig(nextProps.aceEditorConfig));
+    if (nextProps.isInEditMode !== isInEditMode && !!nextProps.onEditStart && !!nextProps.onEditEnd) {
+      nextProps.isInEditMode ? nextProps.onEditStart() : nextProps.onEditEnd();
     }
   }
 
@@ -119,6 +115,10 @@ export class Canvas extends React.Component {
       allowedEditorTypes,
       height,
       isHoveringOverContainer,
+      onEditorMenuOpen,
+      onEditorMenuClose,
+      shouldCloseMenu,
+      resetShouldCloseMenu,
       numPages
     } = this.props;
 
@@ -156,8 +156,15 @@ export class Canvas extends React.Component {
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
         isHoveringOverContainer={ isHoveringOverContainer }
-        onSelectEditorType={ (type, rowsToAdd, defaultAction) => this.addRow(type, rowsToAdd, defaultAction) }
+        onSelectEditorType={ (type, rowsToAdd, defaultAction) => {
+            this.addRow(type, rowsToAdd, defaultAction);
+            onEditorMenuClose && onEditorMenuClose();
+        } }
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
+        onEditorMenuOpen={ onEditorMenuOpen }
+        onEditorMenuClose={ onEditorMenuClose }
+        shouldCloseMenu={ shouldCloseMenu }
+        resetShouldCloseMenu={ resetShouldCloseMenu }
       />
     ) : null;
 
@@ -277,7 +284,7 @@ export class Canvas extends React.Component {
   }
 
   addRow(type, rowsToAdd, defaultAction) {
-    const { dispatch } = this.props;
+    const { dispatch, internalRows } = this.props;
 
     rowsToAdd = rowsToAdd || fromJS([{
       id: uuid(),
@@ -285,7 +292,9 @@ export class Canvas extends React.Component {
         {
           id: uuid(),
           type,
-          persistedState: {}
+          persistedState: {
+            marginTop: (internalRows.size > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+          }
         }
       ]
     }]);
@@ -387,7 +396,6 @@ Canvas.propTypes = {
   sanitizeHtml: PropTypes.instanceOf(Map).isRequired,
   allowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
-  aceEditorConfig: PropTypes.instanceOf(Map),
   canvasPosition: PropTypes.instanceOf(Map).isRequired,
   showAddButton: PropTypes.bool.isRequired,
   startEditable: PropTypes.bool,
@@ -395,7 +403,15 @@ Canvas.propTypes = {
   maxRows: PropTypes.number,
   height: PropTypes.string,
   basePadding: PropTypes.number,
-  isHoveringOverContainer: PropTypes.bool
+  isHoveringOverContainer: PropTypes.bool,
+  isInEditMode: PropTypes.bool,
+  onEditStart: PropTypes.func,
+  onEditEnd: PropTypes.func,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func,
+  numPages: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
@@ -406,7 +422,7 @@ function mapStateToProps(state, ownProps) {
     userProperties: (ownProps.userProperties && ownProps.userProperties.length) ? fromJS(ownProps.userProperties) : List(),
     sanitizeHtml: (ownProps.sanitizeHtml) ? fromJS(ownProps.sanitizeHtml) : Map(),
     allowedEditorTypes: (ownProps.allowedEditorTypes) ? fromJS(ownProps.allowedEditorTypes) : List(),
-    aceEditorConfig: (ownProps.aceEditorConfig) ? fromJS(ownProps.aceEditorConfig) : Map(),
+    isInEditMode: state.editor.get('isCanvasInEditMode'),
 
     // Internal mappings some of the above properties
 
@@ -426,4 +442,3 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps)(Canvas);
-

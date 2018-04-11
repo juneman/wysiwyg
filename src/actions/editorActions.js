@@ -60,6 +60,23 @@ export function toggleEditorAction(name, isActive) {
   };
 }
 
+export function toggleEditorActionIfCurrent(name, isActive) {
+  return {
+    type: Actions.EDITOR_ACTIONS_TOGGLE_IF_CURRENT,
+    name,
+    isActive
+  };
+}
+
+export function toggleEditorInlineAction(name, isActive, state) {
+  return {
+    type: Actions.EDITOR_INLINE_ACTIONS_TOGGLE,
+    name,
+    isActive,
+    state
+  };
+}
+
 export function startMoving(row) {
   return {
     type: Actions.EDITOR_MOVING_ROW_START,
@@ -127,13 +144,6 @@ export function setDisableAddButton(disableAddButton) {
 export function setCloseAll() {
   return {
     type: Actions.EDITOR_SETTINGS_SET_CLOSE_ALL
-  };
-}
-
-export function setAceEditorConfig(aceEditorConfig) {
-  return {
-    type: Actions.EDITOR_SETTINGS_ACE_EDITOR,
-    aceEditorConfig
   };
 }
 

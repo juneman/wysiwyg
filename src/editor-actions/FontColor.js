@@ -67,7 +67,7 @@ export default class FontColor extends React.Component {
         <div style={titleStyles}>Select a Font Color</div>
         <ColorPicker
           color={ selectedColor }
-          saveUpdatedHexValue={ (color) => this.handleColor(color) }
+          onChangeComplete={ color => this.handleColor(color) }
         />
       </Menu>
     ) : null;
@@ -97,29 +97,28 @@ export default class FontColor extends React.Component {
 
   setCurrentInlineColor() {
     const { localState } = this.props;
+    const { selectedColor } = this.state;
     const editorState = localState.get('editorState');
     if (editorState) {
       const styles = editorState.getCurrentInlineStyle().toJS();
       if (styles.length) {
         const styleIndex = styles.findIndex((style) => style.indexOf(CUSTOM_STYLE_PREFIX_COLOR) === 0);
         if (styleIndex !== -1) {
-          this.setState({
-            selectedColor: styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length)
-          });
+          const newSelectedColor = styles[styleIndex].substring(CUSTOM_STYLE_PREFIX_COLOR.length);
+          if (selectedColor !== newSelectedColor) {
+            this.setState({
+              selectedColor: newSelectedColor
+            });
+          }
         }
       }
     }
-  }
-
-  handleColorInput(color) {
-    this.handleColor({hex: color});
   }
 
   handleColor(color) {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-
     const styles = editorState.getCurrentInlineStyle().toJS();
     let nextEditorState = styles.reduce((state, styleKey) => {
       if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {

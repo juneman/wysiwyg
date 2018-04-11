@@ -40,14 +40,17 @@ export default class HeroEditor extends React.Component {
     const editorState = localState.get('editorState');
     const content = (persistedState.get('content')) || defaultContent;
 
+    const minHeight = persistedState.get('minHeight') || 250;
+    const zoom = persistedState.get('zoom') ? `${persistedState.get('zoom')}%` : 'cover';
+
     const backgroundStyle = (url && backgroundType == 'url') ? `url(${url})` :
                             (gradient && backgroundType == 'linear-gradient') ? `linear-gradient(${gradient})` :
                             `linear-gradient(0deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3))`;
 
     const wrapperStyle = {
-      minHeight: 120,
+      minHeight,
       backgroundImage: backgroundStyle,
-      backgroundSize: 'cover',
+      backgroundSize: zoom,
       textAlign: 'center'
     };
 
@@ -78,11 +81,12 @@ export default class HeroEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { canvasPosition } = this.props;
-    const { url, gradient, backgroundType, content } = persistedState.toJS();
+    const { url, gradient, backgroundType, content, minHeight } = persistedState.toJS();
     const contentAst = HTMLParser.parse(content || '');
     const wrapperStyles = [];
-    wrapperStyles.push('min-height:120px');
-    wrapperStyles.push('background-size:cover');
+    const zoom = persistedState.get('zoom') ? `${persistedState.get('zoom')}%` : 'cover';
+    wrapperStyles.push(`min-height:${minHeight}px`);
+    wrapperStyles.push(`background-size:${zoom}`);
     wrapperStyles.push('text-align:center');
 
     const backgroundStyle = (url && backgroundType == 'url') ? `url(${url})` :
@@ -123,9 +127,7 @@ export default class HeroEditor extends React.Component {
 
   // Instance Method
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
+    // Do nothing for this editor
   }
 
   handleEditorStateChange(editorState) {

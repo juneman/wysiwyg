@@ -4,9 +4,10 @@
   a real DOM to use
 */
 
-var jsdom = require('jsdom').jsdom;
+var JSDOM = require('jsdom').JSDOM;
+var document = ((new JSDOM('<!doctype html><html><body></body></html>')).window).document;
 
-global.document = jsdom('');
+global.document = document;
 global.window = document.defaultView;
 Object.keys(document.defaultView).forEach((property) => {
   if (typeof global[property] === 'undefined') {
@@ -30,3 +31,8 @@ chai.use(chaiEnzyme());
 
 global.HTMLElement = window.HTMLElement;
 global.TextNode = window.TextNode;
+
+var Enzyme = require('enzyme');
+var Adapter = require('enzyme-adapter-react-16');
+
+Enzyme.configure({ adapter: new Adapter() });
