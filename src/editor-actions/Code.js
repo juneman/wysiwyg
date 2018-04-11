@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, is } from 'immutable';
 import sanitizeHtml from 'sanitize-html';
 
 import { secondaryMenuTitleStyle } from '../helpers/styles/editor';
@@ -41,8 +41,8 @@ export default class Code extends React.Component {
     if (this.state.hasRoomToRenderBelow !== nextState.hasRoomToRenderBelow) { return true; }
     if (this.state.hasRoomToRenderRight !== nextState.hasRoomToRenderRight) { return true; }
 
-    if (this.props.persistedState !== nextProps.persistedState) { return true; }
-    if (this.props.localState !== nextProps.localState) { return true; }
+    if (!is(this.props.persistedState, nextProps.persistedState)) { return true; }
+    if (!is(this.props.localState, nextProps.localState)) { return true; }
     if (this.state.isSaved !== nextState.isSaved) { return true; }
     if (this.state.content !== nextState.content) { return true; }
 

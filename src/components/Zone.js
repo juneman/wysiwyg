@@ -10,6 +10,7 @@ import * as zoneActions from '../actions/zoneActions';
 
 import RichTextEditor from '../editors/richtext/RichTextEditor';
 import RichTextToolbar from '../editors/richtext/RichTextToolbar';
+import RichTextInlineActions from '../editors/richtext/RichTextInlineActions';
 
 import ImageEditor from '../editors/image/ImageEditor';
 import ImageToolbar from '../editors/image/ImageToolbar';
@@ -161,6 +162,23 @@ export class Zone extends React.Component {
       ref: (editor) => { this.activeEditor = editor; }
     };
 
+
+    const updateDraftWithChanges = (update) => {
+      if (!isEditing) {
+        return;
+      }
+
+      if(this.activeEditor) {
+        const html = this.activeEditor.generateHTML(update.persistedState);
+
+        dispatch(editorActions.updateDraft({
+          localState: update.localState,
+          draftPersistedState: update.persistedState,
+          html
+        }));
+      }
+    };
+
     // Common props across all toolbars
     const toolbarProps = {
       persistedState,
@@ -170,30 +188,24 @@ export class Zone extends React.Component {
       zonePosition: position,
       cloudinary,
       userProperties,
-      onChange: (update) => {
-        if (!isEditing) {
-          return;
-        }
+      onChange: updateDraftWithChanges
+    };
 
-        if(this.activeEditor) {
-          const html = this.activeEditor.generateHTML(update.persistedState);
-
-          dispatch(editorActions.updateDraft({
-            localState: update.localState,
-            draftPersistedState: update.persistedState,
-            html
-          }));
-        }
-      }
+    const inlineActionsProps = {
+      persistedState,
+      localState,
+      onChange: updateDraftWithChanges
     };
 
     let editorNode;
     let toolbarNode;
+    let inlineActionsNode = null;
 
     switch (type) {
       case 'RichText':
         editorNode = (<RichTextEditor {...editorProps} />);
         toolbarNode = (<RichTextToolbar {...toolbarProps} />);
+        inlineActionsNode = (<RichTextInlineActions {...inlineActionsProps} />);
         break;
       case 'Image':
         editorNode = (<ImageEditor {...editorProps} />);
@@ -268,6 +280,7 @@ export class Zone extends React.Component {
               dispatch(editorActions.endMoving(row));
             }}
             toolbarNode={toolbarNode}
+            inlineActionsNode={inlineActionsNode}
           >
             {editorNode}
           </EditorWrapper>
