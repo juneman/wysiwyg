@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { EditorState, RichUtils } from 'draft-js';
+import { EditorState, RichUtils, SelectionState } from 'draft-js';
 
 import Hyperlink from './Hyperlink';
 import { convertToHTML } from '../helpers/draft/convert';
@@ -88,7 +88,6 @@ class HyperlinkInline extends React.Component {
         }
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      newEditorState = EditorState.push(editorState, contentStateWithEntity, 'apply-entity');
       newEditorState = RichUtils.toggleLink(
         newEditorState,
         newEditorState.getSelection(),
@@ -101,7 +100,31 @@ class HyperlinkInline extends React.Component {
         href,
         isNewWindow
       });
-      newEditorState = EditorState.push(editorState, nextCurrentContentState, 'apply-entity');
+
+      // Find the range of the entity so we can build a SelectionState object
+      // with the range to use with `RichUtils.toggleLink`.
+      let linkRange, linkBlock;
+      nextCurrentContentState.getBlocksAsArray().reduce((memo, contentBlock) => {
+        contentBlock.findEntityRanges(
+          char => linkKey === char.getEntity(),
+          (start, end) => {
+            linkRange = {start, end};
+            linkBlock = contentBlock;
+          }
+        )
+      }, null);
+
+      // Update editor state with the updated entity
+      if (linkRange && linkBlock) {
+        newEditorState = RichUtils.toggleLink(
+          newEditorState,
+          SelectionState.createEmpty(linkBlock.getKey()).merge({
+            anchorOffset: linkRange.start,
+            focusOffset: linkRange.end
+          }),
+          linkKey
+        );
+      }
       newLocalState = localState.set('editorState', newEditorState);
     }
 
