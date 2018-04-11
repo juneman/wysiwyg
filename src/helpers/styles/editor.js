@@ -29,9 +29,10 @@ export const selectedTabStyle = {
 
 export const secondaryMenuTitleStyle = {
   textTransform: 'uppercase',
-  fontSize: 'smaller',
+  fontSize: '14px',
+  fontWeight: 600,
   color: '#808080',
-  marginBottom: 20
+  marginBottom: 16
 };
 
 export const selectMenuStyle = {
@@ -61,7 +62,7 @@ export const getButtonStyleString = (borderRadius, padding, fontSize, width) => 
     buttonStyleString = buttonStyleString + `width:${width}px;`;
   }
 
-  return buttonStyleString
+  return buttonStyleString;
 };
 
 export const buttonNavTypeWrapperStyle = {
@@ -87,8 +88,7 @@ export const fieldGroupStyle = {
 };
 
 export const buttonNavTypeMenuStyle = {
-  marginTop: '15px',
-  marginBottom: '10px'
+  margin: '16px 8px'
 };
 
 export const inputStyle = {
@@ -328,7 +328,7 @@ export const editorButtonStyle = {
   borderRadius: '4px',
   color: 'rgba(255, 255, 255, 0.9)',
   cursor: 'pointer',
-  display: 'inline-flex', 
+  display: 'inline-flex',
   float: 'right',
   fontSize: '15px',
   fontWeight: 500,

@@ -27,12 +27,12 @@ export default class ButtonEditor extends React.Component {
     const newPersistedState = persistedState
       .set('marginTop', isMarginTopSet ? marginTop : 5)
       .set('marginBottom', isMarginBottomSet ? marginBottom : 5)
-      .set('buttonActionType', buttonActionType || BUTTON_ACTION_TYPES.NEXT_PAGE)
+      .set('buttonActionType', buttonActionType || BUTTON_ACTION_TYPES.NEXT_PAGE);
 
     onChange({
       localState: localState,
       persistedState: newPersistedState
-    })
+    });
   }
 
   shouldComponentUpdate(nextProps) {
@@ -65,10 +65,10 @@ export default class ButtonEditor extends React.Component {
 
     if (marginRight) {
       containerStyle.marginRight = marginRight;
-    };
+    }
     if (marginLeft) {
       containerStyle.marginLeft = marginLeft;
-    };
+    }
     containerStyle.width = '100%';
 
     const buttonStyle = {};
@@ -139,7 +139,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
+    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -153,16 +153,20 @@ export default class ButtonEditor extends React.Component {
     wrapperAttrs.style = wrapperAttrs.style + `marginBottom:${isMarginBottomSet ? marginBottom : 5}px;`;
     if (marginRight) {
       wrapperAttrs.style = wrapperAttrs.style + `marginRight:${marginRight}px;`;
-    };
+    }
     if (marginLeft) {
       wrapperAttrs.style = wrapperAttrs.style + `marginLeft:${marginLeft}px;`;
-    };
+    }
 
     const buttonAttrs = {
       class: 'appcues-button-success appcues-button',
       ['data-field-id']: zone.get('id')
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
+
+    if(markCurrentFlowAsComplete) {
+      buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
+    }
 
     switch (buttonActionType) {
       case BUTTON_ACTION_TYPES.URL:
@@ -214,7 +218,7 @@ export default class ButtonEditor extends React.Component {
     const buttonWrapperChildren = [];
     if (buttonActionType ==  BUTTON_ACTION_TYPES.PREVIOUS_PAGE || buttonActionType === BUTTON_ACTION_TYPES.NEXT_PAGE) {
       buttonWrapperChildren.push(removeArrowStyleObj);
-    };
+    }
     buttonWrapperChildren.push(buttonObj);
 
     const ast = [];
