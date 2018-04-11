@@ -74,7 +74,7 @@ export default class ButtonEditor extends React.Component {
     const buttonStyle = {};
     buttonStyleProps.forEach((key) => {
       if (persistedState.get(key)) {
-        buttonStyle[key] = persistedState.get(key);
+        buttonStyle[key] = `${persistedState.get(key)}px`;
       }
     });
 
@@ -85,7 +85,7 @@ export default class ButtonEditor extends React.Component {
 
     return (
       <div className="button-wrapper appcues-actions-right appcues-actions-left" style={containerStyle}>
-        { (isEditing) ? 
+        { (isEditing) ?
             <a className="appcues-button appcues-button-success"
               style={{display: 'inline-block', cursor: 'text', ...updatedButtonStyle }}
               suppressContentEditableWarning
@@ -93,7 +93,7 @@ export default class ButtonEditor extends React.Component {
               onInput={ (e) => this.onChangeButtonText(e.target.textContent) }
               >{buttonText}
             </a>
-           : 
+           :
             <a
               className={`appcues-button appcues-button-success ${classNameString}`}
               style={updatedButtonStyle}
@@ -108,7 +108,7 @@ export default class ButtonEditor extends React.Component {
 
   // Instance Method
   focus() {
-   
+
   }
 
   onChangeButtonText(text) {
@@ -184,7 +184,7 @@ export default class ButtonEditor extends React.Component {
     }
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
-    
+
     const buttonObj = {
       type: 'tag',
       name: 'a',
