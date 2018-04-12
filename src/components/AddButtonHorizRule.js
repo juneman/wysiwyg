@@ -54,7 +54,7 @@ export default class AddButtonHorizRule extends React.Component {
       boxSizing: 'border-box',
       height: ADD_ROW_COLLAPSED,
       position: 'absolute',
-      top: 8,
+      top: Math.floor(ADD_ROW_EXPANDED/4),
       width: '100%',
       zIndex: 2,
       padding: 0,
@@ -71,12 +71,12 @@ export default class AddButtonHorizRule extends React.Component {
 
     let addButtonStyle = {
       position: 'absolute',
-      top: 12,
+      top:  Math.floor(ADD_ROW_EXPANDED/4),
       left: '50%',
       cursor: 'pointer',
       zIndex: 10,
       transform: `translateX(-50%) translateY(-50%) scale(0.5)`,
-      transformOrigin: 'center 25% 0px',
+      transformOrigin: 'center center 0px',
       transition: 'transform 0.15s ease-out'
     };
 
@@ -105,7 +105,7 @@ export default class AddButtonHorizRule extends React.Component {
 
       addButtonStyle = {
         ...addButtonStyle,
-        top: 8,
+        transformOrigin: 'center center 0px',
         transform: `translateX(-50%) translateY(-50%) scale(1)`
       };
 
