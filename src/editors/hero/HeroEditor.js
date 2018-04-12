@@ -20,15 +20,19 @@ export default class HeroEditor extends React.Component {
   componentWillUpdate(nextProps) {
     const { persistedState } = this.props;
     const htmlContent = persistedState.get('content') || defaultContent;
-    if (nextProps.isEditing) {
+    if (nextProps.isEditing && nextProps.localState.isEmpty()) {
+      // If there is no editorState, create a new blank one
+      const initialEditorState = htmlContent ?
+        EditorState.createWithContent(convertFromHTML(htmlContent), decorator)
+        : EditorState.createEmpty(decorator);
+      this.handleEditorStateChange(initialEditorState);
+    }
+    else if (nextProps.isEditing) {
       // If editorState changes from the toolbar, push any changes up the chain
       const oldEditorState = this.props.localState.get('editorState');
       const newEditorState = nextProps.localState.get('editorState');
       if (oldEditorState !== newEditorState) {
         this.handleEditorStateChange(newEditorState);
-      } else if (!newEditorState) {
-        const initialEditorState = EditorState.createWithContent(convertFromHTML(htmlContent), decorator);
-        this.handleEditorStateChange(initialEditorState);
       }
     }
   }
