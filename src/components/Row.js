@@ -44,7 +44,8 @@ export class Row extends React.Component {
     });
 
     const gridStyle = {
-      gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
+      gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`,
+      flexGrow: 1
     };
 
     return (isMovable) ? (

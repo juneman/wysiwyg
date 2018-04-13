@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
+
+import AddButtonHorizRule from './AddButtonHorizRule';
 import Row from './Row';
 
 /**
@@ -12,13 +14,17 @@ import Row from './Row';
  */
 class RowContainer extends React.Component {
   render() {
-    const { connectDropTarget, isOver } = this.props;
+    const { connectDropTarget, isOver, addButtonNode } = this.props;
 
     return connectDropTarget(
-      <div className="row-container">
+      <div className="row-container"
+        style={{
+          position: 'relative'
+        }}>
         <Row
           {...this.props}
         />
+        { addButtonNode }
       </div>
     );
   }
@@ -26,6 +32,7 @@ class RowContainer extends React.Component {
 
 RowContainer.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
+  addButtonNode: PropTypes.node.isRequired,
   isOver: PropTypes.bool.isRequired,
   onDrop: PropTypes.func.isRequired
 };
