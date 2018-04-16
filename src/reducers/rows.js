@@ -41,6 +41,17 @@ export default function rows(state = List(), action) {
           return row.deleteIn(['zones', zoneIndex]);
         });
       break;
+    case Actions.ROWS_ADD_ONE_ZONE:
+      newState = newState
+        .map((row) => {
+          if (row.get('id') === action.rowId) {
+            const zones = row.get('zones');
+            console.log('hi', zones);
+            return row.set('zones', zones.push(action.zone));
+          }
+          return row;
+        });
+      break;
     case Actions.EDITOR_UPDATE_ZONE:
       newState = newState
         .map((row) => {

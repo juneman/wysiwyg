@@ -30,7 +30,7 @@ class RowContainer extends Component {
   }
 
   render() {
-    const { connectDropTarget, internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode } = this.props;
+    const { connectDropTarget, internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
     const { isAddButtonVisible } = this.state;
 
     return connectDropTarget(
@@ -46,7 +46,7 @@ class RowContainer extends Component {
         <AddButtonHorizRule
             orientation="vertical"
             isHoveringOverContainer={ isAddButtonVisible && !isInEditMode }
-            onSelectEditorType={() => {}}
+            onSelectEditorType={(type, rows, defaultAction) => addZone(type, defaultAction)}
             internalAllowedEditorTypes={ internalAllowedEditorTypes }
             onEditorMenuOpen={ onEditorMenuOpen }
             onEditorMenuClose={ onEditorMenuClose }
@@ -69,6 +69,7 @@ RowContainer.propTypes = {
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
   resetShouldCloseMenu: PropTypes.func,
+  addZone: PropTypes.func
 };
 
 const rowTarget = {

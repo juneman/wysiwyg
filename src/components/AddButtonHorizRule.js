@@ -53,9 +53,7 @@ class AddButtonHorizRule extends React.Component {
 
   }
   getWindow() {
-    console.log('window', this.wrapper.ownerDocument);
     if (this.wrapper && this.wrapper.ownerDocument) {
-      console.log('woa', this.wrapper.ownerDocument);
       return this.wrapper.ownerDocument.defaultView;
     }
     return null;
