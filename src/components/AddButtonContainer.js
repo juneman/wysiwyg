@@ -43,7 +43,7 @@ export default class AddButtonContainer extends React.Component {
     return (
       <div style={{ pointerEvents: 'all' }}>
         <AddButton shadow={ shadow } {...this.props}/>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative'}}>
           { isEditorSelectorVisible &&
             <EditorSelector
               allowedEditorTypes={ internalAllowedEditorTypes }

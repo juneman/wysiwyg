@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
+import { List } from 'immutable';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 
@@ -12,19 +13,46 @@ import Row from './Row';
  * a dropzone for resorting rows
  * @class
  */
-class RowContainer extends React.Component {
+class RowContainer extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state={
+      isAddButtonVisible: null
+    };
+    this.setIsAddButtonVisible = this.setIsAddButtonVisible.bind(this);
+  }
+
+  setIsAddButtonVisible(isAddButtonVisible) {
+    this.setState({
+      isAddButtonVisible
+    });
+  }
+
   render() {
-    const { connectDropTarget, isOver, addButtonNode } = this.props;
+    const { connectDropTarget, internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode } = this.props;
+    const { isAddButtonVisible } = this.state;
 
     return connectDropTarget(
       <div className="row-container"
+        onMouseOver={() => this.setIsAddButtonVisible(true) }
+        onMouseOut={() => this.setIsAddButtonVisible(false) }
         style={{
           position: 'relative'
         }}>
         <Row
           {...this.props}
         />
-        { addButtonNode }
+        <AddButtonHorizRule
+            orientation="vertical"
+            isHoveringOverContainer={ isAddButtonVisible && !isInEditMode }
+            onSelectEditorType={() => {}}
+            internalAllowedEditorTypes={ internalAllowedEditorTypes }
+            onEditorMenuOpen={ onEditorMenuOpen }
+            onEditorMenuClose={ onEditorMenuClose }
+            shouldCloseMenu={ shouldCloseMenu }
+            resetShouldCloseMenu={ resetShouldCloseMenu }
+          />
       </div>
     );
   }
@@ -34,7 +62,13 @@ RowContainer.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   addButtonNode: PropTypes.node.isRequired,
   isOver: PropTypes.bool.isRequired,
-  onDrop: PropTypes.func.isRequired
+  onDrop: PropTypes.func.isRequired,
+  internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
+  isInEditMode: PropTypes.bool,
+  onEditorMenuOpen: PropTypes.func,
+  onEditorMenuClose: PropTypes.func,
+  shouldCloseMenu: PropTypes.bool,
+  resetShouldCloseMenu: PropTypes.func,
 };
 
 const rowTarget = {

@@ -119,32 +119,24 @@ export class Canvas extends React.Component {
       onEditorMenuClose,
       shouldCloseMenu,
       resetShouldCloseMenu,
-      numPages
+      numPages,
+      isInEditMode
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
       return (row.get('zones') && row.get('zones').size) ? (
         <RowContainer
-          addButtonNode={
-            <AddButtonHorizRule
-              orientation="vertical"
-              isHoveringOverContainer={ isHoveringOverContainer }
-              onSelectEditorType={ (type, rowsToAdd, defaultAction) => {
-                  this.addRow(type, rowsToAdd, defaultAction);
-                  onEditorMenuClose && onEditorMenuClose();
-              } }
-              internalAllowedEditorTypes={ internalAllowedEditorTypes }
-              onEditorMenuOpen={ onEditorMenuOpen }
-              onEditorMenuClose={ onEditorMenuClose }
-              shouldCloseMenu={ shouldCloseMenu }
-              resetShouldCloseMenu={ resetShouldCloseMenu }
-            />
-          }
           numPages={numPages}
           key={row.get('id')}
           row={row}
           rowIndex={i}
+          isInEditMode={isInEditMode}
           onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
+          internalAllowedEditorTypes={ internalAllowedEditorTypes }
+          onEditorMenuOpen={ onEditorMenuOpen }
+          onEditorMenuClose={ onEditorMenuClose }
+          shouldCloseMenu={ shouldCloseMenu }
+          resetShouldCloseMenu={ resetShouldCloseMenu }
         />
       ): (
         <FullAddElement

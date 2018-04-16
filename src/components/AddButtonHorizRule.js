@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
+import { connect } from 'react-redux';
 
 import AddButtonContainer from './AddButtonContainer';
 
@@ -17,7 +18,7 @@ const ADD_ZONE_COLLAPSED = 0;
  * add a new row to the Canvas
  * @class
  */
-export default class AddButtonHorizRule extends React.Component {
+class AddButtonHorizRule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,20 +26,53 @@ export default class AddButtonHorizRule extends React.Component {
       showEditorSelector: false,
       isHoveringOverAddButton: false,
       hasRoomToRenderOnRight: true,
-      isHorizontalOrientation: props.orientation == 'horizontal'
+      isHorizontalOrientation: props.orientation == 'horizontal',
+      basePadding: (props.basePadding) ? props.basePadding : 20,
+      win: null
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   componentDidMount() {
     this.setBoundingBox();
     this.setHasRoomToRenderOnRight();
+
+    this.setState({
+      win: this.getWindow()
+    });
+
   }
 
-  componentDidUpdate() {
+  componentWillUnmount() {
+    const win = this.getWindow();
+    if (win) {
+        win.removeEventListener('mouseup', this.handleMouseUp);
+    }
+
+  }
+  getWindow() {
+    console.log('window', this.wrapper.ownerDocument);
+    if (this.wrapper && this.wrapper.ownerDocument) {
+      console.log('woa', this.wrapper.ownerDocument);
+      return this.wrapper.ownerDocument.defaultView;
+    }
+    return null;
+  }
+
+
+  handleMouseUp(e) {
+    if(this.wrapper && !this.wrapper.contains(e.path[0])) {
+      this.setState({
+        showEditorSelector: false
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
     const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
-    const { showEditorSelector } = this.state;
+    const { showEditorSelector, win } = this.state;
     this.setHasRoomToRenderOnRight();
 
     if (shouldCloseMenu && showEditorSelector) {
@@ -47,11 +81,20 @@ export default class AddButtonHorizRule extends React.Component {
       onEditorMenuClose();
     }
 
+    if (win) {
+      if(prevState.showEditorSelector && !showEditorSelector) {
+          win.removeEventListener('mouseup', this.handleMouseUp);
+      } else if(!prevState.showEditorSelector && showEditorSelector) {
+        win.addEventListener('mouseup', this.handleMouseUp);
+      }
+
+    }
+
   }
 
   render() {
     const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
-    const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation, basePadding } = this.state;
 
     let hrStyle = {
       boxSizing: 'border-box',
@@ -104,9 +147,8 @@ export default class AddButtonHorizRule extends React.Component {
        ...hrStyle,
         height: '100%',
         top: 0,
-        right: -10,
         width: ADD_ZONE_COLLAPSED,
-        transform: 'translateZ(0)',
+        transform: 'translateZ(0) translateX(-1px)',
         transformOrigin: 'center right',
         transition: 'width 0.15s ease-out, transform 0s, opacity 0.3s ease-out 0.1s',
       };
@@ -115,10 +157,10 @@ export default class AddButtonHorizRule extends React.Component {
         ...addButtonStyle,
         pointerEvents: 'none',
         top: '50%',
+        left: null,
         right: 0,
-        transform: `translateY(-50%) translateX(-50%) scale(0.5)`,
-        transformOrigin: 'center right',
-        transition: 'transform 0.15s ease-out'
+        transform: `translateY(-50%) translateX(25%) scale(0.5)`,
+        transformOrigin: 'center right'
       };
 
       containerStyle = {
@@ -127,7 +169,7 @@ export default class AddButtonHorizRule extends React.Component {
         width: ADD_ZONE_COLLAPSED,
         minWidth: ADD_ZONE_COLLAPSED,
         top: 0,
-        right: -8,
+        right: -(Math.floor(basePadding/2)) ,
         left: null,
         height: '100%',
         minHeight: '100%',
@@ -145,11 +187,12 @@ export default class AddButtonHorizRule extends React.Component {
 
           addButtonStyle = {
             ...addButtonStyle,
-            transform: `translateY(-50%) translateX(0%) scale(1)`
+            transform: `translateY(-50%) translateX(25%) scale(0.75)`
           };
 
           containerStyle = {
             ...containerStyle,
+            zIndex: 110,
             width: ADD_ZONE_EXPANDED,
           };
         }
@@ -169,10 +212,6 @@ export default class AddButtonHorizRule extends React.Component {
             transform: `translateX(-50%) translateY(-50%) scale(1)`
           };
 
-          containerStyle = {
-            ...containerStyle,
-            height: ADD_ROW_EXPANDED,
-          };
       }
     }
 
@@ -272,5 +311,14 @@ AddButtonHorizRule.propTypes = {
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
   resetShouldCloseMenu: PropTypes.func,
-  orientation: PropTypes.string
+  orientation: PropTypes.string,
+  basePadding: PropTypes.number
 };
+
+function mapStateToProps(state) {
+  return {
+    basePadding: state.editor.get('basePadding')
+  };
+}
+
+export default connect(mapStateToProps)(AddButtonHorizRule);
