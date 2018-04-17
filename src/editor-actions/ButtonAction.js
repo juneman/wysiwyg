@@ -43,7 +43,7 @@ export default class ButtonAction extends React.Component {
       'markCurrentFlowAsComplete',
       'eventName',
       'trackEvent',
-      'userProperties',
+      // 'userProperties',
       'updateUserProperties'
     ].forEach((property) => {
       let persistedStateVal = persistedState.get(property);
@@ -55,7 +55,6 @@ export default class ButtonAction extends React.Component {
         update[property] = persistedStateVal;
       }
     });
-
 
     if (Object.keys(update).length) {
       this.setState(update);

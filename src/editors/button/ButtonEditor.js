@@ -164,11 +164,12 @@ export default class ButtonEditor extends React.Component {
     };
     buttonAttrs.style = getButtonStyleString(borderRadius, padding, fontSize, width);
 
-    if(markCurrentFlowAsComplete) {
-      buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
-    }
     if (trackEvent && eventName) {
       buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
+    }
+
+    if(markCurrentFlowAsComplete) {
+      buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
     }
 
     switch (buttonActionType) {
