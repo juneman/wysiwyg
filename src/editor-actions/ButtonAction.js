@@ -6,6 +6,7 @@ import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTit
 import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../helpers/constants';
 import Menu from '../components/Menu';
 import DropDownMenu from '../components/DropDownMenu';
+import UserProperty from '../editor-actions/UserProperty';
 
 import ActionButton from '../icons/ActionButton';
 
@@ -23,7 +24,9 @@ export default class ButtonAction extends React.Component {
       stepIndex: 0,
       flowId: '',
       eventName: '',
-      trackEvent: false
+      trackEvent: false,
+      userProperties: {name: ''},
+      updateUserProperties: false
     };
   }
 
@@ -39,7 +42,9 @@ export default class ButtonAction extends React.Component {
       'flowId',
       'markCurrentFlowAsComplete',
       'eventName',
-      'trackEvent'
+      'trackEvent',
+      'userProperties',
+      'updateUserProperties'
     ].forEach((property) => {
       let persistedStateVal = persistedState.get(property);
 
@@ -51,6 +56,7 @@ export default class ButtonAction extends React.Component {
       }
     });
 
+
     if (Object.keys(update).length) {
       this.setState(update);
     }
@@ -58,7 +64,8 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { isActive, hasRoomToRenderBelow, numPages } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent } = this.state;
+    const userPropertyList = this.props.userProperties;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent, userProperties, updateUserProperties } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -73,6 +80,10 @@ export default class ButtonAction extends React.Component {
     }
 
     const hasMoreThanOneStep = numPages > 1;
+
+    const userPropertiesDropdown = [...(userPropertyList).map((userProperty) => {
+      return userProperty.toJS();
+    })].map((userProperty) => ({ label: userProperty.name, ...userProperty }));
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
@@ -128,6 +139,32 @@ export default class ButtonAction extends React.Component {
               </div>
               <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this button.
               </p>
+            </div>
+          }
+
+          <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
+          <label htmlFor="user-properties-checkbox">Update User Properties</label>
+
+          { updateUserProperties &&
+            <div style={buttonNavTypeMenuStyle}>
+              <div style={ fieldGroupStyle }>
+                {Object.keys(userProperties).map((key, index) => (
+                  <div>
+                    <DropDownMenu
+                      className="form-control"
+                      defaultValue="Choose a property"
+                      options={userPropertiesDropdown}
+                      selectedValue={key}
+                      onSelect={(value) => this.selectUserProperty(key, value)}
+                      />
+                    <input type="text" value={ userProperties[key] } style={ inputStyle } onChange={(e) => this.selectUserPropertyValue(e, key)}/>
+                    <div onClick={() => this.deleteUserProperty(key)}>x</div>
+                  </div>
+                ))}
+              </div>
+              <div onClick={() => this.addUserProperty()}>
+                add
+              </div>
             </div>
           }
 
@@ -234,6 +271,39 @@ export default class ButtonAction extends React.Component {
     }, this.saveAction);
   }
 
+  handleUpdateUserProperties(e) {
+    const updateUserProperties = e.target.checked;
+    this.setState({
+      updateUserProperties
+    }, this.saveAction);
+  }
+
+  addUserProperty() {
+    let userProperties = {...this.state.userProperties};
+    userProperties[''] = '';
+    this.setState({ userProperties: userProperties }); //add saveAction
+  }
+
+  deleteUserProperty(key) {
+    let userProperties = {...this.state.userProperties};
+    delete userProperties[key];
+    this.setState({ userProperties: userProperties });//add saveAction
+  }
+
+  selectUserProperty(key, value) {
+    let userProperties = {...this.state.userProperties};
+    delete userProperties[key];
+    userProperties[value] = '';
+    this.setState({ userProperties: userProperties });//add saveAction
+  }
+
+  selectUserPropertyValue(e, key) {
+    const userPropertyValue = e.target.value;
+    let userProperties = {...this.state.userProperties};
+    userProperties[key] = userPropertyValue;
+    this.setState({ userProperties: userProperties });//add saveAction
+  }
+
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
     const { stepIndex } = this.state;
 
@@ -243,6 +313,8 @@ export default class ButtonAction extends React.Component {
         .delete('markCurrentFlowAsComplete')
         .set('eventName', state.eventName)
         .set('trackEvent', state.trackEvent)
+        // .set('userProperties', state.userProperties)
+        .set('updateUserProperties', state.updateUserProperties)
         .delete('href')
         .delete('flowId')
         .delete('stepIndex')
@@ -256,6 +328,8 @@ export default class ButtonAction extends React.Component {
         .delete('markCurrentFlowAsComplete')
         .set('eventName', state.eventName)
         .set('trackEvent', state.trackEvent)
+        // .set('userProperties', state.userProperties)
+        .set('updateUserProperties', state.updateUserProperties)
         .delete('href')
         .delete('flowId')
         .delete('isNewWindow');
@@ -269,6 +343,8 @@ export default class ButtonAction extends React.Component {
         .set('markCurrentFlowAsComplete', state.markCurrentFlowAsComplete)
         .set('eventName', state.eventName)
         .set('trackEvent', state.trackEvent)
+        // .set('userProperties', state.userProperties)
+        .set('updateUserProperties', state.updateUserProperties)
         .delete('stepIndex')
         .delete('flowId');
     }
@@ -280,6 +356,8 @@ export default class ButtonAction extends React.Component {
         .delete('markCurrentFlowAsComplete')
         .set('eventName', state.eventName)
         .set('trackEvent', state.trackEvent)
+        // .set('userProperties', state.userProperties)
+        .set('updateUserProperties', state.updateUserProperties)
         .delete('href')
         .delete('isNewWindow')
         .delete('stepIndex');
@@ -290,9 +368,9 @@ export default class ButtonAction extends React.Component {
 
   saveAction() {
     const { localState, persistedState, onChange } = this.props;
-    const { isNewWindow, href, buttonActionType, markCurrentFlowAsComplete, flowId, eventName, trackEvent } = this.state;
+    const { isNewWindow, href, buttonActionType, markCurrentFlowAsComplete, flowId, eventName, trackEvent, userProperties, updateUserProperties } = this.state;
 
-    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, markCurrentFlowAsComplete, flowId, eventName, trackEvent });
+    const newPersistedState = this.getPersistedStateByButtonActionType(buttonActionType, persistedState, { href, isNewWindow, markCurrentFlowAsComplete, flowId, eventName, trackEvent, userProperties, updateUserProperties });
 
     onChange({
       localState,
