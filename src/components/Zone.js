@@ -421,7 +421,6 @@ function mapStateToProps(state, ownProps) {
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
   const html = (isEditing) ? state.editor.get('draftHtml') : (state.zones.has(zoneId) ? state.zones.get(zoneId).get('html') : null);
   const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === zoneId)) ? true : false;
-  console.log(state.zones.size, state.rows.size);
 
   return {
     localState: state.editor.get('localState'),

@@ -297,7 +297,7 @@ export class Canvas extends React.Component {
         id: uuid(),
         type,
         persistedState: {
-          marginTop: (internalRows.size > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+          marginTop: (internalRows.findIndex((row) => row.get('id') == rowId) > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
         }
       }
     );

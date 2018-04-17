@@ -23,7 +23,7 @@ export default class Row extends React.Component {
   }
 
   render() {
-    const { row, connectDragSource, isMovable, isOver, numPages, moveZone } = this.props;
+    const { row, isOver, numPages, moveZone } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
@@ -42,7 +42,7 @@ export default class Row extends React.Component {
     });
 
     const gridStyle = {
-      gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`,
+      display: 'flex',
       flexGrow: 1
     };
 
@@ -71,7 +71,6 @@ export default class Row extends React.Component {
 
 Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
-  connectDragSource: PropTypes.func,
   isDragging: PropTypes.bool,
   isOver: PropTypes.bool.isRequired,
   moveZone: PropTypes.func.isRequired,
