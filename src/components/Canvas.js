@@ -109,6 +109,7 @@ export class Canvas extends React.Component {
 
   render() {
     const {
+      basePadding,
       internalRows,
       showAddButton,
       style,
@@ -129,9 +130,11 @@ export class Canvas extends React.Component {
         <RowContainer
           numPages={numPages}
           key={row.get('id')}
+          basePadding={basePadding}
           row={row}
           rowIndex={i}
           addZone={ (type, defaultAction) => this.addZone(type, row.get('id'), defaultAction)}
+          moveZone={ this.moveZone.bind(this) }
           isInEditMode={isInEditMode}
           onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
           internalAllowedEditorTypes={ internalAllowedEditorTypes }
@@ -164,6 +167,7 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
+        basePadding={basePadding}
         isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => {
             this.addRow(type, rowsToAdd, defaultAction);
@@ -344,6 +348,27 @@ export class Canvas extends React.Component {
       return;
     }
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
+  }
+
+  moveZone(
+    sourceZone,
+    sourceColumnIndex,
+    sourceRowId,
+    targetZone,
+    targetColumnIndex,
+    targetRowId
+  ) {
+    if (sourceZone.get('id') === targetZone.get('id') && sourceRowId === targetRowId) {
+      return;
+    }
+    this.props.dispatch(editorActions.moveZone(
+      sourceZone,
+      sourceColumnIndex,
+      sourceRowId,
+      targetZone,
+      targetColumnIndex,
+      targetRowId
+    ));
   }
 
   buildHtml(rows, zonesWithHtml) {

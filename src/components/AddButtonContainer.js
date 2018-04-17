@@ -12,8 +12,6 @@ export default class AddButtonContainer extends React.Component {
       isEditorSelectorVisible: props.showEditorSelector,
       editorSelectorAnimationTimer: null
     };
-
-    this.onSelect = this.onSelect.bind(this);
   }
 
 
@@ -39,15 +37,8 @@ export default class AddButtonContainer extends React.Component {
     }
   }
 
-  onSelect(type, rows, defaultAction) {
-    const { onSelectEditorType, onClick } = this.props;
-
-    onClick();
-    onSelectEditorType(type, rows, defaultAction);
-  }
-
   render() {
-    const { shadow, onClick, internalAllowedEditorTypes, showEditorSelector } = this.props;
+    const { onSelectEditorType, shadow, onClick, internalAllowedEditorTypes, showEditorSelector } = this.props;
     const { isEditorSelectorVisible } = this.state;
     return (
       <div style={{ pointerEvents: 'all' }} onClick={onClick}>
@@ -56,7 +47,7 @@ export default class AddButtonContainer extends React.Component {
           { isEditorSelectorVisible &&
             <EditorSelector
               allowedEditorTypes={ internalAllowedEditorTypes }
-              onSelect={ this.onSelect }
+              onSelect={ onSelectEditorType }
               showEditorSelector={ showEditorSelector }
             />
           }

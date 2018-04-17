@@ -2,22 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import tinyColor from 'tinycolor2';
 
-const baseIconStyle = {
-  display: 'inline-block',
-  width: 16,
-  height: 16,
-  strokeWidth: 0,
-  stroke: 'currentColor',
-  fill: 'currentColor',
-  transition: 'background-color 0.15s ease-in'
-};
-
-const wrapperStyle = {
-  zIndex: 10,
-  display: 'flex',
-  alignItems: 'center'
-};
-
 export default class IconButton extends React.Component {
   constructor(props) {
     super(props);
@@ -49,7 +33,8 @@ export default class IconButton extends React.Component {
       svg,
       style,
       secondary,
-      textStyle
+      textStyle,
+      smallButton
     } = this.props;
 
     const { colorOverride, shadowOverride } = this.state;
@@ -60,6 +45,22 @@ export default class IconButton extends React.Component {
     } else if (colorOverride) {
       finalColor = colorOverride;
     }
+
+    const baseIconStyle = {
+      display: 'inline-block',
+      width: 16,
+      height: 16,
+      strokeWidth: 0,
+      stroke: 'currentColor',
+      fill: 'currentColor',
+      transition: 'background-color 0.15s ease-in'
+    };
+
+    const wrapperStyle = {
+      zIndex: 10,
+      display: 'flex',
+      alignItems: 'center'
+    };
 
     const iconWrapperStyle = Object.assign({}, {
       position: 'relative',
@@ -109,6 +110,14 @@ export default class IconButton extends React.Component {
         iconWrapperStyle.color = finalColor;
       }
     }
+
+    if (smallButton) {
+      iconWrapperStyle.height = 24;
+      iconWrapperStyle.width = 24;
+      baseIconStyle.height = 12;
+      baseIconStyle.width = 12;
+    }
+
     const finalIconStyle = Object.assign({}, baseIconStyle, iconStyle);
 
     const iconNodes = (
@@ -247,5 +256,6 @@ IconButton.propTypes = {
   svg: PropTypes.element,
   style: PropTypes.object,
   textStyle: PropTypes.object,
-  secondary: PropTypes.bool
+  secondary: PropTypes.bool,
+  smallButton: PropTypes.bool
 };

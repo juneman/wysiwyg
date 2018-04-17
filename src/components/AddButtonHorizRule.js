@@ -18,7 +18,7 @@ const ADD_ZONE_COLLAPSED = 0;
  * add a new row to the Canvas
  * @class
  */
-class AddButtonHorizRule extends React.Component {
+export default class AddButtonHorizRule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -27,7 +27,6 @@ class AddButtonHorizRule extends React.Component {
       isHoveringOverAddButton: false,
       hasRoomToRenderOnRight: true,
       isHorizontalOrientation: props.orientation == 'horizontal',
-      basePadding: (props.basePadding) ? props.basePadding : 20,
       win: null
     };
 
@@ -92,7 +91,7 @@ class AddButtonHorizRule extends React.Component {
 
   render() {
     const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
-    const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation, basePadding } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation } = this.state;
 
     let hrStyle = {
       boxSizing: 'border-box',
@@ -157,7 +156,7 @@ class AddButtonHorizRule extends React.Component {
         top: '50%',
         left: null,
         right: 0,
-        transform: `translateY(-50%) translateX(25%) scale(0.5)`,
+        transform: `translateY(-50%) translateX(37.5%) scale(0.75)`,
         transformOrigin: 'center right'
       };
 
@@ -167,7 +166,7 @@ class AddButtonHorizRule extends React.Component {
         width: ADD_ZONE_COLLAPSED,
         minWidth: ADD_ZONE_COLLAPSED,
         top: 0,
-        right: -(Math.floor(basePadding/2)) ,
+        right: 2,
         left: null,
         height: '100%',
         minHeight: '100%',
@@ -185,7 +184,7 @@ class AddButtonHorizRule extends React.Component {
 
           addButtonStyle = {
             ...addButtonStyle,
-            transform: `translateY(-50%) translateX(25%) scale(0.75)`
+            transform: `translateY(-50%) translateX(37.5%) scale(1)`
           };
 
           containerStyle = {
@@ -249,16 +248,16 @@ class AddButtonHorizRule extends React.Component {
         <div style={ (isHorizontalOrientation) ? wrapperStyle : {zIndex: 10}} ref={(el) => this.wrapper = el}>
           <div
             style={addButtonStyle}
+            onClick={ this.handleAddNew }
             onMouseOver={() => !isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: true })}
             onMouseOut={() => isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
               onSelectEditorType={ onSelectEditorType }
-              onClick={ this.handleAddNew }
               showEditorSelector={ showEditorSelector }
+              smallButton={ !isHorizontalOrientation }
               internalAllowedEditorTypes={ internalAllowedEditorTypes }
-              inverColor={ !isHoveringOverAddButton }
               shadow={false}
             />
 
@@ -309,14 +308,5 @@ AddButtonHorizRule.propTypes = {
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
   resetShouldCloseMenu: PropTypes.func,
-  orientation: PropTypes.string,
-  basePadding: PropTypes.number
+  orientation: PropTypes.string
 };
-
-function mapStateToProps(state) {
-  return {
-    basePadding: state.editor.get('basePadding')
-  };
-}
-
-export default connect(mapStateToProps)(AddButtonHorizRule);

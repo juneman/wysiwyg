@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
+import { DropTarget, DragSource } from 'react-dnd';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
+import { DRAGABLE_ITEMS } from '../helpers/constants';
+
 import * as rowActions from '../actions/rowActions';
 import * as editorActions from '../actions/editorActions';
 import * as zoneActions from '../actions/zoneActions';
@@ -49,7 +52,7 @@ import EditorWrapper from './EditorWrapper';
  * or an editable area if the Zone is active
  * @class
  */
-export class Zone extends React.Component {
+class Zone extends React.Component {
   constructor(props) {
     super(props);
 
@@ -77,7 +80,7 @@ export class Zone extends React.Component {
       display: 'inline-block'
     };
 
-    this.baseNotEditingAnyZoneStyle = {
+    this.isMovableStyle = {
       cursor: '-webkit-grab'
     };
 
@@ -111,6 +114,9 @@ export class Zone extends React.Component {
   render() {
     const { position } = this.state;
     const {
+      connectDragSource,
+      connectDropTarget,
+      isMovable,
       dispatch,
       columnIndex,
       row,
@@ -134,11 +140,11 @@ export class Zone extends React.Component {
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const isOverStyle = (isOver && !isHover) ? this.baseIsOverStateStyle: null;
-    const isEditingAnyStyle = (!isEditingAny) ? this.baseNotEditingAnyZoneStyle : null;
+    const isMovableStyle = isMovable ? this.isMovableStyle : null;
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isEditingAnyStyle, activeStateStyle, isOverStyle);
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle, isOverStyle);
 
 
 
@@ -249,7 +255,9 @@ export class Zone extends React.Component {
         break;
     }
 
-    return (
+    const DragIfPossible = (isMovable) ? connectDragSource : (input) => input;
+
+    return DragIfPossible(connectDropTarget(
       <div
         className={`zone-container zone-${columnIndex}`}
         style={containerStyle}
@@ -286,7 +294,7 @@ export class Zone extends React.Component {
           </EditorWrapper>
         </div>
       </div>
-    );
+    ));
   }
 
   setFocus() {
@@ -380,6 +388,8 @@ export class Zone extends React.Component {
 }
 
 Zone.propTypes = {
+  connectDropTarget: PropTypes.func.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   zone: PropTypes.instanceOf(Map).isRequired,
   row: PropTypes.instanceOf(Map).isRequired,
@@ -389,6 +399,8 @@ Zone.propTypes = {
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
   html: PropTypes.string,
+  isMovable: PropTypes.bool.isRequired,
+  moveZone: PropTypes.func.isRequired,
   isEditing: PropTypes.bool.isRequired,
   isEditingAny: PropTypes.bool.isRequired,
   isHover: PropTypes.bool.isRequired,
@@ -409,6 +421,7 @@ function mapStateToProps(state, ownProps) {
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
   const html = (isEditing) ? state.editor.get('draftHtml') : (state.zones.has(zoneId) ? state.zones.get(zoneId).get('html') : null);
   const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === zoneId)) ? true : false;
+  console.log(state.zones.size, state.rows.size);
 
   return {
     localState: state.editor.get('localState'),
@@ -421,8 +434,51 @@ function mapStateToProps(state, ownProps) {
     disableAddButton: state.editor.get('disableAddButton'),
     canvasPosition: state.editor.get('canvasPosition'),
     userProperties: state.editor.get('userProperties'),
-    cloudinary: state.editor.get('cloudinary')
+    cloudinary: state.editor.get('cloudinary'),
+    isMovable: (!state.editor.get('isCanvasInEditMode') && (state.rows.size > 1 || state.zones.size > 1)) ? true : false
   };
 }
 
-export default connect(mapStateToProps)(Zone);
+const zoneSource = {
+  isDragging(props, monitor) {
+    return props.zone.get('id') === monitor.getItem().zone.get('id');
+  },
+  beginDrag(props) {
+    return {
+      row: props.row,
+      zone: props.zone,
+      columnIndex: props.columnIndex
+    };
+  },
+};
+
+function collectSource(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+const zoneTarget = {
+  drop(targetProps, monitor) {
+    const sourceProps = monitor.getItem();
+    targetProps.moveZone(
+      sourceProps.zone,
+      sourceProps.columnIndex,
+      sourceProps.row.get('id'),
+      targetProps.zone,
+      targetProps.columnIndex,
+      targetProps.row.get('id')
+    );
+  }
+};
+
+function collectTarget(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+}
+
+export default DropTarget(DRAGABLE_ITEMS.ZONE, zoneTarget, collectTarget)(DragSource(DRAGABLE_ITEMS.ZONE, zoneSource, collectSource)(connect(mapStateToProps)(Zone)));
