@@ -6,8 +6,7 @@ import AddButtonContainer from './AddButtonContainer';
 
 // Distance threshold before button repositions to
 // opposite side
-const BUTTON_POSITION_ALLOWANCE = 100;
-const ADD_ROW_EXPANDED = 32;
+const ADD_ROW_EXPANDED = 40;
 const ADD_ROW_COLLAPSED = 2;
 
 /**
@@ -21,8 +20,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.state = {
       showEditorSelector: false,
-      isHoveringOverAddButton: false,
-      hasRoomToRenderOnRight: true
+      isHoveringOverAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -30,13 +28,11 @@ export default class AddButtonHorizRule extends React.Component {
 
   componentDidMount() {
     this.setBoundingBox();
-    this.setHasRoomToRenderOnRight();
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector } = this.state;
-    this.setHasRoomToRenderOnRight();
 
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
@@ -48,7 +44,7 @@ export default class AddButtonHorizRule extends React.Component {
 
   render() {
     const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
-    const { showEditorSelector, isHoveringOverAddButton, hasRoomToRenderOnRight } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton } = this.state;
 
     let hrStyle = {
       boxSizing: 'border-box',
@@ -82,7 +78,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     let containerStyle = {
       boxSizing: 'border-box',
-      position: 'relative',
+      position: 'absolute',
       height: ADD_ROW_COLLAPSED,
       minHeight: ADD_ROW_COLLAPSED,
       pointerEvents: 'none',
@@ -99,14 +95,14 @@ export default class AddButtonHorizRule extends React.Component {
       hrStyle = {
         ...hrStyle,
         height: ADD_ROW_EXPANDED,
-        border: '2px dashed  #00b850',
+        border: '2px dotted  #00b850',
         opacity: 1
       };
 
       addButtonStyle = {
         ...addButtonStyle,
         transformOrigin: 'center center 0px',
-        transform: `translateX(-50%) translateY(-50%) scale(1)`
+        transform: `translateX(-50%) translateY(-50%) scale(0.8)`
       };
 
       containerStyle = {
@@ -175,13 +171,6 @@ export default class AddButtonHorizRule extends React.Component {
         onEditorMenuClose && onEditorMenuClose();
     } else {
         onEditorMenuOpen && onEditorMenuOpen();
-    }
-  }
-
-  setHasRoomToRenderOnRight() {
-    const hasRoomToRenderOnRight = ((window.innerWidth - this.addButton.parentElement.getBoundingClientRect().right) > BUTTON_POSITION_ALLOWANCE);
-    if (hasRoomToRenderOnRight != this.state.hasRoomToRenderOnRight){
-      this.setState({ hasRoomToRenderOnRight });
     }
   }
 
