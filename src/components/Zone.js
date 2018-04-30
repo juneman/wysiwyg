@@ -80,9 +80,9 @@ class Zone extends React.Component {
       display: 'inline-block'
     };
 
-    this.isMovableStyle = {
-      cursor: '-webkit-grab'
-    };
+    // this.isMovableStyle = {
+    //   cursor: '-webkit-grab'
+    // };
 
     this.zoneStyle = {
       outlineStyle: 'dotted',
@@ -91,7 +91,9 @@ class Zone extends React.Component {
       display: 'inline-block',
       margin: 0,
       padding: 0,
+      cursor: 'pointer',
       width: '100%',
+      height: '100%',
       transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
     };
 

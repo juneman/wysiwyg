@@ -55,20 +55,6 @@ export default class EditorWrapper extends React.Component {
 
     const { hasRoomToRenderRight } = this.state;
 
-    const hoverButtonStyles = {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 100,
-      textAlign: 'center',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    };
-
     const editingButtonStyles = {
       whiteSpace: 'nowrap',
       display: 'flex',
@@ -106,15 +92,6 @@ export default class EditorWrapper extends React.Component {
     return (
       <div name="EditorWrapper" className="zone-content" ref={(el) => this.wrapper = el}>
         <div className={ containerClass }>
-          { isHover &&
-            <div style={hoverButtonStyles}>
-              <EditButton
-                shadow={true}
-                color="#f4ad42"
-                onClick={ onEdit }
-              />
-            </div>
-          }
           {
             children
           }

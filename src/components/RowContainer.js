@@ -7,20 +7,25 @@ import { List } from 'immutable';
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 
 import AddButtonHorizRule from './AddButtonHorizRule';
+import MoveVertButton from '../icons/MoveVertButton';
 
 const dragHandleStyle = {
-  background: '#FFAA39',
+  // background: '#FFAA39',
   position: 'absolute',
-  left: 1,
+  left: -8,
   top: '50%',
   transition: 'opacity 0.15s ease-out',
-  transform: 'translateY(-50%)',
+  transform: 'translateY(-50%) scale(0.8)',
   height: '100%',
   maxHeight: 48,
   width: 8,
   borderRadius: 4,
   cursor: '-webkit-grab'
 
+};
+
+const baseHoverStateStyle = {
+  backgroundColor: 'rgba(255,186,76,0.13)'
 };
 
 import Row from './Row';
@@ -34,37 +39,56 @@ class RowContainer extends Component {
   constructor(props) {
     super(props);
     this.state={
-      isAddButtonVisible: null
+      isAddButtonVisible: false
     };
     this.setIsAddButtonVisible = this.setIsAddButtonVisible.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { isInEditMode } = this.props;
+
+    if (nextProps.isInEditMode && !isInEditMode) {
+      this.setState({
+        isAddButtonVisible: false
+      });
+    }
+  }
+
   setIsAddButtonVisible(isAddButtonVisible) {
+    const { isInEditMode } = this.props;
+
+    if (isInEditMode) return;
+
     this.setState({
       isAddButtonVisible
     });
   }
 
   render() {
-    const { basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
+    const { basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
     const { isAddButtonVisible } = this.state;
+    console.log(isAddButtonVisible, isOver);
 
     return connectDropTarget(connectDragPreview(
       <div className="row-container"
         onMouseOver={() => this.setIsAddButtonVisible(true) }
         onMouseOut={() => this.setIsAddButtonVisible(false) }
         style={{
+          ...((isAddButtonVisible || isOver) && !isInEditMode) ? baseHoverStateStyle : {},
           position: 'relative',
           margin: basePadding ? `0 -${basePadding}px` : 0,
           padding: basePadding ? `0 ${basePadding}px` : 0
         }}>
-        { isMovable &&
+        { isMovable && !isInEditMode &&
           connectDragSource(
             <section role="drag-handle-to-reorder" style={
               {
                 ...dragHandleStyle,
                 opacity: isAddButtonVisible ? 1: 0
               } }>
+              <MoveVertButton
+                smallButton
+                color='#FFAA39'/>
               </section>)
         }
         <Row
