@@ -41,6 +41,40 @@ export default function rows(state = List(), action) {
           return row.deleteIn(['zones', zoneIndex]);
         });
       break;
+    case Actions.ROWS_ADD_ONE_ZONE:
+      newState = newState
+        .map((row) => {
+          if (row.get('id') === action.rowId) {
+            const zones = row.get('zones');
+            return row.set('zones', zones.push(action.zone));
+          }
+          return row;
+        });
+      break;
+    case Actions.EDITOR_MOVE_ZONE:
+      newState = newState
+        .map((row) => {
+          //deleteStep
+          let rowId = row.get('id');
+          if (rowId === action.sourceRowId && rowId === action.targetRowId) {
+            // return row;
+            let sourceZones = row.get('zones');
+            let updatedZones = sourceZones.delete(action.sourceColumnIndex).insert(action.targetColumnIndex, action.sourceZone);
+            return row.set('zones', updatedZones);
+          }
+          else if (rowId === action.sourceRowId) {
+            //insert target zone into source zone location
+            let sourceZones = row.get('zones');
+            return row.set('zones', sourceZones.delete(action.sourceColumnIndex).insert(action.sourceColumnIndex, action.targetZone));
+          }
+          else if (rowId === action.targetRowId) {
+            //insert source zone into source target location
+            let targetZones = row.get('zones');
+            return row.set('zones', targetZones.delete(action.targetColumnIndex).insert(action.targetColumnIndex, action.sourceZone));
+          }
+          return row;
+        });
+      break;
     case Actions.EDITOR_UPDATE_ZONE:
       newState = newState
         .map((row) => {

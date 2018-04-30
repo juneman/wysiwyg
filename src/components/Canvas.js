@@ -15,6 +15,7 @@ import FullAddElement from './FullAddElement';
 import AddButtonHorizRule from './AddButtonHorizRule';
 
 import * as rowActions from '../actions/rowActions';
+import * as zoneActions from '../actions/zoneActions';
 import * as editorSelectorActions from '../actions/editorSelectorActions';
 import * as editorActions from '../actions/editorActions';
 
@@ -108,6 +109,7 @@ export class Canvas extends React.Component {
 
   render() {
     const {
+      basePadding,
       internalRows,
       showAddButton,
       style,
@@ -119,7 +121,8 @@ export class Canvas extends React.Component {
       onEditorMenuClose,
       shouldCloseMenu,
       resetShouldCloseMenu,
-      numPages
+      numPages,
+      isInEditMode
     } = this.props;
 
     const rowNodes = (internalRows.size) ? internalRows.map((row, i) => {
@@ -127,9 +130,18 @@ export class Canvas extends React.Component {
         <RowContainer
           numPages={numPages}
           key={row.get('id')}
+          basePadding={basePadding}
           row={row}
           rowIndex={i}
+          addZone={ (type, defaultAction) => this.addZone(type, row.get('id'), defaultAction)}
+          moveZone={ this.moveZone.bind(this) }
+          isInEditMode={isInEditMode}
           onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
+          internalAllowedEditorTypes={ internalAllowedEditorTypes }
+          onEditorMenuOpen={ onEditorMenuOpen }
+          onEditorMenuClose={ onEditorMenuClose }
+          shouldCloseMenu={ shouldCloseMenu }
+          resetShouldCloseMenu={ resetShouldCloseMenu }
         />
       ): (
         <FullAddElement
@@ -155,6 +167,7 @@ export class Canvas extends React.Component {
 
     const addButtonNode = (showAddButton) ? (
       <AddButtonHorizRule
+        basePadding={basePadding}
         isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => {
             this.addRow(type, rowsToAdd, defaultAction);
@@ -244,12 +257,6 @@ export class Canvas extends React.Component {
     }
   }
 
-  handleAddNew(e) {
-    if (e) e.preventDefault();
-    const { dispatch, canvasPosition } = this.props;
-    dispatch(editorSelectorActions.show(canvasPosition));
-  }
-
   handleAddImage(imageDetails) {
     // Trim what we save from Cloudinary down to just these fields
     const { url, height, width } = imageDetails;
@@ -281,6 +288,27 @@ export class Canvas extends React.Component {
     ]);
 
     this.addRow('Image', rowsToAdd);
+  }
+
+  addZone(type, rowId, defaultAction) {
+    const { dispatch, internalRows } = this.props;
+    const zoneToAdd = fromJS(
+      {
+        id: uuid(),
+        type,
+        persistedState: {
+          marginTop: (internalRows.findIndex((row) => row.get('id') == rowId) > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+        }
+      }
+    );
+
+    dispatch(rowActions.addZone(rowId, zoneToAdd));
+
+    // start editing immediately
+    dispatch(editorActions.startEditing(zoneToAdd));
+    if (defaultAction) {
+      dispatch(editorActions.toggleEditorAction(defaultAction, true));
+    }
   }
 
   addRow(type, rowsToAdd, defaultAction) {
@@ -320,6 +348,27 @@ export class Canvas extends React.Component {
       return;
     }
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
+  }
+
+  moveZone(
+    sourceZone,
+    sourceColumnIndex,
+    sourceRowId,
+    targetZone,
+    targetColumnIndex,
+    targetRowId
+  ) {
+    if (sourceZone.get('id') === targetZone.get('id') && sourceRowId === targetRowId) {
+      return;
+    }
+    this.props.dispatch(editorActions.moveZone(
+      sourceZone,
+      sourceColumnIndex,
+      sourceRowId,
+      targetZone,
+      targetColumnIndex,
+      targetRowId
+    ));
   }
 
   buildHtml(rows, zonesWithHtml) {

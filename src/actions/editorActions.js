@@ -99,6 +99,25 @@ export function moveRows(sourceIndex, targetIndex) {
   };
 }
 
+export function moveZone(
+  sourceZone,
+  sourceColumnIndex,
+  sourceRowId,
+  targetZone,
+  targetColumnIndex,
+  targetRowId
+) {
+  return {
+    type: Actions.EDITOR_MOVE_ZONE,
+    sourceZone,
+    sourceColumnIndex,
+    sourceRowId,
+    targetZone,
+    targetColumnIndex,
+    targetRowId
+  };
+}
+
 export function setCloudinarySettings(cloudinary) {
   return {
     type: Actions.EDITOR_SETTINGS_CLOUDINARY,

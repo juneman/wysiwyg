@@ -29,6 +29,14 @@ export function removeRow(id) {
   };
 }
 
+export function addZone(rowId, zone) {
+  return {
+    type: Actions.ROWS_ADD_ONE_ZONE,
+    rowId,
+    zone
+  };
+}
+
 export function removeZone(row, zone) {
   return {
     type: Actions.ROWS_REMOVE_ONE_ZONE,
