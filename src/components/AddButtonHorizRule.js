@@ -6,7 +6,8 @@ import AddButtonContainer from './AddButtonContainer';
 
 // Distance threshold before button repositions to
 // opposite side
-const BUTTON_POSITION_ALLOWANCE = 100;
+const ADD_ROW_EXPANDED = 40;
+const ADD_ROW_COLLAPSED = 2;
 
 /**
  * A React component renders an Add button to
@@ -19,8 +20,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     this.state = {
       showEditorSelector: false,
-      isHoveringOverAddButton: false,
-      hasRoomToRenderOnRight: true
+      isHoveringOverAddButton: false
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
@@ -28,13 +28,11 @@ export default class AddButtonHorizRule extends React.Component {
 
   componentDidMount() {
     this.setBoundingBox();
-    this.setHasRoomToRenderOnRight();
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector } = this.state;
-    this.setHasRoomToRenderOnRight();
 
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
@@ -46,56 +44,105 @@ export default class AddButtonHorizRule extends React.Component {
 
   render() {
     const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
-    const { showEditorSelector, isHoveringOverAddButton, hasRoomToRenderOnRight } = this.state;
+    const { showEditorSelector, isHoveringOverAddButton } = this.state;
 
-    const hrStyle = {
-      height: 1,
-      border: 0,
-      position: 'relative',
-      top: 15,
+    let hrStyle = {
+      boxSizing: 'border-box',
+      height: ADD_ROW_COLLAPSED,
+      position: 'absolute',
+      top: Math.floor(ADD_ROW_EXPANDED/4),
       width: '100%',
       zIndex: 2,
       padding: 0,
       margin: 0,
       pointerEvents: 'none',
-      background: '#00b850',
-      transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
-      opacity: `${(isHoveringOverAddButton) ? .3 : .25}`,
-      transform: `scale(1, ${(isHoveringOverAddButton) ? 3 : 1})`
+      background: '#d4fee6',
+      border: '1px solid #00b850',
+      opacity: 0,
+      transition: 'height 0.15s ease-out, transform 0s, opacity 0.3s ease-out 0.1s',
+      transformOrigin: 'center 25% 0px',
+      backfaceVisibility: 'hidden',
+      transform: `translateY(-50%) translateZ(0)`
     };
 
-    const addButtonStyle = {
+    let addButtonStyle = {
       position: 'absolute',
-      top: '-2px',
+      top:  Math.floor(ADD_ROW_EXPANDED/4),
+      left: '50%',
       cursor: 'pointer',
       zIndex: 10,
-      transform: `scale(${ (isHoveringOverAddButton || showEditorSelector) ? 1 : 0.8 })`,
-      transition: 'all 0.15s ease-out'
+      transform: `translateX(-50%) translateY(-50%) scale(0.5)`,
+      transformOrigin: 'center center 0px',
+      transition: 'transform 0.15s ease-out'
     };
 
-    if (hasRoomToRenderOnRight) {
-      addButtonStyle.right = '-45px'
-    } else {
-      addButtonStyle.left = '-45px'
-    }
-
-    const containerStyle = {
+    let containerStyle = {
+      boxSizing: 'border-box',
       position: 'absolute',
+      height: ADD_ROW_COLLAPSED,
+      minHeight: ADD_ROW_COLLAPSED,
       pointerEvents: 'none',
+      width: '100%',
       left: 0,
       right: 0,
-      opacity: (isHoveringOverContainer || showEditorSelector) ? 1 : 0,
-      transition: 'opacity 0.15s ease-out',
+      opacity: 0,
+      transition: `opacity 0.15s ease-out, height 0.15s ease-out`,
       zIndex: 100
+    };
+
+    if (isHoveringOverAddButton || showEditorSelector) {
+      //alter styles to expanded view
+      hrStyle = {
+        ...hrStyle,
+        height: ADD_ROW_EXPANDED,
+        border: '2px dotted  #00b850',
+        opacity: 1
+      };
+
+      addButtonStyle = {
+        ...addButtonStyle,
+        transformOrigin: 'center center 0px',
+        transform: `translateX(-50%) translateY(-50%) scale(0.8)`
+      };
+
+      containerStyle = {
+        ...containerStyle,
+        height: ADD_ROW_EXPANDED,
+      };
+
+    }
+
+    if (isHoveringOverContainer || showEditorSelector) {
+      //alter styles whenever a users mouse is over any part of the wysiwyg editor
+      hrStyle = {
+        ...hrStyle,
+        opacity: 0.5
+      };
+
+      containerStyle = {
+        ...containerStyle,
+        opacity: 1
+      };
+    }
+
+
+
+    const wrapperStyle = {
+      boxSizing: 'border-box',
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      position: 'relative',
+      zIndex: 10,
     };
 
     return (
       <div className="add-row" style={containerStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', zIndex: 10 }} ref={(el) => this.wrapper = el}>
+        <div style={wrapperStyle} ref={(el) => this.wrapper = el}>
           <div
             style={addButtonStyle}
-            onMouseOver={() => this.setState({ isHoveringOverAddButton: true })}
-            onMouseOut={() => this.setState({ isHoveringOverAddButton: false })}
+            onMouseOver={() => !isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: true })}
+            onMouseOut={() => isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
           >
             <AddButtonContainer
@@ -107,7 +154,9 @@ export default class AddButtonHorizRule extends React.Component {
             />
 
           </div>
-          <hr style={hrStyle} />
+          <section style={hrStyle}
+            onMouseOver={() => !isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: true })}
+            onMouseOut={() => isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: false })}/>
         </div>
       </div>
     );
@@ -122,13 +171,6 @@ export default class AddButtonHorizRule extends React.Component {
         onEditorMenuClose && onEditorMenuClose();
     } else {
         onEditorMenuOpen && onEditorMenuOpen();
-    }
-  }
-
-  setHasRoomToRenderOnRight() {
-    const hasRoomToRenderOnRight = ((window.innerWidth - this.addButton.parentElement.getBoundingClientRect().right) > BUTTON_POSITION_ALLOWANCE);
-    if (hasRoomToRenderOnRight != this.state.hasRoomToRenderOnRight){
-      this.setState({ hasRoomToRenderOnRight });
     }
   }
 

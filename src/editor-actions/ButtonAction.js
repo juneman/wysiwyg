@@ -47,10 +47,16 @@ export default class ButtonAction extends React.Component {
       }
     });
 
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
 
     if (Object.keys(update).length) {
       this.setState(update);
     }
+
   }
 
   render() {
