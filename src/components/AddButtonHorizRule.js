@@ -154,7 +154,6 @@ export default class AddButtonHorizRule extends React.Component {
               onClick={ this.handleAddNew }
               showEditorSelector={ showEditorSelector }
               internalAllowedEditorTypes={ internalAllowedEditorTypes }
-              inverColor={ !isHoveringOverAddButton }
               shadow={false}
             />
 
