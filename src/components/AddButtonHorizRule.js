@@ -182,7 +182,7 @@ export default class AddButtonHorizRule extends React.Component {
           hrStyle = {
             ...hrStyle,
             width: ADD_ZONE_EXPANDED,
-            border: '2px dashed  #00b850',
+            border: '2px dotted  #00b850',
             opacity: 1
           };
 
