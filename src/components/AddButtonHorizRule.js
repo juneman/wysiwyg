@@ -30,7 +30,7 @@ export default class AddButtonHorizRule extends React.Component {
     };
 
     this.handleAddNew = this.handleAddNew.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleclick = this.handleclick.bind(this);
   }
 
   componentDidMount() {
@@ -44,7 +44,7 @@ export default class AddButtonHorizRule extends React.Component {
   componentWillUnmount() {
     const win = this.getWindow();
     if (win) {
-        win.removeEventListener('mouseup', this.handleMouseUp);
+        win.removeEventListener('click', this.handleclick, true);
     }
 
   }
@@ -56,18 +56,27 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
 
-  handleMouseUp(e) {
+  handleclick(e) {
+    const { onEditorMenuClose, resetShouldCloseMenu } = this.props;
     if(this.wrapper && !this.wrapper.contains(e.path[0])) {
       this.setState({
         showEditorSelector: false
       });
+
+      if (!e.path.find((pathItem) => pathItem.className === "add-row")) {
+        resetShouldCloseMenu();
+        onEditorMenuClose && onEditorMenuClose();
+      }
     }
+
+
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector, win } = this.state;
 
+    console.log(shouldCloseMenu, showEditorSelector);
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
       resetShouldCloseMenu();
@@ -76,9 +85,9 @@ export default class AddButtonHorizRule extends React.Component {
 
     if (win) {
       if(prevState.showEditorSelector && !showEditorSelector) {
-          win.removeEventListener('mouseup', this.handleMouseUp);
+        win.removeEventListener('click', this.handleclick, true);
       } else if(!prevState.showEditorSelector && showEditorSelector) {
-        win.addEventListener('mouseup', this.handleMouseUp);
+        win.addEventListener('click', this.handleclick, true);
       }
 
     }

@@ -45,6 +45,7 @@ import SelectionToolbar from '../editors/form-select/SelectionToolbar';
 import RatingEditor from '../editors/rating/RatingEditor';
 import RatingToolbar from '../editors/rating/RatingToolbar';
 
+import ArrowsButton from '../icons/ArrowsButton';
 import EditorWrapper from './EditorWrapper';
 
 /**
@@ -84,11 +85,27 @@ class Zone extends React.Component {
     //   cursor: '-webkit-grab'
     // };
 
+    this.grabArrowStyle = {
+      position: 'absolute',
+      height: 24,
+      width: 24,
+      top: 0,
+      right: 0,
+      cursor: '-webkit-grab',
+      transition: 'opacity 0.15s ease-out',
+      opacity: 0
+    };
+
+    this.grabArrowHoverStyle = {
+      opacity: 1
+    };
+
     this.zoneStyle = {
       outlineStyle: 'dotted',
       outlineWidth: '2px',
       outlineColor: 'transparent',
       display: 'inline-block',
+      position: 'relative',
       margin: 0,
       padding: 0,
       cursor: 'pointer',
@@ -143,6 +160,7 @@ class Zone extends React.Component {
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const isOverStyle = (isOver && !isHover) ? this.baseIsOverStateStyle: null;
     const isMovableStyle = isMovable ? this.isMovableStyle : null;
+    const grabArrowStyle = {...this.grabArrowStyle, ...(isHover) ? this.grabArrowHoverStyle : {} };
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
@@ -294,6 +312,9 @@ class Zone extends React.Component {
           >
             {editorNode}
           </EditorWrapper>
+          <div style={grabArrowStyle}>
+            <ArrowsButton color="#FFAA39" smallButton hideBackground/>
+          </div>
         </div>
       </div>
     ));

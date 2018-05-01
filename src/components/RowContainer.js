@@ -16,9 +16,8 @@ const dragHandleStyle = {
   top: '50%',
   transition: 'opacity 0.15s ease-out',
   transform: 'translateY(-50%) scale(0.8)',
-  height: '100%',
-  maxHeight: 48,
-  width: 8,
+  height: 24,
+  width: 24,
   borderRadius: 4,
   cursor: '-webkit-grab'
 
@@ -67,7 +66,6 @@ class RowContainer extends Component {
   render() {
     const { basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
     const { isAddButtonVisible } = this.state;
-    console.log(isAddButtonVisible, isOver);
 
     return connectDropTarget(connectDragPreview(
       <div className="row-container"
