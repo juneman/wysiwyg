@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { Editor, EditorState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import HTMLParser from 'html-parse-stringify2';
-import striptags from 'striptags';
-import { decorator, convertFromHTML, convertToHTML, customStyleFn, blockStyleFn } from '../../helpers/draft/convert';
+import { decorator, convertFromHTML, convertToHTML } from '../../helpers/draft/convert';
 import { getButtonStyleString, removeArrowStyle} from '../../helpers/styles/editor';
 import { BUTTON_ACTION_TYPES, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../../helpers/constants';
 
@@ -47,7 +46,7 @@ export default class ButtonEditor extends React.Component {
   }
 
   render() {
-    const { isEditing, persistedState, localState, zone } = this.props;
+    const { isEditing, persistedState, zone } = this.props;
 
     const buttonText = persistedState.get('buttonText') || "OK, Got it!";
 
@@ -139,7 +138,7 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { content, textAlign, href, borderRadius, padding, fontSize, width, className, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId, eventName, trackEvent } = persistedState.toJS();
+    const { textAlign, href, borderRadius, padding, fontSize, width, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId, eventName, trackEvent } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'

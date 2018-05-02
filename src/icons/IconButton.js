@@ -16,6 +16,7 @@ export default class IconButton extends React.Component {
   render() {
     const {
       title,
+      disabled,
       pathNode,
       iconStyle,
       viewBox,
@@ -138,6 +139,12 @@ export default class IconButton extends React.Component {
     };
     if (cursor) linkStyle.cursor = cursor;
 
+
+    if (disabled) {
+      linkStyle.cursor =  'disabled';
+      linkStyle.opacity =  0.5;
+    }
+
     return (onClick || onMouseDown || onMouseUp) ? (
       <a href="#"
         style={linkStyle}
@@ -238,6 +245,7 @@ IconButton.propTypes = {
   title: PropTypes.string.isRequired,
   pathNode: PropTypes.node.isRequired,
   viewBox: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
   iconStyle: PropTypes.object,
   text: PropTypes.string,
   color: PropTypes.string,

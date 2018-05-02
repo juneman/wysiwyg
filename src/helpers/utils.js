@@ -27,3 +27,22 @@ function restArgs(func, startIndex) {
         return func.apply(this, args);
     };
 }
+
+export function isTimestamp(value) {
+    let val = value;
+
+    if (/^(\-|\+)?([0-9]+|Infinity)$/.test(val)) {
+      val = Number(val);
+    }
+
+    switch (typeof val) {
+      case "string":
+        return !isNaN(new Date(Date.parse(val)).getTime());
+      case "number":
+        // Verify the number is most likely a timestamp in
+        // seconds/milliseconds (i.e. has 8 or more digits).
+        return String(val).length >= 8;
+    }
+
+    return false;
+}

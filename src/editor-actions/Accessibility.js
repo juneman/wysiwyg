@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, inputStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import AccessibilityButton from '../icons/AccessibilityButton';
 
@@ -86,7 +86,7 @@ export default class Accessibility extends React.Component {
     const { localState, persistedState, onChange } = this.props;
 
     const newPersistedState = persistedState
-      .set('altText', this.state.altText)
+      .set('altText', this.state.altText);
 
     onChange({
       localState,

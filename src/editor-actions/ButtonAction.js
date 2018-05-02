@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
-import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS } from '../helpers/constants';
+import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, flexColumn, flexJustifyContentSpaceBetween, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
+import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS, DEFAULT_USER_PROPS } from '../helpers/constants';
+import { isTimestamp } from '../helpers/utils';
 import Menu from '../components/Menu';
 import DropDownMenu from '../components/DropDownMenu';
-import UserProperty from '../editor-actions/UserProperty';
 
 import ActionButton from '../icons/ActionButton';
+import AddButton from '../icons/AddButton';
+import CancelButton from '../icons/CancelButton';
 
 export default class ButtonAction extends React.Component {
 
@@ -25,9 +27,26 @@ export default class ButtonAction extends React.Component {
       flowId: '',
       eventName: '',
       trackEvent: false,
-      userProperties: {name: ''},
+      userPropertiesToUpdate: {'': ''},
       updateUserProperties: false
     };
+  }
+
+  componentDidMount() {
+    const { userProperties: userPropertyList } = this.props;
+    this.setState({
+      userPropertiesDropdown: [
+        ...(userPropertyList)
+        .map((userProperty) => {
+          return userProperty.toJS();
+        })
+        .filter((userProperty) => DEFAULT_USER_PROPS.indexOf(userProperty.value) == -1 && !isTimestamp(userProperty.options[0].name))
+      ].map((userProperty) => ({
+         label: userProperty.name,
+         type: this.setUserPropertyType(userProperty.options),
+         ...userProperty
+      }))
+    });
   }
 
   componentWillReceiveProps(nextProps){
@@ -59,37 +78,49 @@ export default class ButtonAction extends React.Component {
     if (Object.keys(update).length) {
       this.setState(update);
     }
+
+    if (nextProps.isActive !== this.props.isActive) {
+      this.setState({
+        isMenuOpen: nextProps.isActive
+      });
+    }
   }
 
   render() {
     const { isActive, hasRoomToRenderBelow, numPages } = this.props;
-    const userPropertyList = this.props.userProperties;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent, userProperties, updateUserProperties } = this.state;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent, userPropertiesToUpdate, updateUserProperties, userPropertiesDropdown } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
     const dropdownStyles = {
       ...dropdownStyle,
-      width: 300,
+      width: 364,
       animationName: `editor-slide-${(isMenuOpen) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`
     };
     if (!hasRoomToRenderBelow) {
-      dropdownStyles.bottom = dropdownStyles.top + 55;
+      dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
     }
 
+    const smallInputStyle = {
+      fontSize: 12,
+      width: 132,
+      height: 32,
+      marginLeft: 8,
+      flexShrink: 1,
+      flexBasis: '55%'
+    };
+
     const hasMoreThanOneStep = numPages > 1;
 
-    const userPropertiesDropdown = [...(userPropertyList).map((userProperty) => {
-      return userProperty.toJS();
-    })].map((userProperty) => ({ label: userProperty.name, ...userProperty }));
+    console.log(userPropertiesDropdown, userPropertiesToUpdate);
 
     const dropdownNodes = isActive ? (
       <Menu style={dropdownStyles}>
+        <div role="overflow-container" style={{...flexColumn}}>
+          <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
 
-        <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
-
-          <div style={buttonNavTypeMenuStyle}>
+          <div style={{...buttonNavTypeMenuStyle, marginTop: 0}}>
             <p htmlFor="button-action-menu" style={labelStyle}>Trigger Action</p>
             <DropDownMenu
               className="form-control"
@@ -102,7 +133,7 @@ export default class ButtonAction extends React.Component {
 
           { buttonActionType === BUTTON_ACTION_TYPES.URL &&
             <div style={buttonNavTypeMenuStyle}>
-              <div style={ fieldGroupStyle }>
+              <div style={ flexColumn }>
                 <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
                 <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
               </div>
@@ -118,7 +149,7 @@ export default class ButtonAction extends React.Component {
           }
           { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
             <div style={buttonNavTypeMenuStyle}>
-              <div style={ fieldGroupStyle }>
+              <div style={ flexColumn }>
                 <label style={ labelStyle }>Step number</label>
                 <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
               </div>
@@ -132,7 +163,7 @@ export default class ButtonAction extends React.Component {
 
           { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
             <div style={buttonNavTypeMenuStyle}>
-              <div style={ fieldGroupStyle }>
+              <div style={ flexColumn }>
                 <label style={ labelStyle }>Flow ID</label>
                 <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
               </div>
@@ -141,38 +172,51 @@ export default class ButtonAction extends React.Component {
             </div>
           }
 
-          <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
-          <label htmlFor="user-properties-checkbox">Update User Properties</label>
+          <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer'}}>
+            <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
+            Update User Properties
+          </label>
 
           { updateUserProperties &&
-            <div style={buttonNavTypeMenuStyle}>
-              <div style={ fieldGroupStyle }>
-                {Object.keys(userProperties).map((key, index) => (
-                  <div>
+            <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center'}}>
+              <div style={ {...flexColumn, width: '100%'} }>
+                {Object.keys(userPropertiesToUpdate).map((key, index) => (
+                  <div key={index} style={ {...flexJustifyContentSpaceBetween, position: 'relative', marginTop: (index > 0 ) ? 8 : 0} }>
                     <DropDownMenu
                       className="form-control"
                       defaultValue="Choose a property"
                       options={userPropertiesDropdown}
                       selectedValue={key}
+                      smallDropDown
                       onSelect={(value) => this.selectUserProperty(key, value)}
                       />
-                    <input type="text" value={ userProperties[key] } style={ inputStyle } onChange={(e) => this.selectUserPropertyValue(e, key)}/>
-                    <div onClick={() => this.deleteUserProperty(key)}>x</div>
+                    <input type={ this.getUserPropertyType(key, userPropertiesDropdown) } value={ userPropertiesToUpdate[key] } style={ {...inputStyle, ...smallInputStyle, margin: '0 8px'} } onChange={(e) => this.selectUserPropertyValue(e, key)}/>
+                    { index > 0 &&
+                      <div style={{position: 'absolute', right: -16, cursor: 'pointer', height: 32, ...flexColumn, justifyContent: 'center'}}>
+                        <CancelButton
+                          onClick={() => this.deleteUserProperty(key)}
+                          smallButton
+                          hideBackground={true}
+                          color="#808080"/>
+                      </div>
+                    }
                   </div>
                 ))}
               </div>
-              <div onClick={() => this.addUserProperty()}>
-                add
-              </div>
+              {/* disable the add button if there is an empty property in the userPropertiesToUpdate object */}
+              <AddButton disabled={userPropertiesToUpdate[""] === ""} style={{marginTop: 8}} smallButton onClick={() => this.addUserProperty()}/>
             </div>
           }
 
-          <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
-          <label htmlFor="track-event-checkbox">Track Event</label>
+
+          <label htmlFor="track-event-checkbox" style={{cursor: 'pointer'}}>
+            <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
+            Track Event
+          </label>
 
           { trackEvent &&
             <div style={buttonNavTypeMenuStyle}>
-              <div style={ fieldGroupStyle }>
+              <div style={ flexColumn }>
                 <label style={ labelStyle }>Event Name</label>
                 <input type="text" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
               </div>
@@ -180,6 +224,7 @@ export default class ButtonAction extends React.Component {
               </p>
             </div>
           }
+        </div>
 
       </Menu>
     ) : null;
@@ -190,6 +235,24 @@ export default class ButtonAction extends React.Component {
         { dropdownNodes }
       </div>
     );
+  }
+
+  setUserPropertyType(userPropertyOptions) {
+    if(!userPropertyOptions[0] || !userPropertyOptions[0].name) return 'text';
+    let exampleVal = userPropertyOptions[0].name;
+    if (exampleVal === "true" || exampleVal === "false") {
+      return 'checkbox';
+    } else if (!isNaN(Number(exampleVal))) {
+      return 'number';
+    } else {
+      return 'text';
+    }
+
+  }
+
+  getUserPropertyType(key, options) {
+    if (!key) return 'text';
+    return options.find((option) => option.value == key).type;
   }
 
   toggleDropdown() {
@@ -247,7 +310,6 @@ export default class ButtonAction extends React.Component {
   }
 
   handleAction(value) {
-
     this.setState({
       buttonActionType: value
     }, this.saveAction);
@@ -278,29 +340,31 @@ export default class ButtonAction extends React.Component {
   }
 
   addUserProperty() {
-    let userProperties = {...this.state.userProperties};
-    userProperties[''] = '';
-    this.setState({ userProperties: userProperties }); //add saveAction
+    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
+    userPropertiesToUpdate[''] = '';
+    this.setState({ userPropertiesToUpdate }); //add saveAction
   }
 
   deleteUserProperty(key) {
-    let userProperties = {...this.state.userProperties};
-    delete userProperties[key];
-    this.setState({ userProperties: userProperties });//add saveAction
+    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
+    delete userPropertiesToUpdate[key];
+    console.log(key);
+    this.setState({ userPropertiesToUpdate });//add saveAction
   }
 
   selectUserProperty(key, value) {
-    let userProperties = {...this.state.userProperties};
-    delete userProperties[key];
-    userProperties[value] = '';
-    this.setState({ userProperties: userProperties });//add saveAction
+    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
+    delete userPropertiesToUpdate[key];
+    userPropertiesToUpdate[value] = '';
+    console.log(key, value);
+    this.setState({ userPropertiesToUpdate });//add saveAction
   }
 
   selectUserPropertyValue(e, key) {
     const userPropertyValue = e.target.value;
-    let userProperties = {...this.state.userProperties};
-    userProperties[key] = userPropertyValue;
-    this.setState({ userProperties: userProperties });//add saveAction
+    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
+    userPropertiesToUpdate[key] = userPropertyValue;
+    this.setState({ userPropertiesToUpdate });//add saveAction
   }
 
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {
@@ -385,6 +449,7 @@ ButtonAction.propTypes = {
   buttonActionType: PropTypes.string,
   localState: PropTypes.instanceOf(Map).isRequired,
   persistedState: PropTypes.instanceOf(Map).isRequired,
+  userProperties: PropTypes.List,
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   markCurrentFlowAsComplete: PropTypes.bool,

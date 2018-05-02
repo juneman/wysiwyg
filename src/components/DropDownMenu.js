@@ -55,7 +55,7 @@ export default class DropDownMenu extends React.Component {
   }
 
   render() {
-    const { className, menuClassName, optionClassName, labelClassName, selectedClassName, title, label, style, options, renderOptionSubtextNode, disabled, actionable, hiddenCaret, create, success, left, imageHeight, defaultValue, unsearchable, searchPlaceholder } = this.props;
+    const { title, label, options, renderOptionSubtextNode, actionable, defaultValue, unsearchable, searchPlaceholder, smallDropDown } = this.props;
     const { selectedValue, isMenuOpen, searchTerm, isHoveringOverOptionByIndex, hasRoomToRenderBelow } = this.state;
 
     const selectedOption = selectedValue !== undefined ? options.find((option) => option.value == selectedValue) : null;
@@ -131,8 +131,16 @@ export default class DropDownMenu extends React.Component {
       },
       label: {
         textAlign: 'left'
-      }
+      },
+      dropDownButton: {}
     };
+
+    if(smallDropDown) {
+      styles.dropDownButton = {
+        padding: '4px 8px',
+        fontSize: '12px',
+      };
+    }
     if (!hasRoomToRenderBelow) {
       styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
       styles.dropDownMenu.bottom = styles.dropDownMenu.top;
@@ -167,6 +175,7 @@ export default class DropDownMenu extends React.Component {
       <DropDownButton
         title={ title }
         forceHover={ isMenuOpen }
+        style={ styles.dropDownButton }
         onClick={ () => this.toggleDropDownMenu() }>
           <div style={ styles.dropDownMenuContainer }>
             <div style={ styles.dropDownMenu } ref={ (el) => this.wrapper = el }>
@@ -190,7 +199,7 @@ export default class DropDownMenu extends React.Component {
                     style={ getDropDownMenuOptionStyle(option.__originalIndex) }
                     onMouseOver={ () => this.setState({ isHoveringOverOptionByIndex: { ...isHoveringOverOptionByIndex, [option.__originalIndex] : true } }) }
                     onMouseOut={ () => this.setState({ isHoveringOverOptionByIndex: { ...isHoveringOverOptionByIndex, [option.__originalIndex] : false } }) }
-                    onMouseDown={ () => this.selectOptionByIndex(option.__originalIndex) }>
+                    onClick={ () => this.selectOptionByIndex(option.__originalIndex) }>
                       <div style={ styles.optionTextColumn }>
                         <div style={ styles.optionLabel }>
                           <span>{ option.label }</span>
@@ -212,7 +221,7 @@ export default class DropDownMenu extends React.Component {
               <span>{ label && `${ label }: ` }
                 <span>{ selectedOption ? selectedOption.label : defaultValue }</span>
                 <span style={{display: 'inline-flex', position: 'absolute', right: '0px', height: '20px'}}>
-                  <DownButton iconStyle={{color: 'grey'}}/>
+                  <DownButton iconStyle={{color: 'grey'}} smallButton/>
                 </span>
               </span>
 
@@ -263,10 +272,6 @@ export default class DropDownMenu extends React.Component {
 
 DropDownMenu.propTypes = {
   className: PropTypes.string,
-  menuClassName: PropTypes.string,
-  optionClassName: PropTypes.string,
-  labelClassName: PropTypes.string,
-  selectedClassName: PropTypes.string,
   title: PropTypes.string,
   label: PropTypes.string,
   onSelect: PropTypes.func,
@@ -277,13 +282,9 @@ DropDownMenu.propTypes = {
   defaultValue: PropTypes.any,
   disabled: PropTypes.bool,
   left: PropTypes.bool,
-  create: PropTypes.bool,
-  success: PropTypes.bool,
-  hiddenCaret: PropTypes.bool,
   actionable: PropTypes.bool,
-  imageHeight: PropTypes.number,
-  style: PropTypes.object,
   unsearchable: PropTypes.bool,
+  smallDropDown: PropTypes.bool,
   searchPlaceholder: PropTypes.string
 };
 

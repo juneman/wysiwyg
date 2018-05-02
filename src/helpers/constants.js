@@ -23,10 +23,9 @@ export const EDITOR_TYPES = {
   RATING: 'Rating',
   BUTTON: 'Button',
   EMOJI: 'Emoji'
-}
+};
 
-export const categories = [
-  {
+export const categories = [{
     name: 'Text',
     content: [EDITOR_TYPES.TEXT]
   },
@@ -65,8 +64,7 @@ export const BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS = [
   BUTTON_ACTION_TYPES.NEXT_GROUP
 ];
 
-export const BUTTON_ACTION_TYPES_LIST = [
-  {
+export const BUTTON_ACTION_TYPES_LIST = [{
     label: 'Go to URL',
     value: BUTTON_ACTION_TYPES.URL
   },
@@ -110,8 +108,7 @@ export const INPUT_TYPES = {
   URL: 'url'
 };
 
-export const INPUT_TYPES_LIST = [
-  {
+export const INPUT_TYPES_LIST = [{
     label: 'Text',
     value: 'text'
   },
@@ -135,4 +132,27 @@ export const INPUT_TYPES_LIST = [
     label: 'URL',
     value: 'url'
   }
+];
+
+export const DEFAULT_USER_PROPS = [
+  "userId",
+  "_userAgent",
+  "_updatedAt",
+  "_sessionRandomizer",
+  "_sessionPageviews",
+  "_operatingSystem",
+  "_myAppcuesId",
+  "_localId",
+  "_lastPageUrl",
+  "_lastPageTitle",
+  "_lastContentShownAt",
+  "_lastBrowserLanguage",
+  "_isAnonymous",
+  "_hostname",
+  "_deviceType",
+  "_currentPageUrl",
+  "_currentPageTitle",
+  "_browser",
+  "_appcuesId",
+  "_ABGroup"
 ];

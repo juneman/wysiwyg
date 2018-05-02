@@ -32,7 +32,7 @@ export default class Margin extends React.Component {
       this.setState({
         isMenuOpen: nextProps.isActive
       });
-    };
+    }
 
     const nextMarginTop = nextProps.persistedState.get('marginTop');
     const nextMarginRight = nextProps.persistedState.get('marginRight');
@@ -143,7 +143,7 @@ export default class Margin extends React.Component {
       update[name] = parsedNumber;
 
       const newPersistedState = persistedState
-        .set(name, parsedNumber)
+        .set(name, parsedNumber);
 
       this.setState(update);
 
