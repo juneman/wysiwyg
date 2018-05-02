@@ -7,8 +7,7 @@ import AddButtonContainer from './AddButtonContainer';
 
 // Distance threshold before button repositions to
 // opposite side
-const BUTTON_POSITION_ALLOWANCE = 100;
-const ADD_ROW_EXPANDED = 32;
+const ADD_ROW_EXPANDED = 40;
 const ADD_ROW_COLLAPSED = 2;
 const ADD_ZONE_EXPANDED = 32;
 const ADD_ZONE_COLLAPSED = 0;
@@ -25,7 +24,6 @@ export default class AddButtonHorizRule extends React.Component {
     this.state = {
       showEditorSelector: false,
       isHoveringOverAddButton: false,
-      hasRoomToRenderOnRight: true,
       isHorizontalOrientation: props.orientation == 'horizontal',
       win: null
     };
@@ -70,8 +68,7 @@ export default class AddButtonHorizRule extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { shouldCloseMenu, resetShouldCloseMenu, onEditorMenuClose } = this.props;
     const { showEditorSelector, win } = this.state;
-    this.setHasRoomToRenderOnRight();
-
+    
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
       resetShouldCloseMenu();
@@ -125,7 +122,7 @@ export default class AddButtonHorizRule extends React.Component {
 
     let containerStyle = {
       boxSizing: 'border-box',
-      position: 'relative',
+      position: 'absolute',
       height: ADD_ROW_COLLAPSED,
       minHeight: ADD_ROW_COLLAPSED,
       pointerEvents: 'none',
@@ -279,13 +276,6 @@ export default class AddButtonHorizRule extends React.Component {
         onEditorMenuClose && onEditorMenuClose();
     } else {
         onEditorMenuOpen && onEditorMenuOpen();
-    }
-  }
-
-  setHasRoomToRenderOnRight() {
-    const hasRoomToRenderOnRight = ((window.innerWidth - this.addButton.parentElement.getBoundingClientRect().right) > BUTTON_POSITION_ALLOWANCE);
-    if (hasRoomToRenderOnRight != this.state.hasRoomToRenderOnRight){
-      this.setState({ hasRoomToRenderOnRight });
     }
   }
 
