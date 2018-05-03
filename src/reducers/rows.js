@@ -51,20 +51,15 @@ export default function rows(state = List(), action) {
           return row;
         });
       break;
-    case Actions.EDITOR_MOVE_ZONE:
+    case Actions.EDITOR_INSERT_ZONE:
       newState = newState
         .map((row) => {
           //deleteStep
           let rowId = row.get('id');
-          if (rowId === action.sourceRowId) {
-            //insert target zone into source zone location
-            let sourceZones = row.get('zones');
-            row = row.set('zones', sourceZones.delete(action.sourceColumnIndex));
-          }
-          if (rowId === action.targetRowId) {
+          if (rowId === action.row.get('id')) {
             //insert source zone into source target location
             let targetZones = row.get('zones');
-            row = row.set('zones', targetZones.insert(action.targetColumnIndex, action.sourceZone));
+            row = row.set('zones', targetZones.insert(action.columnIndex, action.zone));
           }
           return row;
         });

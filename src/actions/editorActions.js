@@ -99,22 +99,16 @@ export function moveRows(sourceIndex, targetIndex) {
   };
 }
 
-export function moveZone(
-  sourceZone,
-  sourceColumnIndex,
-  sourceRowId,
-  targetZone,
-  targetColumnIndex,
-  targetRowId
+export function insertZone(
+  row,
+  zone,
+  columnIndex
 ) {
   return {
-    type: Actions.EDITOR_MOVE_ZONE,
-    sourceZone,
-    sourceColumnIndex,
-    sourceRowId,
-    targetZone,
-    targetColumnIndex,
-    targetRowId
+    type: Actions.EDITOR_INSERT_ZONE,
+    row,
+    zone,
+    columnIndex
   };
 }
 

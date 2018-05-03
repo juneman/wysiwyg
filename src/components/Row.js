@@ -23,7 +23,7 @@ export default class Row extends React.Component {
   }
 
   render() {
-    const { row, isOver, numPages, moveZone } = this.props;
+    const { row, isOver, numPages, removeZone, insertZone } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
@@ -32,7 +32,8 @@ export default class Row extends React.Component {
           numPages={numPages}
           key={zone.get('id')}
           zone={zone}
-          moveZone={ moveZone }
+          removeZone={ removeZone }
+          insertZone={ insertZone }
           row={row}
           isOver={isOver}
           rowPosition={position}
@@ -73,6 +74,7 @@ Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
   isDragging: PropTypes.bool,
   isOver: PropTypes.bool.isRequired,
-  moveZone: PropTypes.func.isRequired,
+  removeZone: PropTypes.func.isRequired,
+  insertZone: PropTypes.func.isRequired,
   numPages: PropTypes.number
 };

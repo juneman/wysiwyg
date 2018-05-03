@@ -135,7 +135,7 @@ export class Canvas extends React.Component {
           rowIndex={i}
           addZone={ (type, defaultAction, existingProps) => this.addZone(type, row.get('id'), defaultAction, existingProps)}
           removeZone={ this.removeZone.bind(this) }
-          moveZone={ this.moveZone.bind(this) }
+          insertZone={ this.insertZone.bind(this) }
           isInEditMode={isInEditMode}
           onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
           internalAllowedEditorTypes={ internalAllowedEditorTypes }
@@ -385,24 +385,16 @@ export class Canvas extends React.Component {
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
   }
 
-  moveZone(
-    sourceZone,
-    sourceColumnIndex,
-    sourceRowId,
-    targetZone,
-    targetColumnIndex,
-    targetRowId
+
+  insertZone(
+    row,
+    zone,
+    columnIndex
   ) {
-    if (sourceZone.get('id') === targetZone.get('id') && sourceRowId === targetRowId) {
-      return;
-    }
-    this.props.dispatch(editorActions.moveZone(
-      sourceZone,
-      sourceColumnIndex,
-      sourceRowId,
-      targetZone,
-      targetColumnIndex,
-      targetRowId
+    this.props.dispatch(editorActions.insertZone(
+      row,
+      zone,
+      columnIndex
     ));
   }
 

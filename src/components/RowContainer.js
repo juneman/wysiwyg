@@ -155,6 +155,7 @@ RowContainer.propTypes = {
   resetShouldCloseMenu: PropTypes.func,
   addZone: PropTypes.func,
   removeZone: PropTypes.func,
+  insertZone: PropTypes.func,
   basePadding: PropTypes.number
 };
 

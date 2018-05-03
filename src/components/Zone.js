@@ -158,7 +158,8 @@ class Zone extends React.Component {
       cloudinary,
       userProperties,
       isOver,
-      numPages
+      numPages,
+      removeZone
     } = this.props;
 
     const type = zone.get('type');
@@ -307,7 +308,7 @@ class Zone extends React.Component {
               this.cancelEditing();
             }}
             onCancel={() => this.clickedCancel()}
-            onRemove={() => this.removeZone()}
+            onRemove={() => removeZone(row, zone, true)}
             onMoveRowStart={() => {
               dispatch(editorActions.startMoving(row));
             }}
@@ -384,18 +385,6 @@ class Zone extends React.Component {
     dispatch(editorActions.cancelEditing(zone));
   }
 
-  removeZone(){
-    const { row, zone, dispatch } = this.props;
-
-    if(row.get('zones').size == 1) {
-      this.removeRow();
-    } else if(confirm("Are you sure you want to delete this?")){
-      this.cancelEditing();
-      dispatch(rowActions.removeZone(row, zone));
-      dispatch(zoneActions.removeZone(zone.get('id')));
-    }
-  }
-
   removeRow() {
     const { row, dispatch, persistedState } = this.props;
     const persistedContent = persistedState.get('url') || persistedState.get('content') || persistedState.get('label');
@@ -440,7 +429,9 @@ Zone.propTypes = {
   cloudinary: PropTypes.instanceOf(Map).isRequired,
   basePadding: PropTypes.number,
   isOver: PropTypes.bool,
-  numPages: PropTypes.number
+  numPages: PropTypes.number,
+  removeZone: PropTypes.func,
+  insertZone: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps) {
@@ -504,12 +495,10 @@ const zoneTarget = {
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
-    console.log(sourceProps.zone,
-      sourceProps.columnIndex,
-      sourceProps.row.get('id'),
-      targetProps.zone,
-      targetProps.columnIndex,
-      targetProps.row.get('id'));
+
+    targetProps.removeZone(sourceProps.row, sourceProps.zone);
+    targetProps.insertZone(targetProps.row, sourceProps.zone, targetProps.columnIndex);
+
     targetProps.moveZone(
       sourceProps.zone,
       sourceProps.columnIndex,
