@@ -56,7 +56,7 @@ class RowContainer extends Component {
       isHoveringOverContainer: false
     };
     this.setIsHoveringOverContainer = this.setIsHoveringOverContainer.bind(this);
-    this.moveZone = this.moveZone.bind(this);
+    this.moveZoneToNewColumn = this.moveZoneToNewColumn.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -79,7 +79,7 @@ class RowContainer extends Component {
     });
   }
 
-  moveZone(sourceRow, sourceZone){
+  moveZoneToNewColumn(sourceRow, sourceZone){
     const { addZone, removeZone } = this.props;
 
     addZone(sourceZone.get('type'), null, sourceZone.get('persistedState').toJS());
@@ -102,36 +102,36 @@ class RowContainer extends Component {
           padding: basePadding ? `0 ${basePadding}px` : 0
         }}>
       <div style={{...baseOverStyle, ...(isOver && !isHoveringOverContainer && !isInEditMode) ? {opacity: 1} : {}}}></div>
-        { isMovable && !isInEditMode &&
-          connectDragSource(
-            <section role="drag-handle-to-reorder" style={
-              {
-                ...dragHandleStyle,
-                opacity: isHoveringOverContainer ? 1: 0
-              } }>
-              <MoveVertButton
-                smallButton
-                color='#FFAA39'/>
-              </section>)
-        }
-        <Row
-          {...this.props}
+      { isMovable && !isInEditMode &&
+        connectDragSource(
+          <section role="drag-handle-to-reorder" style={
+            {
+              ...dragHandleStyle,
+              opacity: isHoveringOverContainer ? 1: 0
+            } }>
+            <MoveVertButton
+              smallButton
+              color='#FFAA39'/>
+            </section>)
+      }
+      <Row
+        {...this.props}
+      />
+      <DragZone
+        moveZoneToNewColumn={ this.moveZoneToNewColumn }
+        rowId={row.get('id')}
+        isHoveringOverContainer={isHoveringOverContainer} />
+      <AddButtonHorizRule
+          basePadding={basePadding}
+          orientation="vertical"
+          isHoveringOverContainer={ isHoveringOverContainer && !isInEditMode }
+          onSelectEditorType={(type, rows, defaultAction) => addZone(type, defaultAction)}
+          internalAllowedEditorTypes={ internalAllowedEditorTypes }
+          onEditorMenuOpen={ onEditorMenuOpen }
+          onEditorMenuClose={ onEditorMenuClose }
+          shouldCloseMenu={ shouldCloseMenu }
+          resetShouldCloseMenu={ resetShouldCloseMenu }
         />
-        <DragZone
-          moveZone={ this.moveZone }
-          rowId={row.get('id')}
-          isHoveringOverContainer={isHoveringOverContainer} />
-        <AddButtonHorizRule
-            basePadding={basePadding}
-            orientation="vertical"
-            isHoveringOverContainer={ isHoveringOverContainer && !isInEditMode }
-            onSelectEditorType={(type, rows, defaultAction) => addZone(type, defaultAction)}
-            internalAllowedEditorTypes={ internalAllowedEditorTypes }
-            onEditorMenuOpen={ onEditorMenuOpen }
-            onEditorMenuClose={ onEditorMenuClose }
-            shouldCloseMenu={ shouldCloseMenu }
-            resetShouldCloseMenu={ resetShouldCloseMenu }
-          />
       </div>
     ));
   }

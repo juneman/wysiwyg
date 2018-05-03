@@ -48,6 +48,20 @@ import RatingToolbar from '../editors/rating/RatingToolbar';
 import ArrowsButton from '../icons/ArrowsButton';
 import EditorWrapper from './EditorWrapper';
 
+
+const zoneBarStyle = {
+  background: '#0bdc66',
+  pointerEvents: 'none',
+  position: 'absolute',
+  height: '100%',
+  opacity: 0,
+  width: 4,
+  left: 0,
+  right: null,
+  top: 0,
+  transition: 'opacity 0.15s ease-out'
+};
+
 /**
  * A React component that holds the rendered content
  * or an editable area if the Zone is active
@@ -71,19 +85,12 @@ class Zone extends React.Component {
       cursor: 'inherit'
     };
 
-    this.baseIsOverStateStyle = {
-      outlineColor: '#0bdc66'
-    };
 
     this.baseContainerStyle = {
       width: '100%',
       margin: '0 auto',
       display: 'inline-block'
     };
-
-    // this.isMovableStyle = {
-    //   cursor: '-webkit-grab'
-    // };
 
     this.grabArrowStyle = {
       position: 'absolute',
@@ -158,13 +165,13 @@ class Zone extends React.Component {
 
     const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
-    const isOverStyle = (isOver && !isHover) ? this.baseIsOverStateStyle: null;
+    const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? { opacity: 1} : {}};
     const isMovableStyle = isMovable ? this.isMovableStyle : null;
     const grabArrowStyle = {...this.grabArrowStyle, ...(isHover) ? this.grabArrowHoverStyle : {} };
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle, isOverStyle);
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle);
 
 
 
@@ -315,6 +322,7 @@ class Zone extends React.Component {
           <div style={grabArrowStyle}>
             <ArrowsButton color="#FFAA39" smallButton hideBackground/>
           </div>
+          <div style={moveZoneBarStyle}></div>
         </div>
       </div>
     ));
@@ -431,7 +439,8 @@ Zone.propTypes = {
   userProperties: PropTypes.instanceOf(List).isRequired,
   cloudinary: PropTypes.instanceOf(Map).isRequired,
   basePadding: PropTypes.number,
-  isOver: PropTypes.bool
+  isOver: PropTypes.bool,
+  numPages: PropTypes.number
 };
 
 function mapStateToProps(state, ownProps) {
@@ -483,8 +492,24 @@ function collectSource(connect, monitor) {
 }
 
 const zoneTarget = {
+  hover(targetProps, monitor, component) {
+    const sourceProps = monitor.getItem();
+    if(targetProps.row.get('id') == sourceProps.row.get('id') && sourceProps.columnIndex < targetProps.columnIndex) {
+      zoneBarStyle.right = 0;
+      zoneBarStyle.left = null;
+    } else {
+      zoneBarStyle.left = 0;
+      zoneBarStyle.right = null;
+    }
+  },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
+    console.log(sourceProps.zone,
+      sourceProps.columnIndex,
+      sourceProps.row.get('id'),
+      targetProps.zone,
+      targetProps.columnIndex,
+      targetProps.row.get('id'));
     targetProps.moveZone(
       sourceProps.zone,
       sourceProps.columnIndex,

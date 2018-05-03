@@ -56,21 +56,15 @@ export default function rows(state = List(), action) {
         .map((row) => {
           //deleteStep
           let rowId = row.get('id');
-          if (rowId === action.sourceRowId && rowId === action.targetRowId) {
-            // return row;
-            let sourceZones = row.get('zones');
-            let updatedZones = sourceZones.delete(action.sourceColumnIndex).insert(action.targetColumnIndex, action.sourceZone);
-            return row.set('zones', updatedZones);
-          }
-          else if (rowId === action.sourceRowId) {
+          if (rowId === action.sourceRowId) {
             //insert target zone into source zone location
             let sourceZones = row.get('zones');
-            return row.set('zones', sourceZones.delete(action.sourceColumnIndex).insert(action.sourceColumnIndex, action.targetZone));
+            row = row.set('zones', sourceZones.delete(action.sourceColumnIndex));
           }
-          else if (rowId === action.targetRowId) {
+          if (rowId === action.targetRowId) {
             //insert source zone into source target location
             let targetZones = row.get('zones');
-            return row.set('zones', targetZones.delete(action.targetColumnIndex).insert(action.targetColumnIndex, action.sourceZone));
+            row = row.set('zones', targetZones.insert(action.targetColumnIndex, action.sourceZone));
           }
           return row;
         });

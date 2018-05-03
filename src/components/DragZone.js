@@ -57,7 +57,7 @@ DragZone.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool,
   canDrop: PropTypes.bool,
-  moveZone: PropTypes.func
+  moveZoneToNewColumn: PropTypes.func
 };
 
 const zoneTarget = {
@@ -69,7 +69,7 @@ const zoneTarget = {
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
-    targetProps.moveZone(sourceProps.row, sourceProps.zone);
+    targetProps.moveZoneToNewColumn(sourceProps.row, sourceProps.zone);
   }
 };
 

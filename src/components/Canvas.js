@@ -318,8 +318,6 @@ export class Canvas extends React.Component {
   removeZone(row, zone, confirmDelete){
     const { dispatch } = this.props;
 
-    console.log(row, row.get('zones'));
-
     if(row.get('zones').size == 1) {
       this.removeRow(row.get('id'));
     } else {
