@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
-import { connect } from 'react-redux';
+import { DropTarget } from 'react-dnd';
+
+import { DRAGABLE_ITEMS } from '../helpers/constants';
 
 import AddButtonContainer from './AddButtonContainer';
 
 // Distance threshold before button repositions to
 // opposite side
-const BUTTON_POSITION_ALLOWANCE = 100;
 const ADD_ROW_EXPANDED = 40;
 const ADD_ROW_COLLAPSED = 2;
 const ADD_ZONE_EXPANDED = 32;
@@ -18,7 +19,7 @@ const ADD_ZONE_COLLAPSED = 0;
  * add a new row to the Canvas
  * @class
  */
-export default class AddButtonHorizRule extends React.Component {
+class AddButtonHorizRule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -94,7 +95,7 @@ export default class AddButtonHorizRule extends React.Component {
   }
 
   render() {
-    const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer } = this.props;
+    const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer, connectDropTarget, canDrop, isOver } = this.props;
     const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation } = this.state;
 
     let hrStyle = {
@@ -197,7 +198,7 @@ export default class AddButtonHorizRule extends React.Component {
           };
         }
     } else {
-      if (isHoveringOverAddButton || showEditorSelector) {
+      if (isHoveringOverAddButton || showEditorSelector  || (canDrop && isOver)) {
         //alter styles to expanded view
           hrStyle = {
             ...hrStyle,
@@ -246,7 +247,7 @@ export default class AddButtonHorizRule extends React.Component {
       zIndex: 10,
     };
 
-    return (
+    return connectDropTarget(
       <div className="add-row" style={containerStyle}>
         <div style={ (isHorizontalOrientation) ? wrapperStyle : {zIndex: 10} } ref={(el) => this.wrapper = el}>
           <div
@@ -304,5 +305,30 @@ AddButtonHorizRule.propTypes = {
   onEditorMenuClose: PropTypes.func,
   shouldCloseMenu: PropTypes.bool,
   resetShouldCloseMenu: PropTypes.func,
-  orientation: PropTypes.string
+  orientation: PropTypes.string,
+  connectDropTarget: PropTypes.func,
+  isOver: PropTypes.bool,
+  canDrop: PropTypes.bool
 };
+
+
+const zoneTarget = {
+  canDrop(props) {
+    return props.orientation !== 'vertical' && props.moveZoneToNewRow !== undefined;
+  },
+  drop(targetProps, monitor) {
+    const sourceProps = monitor.getItem();
+    console.log('moveZone', sourceProps);
+    targetProps.moveZoneToNewRow(sourceProps.row, sourceProps.zone);
+  }
+};
+
+function collectTarget(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
+  };
+}
+
+export default DropTarget(DRAGABLE_ITEMS.ZONE, zoneTarget, collectTarget)(AddButtonHorizRule);

@@ -174,6 +174,7 @@ export class Canvas extends React.Component {
             this.addRow(type, rowsToAdd, defaultAction);
             onEditorMenuClose && onEditorMenuClose();
         } }
+        moveZoneToNewRow={this.moveZoneToNewRow.bind(this)}
         internalAllowedEditorTypes={ internalAllowedEditorTypes }
         onEditorMenuOpen={ onEditorMenuOpen }
         onEditorMenuClose={ onEditorMenuClose }
@@ -326,6 +327,22 @@ export class Canvas extends React.Component {
       dispatch(rowActions.removeZone(row, zone));
       dispatch(zoneActions.removeZone(zone.get('id')));
     }
+  }
+
+  moveZoneToNewRow(row, zone){
+    const { dispatch } = this.props;
+
+    this.removeZone(row, zone);
+
+    const rowsToAdd = fromJS([{
+      id: uuid(),
+      zones: [
+        zone
+      ]
+    }]);
+
+    dispatch(rowActions.addRows(rowsToAdd));
+
   }
 
 
