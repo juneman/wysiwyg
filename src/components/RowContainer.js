@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { DropTarget, DragSource } from 'react-dnd';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
+
+import * as rowActions from '../actions/rowActions';
+import * as zoneActions from '../actions/zoneActions';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 
@@ -33,7 +36,7 @@ const baseOverStyle = {
   position: 'absolute',
   width: '100%',
   opacity: 0,
-  height: 2,
+  height: 4,
   left: 0,
   top: -2,
   transition: 'opacity 0.15s ease-out'
@@ -50,9 +53,10 @@ class RowContainer extends Component {
   constructor(props) {
     super(props);
     this.state={
-      isAddButtonVisible: false
+      isHoveringOverContainer: false
     };
-    this.setIsAddButtonVisible = this.setIsAddButtonVisible.bind(this);
+    this.setIsHoveringOverContainer = this.setIsHoveringOverContainer.bind(this);
+    this.moveZone = this.moveZone.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -60,42 +64,50 @@ class RowContainer extends Component {
 
     if (nextProps.isInEditMode && !isInEditMode) {
       this.setState({
-        isAddButtonVisible: false
+        isHoveringOverContainer: false
       });
     }
   }
 
-  setIsAddButtonVisible(isAddButtonVisible) {
+  setIsHoveringOverContainer(isHoveringOverContainer) {
     const { isInEditMode } = this.props;
 
     if (isInEditMode) return;
 
     this.setState({
-      isAddButtonVisible
+      isHoveringOverContainer
     });
   }
 
+  moveZone(sourceRow, sourceZone){
+    const { addZone, removeZone } = this.props;
+
+    addZone(sourceZone.get('type'), null, sourceZone.get('persistedState').toJS());
+    removeZone(sourceRow, sourceZone);
+
+  }
+
   render() {
-    const { basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
-    const { isAddButtonVisible } = this.state;
+    const { row, basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
+    const { isHoveringOverContainer } = this.state;
 
     return connectDropTarget(connectDragPreview(
       <div className="row-container"
-        onMouseOver={() => this.setIsAddButtonVisible(true) }
-        onMouseOut={() => this.setIsAddButtonVisible(false) }
+        onMouseOver={() => this.setIsHoveringOverContainer(true) }
+        onMouseOut={() => this.setIsHoveringOverContainer(false) }
         style={{
-          ...((isAddButtonVisible && !isOver) && !isInEditMode) ? baseHoverStateStyle : {},
+          ...((isHoveringOverContainer && !isOver) && !isInEditMode) ? baseHoverStateStyle : {},
           position: 'relative',
           margin: basePadding ? `0 -${basePadding}px` : 0,
           padding: basePadding ? `0 ${basePadding}px` : 0
         }}>
-      <div style={{...baseOverStyle, ...(isOver && !isAddButtonVisible && !isInEditMode) ? {opacity: 1} : {}}}></div>
+      <div style={{...baseOverStyle, ...(isOver && !isHoveringOverContainer && !isInEditMode) ? {opacity: 1} : {}}}></div>
         { isMovable && !isInEditMode &&
           connectDragSource(
             <section role="drag-handle-to-reorder" style={
               {
                 ...dragHandleStyle,
-                opacity: isAddButtonVisible ? 1: 0
+                opacity: isHoveringOverContainer ? 1: 0
               } }>
               <MoveVertButton
                 smallButton
@@ -105,11 +117,14 @@ class RowContainer extends Component {
         <Row
           {...this.props}
         />
-        <DragZone/>
+        <DragZone
+          moveZone={ this.moveZone }
+          rowId={row.get('id')}
+          isHoveringOverContainer={isHoveringOverContainer} />
         <AddButtonHorizRule
             basePadding={basePadding}
             orientation="vertical"
-            isHoveringOverContainer={ isAddButtonVisible && !isInEditMode }
+            isHoveringOverContainer={ isHoveringOverContainer && !isInEditMode }
             onSelectEditorType={(type, rows, defaultAction) => addZone(type, defaultAction)}
             internalAllowedEditorTypes={ internalAllowedEditorTypes }
             onEditorMenuOpen={ onEditorMenuOpen }
@@ -123,6 +138,8 @@ class RowContainer extends Component {
 }
 
 RowContainer.propTypes = {
+  dispatch: PropTypes.func,
+  row: PropTypes.instanceOf(Map),
   connectDropTarget: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   connectDragSource: PropTypes.func.isRequired,
@@ -137,6 +154,7 @@ RowContainer.propTypes = {
   shouldCloseMenu: PropTypes.bool,
   resetShouldCloseMenu: PropTypes.func,
   addZone: PropTypes.func,
+  removeZone: PropTypes.func,
   basePadding: PropTypes.number
 };
 

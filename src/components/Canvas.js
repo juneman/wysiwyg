@@ -133,7 +133,8 @@ export class Canvas extends React.Component {
           basePadding={basePadding}
           row={row}
           rowIndex={i}
-          addZone={ (type, defaultAction) => this.addZone(type, row.get('id'), defaultAction)}
+          addZone={ (type, defaultAction, existingProps) => this.addZone(type, row.get('id'), defaultAction, existingProps)}
+          removeZone={ this.removeZone.bind(this) }
           moveZone={ this.moveZone.bind(this) }
           isInEditMode={isInEditMode}
           onDrop={(sourceRowIndex, targetRowIndex) => this.moveRows(sourceRowIndex, targetRowIndex)}
@@ -290,26 +291,45 @@ export class Canvas extends React.Component {
     this.addRow('Image', rowsToAdd);
   }
 
-  addZone(type, rowId, defaultAction) {
+  addZone(type, rowId, defaultAction, existingProps = {}) {
     const { dispatch, internalRows } = this.props;
     const zoneToAdd = fromJS(
       {
         id: uuid(),
         type,
         persistedState: {
-          marginTop: (internalRows.findIndex((row) => row.get('id') == rowId) > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
+          marginTop: (internalRows.findIndex((row) => row.get('id') == rowId) > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0,
+          ...existingProps
         }
       }
     );
 
     dispatch(rowActions.addZone(rowId, zoneToAdd));
 
-    // start editing immediately
-    dispatch(editorActions.startEditing(zoneToAdd));
+    // start editing immediately, if zone is new
+    if(Object.keys(existingProps) == 0) {
+      dispatch(editorActions.startEditing(zoneToAdd));
+    }
     if (defaultAction) {
       dispatch(editorActions.toggleEditorAction(defaultAction, true));
     }
   }
+
+  removeZone(row, zone, confirmDelete){
+    const { dispatch } = this.props;
+
+    console.log(row, row.get('zones'));
+
+    if(row.get('zones').size == 1) {
+      this.removeRow(row.get('id'));
+    } else {
+      if (confirmDelete && !confirm("Are you sure you want to delete this?")) return false;
+      dispatch(editorActions.cancelEditing(zone));
+      dispatch(rowActions.removeZone(row, zone));
+      dispatch(zoneActions.removeZone(zone.get('id')));
+    }
+  }
+
 
   addRow(type, rowsToAdd, defaultAction) {
     const { dispatch, internalRows } = this.props;

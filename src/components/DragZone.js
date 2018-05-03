@@ -1,51 +1,75 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
 
-const dragZoneStyle = {
-  background: '#0bdc66',
+const dragDropZoneStyle = {
   position: 'absolute',
   height: '100%',
-  opacity: 0,
-  width: 2,
-  right: 10,
+  width: 0,
+  right: 0,
   top: 0,
-  transition: 'opacity 0.15s ease-out'
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'stretch'
+};
+
+const dragNotificationBar = {
+  width: 4,
+  height: '100%',
+  opacity: 0,
+  transition: 'opacity 0.15s ease-out',
+  background: '#0bdc66'
 };
 
 /**
- * A Stateless react component providing a dropzone
+ * A react component providing a dropzone
  * for dragging zones into an existing row
  * @class
  */
-const DragZone = ({ isOver, connectDropTarget }) => connectDropTarget(<div style={{...dragZoneStyle, ...{ opacity: (isOver) ? 1 : 0.5 }}}/>);
+class DragZone extends Component {
+
+  render() {
+    const { zoneItem, isOver, connectDropTarget, canDrop } = this.props;
+
+    return(
+      connectDropTarget(
+        <div style={{
+          ...dragDropZoneStyle,
+          ...( canDrop) ? { width: 22, cursor: 'pointer' } : {}
+          }}>
+          <div style={{
+            ...dragNotificationBar,
+            ...(canDrop && !isOver) ? { opacity: 0.1 } : {},
+            ...(canDrop && isOver) ? { opacity: 1 } : {}
+          }}/>
+        </div>
+      )
+    );
+  }
+}
+
+// = ({ zoneItem, isOver, connectDropTarget, canDrop }) =>
 
 DragZone.propTypes = {
+  isHoveringOverContainer: PropTypes.bool,
   connectDropTarget: PropTypes.func.isRequired,
-  isOver: PropTypes.bool
+  isOver: PropTypes.bool,
+  canDrop: PropTypes.bool,
+  moveZone: PropTypes.func
 };
 
 const zoneTarget = {
-  hover(targetProps, monitor) {
-    // const sourceProps = monitor.getItem();
-    // if(sourceProps.rowIndex !== targetProps.rowIndex) {
-    //   if (targetProps.rowIndex > sourceProps.rowIndex) {
-    //     baseOverStyle.top = null;
-    //     baseOverStyle.bottom = -2;
-    //   } else if  ( targetProps.rowIndex < sourceProps.rowIndex) {
-    //     baseOverStyle.top = -2;
-    //     baseOverStyle.bottom = null;
-    //   }
-    // }
-    console.log('hovering');
+  canDrop(props, monitor) {
+
+    const sourceProps = monitor.getItem();
+    const rowId = sourceProps.row.get('id');
+    return rowId !== props.rowId;
   },
   drop(targetProps, monitor) {
-    // const sourceProps = monitor.getItem();
-    // sourceProps.rowIndex >= 0 && targetProps.rowIndex >= 0 &&
-    console.log('dropped in add-zone section');
-      // targetProps.onDrop(sourceProps.rowIndex, targetProps.rowIndex);
+    const sourceProps = monitor.getItem();
+    targetProps.moveZone(sourceProps.row, sourceProps.zone);
   }
 };
 
@@ -53,6 +77,7 @@ function collectTarget(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
     isOverCurrent: monitor.isOver({ shallow: true })
   };
 }
