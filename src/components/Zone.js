@@ -498,15 +498,6 @@ const zoneTarget = {
 
     targetProps.removeZone(sourceProps.row, sourceProps.zone);
     targetProps.insertZone(targetProps.row, sourceProps.zone, targetProps.columnIndex);
-
-    targetProps.moveZone(
-      sourceProps.zone,
-      sourceProps.columnIndex,
-      sourceProps.row.get('id'),
-      targetProps.zone,
-      targetProps.columnIndex,
-      targetProps.row.get('id')
-    );
   }
 };
 

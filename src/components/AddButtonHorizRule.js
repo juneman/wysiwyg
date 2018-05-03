@@ -318,7 +318,6 @@ const zoneTarget = {
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
-    console.log('moveZone', sourceProps);
     targetProps.moveZoneToNewRow(sourceProps.row, sourceProps.zone);
   }
 };

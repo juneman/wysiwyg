@@ -12,7 +12,8 @@ const dragDropZoneStyle = {
   top: 0,
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'stretch'
+  alignItems: 'stretch',
+  pointerEvents: 'none'
 };
 
 const dragNotificationBar = {
@@ -31,13 +32,13 @@ const dragNotificationBar = {
 class DragZone extends Component {
 
   render() {
-    const { zoneItem, isOver, connectDropTarget, canDrop } = this.props;
+    const { isOver, connectDropTarget, canDrop } = this.props;
 
     return(
       connectDropTarget(
         <div style={{
           ...dragDropZoneStyle,
-          ...( canDrop) ? { width: 22, cursor: 'pointer' } : {}
+          ...( canDrop) ? { pointerEvents: 'all', width: 32, cursor: 'pointer' } : {}
           }}>
           <div style={{
             ...dragNotificationBar,
