@@ -8,9 +8,9 @@ import { DRAGABLE_ITEMS } from '../helpers/constants';
 
 import AddButtonHorizRule from './AddButtonHorizRule';
 import MoveVertButton from '../icons/MoveVertButton';
+import DragZone from './DragZone';
 
 const dragHandleStyle = {
-  // background: '#FFAA39',
   position: 'absolute',
   left: -8,
   top: '50%',
@@ -25,6 +25,18 @@ const dragHandleStyle = {
 
 const baseHoverStateStyle = {
   backgroundColor: 'rgba(255,186,76,0.13)'
+};
+
+const baseOverStyle = {
+  background: '#FFAA39',
+  pointerEvents: 'none',
+  position: 'absolute',
+  width: '100%',
+  opacity: 0,
+  height: 2,
+  left: 0,
+  top: -2,
+  transition: 'opacity 0.15s ease-out'
 };
 
 import Row from './Row';
@@ -72,11 +84,12 @@ class RowContainer extends Component {
         onMouseOver={() => this.setIsAddButtonVisible(true) }
         onMouseOut={() => this.setIsAddButtonVisible(false) }
         style={{
-          ...((isAddButtonVisible || isOver) && !isInEditMode) ? baseHoverStateStyle : {},
+          ...((isAddButtonVisible && !isOver) && !isInEditMode) ? baseHoverStateStyle : {},
           position: 'relative',
           margin: basePadding ? `0 -${basePadding}px` : 0,
           padding: basePadding ? `0 ${basePadding}px` : 0
         }}>
+      <div style={{...baseOverStyle, ...(isOver && !isAddButtonVisible && !isInEditMode) ? {opacity: 1} : {}}}></div>
         { isMovable && !isInEditMode &&
           connectDragSource(
             <section role="drag-handle-to-reorder" style={
@@ -92,6 +105,7 @@ class RowContainer extends Component {
         <Row
           {...this.props}
         />
+        <DragZone/>
         <AddButtonHorizRule
             basePadding={basePadding}
             orientation="vertical"
@@ -147,6 +161,18 @@ function collectSource(connect, monitor) {
 }
 
 const rowTarget = {
+  hover(targetProps, monitor) {
+    const sourceProps = monitor.getItem();
+    if(sourceProps.rowIndex !== targetProps.rowIndex) {
+      if (targetProps.rowIndex > sourceProps.rowIndex) {
+        baseOverStyle.top = null;
+        baseOverStyle.bottom = -2;
+      } else if  ( targetProps.rowIndex < sourceProps.rowIndex) {
+        baseOverStyle.top = -2;
+        baseOverStyle.bottom = null;
+      }
+    }
+  },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
     // sourceProps.rowIndex >= 0 && targetProps.rowIndex >= 0 &&
