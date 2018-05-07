@@ -6,7 +6,7 @@ import DropDownButton from './DropDownButton';
 import DownButton from '../icons/DownButton';
 import RightButton from '../icons/RightButton';
 
-const MAX_MENU_HEIGHT = 300;
+const MAX_MENU_HEIGHT = 250;
 
 export default class DropDownMenu extends React.Component {
 
@@ -55,7 +55,7 @@ export default class DropDownMenu extends React.Component {
   }
 
   render() {
-    const { title, label, options, renderOptionSubtextNode, actionable, defaultValue, unsearchable, searchPlaceholder, smallDropDown } = this.props;
+    const { title, label, options, renderOptionSubtextNode, actionable, defaultValue, unsearchable, searchPlaceholder, smallDropDown, overflowDropdown } = this.props;
     const { selectedValue, isMenuOpen, searchTerm, isHoveringOverOptionByIndex, hasRoomToRenderBelow } = this.state;
 
     const selectedOption = selectedValue !== undefined ? options.find((option) => option.value == selectedValue) : null;
@@ -72,7 +72,7 @@ export default class DropDownMenu extends React.Component {
         top: '100%',
         left: 0,
         backgroundColor: '#eee',
-        maxHeight: 250,
+        maxHeight: MAX_MENU_HEIGHT,
         width: 270,
         overflowY: 'auto',
         overflowX: 'hidden',
@@ -135,13 +135,15 @@ export default class DropDownMenu extends React.Component {
       dropDownButton: {}
     };
 
+
     if(smallDropDown) {
       styles.dropDownButton = {
         padding: '4px 8px',
         fontSize: '12px',
+        height: 32
       };
     }
-    if (!hasRoomToRenderBelow) {
+    if (!hasRoomToRenderBelow && !overflowDropdown) {
       styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
       styles.dropDownMenu.bottom = styles.dropDownMenu.top;
       delete styles.dropDownMenu.marginTop;
@@ -156,7 +158,7 @@ export default class DropDownMenu extends React.Component {
         pointerEvents: 'all'
       };
 
-      if (!hasRoomToRenderBelow) {
+      if (!hasRoomToRenderBelow && !overflowDropdown) {
         styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
         delete styles.dropDownMenu.marginTop;
       }
@@ -220,7 +222,12 @@ export default class DropDownMenu extends React.Component {
             <div style={ styles.label }>
               <span>{ label && `${ label }: ` }
                 <span>{ selectedOption ? selectedOption.label : defaultValue }</span>
-                <span style={{display: 'inline-flex', position: 'absolute', right: '0px', height: '20px'}}>
+                <span style={{
+                  display: 'inline-flex',
+                  right: '0px',
+                  height: '20px',
+                  ...(overflowDropdown) ? { float: 'right' } : { position: 'absolute' }
+                }}>
                   <DownButton iconStyle={{color: 'grey'}} smallButton/>
                 </span>
               </span>
@@ -232,9 +239,11 @@ export default class DropDownMenu extends React.Component {
   }
 
   setHasRoomToRenderBelow() {
-    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MAX_MENU_HEIGHT);
+    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MAX_MENU_HEIGHT) + 5;
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
-      this.setState({ hasRoomToRenderBelow });
+      this.setState({
+        hasRoomToRenderBelow
+      });
     }
   }
 
@@ -285,6 +294,7 @@ DropDownMenu.propTypes = {
   actionable: PropTypes.bool,
   unsearchable: PropTypes.bool,
   smallDropDown: PropTypes.bool,
+  overflowDropdown: PropTypes.bool,
   searchPlaceholder: PropTypes.string
 };
 

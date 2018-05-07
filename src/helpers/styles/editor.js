@@ -102,7 +102,8 @@ export const labelStyle = {
 };
 
 export const buttonNavTypeMenuStyle = {
-  margin: '16px 8px'
+  margin: '16px 8px',
+  flexShrink: 0
 };
 
 export const inputStyle = {

@@ -116,116 +116,115 @@ export default class ButtonAction extends React.Component {
     console.log(userPropertiesDropdown, userPropertiesToUpdate);
 
     const dropdownNodes = isActive ? (
-      <Menu style={dropdownStyles}>
-        <div role="overflow-container" style={{...flexColumn}}>
-          <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
+      <Menu style={{...dropdownStyles, ...flexColumn, maxHeight: 300, overflow: 'scroll' }}>
+        <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
 
-          <div style={{...buttonNavTypeMenuStyle, marginTop: 0}}>
-            <p htmlFor="button-action-menu" style={labelStyle}>Trigger Action</p>
-            <DropDownMenu
-              className="form-control"
-              id="button-action-menu"
-              unsearchable
-              selectedValue={ buttonActionType }
-              options={ BUTTON_ACTION_TYPES_LIST }
-              onSelect={ (value) => this.handleAction(value) }/>
-          </div>
-
-          { buttonActionType === BUTTON_ACTION_TYPES.URL &&
-            <div style={buttonNavTypeMenuStyle}>
-              <div style={ flexColumn }>
-                <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
-                <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
-              </div>
-              <div style={{ marginTop: 5 }}>
-                <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
-                <label htmlFor="link-checkbox">Open In New Window</label>
-              </div>
-              <div style={{ marginTop: 5 }}>
-                <input id="mark-current-as-complete-checkbox" type="checkbox" style={checkboxStyle} checked={markCurrentFlowAsComplete} onChange={(e) => this.handleMarkCurrentFlowAsComplete(e)} />
-                <label htmlFor="mark-current-as-complete-checkbox">Mark flow in progress as complete</label>
-              </div>
-            </div>
-          }
-          { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
-            <div style={buttonNavTypeMenuStyle}>
-              <div style={ flexColumn }>
-                <label style={ labelStyle }>Step number</label>
-                <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
-              </div>
-              <p style={{marginTop: '10px', lineHeight: '16px'}}>
-                {
-                  `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
-                }
-              </p>
-            </div>
-          }
-
-          { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
-            <div style={buttonNavTypeMenuStyle}>
-              <div style={ flexColumn }>
-                <label style={ labelStyle }>Flow ID</label>
-                <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
-              </div>
-              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this button.
-              </p>
-            </div>
-          }
-
-          <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer'}}>
-            <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
-            Update User Properties
-          </label>
-
-          { updateUserProperties &&
-            <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center'}}>
-              <div style={ {...flexColumn, width: '100%'} }>
-                {Object.keys(userPropertiesToUpdate).map((key, index) => (
-                  <div key={index} style={ {...flexJustifyContentSpaceBetween, position: 'relative', marginTop: (index > 0 ) ? 8 : 0} }>
-                    <DropDownMenu
-                      className="form-control"
-                      defaultValue="Choose a property"
-                      options={userPropertiesDropdown}
-                      selectedValue={key}
-                      smallDropDown
-                      onSelect={(value) => this.selectUserProperty(key, value)}
-                      />
-                    <input type={ this.getUserPropertyType(key, userPropertiesDropdown) } value={ userPropertiesToUpdate[key] } style={ {...inputStyle, ...smallInputStyle, margin: '0 8px'} } onChange={(e) => this.selectUserPropertyValue(e, key)}/>
-                    { index > 0 &&
-                      <div style={{position: 'absolute', right: -16, cursor: 'pointer', height: 32, ...flexColumn, justifyContent: 'center'}}>
-                        <CancelButton
-                          onClick={() => this.deleteUserProperty(key)}
-                          smallButton
-                          hideBackground={true}
-                          color="#808080"/>
-                      </div>
-                    }
-                  </div>
-                ))}
-              </div>
-              {/* disable the add button if there is an empty property in the userPropertiesToUpdate object */}
-              <AddButton disabled={userPropertiesToUpdate[""] === ""} style={{marginTop: 8}} smallButton onClick={() => this.addUserProperty()}/>
-            </div>
-          }
-
-
-          <label htmlFor="track-event-checkbox" style={{cursor: 'pointer'}}>
-            <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
-            Track Event
-          </label>
-
-          { trackEvent &&
-            <div style={buttonNavTypeMenuStyle}>
-              <div style={ flexColumn }>
-                <label style={ labelStyle }>Event Name</label>
-                <input type="text" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
-              </div>
-              <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the event name to trigger from this button.
-              </p>
-            </div>
-          }
+        <div style={{...buttonNavTypeMenuStyle, marginTop: 0}}>
+          <p htmlFor="button-action-menu" style={labelStyle}>Trigger Action</p>
+          <DropDownMenu
+            className="form-control"
+            id="button-action-menu"
+            unsearchable
+            selectedValue={ buttonActionType }
+            options={ BUTTON_ACTION_TYPES_LIST }
+            overflowDropdown
+            onSelect={ (value) => this.handleAction(value) }/>
         </div>
 
+        { buttonActionType === BUTTON_ACTION_TYPES.URL &&
+          <div style={{ margin: '-8px 8px 16px 8px'}}>
+            <div style={ flexColumn }>
+              <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
+              <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
+            </div>
+            <div style={{ marginTop: 5 }}>
+              <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
+              <label htmlFor="link-checkbox">Open In New Window</label>
+            </div>
+            <div style={{ marginTop: 5 }}>
+              <input id="mark-current-as-complete-checkbox" type="checkbox" style={checkboxStyle} checked={markCurrentFlowAsComplete} onChange={(e) => this.handleMarkCurrentFlowAsComplete(e)} />
+              <label htmlFor="mark-current-as-complete-checkbox">Mark flow in progress as complete</label>
+            </div>
+          </div>
+        }
+        { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
+          <div style={{ margin: '-8px 8px 16px 8px'}}>
+            <div style={ flexColumn }>
+              <label style={ labelStyle }>Step number</label>
+              <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
+            </div>
+            <p style={{marginTop: '10px', lineHeight: '16px'}}>
+              {
+                `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
+              }
+            </p>
+          </div>
+        }
+
+        { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
+          <div style={{ margin: '-8px 8px 16px 8px'}}>
+            <div style={ flexColumn }>
+              <label style={ labelStyle }>Flow ID</label>
+              <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
+            </div>
+            <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the Flow ID of a published flow to trigger it from this button.
+            </p>
+          </div>
+        }
+
+        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer'}}>
+          <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
+          Update User Properties
+        </label>
+
+        { updateUserProperties &&
+          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center'}}>
+            <div style={ {...flexColumn, width: '100%'} }>
+              {Object.keys(userPropertiesToUpdate).map((key, index) => (
+                <div key={index} style={ {...flexJustifyContentSpaceBetween, position: 'relative', marginTop: (index > 0 ) ? 8 : 0} }>
+                  <DropDownMenu
+                    className="form-control"
+                    defaultValue="Choose a property"
+                    options={userPropertiesDropdown}
+                    selectedValue={key}
+                    smallDropDown
+                    overflowDropdown
+                    onSelect={(value) => this.selectUserProperty(key, value)}
+                    />
+                  <input type={ this.getUserPropertyType(key, userPropertiesDropdown) } value={ userPropertiesToUpdate[key] } style={ {...inputStyle, ...smallInputStyle, margin: '0 8px'} } onChange={(e) => this.selectUserPropertyValue(e, key)}/>
+                  { index > 0 &&
+                    <div style={{position: 'absolute', right: -16, cursor: 'pointer', height: 32, ...flexColumn, justifyContent: 'center'}}>
+                      <CancelButton
+                        onClick={() => this.deleteUserProperty(key)}
+                        smallButton
+                        hideBackground={true}
+                        color="#808080"/>
+                    </div>
+                  }
+                </div>
+              ))}
+            </div>
+            {/* disable the add button if there is an empty property in the userPropertiesToUpdate object */}
+            <AddButton disabled={userPropertiesToUpdate[""] === ""} style={{marginTop: 8}} smallButton onClick={() => this.addUserProperty()}/>
+          </div>
+        }
+
+
+        <label htmlFor="track-event-checkbox" style={{cursor: 'pointer'}}>
+          <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
+          Track Event
+        </label>
+
+        { trackEvent &&
+          <div style={buttonNavTypeMenuStyle}>
+            <div style={ flexColumn }>
+              <label style={ labelStyle }>Event Name</label>
+              <input type="text" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
+            </div>
+            <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the event name to trigger from this button.
+            </p>
+          </div>
+        }
       </Menu>
     ) : null;
 
