@@ -2,7 +2,7 @@
 import React from 'react';
 import { convertToHTML as draftConvertToHTML, convertFromHTML as draftConvertFromHTML } from 'draft-convert';
 import { LinkDecorator, linkToEntity, entityToLink } from '../../helpers/draft/LinkDecorator';
-import { CompositeDecorator, ContentState, SelectionState } from 'draft-js';
+import { CompositeDecorator, ContentState } from 'draft-js';
 
 export const CUSTOM_STYLE_PREFIX_COLOR = 'COLOR_';
 export const NBSP = "\xA0";
@@ -25,7 +25,7 @@ export function convertFromHTML(htmlContent, convertOptions = {}) {
   // spaces in there, so just remove them here.
   htmlContent = htmlContent.replace(ZWSP_RE, "");
 
-  const contentState = draftConvertFromHTML({
+  return draftConvertFromHTML({
     htmlToStyle: (nodeName, node, currentStyle) => {
       if (node instanceof HTMLElement && node.style) {
         currentStyle = currentStyle.withMutations(function(style) {
@@ -107,12 +107,6 @@ export function convertFromHTML(htmlContent, convertOptions = {}) {
     },
     ...convertOptions
   })(htmlContent);
-
-  const firstBlockKey = contentState.getFirstBlock().getKey();
-  return contentState.merge({
-    selectionBefore: SelectionState.createEmpty(firstBlockKey),
-    selectionAfter: SelectionState.createEmpty(firstBlockKey)
-  });
 }
 
 export function convertFromPastedHTML(htmlContent) {
