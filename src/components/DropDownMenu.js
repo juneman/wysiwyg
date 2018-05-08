@@ -226,7 +226,8 @@ export default class DropDownMenu extends React.Component {
                   display: 'inline-flex',
                   right: '0px',
                   height: '20px',
-                  ...(overflowDropdown) ? { float: 'right' } : { position: 'absolute' }
+                  position: 'absolute',
+                  cursor: 'pointer'
                 }}>
                   <DownButton iconStyle={{color: 'grey'}} smallButton/>
                 </span>
@@ -239,7 +240,7 @@ export default class DropDownMenu extends React.Component {
   }
 
   setHasRoomToRenderBelow() {
-    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MAX_MENU_HEIGHT) + 5;
+    const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().bottom) > MAX_MENU_HEIGHT + 5);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({
         hasRoomToRenderBelow

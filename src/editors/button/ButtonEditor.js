@@ -167,6 +167,10 @@ export default class ButtonEditor extends React.Component {
       buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
     }
 
+    if (trackEvent && eventName) {
+      buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
+    }
+
     if(markCurrentFlowAsComplete) {
       buttonAttrs['data-step'] = BUTTON_ACTION_TYPES.END_STEP_AND_FLOW;
     }
