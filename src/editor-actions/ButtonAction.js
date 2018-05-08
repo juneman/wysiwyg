@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, flexColumn, flexJustifyContentSpaceBetween, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, flexColumn, flexJustifyContentSpaceBetween, shortInputStyle, buttonNavTypeMenuStyle, dropdownStyle, flexRow } from '../helpers/styles/editor';
 import { BUTTON_ACTION_TYPES, BUTTON_ACTION_TYPES_LIST, BUTTON_ACTIONS_WITH_DATA_STEP_ATTRS, DEFAULT_USER_PROPS } from '../helpers/constants';
 import { isTimestamp } from '../helpers/utils';
 import Menu from '../components/Menu';
@@ -27,7 +27,9 @@ export default class ButtonAction extends React.Component {
       flowId: '',
       eventName: '',
       trackEvent: false,
-      userPropertiesToUpdate: {'': ''},
+      keyToAdd: null,
+      valueToAdd: null,
+      userPropertiesToUpdate: Map({}),
       updateUserProperties: false,
       userPropertiesDropdown: []
     };
@@ -89,7 +91,7 @@ export default class ButtonAction extends React.Component {
 
   render() {
     const { isActive, hasRoomToRenderBelow, numPages } = this.props;
-    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent, userPropertiesToUpdate, updateUserProperties, userPropertiesDropdown } = this.state;
+    const { href, isNewWindow, isMenuOpen, buttonActionType, stepIndex, flowId, markCurrentFlowAsComplete, eventName, trackEvent, keyToAdd, valueToAdd, userPropertiesToUpdate, updateUserProperties, userPropertiesDropdown } = this.state;
 
     const buttonProps = getButtonProps(isActive);
 
@@ -113,9 +115,9 @@ export default class ButtonAction extends React.Component {
     };
 
     const hasMoreThanOneStep = numPages > 1;
-    const remainingUserProperties = userPropertiesDropdown.filter((property) => userPropertiesToUpdate[property.value] == undefined);
-
-      console.log(remainingUserProperties);
+    const remainingUserProperties = userPropertiesDropdown.filter((property) => userPropertiesToUpdate.get(property.value) == undefined);
+    const exampleInput = keyToAdd && userPropertiesDropdown.find((property) => property.value == keyToAdd).options[0].name;
+    const inputFieldType = this.getUserPropertyType(keyToAdd, userPropertiesDropdown);
 
     const dropdownNodes = isActive ? (
       <Menu style={{...dropdownStyles, ...flexColumn, maxHeight: 300, overflow: 'scroll' }}>
@@ -174,49 +176,76 @@ export default class ButtonAction extends React.Component {
           </div>
         }
 
-        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer'}}>
+        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', marginBottom: 8}}>
           <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
           Update User Properties
         </label>
 
-        { updateUserProperties && userPropertiesDropdown.length > 0 &&
-          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center'}}>
-            <div style={ {...flexColumn, width: '100%'} }>
-              { Object.keys(userPropertiesToUpdate).map((key, index) => (
-                <div key={index} style={ {...flexJustifyContentSpaceBetween, position: 'relative', paddingRight: 8, marginTop: (index > 0 ) ? 8 : 0} }>
-                  <DropDownMenu
-                    className="form-control"
-                    defaultValue="Choose a property to update"
-                    options={userPropertiesDropdown}
-                    selectedValue={key}
-                    smallDropDown
-                    overflowDropdown
-                    onSelect={(value) => this.selectUserProperty(key, value)}
-                    />
-                  { key !== "" &&
+        { updateUserProperties && userPropertiesToUpdate.size > 0 &&
+          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'flex-start', margin: '0 24px 8px 24px'}}>
+            { Object.keys(userPropertiesToUpdate.toJS()).map((key, index) => (
+              <div key={ index } style={{...flexRow, alignItems: 'center' }}>
+                <span style={{marginRight: 8}}><strong>{key}:</strong> {userPropertiesToUpdate.get(key).toString()}</span>
+                <CancelButton
+                  onClick={() => this.deleteUserProperty(key)}
+                  smallButton
+                  hideBackground
+                  color="#808080"/>
+              </div>
+            ))
+
+            }
+          </div>
+        }
+        { updateUserProperties && userPropertiesToUpdate.size == 0 &&
+          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'flex-start', margin: '0 16px 8px 16px'}}>
+            Choose a property to update:
+          </div>
+        }
+
+        { updateUserProperties && remainingUserProperties.length > 0 &&
+          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center', marginTop: 0}}>
+                <div style={ {...flexJustifyContentSpaceBetween, alignItems: 'center', position: 'relative', width: '100%', paddingRight: 8} }>
+                  <div style={{ flexBasis: '45%' }}>
+                    <DropDownMenu
+                      className="form-control"
+                      defaultValue="Choose property"
+                      options={remainingUserProperties}
+                      selectedValue={keyToAdd}
+                      smallDropDown
+                      overflowDropdown
+                      onSelect={(value) => this.setState({keyToAdd: value})}
+                      />
+                  </div>
+                  { inputFieldType !== 'checkbox' &&
                     <input
-                      type={ this.getUserPropertyType(key, userPropertiesDropdown) }
-                      value={ userPropertiesToUpdate[key] }
+                      type={ inputFieldType }
+                      value={ valueToAdd }
                       style={ {...inputStyle, ...smallInputStyle, marginLeft: 8} }
-                      placeholder="Update the user property"
-                      onChange={(e) => this.setUserPropertyValue(e, key)}/>
+                      placeholder={ (exampleInput) ? `Try "${exampleInput}"` : 'Set value'}
+                      onChange={(e) => this.setValueToAdd(e.target.value)}/>
                   }
-                  { index > 0 &&
-                    <div style={{position: 'absolute', marginLeft: 8, right: -16, cursor: 'pointer', height: 32, ...flexColumn, justifyContent: 'center'}}>
-                      <CancelButton
-                        onClick={() => this.deleteUserProperty(key)}
-                        smallButton
-                        hideBackground={true}
-                        color="#808080"/>
+                  { inputFieldType === 'checkbox' &&
+                    <div style={{marginLeft: 8, flexBasis: '55%'}} >
+                      <DropDownMenu
+                      className="form-control"
+                      defaultValue="Set value"
+                      options={[{label: 'True', value: true}, {label: 'False', value: false}]}
+                      selectedValue={valueToAdd}
+                      smallDropDown
+                      overflowDropdown
+                      onSelect={(value) => this.setValueToAdd(value)}
+                      />
                     </div>
                   }
+
+                  <div style={{marginLeft: 8, transform: 'scale(0.8)'}}>
+                    <AddButton
+                      onClick={() => this.addUserProperty()}
+                      smallButton
+                      disabled={ !keyToAdd || (valueToAdd == null)}/>
+                  </div>
                 </div>
-              ))}
-            </div>
-            {/* disable the add button if there is an empty property in the userPropertiesToUpdate object */}
-            { userPropertiesDropdown.length > 0 &&
-              <AddButton disabled={userPropertiesToUpdate[""]} style={{marginTop: 8}} smallButton onClick={() => this.addUserProperty()}/>
-            }
           </div>
         }
 
@@ -277,6 +306,12 @@ export default class ButtonAction extends React.Component {
     } else {
       onToggleActive(!isActive);
     }
+  }
+
+  setValueToAdd(valueToAdd) {
+    this.setState({
+      valueToAdd
+    });
   }
 
   handleHref(e) {
@@ -350,30 +385,18 @@ export default class ButtonAction extends React.Component {
   }
 
   addUserProperty() {
-    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
-    userPropertiesToUpdate[''] = '';
-    this.setState({ userPropertiesToUpdate }, this.saveAction);
+    const { keyToAdd, valueToAdd, userPropertiesToUpdate } = this.state;
+    if(valueToAdd == undefined || valueToAdd == null) return;
+    this.setState({
+      userPropertiesToUpdate: userPropertiesToUpdate.set(keyToAdd, valueToAdd),
+      keyToAdd: null,
+      valueToAdd: null
+    }, this.saveAction);
   }
 
   deleteUserProperty(key) {
-    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
-    delete userPropertiesToUpdate[key];
-    this.setState({ userPropertiesToUpdate }, this.saveAction);
-  }
-
-  selectUserProperty(key, value) {
-    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
-    if(userPropertiesToUpdate[value] !== undefined || key === value) return;
-    delete userPropertiesToUpdate[key];
-    userPropertiesToUpdate[value] = '';
-    this.setState({ userPropertiesToUpdate }, this.saveAction);
-  }
-
-  setUserPropertyValue(e, key) {
-    const userPropertyValue = e.target.value;
-    let userPropertiesToUpdate = {...this.state.userPropertiesToUpdate};
-    userPropertiesToUpdate[key] = userPropertyValue;
-    this.setState({ userPropertiesToUpdate }, this.saveAction);
+    const { userPropertiesToUpdate } = this.state;
+    this.setState({ userPropertiesToUpdate: userPropertiesToUpdate.delete(key) }, this.saveAction);
   }
 
   getPersistedStateByButtonActionType(buttonActionType, persistedState, state={}) {

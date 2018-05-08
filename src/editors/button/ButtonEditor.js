@@ -138,7 +138,27 @@ export default class ButtonEditor extends React.Component {
 
   generateHTML(persistedState) {
     const { zone } = this.props;
-    const { textAlign, href, borderRadius, padding, fontSize, width, isNewWindow, buttonActionType, markCurrentFlowAsComplete, stepIndex, marginTop, marginRight, marginBottom, marginLeft, flowId, eventName, trackEvent } = persistedState.toJS();
+    const {
+      textAlign,
+      href,
+      borderRadius,
+      padding,
+      fontSize,
+      width,
+      isNewWindow,
+      buttonActionType,
+      markCurrentFlowAsComplete,
+      stepIndex,
+      marginTop,
+      marginRight,
+      marginBottom,
+      marginLeft,
+      flowId,
+      eventName,
+      trackEvent,
+      userPropertiesToUpdate,
+      updateUserProperties
+    } = persistedState.toJS();
 
     const wrapperAttrs = {
       class: 'button-wrapper appcues-actions-right appcues-actions-left'
@@ -169,6 +189,11 @@ export default class ButtonEditor extends React.Component {
 
     if (trackEvent && eventName) {
       buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
+    }
+
+    if (updateUserProperties && userPropertiesToUpdate) {
+      console.log(userPropertiesToUpdate);
+      buttonAttrs['data-attrs-profile-update'] = JSON.stringify(userPropertiesToUpdate).replace(/\"/g, "&quot;");
     }
 
     if(markCurrentFlowAsComplete) {
