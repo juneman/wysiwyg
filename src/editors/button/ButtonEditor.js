@@ -192,7 +192,6 @@ export default class ButtonEditor extends React.Component {
     }
 
     if (updateUserProperties && userPropertiesToUpdate) {
-      console.log(userPropertiesToUpdate);
       buttonAttrs['data-attrs-profile-update'] = JSON.stringify(userPropertiesToUpdate).replace(/\"/g, "&quot;");
     }
 

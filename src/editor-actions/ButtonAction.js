@@ -141,11 +141,11 @@ export default class ButtonAction extends React.Component {
               <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
               <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
             </div>
-            <div style={{ marginTop: 5 }}>
+            <div style={{ marginTop: 4 }}>
               <input id="link-checkbox" type="checkbox" style={checkboxStyle} checked={isNewWindow} onChange={(e) => this.handleIsNewWindow(e)} />
               <label htmlFor="link-checkbox">Open In New Window</label>
             </div>
-            <div style={{ marginTop: 5 }}>
+            <div style={{ marginTop: 4 }}>
               <input id="mark-current-as-complete-checkbox" type="checkbox" style={checkboxStyle} checked={markCurrentFlowAsComplete} onChange={(e) => this.handleMarkCurrentFlowAsComplete(e)} />
               <label htmlFor="mark-current-as-complete-checkbox">Mark flow in progress as complete</label>
             </div>
@@ -157,7 +157,7 @@ export default class ButtonAction extends React.Component {
               <label style={ labelStyle }>Step number</label>
               <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
             </div>
-            <p style={{marginTop: '10px', lineHeight: '16px'}}>
+            <p style={{marginTop: '8px', lineHeight: '16px'}}>
               {
                 `This group contains ${ numPages === 1 ? 'only' : '' } ${ numPages || 'an unknown number of' } step${ hasMoreThanOneStep ? 's' : '' }. ${ hasMoreThanOneStep ? 'Set a number to this button to direct users to that specific step.' : '' }`
               }
@@ -176,7 +176,7 @@ export default class ButtonAction extends React.Component {
           </div>
         }
 
-        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', marginBottom: 8}}>
+        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', margin: '0 8px 8px 8px'}}>
           <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
           Update User Properties
         </label>
@@ -204,7 +204,7 @@ export default class ButtonAction extends React.Component {
         }
 
         { updateUserProperties && remainingUserProperties.length > 0 &&
-          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center', marginTop: 0}}>
+          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center', margin: '0 8px 8px 8px'}}>
                 <div style={ {...flexJustifyContentSpaceBetween, alignItems: 'center', position: 'relative', width: '100%', paddingRight: 8} }>
                   <div style={{ flexBasis: '45%' }}>
                     <DropDownMenu
@@ -256,13 +256,10 @@ export default class ButtonAction extends React.Component {
         </label>
 
         { trackEvent &&
-          <div style={buttonNavTypeMenuStyle}>
+          <div style={{ margin: 8 }}>
             <div style={ flexColumn }>
-              <label style={ labelStyle }>Event Name</label>
-              <input type="text" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
+              <input type="text" placeholder="Enter an event name to track" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
             </div>
-            <p style={{marginTop: '10px', lineHeight: '16px'}}>Enter the event name to trigger from this button.
-            </p>
           </div>
         }
       </Menu>
