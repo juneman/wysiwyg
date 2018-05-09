@@ -12,6 +12,12 @@ import ActionButton from '../icons/ActionButton';
 import AddButton from '../icons/AddButton';
 import CancelButton from '../icons/CancelButton';
 
+
+const subsectionBorderLeft = {
+  borderLeft: '4px solid rgba(0,0,0,0.14)',
+  margin: '0 8px 8px',
+  padding: '4px 0 4px 8px'
+};
 export default class ButtonAction extends React.Component {
 
   constructor(props) {
@@ -123,7 +129,7 @@ export default class ButtonAction extends React.Component {
       <Menu style={{...dropdownStyles, ...flexColumn, maxHeight: 300, overflow: 'scroll' }}>
         <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
 
-        <div style={{...buttonNavTypeMenuStyle, marginTop: 0}}>
+        <div style={{marginBottom: 8}}>
           <p htmlFor="button-action-menu" style={labelStyle}>Trigger Action</p>
           <DropDownMenu
             className="form-control"
@@ -136,7 +142,7 @@ export default class ButtonAction extends React.Component {
         </div>
 
         { buttonActionType === BUTTON_ACTION_TYPES.URL &&
-          <div style={{ margin: '-8px 8px 16px 8px'}}>
+          <div style={{marginBottom: 8}}>
             <div style={ flexColumn }>
               <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
               <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
@@ -152,7 +158,7 @@ export default class ButtonAction extends React.Component {
           </div>
         }
         { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
-          <div style={{ margin: '-8px 8px 16px 8px'}}>
+          <div style={{marginBottom: 8}}>
             <div style={ flexColumn }>
               <label style={ labelStyle }>Step number</label>
               <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
@@ -166,7 +172,7 @@ export default class ButtonAction extends React.Component {
         }
 
         { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
-          <div style={{ margin: '-8px 8px 16px 8px'}}>
+          <div style={{marginBottom: 8}}>
             <div style={ flexColumn }>
               <label style={ labelStyle }>Flow ID</label>
               <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
@@ -176,37 +182,39 @@ export default class ButtonAction extends React.Component {
           </div>
         }
 
-        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', margin: '0 8px 8px 8px'}}>
+        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', marginBottom: 8, width: 'fit-content'}}>
           <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
           Update User Properties
         </label>
 
-        { updateUserProperties && userPropertiesToUpdate.size > 0 &&
-          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'flex-start', margin: '0 24px 8px 24px'}}>
-            { Object.keys(userPropertiesToUpdate.toJS()).map((key, index) => (
-              <div key={ index } style={{...flexRow, alignItems: 'center' }}>
-                <span style={{marginRight: 8}}><strong>{key}:</strong> {userPropertiesToUpdate.get(key).toString()}</span>
-                <CancelButton
-                  onClick={() => this.deleteUserProperty(key)}
-                  smallButton
-                  hideBackground
-                  color="#808080"/>
+        { updateUserProperties &&
+          <div style={subsectionBorderLeft}>
+            { userPropertiesToUpdate.size > 0 &&
+              <div style={{...flexColumn, alignItems: 'flex-start', marginBottom: 8}}>
+                { Object.keys(userPropertiesToUpdate.toJS()).map((key, index) => (
+                  <div key={ index } style={{...flexRow, alignItems: 'center' }}>
+                    <span style={{marginRight: 8}}><strong>{key}:</strong> {userPropertiesToUpdate.get(key).toString()}</span>
+                    <CancelButton
+                      onClick={() => this.deleteUserProperty(key)}
+                      smallButton
+                      hideBackground
+                      color="#808080"/>
+                  </div>
+                ))
+
+                }
               </div>
-            ))
-
             }
-          </div>
-        }
-        { updateUserProperties && userPropertiesToUpdate.size == 0 &&
-          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'flex-start', margin: '0 16px 8px 16px'}}>
-            Choose a property to update:
-          </div>
-        }
+            {  userPropertiesToUpdate.size == 0 && remainingUserProperties.length > 0 &&
+              <div style={{marginBottom: 8}}>
+                Choose a property to update:
+              </div>
+            }
 
-        { updateUserProperties && remainingUserProperties.length > 0 &&
-          <div style={{...buttonNavTypeMenuStyle, ...flexColumn, alignItems: 'center', margin: '0 8px 8px 8px'}}>
+            { remainingUserProperties.length > 0 &&
+              <div style={{...flexColumn, alignItems: 'center'}}>
                 <div style={ {...flexJustifyContentSpaceBetween, alignItems: 'center', position: 'relative', width: '100%', paddingRight: 8} }>
-                  <div style={{ flexBasis: '45%' }}>
+                  <div style={{ flexBasis: '50%' }}>
                     <DropDownMenu
                       className="form-control"
                       defaultValue="Choose property"
@@ -246,17 +254,20 @@ export default class ButtonAction extends React.Component {
                       disabled={ !keyToAdd || (valueToAdd == null)}/>
                   </div>
                 </div>
+              </div>
+            }
           </div>
+
         }
 
 
-        <label htmlFor="track-event-checkbox" style={{cursor: 'pointer'}}>
+        <label htmlFor="track-event-checkbox" style={{cursor: 'pointer', marginBottom: 8, width: 'fit-content'}}>
           <input id="track-event-checkbox" type="checkbox" style={checkboxStyle} checked={trackEvent} onChange={(e) => this.handleTrackEvent(e)} />
           Track Event
         </label>
 
         { trackEvent &&
-          <div style={{ margin: 8 }}>
+          <div style={subsectionBorderLeft}>
             <div style={ flexColumn }>
               <input type="text" placeholder="Enter an event name to track" value={ eventName } style={ inputStyle } onChange={(e) => this.handleAddEvent(e)}/>
             </div>
