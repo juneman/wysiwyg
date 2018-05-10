@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { labelStyle } from '../helpers/styles/editor';
+import { labelStyle, colors } from '../helpers/styles/editor';
 import ReactSimpleRange from 'react-simple-range';
 
 const ZoomSlider = ({ handleChange, zoom }) => {
@@ -10,8 +10,8 @@ const ZoomSlider = ({ handleChange, zoom }) => {
       <ReactSimpleRange
         label
         sliderSize={6}
-        trackColor={"#00B2E5"}
-        thumbColor={"#00B2E5"}
+        trackColor={colors.informationalBlue}
+        thumbColor={colors.informationalBlue}
         max={200}
         min={100}
         onChange={handleChange}

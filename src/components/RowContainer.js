@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import tinyColor from 'tinycolor2';
 import { connect } from 'react-redux';
 import { DropTarget, DragSource } from 'react-dnd';
 import { List, Map } from 'immutable';
@@ -8,30 +9,31 @@ import * as rowActions from '../actions/rowActions';
 import * as zoneActions from '../actions/zoneActions';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { colors, draggingOverlayStyle } from '../helpers/styles/editor';
 
 import AddButtonHorizRule from './AddButtonHorizRule';
 import MoveVertButton from '../icons/MoveVertButton';
 import DragZone from './DragZone';
+import DragHandle from './DragHandle';
 
 const dragHandleStyle = {
   position: 'absolute',
-  left: -8,
-  top: '50%',
+  left: -12,
+  top: 0,
   transition: 'opacity 0.15s ease-out',
-  transform: 'translateY(-50%) scale(0.8)',
-  height: 24,
-  width: 24,
-  borderRadius: 4,
+  height: '100%',
+  width: 12,
   cursor: '-webkit-grab'
 
 };
 
+
 const baseHoverStateStyle = {
-  backgroundColor: 'rgba(255,186,76,0.13)'
+  backgroundColor: tinyColor(colors.informationalBlue).setAlpha(0.14).toRgbString()
 };
 
 const baseOverStyle = {
-  background: '#FFAA39',
+  background: colors.informationalBlue,
   pointerEvents: 'none',
   position: 'absolute',
   width: '100%',
@@ -88,7 +90,7 @@ class RowContainer extends Component {
   }
 
   render() {
-    const { row, basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone } = this.props;
+    const { row, basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone, isDragging } = this.props;
     const { isHoveringOverContainer } = this.state;
 
     return connectDropTarget(connectDragPreview(
@@ -109,19 +111,28 @@ class RowContainer extends Component {
               ...dragHandleStyle,
               opacity: isHoveringOverContainer ? 1: 0
             } }>
-            <MoveVertButton
-              smallButton
-              color='#FFAA39'/>
-            </section>)
+              <DragHandle/>
+            </section>
+          )
       }
-      <Row
-        {...this.props}
-      />
+      { isDragging &&
+        <div style={{opacity: 0}}>
+          <Row
+            {...this.props}
+          />
+        </div>
+      }
+      { !isDragging &&
+        <Row
+          {...this.props}
+        />
+      }
       <DragZone
         moveZoneToNewColumn={ this.moveZoneToNewColumn }
         rowId={row.get('id')}
         isHoveringOverContainer={isHoveringOverContainer} />
-      <AddButtonHorizRule
+      { !isInEditMode &&
+        <AddButtonHorizRule
           basePadding={basePadding}
           orientation="vertical"
           isHoveringOverContainer={ isHoveringOverContainer && !isInEditMode }
@@ -131,7 +142,11 @@ class RowContainer extends Component {
           onEditorMenuClose={ onEditorMenuClose }
           shouldCloseMenu={ shouldCloseMenu }
           resetShouldCloseMenu={ resetShouldCloseMenu }
-        />
+          />
+      }
+      { isDragging &&
+        <div style={draggingOverlayStyle}></div>
+      }
       </div>
     ));
   }
@@ -156,7 +171,8 @@ RowContainer.propTypes = {
   addZone: PropTypes.func,
   removeZone: PropTypes.func,
   insertZone: PropTypes.func,
-  basePadding: PropTypes.number
+  basePadding: PropTypes.number,
+  isDragging: PropTypes.bool
 };
 
 const rowSource = {

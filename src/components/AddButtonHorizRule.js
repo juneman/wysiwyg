@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import { DropTarget } from 'react-dnd';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { colors } from '../helpers/styles/editor';
 
 import AddButtonContainer from './AddButtonContainer';
 
@@ -109,7 +110,7 @@ class AddButtonHorizRule extends React.Component {
       margin: 0,
       pointerEvents: 'none',
       background: '#d4fee6',
-      border: '1px solid #00b850',
+      border: `1px solid ${colors.green}`,
       opacity: 0,
       transition: 'height 0.15s ease-out, transform 0s, opacity 0.3s ease-out 0.1s',
       transformOrigin: 'center 25% 0px',
@@ -182,7 +183,7 @@ class AddButtonHorizRule extends React.Component {
           hrStyle = {
             ...hrStyle,
             width: ADD_ZONE_EXPANDED,
-            border: '2px dotted  #00b850',
+            border: `2px dotted  ${colors.green}`,
             opacity: 1
           };
 
@@ -203,7 +204,7 @@ class AddButtonHorizRule extends React.Component {
           hrStyle = {
             ...hrStyle,
             height: ADD_ROW_EXPANDED,
-            border: '2px dashed  #00b850',
+            border: `2px dashed  ${colors.green}`,
             opacity: 1
           };
 

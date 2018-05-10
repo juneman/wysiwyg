@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { colors } from '../helpers/styles/editor';
 
 export default class Button extends React.Component {
   render() {
@@ -15,7 +16,7 @@ export default class Button extends React.Component {
       borderRadius: '4px',
       fontSize: '15px',
       fontWeight: 500,
-      backgroundColor: '#00b850',
+      backgroundColor: colors.green,
       color: 'rgba(255, 255, 255, 0.9)'
     };
 

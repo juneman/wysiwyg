@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 
 import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { colors } from '../helpers/styles/editor';
 
 const dragDropZoneStyle = {
   position: 'absolute',
@@ -21,7 +22,7 @@ const dragNotificationBar = {
   height: '100%',
   opacity: 0,
   transition: 'opacity 0.15s ease-out',
-  background: '#0bdc66'
+  background: colors.informationalBlue
 };
 
 /**

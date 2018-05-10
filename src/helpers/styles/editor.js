@@ -1,4 +1,19 @@
 
+export const colors = {
+  informationalBlue: '#00b2e5',
+  green: '#00b850'
+};
+
+export const draggingOverlayStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  zIndex: 4,
+  background: 'rgba(15, 9, 69, 0.1)'
+};
+
 export function getButtonProps(isActive) {
   return {
     hideBackground: true,

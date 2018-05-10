@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import tinyColor from 'tinycolor2';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { DropTarget, DragSource } from 'react-dnd';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
 import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { colors, draggingOverlayStyle } from '../helpers/styles/editor';
 
 import * as rowActions from '../actions/rowActions';
 import * as editorActions from '../actions/editorActions';
@@ -47,10 +49,11 @@ import RatingToolbar from '../editors/rating/RatingToolbar';
 
 import ArrowsButton from '../icons/ArrowsButton';
 import EditorWrapper from './EditorWrapper';
+import DragHandle from './DragHandle';
 
 
 const zoneBarStyle = {
-  background: '#0bdc66',
+  background: colors.informationalBlue,
   pointerEvents: 'none',
   position: 'absolute',
   height: '100%',
@@ -76,8 +79,8 @@ class Zone extends React.Component {
     };
 
     this.baseHoverStateStyle = {
-      outlineColor: '#FFAA39',
-      backgroundColor: 'rgba(255,186,76,0.13)'
+      outlineColor: colors.informationalBlue,
+      backgroundColor: tinyColor(colors.informationalBlue).setAlpha(0.14).toRgbString()
     };
 
     this.baseActiveStateStyle = {
@@ -94,12 +97,12 @@ class Zone extends React.Component {
 
     this.grabArrowStyle = {
       position: 'absolute',
-      height: 24,
-      width: 24,
-      top: 0,
-      right: 0,
-      cursor: '-webkit-grab',
+      left: -12,
+      top: -2,
       transition: 'opacity 0.15s ease-out',
+      height: 'calc(100% + 4px)',
+      width: 12,
+      cursor: '-webkit-grab',
       opacity: 0
     };
 
@@ -141,7 +144,9 @@ class Zone extends React.Component {
     const { position } = this.state;
     const {
       connectDragSource,
+      connectDragPreview,
       connectDropTarget,
+      isDragging,
       isMovable,
       dispatch,
       columnIndex,
@@ -164,16 +169,16 @@ class Zone extends React.Component {
 
     const type = zone.get('type');
 
-    const hoverStateStyle = (isHover) ? this.baseHoverStateStyle : null;
+    const hoverStateStyle = (isHover && !isDragging) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? { opacity: 1} : {}};
     const isMovableStyle = isMovable ? this.isMovableStyle : null;
-    const grabArrowStyle = {...this.grabArrowStyle, ...(isHover) ? this.grabArrowHoverStyle : {} };
+    const grabArrowStyle = {...this.grabArrowStyle, ...(isHover && !isDragging) ? this.grabArrowHoverStyle : {} };
+    const isDraggingStyle = isDragging ? { opacity: 0} : {};
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle);
-
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle, isDraggingStyle);
 
 
     // Common props across all editors
@@ -283,9 +288,8 @@ class Zone extends React.Component {
         break;
     }
 
-    const DragIfPossible = (isMovable) ? connectDragSource : (input) => input;
 
-    return DragIfPossible(connectDropTarget(
+    return connectDragPreview(connectDropTarget(
       <div
         className={`zone-container zone-${columnIndex}`}
         style={containerStyle}
@@ -320,11 +324,19 @@ class Zone extends React.Component {
           >
             {editorNode}
           </EditorWrapper>
-          <div style={grabArrowStyle}>
-            <ArrowsButton color="#FFAA39" smallButton hideBackground/>
-          </div>
+          { isMovable &&
+            connectDragSource(
+              <div style={{...grabArrowStyle}}>
+                <DragHandle/>
+              </div>
+            )
+          }
+
           <div style={moveZoneBarStyle}></div>
         </div>
+        { isDragging &&
+          <div style={draggingOverlayStyle}></div>
+        }
       </div>
     ));
   }
@@ -409,6 +421,7 @@ class Zone extends React.Component {
 
 Zone.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
+  connectDragPreview: PropTypes.func.isRequired,
   connectDragSource: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   zone: PropTypes.instanceOf(Map).isRequired,
@@ -421,6 +434,7 @@ Zone.propTypes = {
   html: PropTypes.string,
   isMovable: PropTypes.bool.isRequired,
   moveZone: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool,
   isEditing: PropTypes.bool.isRequired,
   isEditingAny: PropTypes.bool.isRequired,
   isHover: PropTypes.bool.isRequired,
@@ -495,6 +509,8 @@ const zoneTarget = {
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
+
+    if(targetProps.zone.get('id') == sourceProps.zone.get('id')) return;
 
     targetProps.removeZone(sourceProps.row, sourceProps.zone);
     targetProps.insertZone(targetProps.row, sourceProps.zone, targetProps.columnIndex);
