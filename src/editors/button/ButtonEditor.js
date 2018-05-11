@@ -187,11 +187,7 @@ export default class ButtonEditor extends React.Component {
       buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
     }
 
-    if (trackEvent && eventName) {
-      buttonAttrs['data-attrs-event'] = JSON.stringify({event: eventName}).replace(/\"/g, "&quot;");
-    }
-
-    if (updateUserProperties && userPropertiesToUpdate) {
+    if (updateUserProperties && Object.keys(userPropertiesToUpdate) > 0) {
       buttonAttrs['data-attrs-profile-update'] = JSON.stringify(userPropertiesToUpdate).replace(/\"/g, "&quot;");
     }
 

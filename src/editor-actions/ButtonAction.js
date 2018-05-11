@@ -49,7 +49,17 @@ export default class ButtonAction extends React.Component {
         .map((userProperty) => {
           return userProperty.toJS();
         })
-        .filter((userProperty) => DEFAULT_USER_PROPS.indexOf(userProperty.value) == -1 && !isTimestamp(userProperty.options[0].name))
+        .filter((userProperty) => {
+
+          const isTimestamp = (userProperty.options && userProperty.options.length > 0) ?
+            !isTimestamp(userProperty.options[0].name) :
+            false;
+
+          return (
+            DEFAULT_USER_PROPS.indexOf(userProperty.value) == -1 &&
+            isTimestamp
+          );
+        })
       ].map((userProperty) => ({
          label: userProperty.name,
          type: this.setUserPropertyType(userProperty.options),
@@ -122,7 +132,8 @@ export default class ButtonAction extends React.Component {
 
     const hasMoreThanOneStep = numPages > 1;
     const remainingUserProperties = userPropertiesDropdown.filter((property) => userPropertiesToUpdate.get(property.value) == undefined);
-    const exampleInput = keyToAdd && userPropertiesDropdown.find((property) => property.value == keyToAdd).options[0].name;
+    const propertyDropdownExample = keyToAdd && userPropertiesDropdown.find((property) => property.value == keyToAdd);
+    const exampleInput = (propertyDropdownExample && propertyDropdownExample.options.length > 0) ? propertyDropdownExample.options[0].name : 'Enter Value';
     const inputFieldType = this.getUserPropertyType(keyToAdd, userPropertiesDropdown);
 
     const dropdownNodes = isActive ? (
