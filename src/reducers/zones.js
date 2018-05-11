@@ -1,5 +1,5 @@
 import Actions from '../helpers/actionConstants';
-import { Map, List } from 'immutable';
+import { Map } from 'immutable';
 
 export default function zones(state = Map(), action) {
   let newState = state;

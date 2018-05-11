@@ -87,8 +87,8 @@ class RowContainer extends Component {
   moveZoneToNewColumn(sourceRow, sourceZone){
     const { addZone, removeZone } = this.props;
 
-    addZone(sourceZone.get('type'), null, sourceZone.get('persistedState').toJS());
     removeZone(sourceRow, sourceZone);
+    addZone(sourceZone.get('type'), null, sourceZone.get('persistedState').toJS());
 
   }
 
@@ -98,8 +98,8 @@ class RowContainer extends Component {
 
     return connectDropTarget(connectDragPreview(
       <div className="row-container"
-        onMouseOver={() => this.setIsHoveringOverContainer(true) }
-        onMouseOut={() => this.setIsHoveringOverContainer(false) }
+        onMouseEnter={() => this.setIsHoveringOverContainer(true) }
+        onMouseLeave={() => this.setIsHoveringOverContainer(false) }
         style={{
           ...((isHoveringOverContainer && !isOver) && !isInEditMode) ? baseHoverStateStyle : {},
           position: 'relative',
@@ -108,19 +108,19 @@ class RowContainer extends Component {
         }}>
       { (!isInEditMode && !isDragging && !isHoveringOverContainer) &&
         <div style={{...baseOverStyle, ...isOver ? {opacity: 1} : {}}}>
-          <svg id="right-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidyMidMeet">
+          <svg id="right-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidYMid meet">
             <title>Left Side Caret - Move Row</title>
             <path fill={colors.informationalBlue} d="M0,4V20a4,4,0,0,0,4,4H31L46,12.52,31,0H4A4,4,0,0,0,0,4Z" transform="translate(0 0)"/>
           </svg>
 
-          <svg id="left-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidyMidMeet">
+          <svg id="left-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidYMid meet">
             <title>Right Side Caret - Move Row</title>
             <path fill={colors.informationalBlue} d="M46,4V20a4,4,0,0,1-4,4H15L0,12.52,15,0H42A4,4,0,0,1,46,4Z"/>
           </svg>
 
         </div>
       }
-      { isMovable && !isInEditMode &&
+      { isMovable && !isInEditMode && !isDragging &&
         connectDragSource(
           <section role="drag-handle-to-reorder" style={
             {
@@ -140,6 +140,7 @@ class RowContainer extends Component {
       }
       { !isDragging &&
         <Row
+          setIsHoveringOverRowContainer={this.setIsHoveringOverContainer}
           {...this.props}
         />
       }

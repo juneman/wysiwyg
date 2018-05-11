@@ -133,7 +133,7 @@ export class Canvas extends React.Component {
           basePadding={basePadding}
           row={row}
           rowIndex={i}
-          addZone={ (type, defaultAction, existingProps) => this.addZone(type, row.get('id'), defaultAction, existingProps)}
+          addZone={ (type, defaultAction, existingProps) => this.addNewZone(type, row, defaultAction, existingProps)}
           removeZone={ this.removeZone.bind(this) }
           insertZone={ this.insertZone.bind(this) }
           isInEditMode={isInEditMode}
@@ -292,20 +292,32 @@ export class Canvas extends React.Component {
     this.addRow('Image', rowsToAdd);
   }
 
-  addZone(type, rowId, defaultAction, existingProps = {}) {
-    const { dispatch, internalRows } = this.props;
+
+  insertZone(
+    row,
+    zone,
+    columnIndex
+  ) {
+    this.props.dispatch(rowActions.insertZone(
+      row,
+      zone,
+      columnIndex
+    ));
+  }
+
+  addNewZone(type, row, defaultAction, existingProps = {}) {
+    const { dispatch } = this.props;
     const zoneToAdd = fromJS(
       {
         id: uuid(),
         type,
         persistedState: {
-          marginTop: (internalRows.findIndex((row) => row.get('id') == rowId) > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0,
           ...existingProps
         }
       }
     );
 
-    dispatch(rowActions.addZone(rowId, zoneToAdd));
+    dispatch(rowActions.insertZone(row, zoneToAdd));
 
     // start editing immediately, if zone is new
     if(Object.keys(existingProps) == 0) {
@@ -347,7 +359,7 @@ export class Canvas extends React.Component {
 
 
   addRow(type, rowsToAdd, defaultAction) {
-    const { dispatch, internalRows } = this.props;
+    const { dispatch } = this.props;
 
     rowsToAdd = rowsToAdd || fromJS([{
       id: uuid(),
@@ -355,9 +367,7 @@ export class Canvas extends React.Component {
         {
           id: uuid(),
           type,
-          persistedState: {
-            marginTop: (internalRows.size > 0 && ![EDITOR_TYPES.VIDEO, EDITOR_TYPES.HERO, EDITOR_TYPES.HTML].includes(type)) ? 16 : 0
-          }
+          persistedState: {}
         }
       ]
     }]);
@@ -383,19 +393,6 @@ export class Canvas extends React.Component {
       return;
     }
     this.props.dispatch(editorActions.moveRows(sourceIndex, targetIndex));
-  }
-
-
-  insertZone(
-    row,
-    zone,
-    columnIndex
-  ) {
-    this.props.dispatch(editorActions.insertZone(
-      row,
-      zone,
-      columnIndex
-    ));
   }
 
   buildHtml(rows, zonesWithHtml) {

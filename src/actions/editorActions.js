@@ -36,21 +36,6 @@ export function updateDraft(update) {
   };
 }
 
-export function toggleZoneHover(zone, isOver) {
-  return {
-    type: Actions.EDITOR_ZONE_HOVER_TOGGLE,
-    zone,
-    isOver
-  };
-}
-
-export function toggleRowHover(row, isOver) {
-  return {
-    type: Actions.EDITOR_ROW_HOVER_TOGGLE,
-    row,
-    isOver
-  };
-}
 
 export function toggleEditorAction(name, isActive) {
   return {
@@ -96,19 +81,6 @@ export function moveRows(sourceIndex, targetIndex) {
     type: Actions.EDITOR_MOVE_ROW,
     sourceIndex,
     targetIndex
-  };
-}
-
-export function insertZone(
-  row,
-  zone,
-  columnIndex
-) {
-  return {
-    type: Actions.EDITOR_INSERT_ZONE,
-    row,
-    zone,
-    columnIndex
   };
 }
 

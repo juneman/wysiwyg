@@ -29,11 +29,16 @@ export function removeRow(id) {
   };
 }
 
-export function addZone(rowId, zone) {
+export function insertZone(
+  row,
+  zone,
+  columnIndex
+) {
   return {
-    type: Actions.ROWS_ADD_ONE_ZONE,
-    rowId,
-    zone
+    type: Actions.ROWS_INSERT_ZONE,
+    row,
+    zone,
+    columnIndex
   };
 }
 

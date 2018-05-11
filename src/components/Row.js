@@ -23,12 +23,13 @@ export default class Row extends React.Component {
   }
 
   render() {
-    const { row, isOver, numPages, removeZone, insertZone } = this.props;
+    const { row, isOver, numPages, removeZone, insertZone, setIsHoveringOverRowContainer } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
       return (
         <Zone
+          setIsHoveringOverRowContainer={setIsHoveringOverRowContainer}
           numPages={numPages}
           key={zone.get('id')}
           zone={zone}
@@ -76,5 +77,6 @@ Row.propTypes = {
   isOver: PropTypes.bool.isRequired,
   removeZone: PropTypes.func.isRequired,
   insertZone: PropTypes.func.isRequired,
-  numPages: PropTypes.number
+  numPages: PropTypes.number,
+  setIsHoveringOverRowContainer: PropTypes.func
 };

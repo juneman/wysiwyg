@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import tinyColor from 'tinycolor2';
 import { Map, List } from 'immutable';
@@ -70,12 +70,13 @@ const zoneBarStyle = {
  * or an editable area if the Zone is active
  * @class
  */
-class Zone extends React.Component {
+class Zone extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      position: Map()
+      position: Map(),
+      isHover: false
     };
 
     this.baseHoverStateStyle = {
@@ -157,7 +158,6 @@ class Zone extends React.Component {
       isEditing,
       isEditingAny,
       localState,
-      isHover,
       disableAddButton,
       persistedState,
       cloudinary,
@@ -166,8 +166,8 @@ class Zone extends React.Component {
       numPages,
       removeZone
     } = this.props;
+    const { isHover } = this.state;
 
-    const type = zone.get('type');
 
     const hoverStateStyle = (isHover && !isDragging) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
@@ -239,6 +239,7 @@ class Zone extends React.Component {
     let editorNode;
     let toolbarNode;
     let inlineActionsNode = null;
+    const type = zone.get('type');
 
     switch (type) {
       case 'RichText':
@@ -293,7 +294,7 @@ class Zone extends React.Component {
       <div
         className={`zone-container zone-${columnIndex}`}
         style={containerStyle}
-        onMouseOver={() => this.toggleHover(true)}
+        onMouseEnter={() => this.toggleHover(true)}
         onMouseLeave={() => this.toggleHover(false)}
         onClick={() => { if(!isEditingAny){ this.startEditing(); }}}
         onDoubleClick={() => { if(!isEditingAny){ this.startEditing(); }}}
@@ -352,12 +353,10 @@ class Zone extends React.Component {
     }
   }
 
-  toggleHover(isOver) {
-    const { dispatch, zone, row, isHover, isEditingAny } = this.props;
-    if (isOver != isHover && !isEditingAny) {
-      dispatch(editorActions.toggleZoneHover(zone, isOver));
-      dispatch(editorActions.toggleRowHover(row, isOver));
-    }
+  toggleHover(isHover) {
+    this.setState({
+      isHover
+    });
   }
 
   save() {
@@ -457,7 +456,6 @@ function mapStateToProps(state, ownProps) {
   const isEditingAny = state.editor.get('isCanvasInEditMode');
   const persistedState = (isEditing) ? state.editor.get('draftPersistedState') : ownProps.zone.get('persistedState');
   const html = (isEditing) ? state.editor.get('draftHtml') : (state.zones.has(zoneId) ? state.zones.get(zoneId).get('html') : null);
-  const isHover = (!state.editor.get('isCanvasInEditMode') && (state.editor.get('hoverZoneId') === zoneId)) ? true : false;
 
   return {
     localState: state.editor.get('localState'),
@@ -465,7 +463,6 @@ function mapStateToProps(state, ownProps) {
     html,
     isEditing,
     isEditingAny,
-    isHover,
     basePadding: state.editor.get('basePadding'),
     disableAddButton: state.editor.get('disableAddButton'),
     canvasPosition: state.editor.get('canvasPosition'),
@@ -480,12 +477,13 @@ const zoneSource = {
     return props.zone.get('id') === monitor.getItem().zone.get('id');
   },
   beginDrag(props) {
+    props.setIsHoveringOverRowContainer(false);
     return {
       row: props.row,
       zone: props.zone,
       columnIndex: props.columnIndex
     };
-  },
+  }
 };
 
 function collectSource(connect, monitor) {
@@ -511,7 +509,6 @@ const zoneTarget = {
     const sourceProps = monitor.getItem();
 
     if(targetProps.zone.get('id') == sourceProps.zone.get('id')) return;
-
     targetProps.removeZone(sourceProps.row, sourceProps.zone);
     targetProps.insertZone(targetProps.row, sourceProps.zone, targetProps.columnIndex);
   }
