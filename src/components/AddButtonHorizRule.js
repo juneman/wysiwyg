@@ -134,7 +134,6 @@ class AddButtonHorizRule extends React.Component {
       position: 'absolute',
       height: ADD_ROW_COLLAPSED,
       minHeight: ADD_ROW_COLLAPSED,
-      pointerEvents: 'none',
       width: '100%',
       left: 0,
       right: 0,
@@ -158,7 +157,6 @@ class AddButtonHorizRule extends React.Component {
 
       addButtonStyle = {
         ...addButtonStyle,
-        pointerEvents: 'none',
         top: '50%',
         left: null,
         right: 0,
@@ -227,8 +225,7 @@ class AddButtonHorizRule extends React.Component {
       };
 
       addButtonStyle = {
-        ...addButtonStyle,
-        pointerEvents: 'all'
+        ...addButtonStyle
       };
 
       containerStyle = {
@@ -253,7 +250,6 @@ class AddButtonHorizRule extends React.Component {
         <div style={ (isHorizontalOrientation) ? wrapperStyle : {zIndex: 10} } ref={(el) => this.wrapper = el}>
           <div
             style={addButtonStyle}
-            onClick={ this.handleAddNew }
             onMouseOver={() => !isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: true })}
             onMouseOut={() => isHoveringOverAddButton && this.setState({ isHoveringOverAddButton: false })}
             ref={(el) => this.addButton = el}
@@ -262,6 +258,7 @@ class AddButtonHorizRule extends React.Component {
               onSelectEditorType={ onSelectEditorType }
               showEditorSelector={ showEditorSelector }
               smallButton={ !isHorizontalOrientation }
+              onClick={ this.handleAddNew }
               internalAllowedEditorTypes={ internalAllowedEditorTypes }
               shadow={false}
             />

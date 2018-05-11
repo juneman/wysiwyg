@@ -36,12 +36,15 @@ const baseOverStyle = {
   background: colors.informationalBlue,
   pointerEvents: 'none',
   position: 'absolute',
-  width: '100%',
+  width: 'calc(100% + 24px)',
   opacity: 0,
-  height: 4,
-  left: 0,
+  height: 2,
+  left: -12,
   top: -2,
-  transition: 'opacity 0.15s ease-out'
+  transition: 'opacity 0.15s ease-out',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between'
 };
 
 import Row from './Row';
@@ -103,7 +106,20 @@ class RowContainer extends Component {
           margin: basePadding ? `0 -${basePadding}px` : 0,
           padding: basePadding ? `0 ${basePadding}px` : 0
         }}>
-      <div style={{...baseOverStyle, ...(isOver && !isHoveringOverContainer && !isInEditMode) ? {opacity: 1} : {}}}></div>
+      { (!isInEditMode && !isDragging && !isHoveringOverContainer) &&
+        <div style={{...baseOverStyle, ...isOver ? {opacity: 1} : {}}}>
+          <svg id="right-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidyMidMeet">
+            <title>Left Side Caret - Move Row</title>
+            <path fill={colors.informationalBlue} d="M0,4V20a4,4,0,0,0,4,4H31L46,12.52,31,0H4A4,4,0,0,0,0,4Z" transform="translate(0 0)"/>
+          </svg>
+
+          <svg id="left-side-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 24" height="12" preserveAspectRatio="xMidyMidMeet">
+            <title>Right Side Caret - Move Row</title>
+            <path fill={colors.informationalBlue} d="M46,4V20a4,4,0,0,1-4,4H15L0,12.52,15,0H42A4,4,0,0,1,46,4Z"/>
+          </svg>
+
+        </div>
+      }
       { isMovable && !isInEditMode &&
         connectDragSource(
           <section role="drag-handle-to-reorder" style={
