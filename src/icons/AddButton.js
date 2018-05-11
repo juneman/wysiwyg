@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import IconButton from './IconButton';
 
@@ -17,3 +18,8 @@ export default class AddButton extends React.PureComponent {
     );
   }
 }
+
+AddButton.propTypes = {
+  shadow: PropTypes.bool,
+  colorOverride: PropTypes.string
+};
