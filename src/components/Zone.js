@@ -96,21 +96,6 @@ class Zone extends Component {
       display: 'inline-block'
     };
 
-    this.grabArrowStyle = {
-      position: 'absolute',
-      left: -12,
-      top: -2,
-      transition: 'opacity 0.15s ease-out',
-      height: 'calc(100% + 4px)',
-      width: 12,
-      cursor: '-webkit-grab',
-      opacity: 0
-    };
-
-    this.grabArrowHoverStyle = {
-      opacity: 1
-    };
-
     this.zoneStyle = {
       outlineStyle: 'dotted',
       outlineWidth: '2px',
@@ -173,8 +158,7 @@ class Zone extends Component {
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? { opacity: 1} : {}};
     const isMovableStyle = isMovable ? this.isMovableStyle : null;
-    const grabArrowStyle = {...this.grabArrowStyle, ...(isHover && !isDragging) ? this.grabArrowHoverStyle : {} };
-    const isDraggingStyle = isDragging ? { opacity: 0} : {};
+    const isDraggingStyle = isDragging ? { opacity: 0 } : {};
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
     const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
@@ -302,33 +286,38 @@ class Zone extends Component {
         onDoubleClick={() => { if(!isEditingAny){ this.startEditing(); }}}
         ref={(el) => this.wrapper = el}
       >
-        <div className="zone" style={zoneStyle}>
-          <EditorWrapper
-            rowPosition={rowPosition}
-            zonePosition={position}
-            isEditing={isEditing}
-            isHover={isHover}
-            disableDeleteButton={disableAddButton}
-            onEdit={() => this.startEditing()}
-            onSave={() => {
-              this.save();
-              this.cancelEditing();
-            }}
-            onCancel={() => this.clickedCancel()}
-            onRemove={() => removeZone(row, zone, true)}
-            onMoveRowStart={() => {
-              dispatch(editorActions.startMoving(row));
-            }}
-            onMoveRowEnd={() => {
-              dispatch(editorActions.endMoving(row));
-            }}
-            toolbarNode={toolbarNode}
-            inlineActionsNode={inlineActionsNode}
-          >
-            {editorNode}
-          </EditorWrapper>
-          <div style={moveZoneBarStyle}></div>
-        </div>
+        {
+          connectDragPreview(
+            <div className="zone" style={zoneStyle}>
+                <EditorWrapper
+                  rowPosition={rowPosition}
+                  zonePosition={position}
+                  isEditing={isEditing}
+                  isHover={isHover}
+                  disableDeleteButton={disableAddButton}
+                  onEdit={() => this.startEditing()}
+                  onSave={() => {
+                    this.save();
+                    this.cancelEditing();
+                  }}
+                  onCancel={() => this.clickedCancel()}
+                  onRemove={() => removeZone(row, zone, true)}
+                  onMoveRowStart={() => {
+                    dispatch(editorActions.startMoving(row));
+                  }}
+                  onMoveRowEnd={() => {
+                    dispatch(editorActions.endMoving(row));
+                  }}
+                  toolbarNode={toolbarNode}
+                  inlineActionsNode={inlineActionsNode}
+                >
+                  {editorNode}
+                </EditorWrapper>
+                <div style={moveZoneBarStyle}></div>
+              </div>
+          )
+
+        }
         { isDragging &&
           <div style={draggingOverlayStyle}></div>
         }

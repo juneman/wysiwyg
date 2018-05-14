@@ -18,11 +18,11 @@ import DragHandle from './DragHandle';
 
 const dragHandleStyle = {
   position: 'absolute',
-  left: -12,
+  left: -20,
   top: 0,
   transition: 'opacity 0.15s ease-out',
   height: '100%',
-  width: 12,
+  width: 20,
   cursor: '-webkit-grab'
 
 };

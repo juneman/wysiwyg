@@ -9,7 +9,7 @@ const dragDropZoneStyle = {
   position: 'absolute',
   background: colors.informationalBlue,
   height: '100%',
-  width: 12,
+  width: 20,
   left: 0,
   top: 0,
   display: 'flex',
