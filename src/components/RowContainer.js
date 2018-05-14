@@ -96,7 +96,7 @@ class RowContainer extends Component {
     const { row, basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone, isDragging } = this.props;
     const { isHoveringOverContainer } = this.state;
 
-    return connectDropTarget(connectDragPreview(
+    return connectDropTarget(
       <div className="row-container"
         onMouseEnter={() => this.setIsHoveringOverContainer(true) }
         onMouseLeave={() => this.setIsHoveringOverContainer(false) }
@@ -131,18 +131,15 @@ class RowContainer extends Component {
             </section>
           )
       }
-      { isDragging &&
-        <div style={{opacity: 0}}>
-          <Row
-            {...this.props}
-          />
-        </div>
-      }
-      { !isDragging &&
-        <Row
-          setIsHoveringOverRowContainer={this.setIsHoveringOverContainer}
-          {...this.props}
-        />
+      {
+        connectDragPreview(
+          <div style={ isDragging ? {opacity: 0} : null}>
+            <Row
+              setIsHoveringOverRowContainer={this.setIsHoveringOverContainer}
+              {...this.props}
+            />
+          </div>
+        )
       }
       <DragZone
         moveZoneToNewColumn={ this.moveZoneToNewColumn }
@@ -165,7 +162,7 @@ class RowContainer extends Component {
         <div style={draggingOverlayStyle}></div>
       }
       </div>
-    ));
+    );
   }
 }
 

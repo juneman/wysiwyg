@@ -119,7 +119,7 @@ class Zone extends Component {
       position: 'relative',
       margin: 0,
       padding: 0,
-      cursor: 'pointer',
+      cursor: '-webkit-grab',
       width: '100%',
       height: '100%',
       transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
@@ -169,7 +169,7 @@ class Zone extends Component {
     const { isHover } = this.state;
 
 
-    const hoverStateStyle = (isHover && !isDragging) ? this.baseHoverStateStyle : null;
+    const hoverStateStyle = (isHover && !isDragging && !isEditingAny) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
     const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? { opacity: 1} : {}};
     const isMovableStyle = isMovable ? this.isMovableStyle : null;
@@ -289,8 +289,10 @@ class Zone extends Component {
         break;
     }
 
+    const DragIfPossible = (children) => (isMovable) ? connectDragSource(children) : children;
 
-    return connectDragPreview(connectDropTarget(
+
+    return DragIfPossible(connectDropTarget(
       <div
         className={`zone-container zone-${columnIndex}`}
         style={containerStyle}
@@ -325,14 +327,6 @@ class Zone extends Component {
           >
             {editorNode}
           </EditorWrapper>
-          { isMovable &&
-            connectDragSource(
-              <div style={{...grabArrowStyle}}>
-                <DragHandle/>
-              </div>
-            )
-          }
-
           <div style={moveZoneBarStyle}></div>
         </div>
         { isDragging &&

@@ -66,7 +66,7 @@ class AddButtonHorizRule extends React.Component {
       });
 
       if (!e.path.find((pathItem) => pathItem.className === "add-row")) {
-        resetShouldCloseMenu();
+        resetShouldCloseMenu && resetShouldCloseMenu();
         onEditorMenuClose && onEditorMenuClose();
       }
     }
@@ -80,8 +80,8 @@ class AddButtonHorizRule extends React.Component {
 
     if (shouldCloseMenu && showEditorSelector) {
       this.setState({ showEditorSelector: false });
-      resetShouldCloseMenu();
-      onEditorMenuClose();
+      resetShouldCloseMenu && resetShouldCloseMenu();
+      onEditorMenuClose && onEditorMenuClose();
     }
 
     if (win) {
