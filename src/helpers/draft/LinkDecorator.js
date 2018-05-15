@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Entity } from 'draft-js';
 import Link from '../../components/entities/Link';
 
-function findLinkEntities(contentBlock, callback, contentState) {
+export function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
     (character) => {
       const entityKey = character.getEntity();

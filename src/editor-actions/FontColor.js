@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, Set } from 'immutable';
+import { Map, Set, is } from 'immutable';
 import { ColorPicker } from '../components/ColorPicker';
 import { RichUtils, EditorState, Modifier } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
@@ -8,6 +8,7 @@ import tinyColor from 'tinycolor2';
 
 import { secondaryMenuTitleStyle, dropdownStyle } from '../helpers/styles/editor';
 import { getBlocksFromSelection } from '../helpers/draft/selection';
+import { findLinkEntities } from '../helpers/draft/LinkDecorator';
 import Menu from '../components/Menu';
 
 import FontColorButton from '../icons/FontColorButton';
@@ -157,17 +158,35 @@ export default class FontColor extends React.Component {
     nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
 
     // Apply color changes to link entities within the selected range
+    const nextEditorSelection = nextEditorState.getSelection();
+    const startOffset = nextEditorSelection.getStartOffset();
+    const startKey = nextEditorSelection.getStartKey();
+    const endOffset = nextEditorSelection.getEndOffset();
+    const endKey = nextEditorSelection.getEndKey();
     nextContentState = nextEditorState.getCurrentContent();
-    const startKey = nextEditorState.getSelection().getStartKey();
-    const startOffset = nextEditorState.getSelection().getStartOffset();
-    const blockWithLinkAtBeginning = nextContentState.getBlockForKey(startKey);
-    const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-    if (linkKey) {
-      const linkInstance = nextContentState.getEntity(linkKey);
-      if (linkInstance) {
-        nextContentState = nextContentState.mergeEntityData(linkKey, { color: color.hex });
-        nextEditorState = EditorState.push(nextEditorState, nextContentState, 'apply-inline-style');
-      }
+    getBlocksFromSelection(nextEditorState).forEach((block) => {
+      findLinkEntities(block, (start, end) => {
+        if (
+          (block.getKey() === startKey && end <= startOffset) ||
+          (block.getKey() === endKey && start >= endOffset)
+        ) {
+          return;
+        }
+        const linkKey = block.getEntityAt(start);
+        if (linkKey) {
+          nextContentState = nextContentState.mergeEntityData(
+            linkKey,
+            { color: toggledColor }
+          );
+        }
+      }, nextContentState);
+    });
+    if (!is(nextEditorState.getCurrentContent(), nextContentState)) {
+      nextEditorState = EditorState.push(
+        nextEditorState,
+        nextContentState,
+        'apply-inline-style'
+      );
     }
 
     const newLocalState = localState.set('editorState', nextEditorState);
