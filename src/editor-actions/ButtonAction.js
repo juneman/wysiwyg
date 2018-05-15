@@ -50,14 +50,14 @@ export default class ButtonAction extends React.Component {
           return userProperty.toJS();
         })
         .filter((userProperty) => {
-
-          const isTimestamp = (userProperty.options && userProperty.options.length > 0) ?
+          //exclude any fields that may be a date
+          const isValidField = (userProperty.options && userProperty.options.length > 0) ?
             !isTimestamp(userProperty.options[0].name) :
             false;
 
           return (
             DEFAULT_USER_PROPS.indexOf(userProperty.value) == -1 &&
-            isTimestamp
+            isValidField
           );
         })
       ].map((userProperty) => ({
