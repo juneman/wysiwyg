@@ -138,7 +138,7 @@ export default class ButtonAction extends React.Component {
     const inputFieldType = this.getUserPropertyType(keyToAdd, userPropertiesDropdown);
 
     const dropdownNodes = isActive ? (
-      <Menu style={{...dropdownStyles, ...flexColumn, maxHeight: 300, overflow: 'scroll' }}>
+      <Menu style={{...dropdownStyles, ...flexColumn}}>
         <h4 style={ secondaryMenuTitleStyle }>When the button is clicked</h4>
 
         <div style={{marginBottom: 8}}>
@@ -149,12 +149,11 @@ export default class ButtonAction extends React.Component {
             unsearchable
             selectedValue={ buttonActionType }
             options={ BUTTON_ACTION_TYPES_LIST }
-            overflowDropdown
             onSelect={ (value) => this.handleAction(value) }/>
         </div>
 
         { buttonActionType === BUTTON_ACTION_TYPES.URL &&
-          <div style={{marginBottom: 8}}>
+          <div style={subsectionBorderLeft}>
             <div style={ flexColumn }>
               <label htmlFor="url-input-field" style={ labelStyle }>Link to URL</label>
               <input id="url-input-field" autoFocus type="text" style={ inputStyle } value={href} onClickCapture={this.handleClick} onChange={(e) => this.handleHref(e)} />
@@ -170,7 +169,7 @@ export default class ButtonAction extends React.Component {
           </div>
         }
         { buttonActionType === BUTTON_ACTION_TYPES.CUSTOM_PAGE &&
-          <div style={{marginBottom: 8}}>
+          <div style={subsectionBorderLeft}>
             <div style={ flexColumn }>
               <label style={ labelStyle }>Step number</label>
               <input autoFocus onClickCapture={this.handleClick}  type="number" min={1} max={numPages} value={ hasMoreThanOneStep ? stepIndex + 1 : 1} disabled={!hasMoreThanOneStep} style={ shortInputStyle } onChange={(e) => this.handleStepIndex(e)}/>
@@ -184,7 +183,7 @@ export default class ButtonAction extends React.Component {
         }
 
         { buttonActionType === BUTTON_ACTION_TYPES.APPCUES &&
-          <div style={{marginBottom: 8}}>
+          <div style={subsectionBorderLeft}>
             <div style={ flexColumn }>
               <label style={ labelStyle }>Flow ID</label>
               <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleAppcuesShow(e)}/>
@@ -202,9 +201,9 @@ export default class ButtonAction extends React.Component {
         { updateUserProperties &&
           <div style={subsectionBorderLeft}>
             { userPropertiesToUpdate.size > 0 &&
-              <div style={{...flexColumn, alignItems: 'flex-start', marginBottom: 8}}>
+              <div style={{...flexColumn, alignItems: 'flex-start', padding: 8, background: 'rgba(111, 111, 111, 0.1)', borderRadius: 4, marginBottom: 8, maxHeight: 70, overflow: 'auto'}}>
                 { Object.keys(userPropertiesToUpdate.toJS()).map((key, index) => (
-                  <div key={ index } style={{...flexRow, alignItems: 'center' }}>
+                  <div key={ index } style={{...flexRow, flexShrink: 0, alignItems: 'center' }}>
                     <span style={{marginRight: 8}}><strong>{key}:</strong> {userPropertiesToUpdate.get(key).toString()}</span>
                     <CancelButton
                       onClick={() => this.deleteUserProperty(key)}
@@ -233,7 +232,6 @@ export default class ButtonAction extends React.Component {
                       options={remainingUserProperties}
                       selectedValue={keyToAdd}
                       smallDropDown
-                      overflowDropdown
                       onSelect={(value) => this.setState({keyToAdd: value})}
                       />
                   </div>
@@ -241,6 +239,7 @@ export default class ButtonAction extends React.Component {
                     <input
                       type={ inputFieldType }
                       value={ valueToAdd }
+                      key={keyToAdd}
                       style={ {...inputStyle, ...smallInputStyle, marginLeft: 8} }
                       placeholder={ (exampleInput) ? `Try "${exampleInput}"` : 'Set value'}
                       onChange={(e) => this.setValueToAdd(e.target.value)}/>
@@ -253,7 +252,6 @@ export default class ButtonAction extends React.Component {
                       options={[{label: 'True', value: true}, {label: 'False', value: false}]}
                       selectedValue={valueToAdd}
                       smallDropDown
-                      overflowDropdown
                       onSelect={(value) => this.setValueToAdd(value)}
                       />
                     </div>

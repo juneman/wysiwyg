@@ -55,7 +55,7 @@ export default class DropDownMenu extends React.Component {
   }
 
   render() {
-    const { title, label, options, renderOptionSubtextNode, actionable, defaultValue, unsearchable, searchPlaceholder, smallDropDown, overflowDropdown } = this.props;
+    const { title, label, options, renderOptionSubtextNode, actionable, defaultValue, unsearchable, searchPlaceholder, smallDropDown } = this.props;
     const { selectedValue, isMenuOpen, searchTerm, isHoveringOverOptionByIndex, hasRoomToRenderBelow } = this.state;
 
     const selectedOption = selectedValue !== undefined ? options.find((option) => option.value == selectedValue) : null;
@@ -146,7 +146,7 @@ export default class DropDownMenu extends React.Component {
         height: 32
       };
     }
-    if (!hasRoomToRenderBelow && !overflowDropdown) {
+    if (!hasRoomToRenderBelow) {
       styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
       styles.dropDownMenu.bottom = styles.dropDownMenu.top;
       delete styles.dropDownMenu.marginTop;
@@ -161,7 +161,7 @@ export default class DropDownMenu extends React.Component {
         pointerEvents: 'all'
       };
 
-      if (!hasRoomToRenderBelow && !overflowDropdown) {
+      if (!hasRoomToRenderBelow) {
         styles.dropDownMenu.marginBottom = styles.dropDownMenu.marginTop;
         delete styles.dropDownMenu.marginTop;
       }
@@ -297,7 +297,6 @@ DropDownMenu.propTypes = {
   actionable: PropTypes.bool,
   unsearchable: PropTypes.bool,
   smallDropDown: PropTypes.bool,
-  overflowDropdown: PropTypes.bool,
   searchPlaceholder: PropTypes.string
 };
 
