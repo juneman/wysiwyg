@@ -13,13 +13,6 @@ export class EditableInput extends (PureComponent || Component) {
     };
   }
 
-  componentDidMount() {
-    const win = this.getWindow();
-    if(win) {
-      win.document.getElementById('hexInput').focus();
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     const input = this.input;
     if (nextProps.value !== this.state.value) {
