@@ -129,16 +129,15 @@ export default class FontColor extends React.Component {
 
     nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
 
-    const contentState = editorState.getCurrentContent();
-    const startKey = editorState.getSelection().getStartKey();
-    const startOffset = editorState.getSelection().getStartOffset();
-    const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+    let nextContentState = nextEditorState.getCurrentContent();
+    const startKey = nextEditorState.getSelection().getStartKey();
+    const startOffset = nextEditorState.getSelection().getStartOffset();
+    const blockWithLinkAtBeginning = nextContentState.getBlockForKey(startKey);
     const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
     if (linkKey) {
-      const linkInstance = contentState.getEntity(linkKey);
+      const linkInstance = nextContentState.getEntity(linkKey);
       if (linkInstance) {
-        const nextContentState = contentState.mergeEntityData(linkKey, { color: color.hex });
-
+        nextContentState = nextContentState.mergeEntityData(linkKey, { color: color.hex });
         nextEditorState = EditorState.push(nextEditorState, nextContentState, 'apply-inline-style');
       }
     }
