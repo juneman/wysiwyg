@@ -4,7 +4,7 @@ import { List } from 'immutable';
 import { colors } from '../helpers/styles/editor';
 
 import ImageUploader from './ImageUploader';
-import AddButtonHorizRule from './AddButtonHorizRule';
+import AddButtonArea from './AddButtonArea';
 import AddButtonContainer from './AddButtonContainer';
 
 /**
@@ -112,7 +112,7 @@ export default class FullAddElement extends React.Component {
             </ImageUploader>
           </div>
         ): (
-          <AddButtonHorizRule
+          <AddButtonArea
             onSelectEditorType={ onSelectEditorType }
             internalAllowedEditorTypes={ internalAllowedEditorTypes }
           />

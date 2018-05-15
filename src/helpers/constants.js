@@ -136,3 +136,5 @@ export const INPUT_TYPES_LIST = [
     value: 'url'
   }
 ];
+
+export const MAX_ZONES = 6;

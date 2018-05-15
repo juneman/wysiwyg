@@ -12,7 +12,7 @@ import { convertBoundingBox } from '../helpers/domHelpers';
 import { EDITOR_TYPES } from '../helpers/constants';
 
 import FullAddElement from './FullAddElement';
-import AddButtonHorizRule from './AddButtonHorizRule';
+import AddButtonArea from './AddButtonArea';
 
 import * as rowActions from '../actions/rowActions';
 import * as zoneActions from '../actions/zoneActions';
@@ -133,6 +133,7 @@ export class Canvas extends React.Component {
           basePadding={basePadding}
           row={row}
           rowIndex={i}
+          totalRows={internalRows.size}
           addZone={ (type, defaultAction, existingProps) => this.addNewZone(type, row, defaultAction, existingProps)}
           removeZone={ this.removeZone.bind(this) }
           insertZone={ this.insertZone.bind(this) }
@@ -167,7 +168,7 @@ export class Canvas extends React.Component {
     ) : null;
 
     const addButtonNode = (showAddButton) ? (
-      <AddButtonHorizRule
+      <AddButtonArea
         basePadding={basePadding}
         isHoveringOverContainer={ isHoveringOverContainer }
         onSelectEditorType={ (type, rowsToAdd, defaultAction) => {

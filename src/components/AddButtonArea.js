@@ -20,7 +20,7 @@ const ADD_ZONE_COLLAPSED = 0;
  * add a new row to the Canvas
  * @class
  */
-class AddButtonHorizRule extends React.Component {
+class AddButtonArea extends React.Component {
   constructor(props) {
     super(props);
 
@@ -96,7 +96,7 @@ class AddButtonHorizRule extends React.Component {
   }
 
   render() {
-    const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer, connectDropTarget, canDrop, isOver } = this.props;
+    const { onSelectEditorType, internalAllowedEditorTypes, isHoveringOverContainer, connectDropTarget, isDragging, canDrop, isOver } = this.props;
     const { showEditorSelector, isHoveringOverAddButton, isHorizontalOrientation } = this.state;
 
     let hrStyle = {
@@ -132,7 +132,7 @@ class AddButtonHorizRule extends React.Component {
     let containerStyle = {
       boxSizing: 'border-box',
       position: 'absolute',
-      height: ADD_ROW_COLLAPSED,
+      height: (isDragging) ? 12 : ADD_ROW_COLLAPSED,
       minHeight: ADD_ROW_COLLAPSED,
       width: '100%',
       left: 0,
@@ -175,49 +175,50 @@ class AddButtonHorizRule extends React.Component {
         minHeight: '100%',
         transition: 'opacity 0.15s ease-out, width 0.15s ease-out, transform 0s',
       };
+    }
 
-      if (isHoveringOverAddButton || showEditorSelector) {
-        //alter styles to expanded view
-          hrStyle = {
-            ...hrStyle,
-            width: ADD_ZONE_EXPANDED,
-            border: `2px dotted  ${colors.green}`,
-            opacity: 1
-          };
+    if (isHorizontalOrientation && (isHoveringOverAddButton || showEditorSelector  || (canDrop && isOver))) {
+      //alter styles to expanded view
+      containerStyle = {
+        ...containerStyle,
+        zIndex: 110,
+        height: ADD_ZONE_EXPANDED,
+      };
+      hrStyle = {
+        ...hrStyle,
+        height: ADD_ROW_EXPANDED,
+        border: `2px dotted ${colors.green}`,
+        opacity: 1
+      };
 
-          addButtonStyle = {
-            ...addButtonStyle,
-            transform: `translateY(-50%) translateX(37.5%) scale(1)`
-          };
+      addButtonStyle = {
+        ...addButtonStyle,
+        transformOrigin: 'center center 0px',
+        transform: `translateX(-50%) translateY(-50%) scale(1)`
+      };
+    } else if (!isHorizontalOrientation && (isHoveringOverAddButton || showEditorSelector)) {
+      //alter styles to expanded view
+      hrStyle = {
+        ...hrStyle,
+        width: ADD_ZONE_EXPANDED,
+        border: `2px dotted  ${colors.green}`,
+        opacity: 1
+      };
 
-          containerStyle = {
-            ...containerStyle,
-            zIndex: 110,
-            width: ADD_ZONE_EXPANDED,
-          };
-        }
-    } else {
-      if (isHoveringOverAddButton || showEditorSelector  || (canDrop && isOver)) {
-        //alter styles to expanded view
-          hrStyle = {
-            ...hrStyle,
-            height: ADD_ROW_EXPANDED,
-            border: `2px dashed  ${colors.green}`,
-            opacity: 1
-          };
+      addButtonStyle = {
+        ...addButtonStyle,
+        transform: `translateY(-50%) translateX(37.5%) scale(1)`
+      };
 
-          addButtonStyle = {
-            ...addButtonStyle,
-            transformOrigin: 'center center 0px',
-            transform: `translateX(-50%) translateY(-50%) scale(1)`
-          };
-
-      }
+      containerStyle = {
+        ...containerStyle,
+        zIndex: 110,
+        width: ADD_ZONE_EXPANDED,
+      };
     }
 
 
-
-    if (isHoveringOverContainer || showEditorSelector) {
+    if ((isHoveringOverContainer || showEditorSelector) && (!isDragging || canDrop)) {
       //alter styles whenever a users mouse is over any part of the wysiwyg editor
       hrStyle = {
         ...hrStyle,
@@ -291,11 +292,11 @@ class AddButtonHorizRule extends React.Component {
   }
 }
 
-AddButtonHorizRule.defaultProps ={
+AddButtonArea.defaultProps ={
   orientation: 'horizontal'
 };
 
-AddButtonHorizRule.propTypes = {
+AddButtonArea.propTypes = {
   onSelectEditorType: PropTypes.func.isRequired,
   internalAllowedEditorTypes: PropTypes.instanceOf(List).isRequired,
   isHoveringOverContainer: PropTypes.bool,
@@ -306,13 +307,15 @@ AddButtonHorizRule.propTypes = {
   orientation: PropTypes.string,
   connectDropTarget: PropTypes.func,
   isOver: PropTypes.bool,
-  canDrop: PropTypes.bool
+  canDrop: PropTypes.bool,
+  isDragging: PropTypes.bool
 };
 
 
 const zoneTarget = {
-  canDrop(props) {
-    return props.orientation !== 'vertical' && props.moveZoneToNewRow !== undefined;
+  canDrop(props, monitor) {
+    const sourceProps = monitor.getItem();
+    return props.orientation !== 'vertical' && !sourceProps.isInLastRow && props.moveZoneToNewRow !== undefined;
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
@@ -324,8 +327,9 @@ function collectTarget(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    canDrop: monitor.canDrop()
+    canDrop: monitor.canDrop(),
+    isDragging: !!monitor.getItem()
   };
 }
 
-export default DropTarget(DRAGABLE_ITEMS.ZONE, zoneTarget, collectTarget)(AddButtonHorizRule);
+export default DropTarget(DRAGABLE_ITEMS.ZONE, zoneTarget, collectTarget)(AddButtonArea);

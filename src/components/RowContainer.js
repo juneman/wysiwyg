@@ -5,14 +5,10 @@ import { connect } from 'react-redux';
 import { DropTarget, DragSource } from 'react-dnd';
 import { List, Map } from 'immutable';
 
-import * as rowActions from '../actions/rowActions';
-import * as zoneActions from '../actions/zoneActions';
-
-import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { DRAGABLE_ITEMS, MAX_ZONES } from '../helpers/constants';
 import { colors, draggingOverlayStyle } from '../helpers/styles/editor';
 
-import AddButtonHorizRule from './AddButtonHorizRule';
-import MoveVertButton from '../icons/MoveVertButton';
+import AddButtonArea from './AddButtonArea';
 import DragZone from './DragZone';
 import DragHandle from './DragHandle';
 
@@ -96,6 +92,8 @@ class RowContainer extends Component {
     const { row, basePadding, connectDropTarget, connectDragPreview, connectDragSource, isMovable, isOver,  internalAllowedEditorTypes, onEditorMenuOpen, onEditorMenuClose, shouldCloseMenu, resetShouldCloseMenu, isInEditMode, addZone, isDragging } = this.props;
     const { isHoveringOverContainer } = this.state;
 
+    const numZones = row.get('zones').size;
+
     return connectDropTarget(
       <div className="row-container"
         onMouseEnter={() => this.setIsHoveringOverContainer(true) }
@@ -141,12 +139,14 @@ class RowContainer extends Component {
           </div>
         )
       }
-      <DragZone
-        moveZoneToNewColumn={ this.moveZoneToNewColumn }
-        rowId={row.get('id')}
-        isHoveringOverContainer={isHoveringOverContainer} />
-      { !isInEditMode &&
-        <AddButtonHorizRule
+      { numZones < MAX_ZONES &&
+        <DragZone
+          moveZoneToNewColumn={ this.moveZoneToNewColumn }
+          rowId={row.get('id')}
+          isHoveringOverContainer={isHoveringOverContainer} />
+      }
+      { !isInEditMode && numZones < MAX_ZONES &&
+        <AddButtonArea
           basePadding={basePadding}
           orientation="vertical"
           isHoveringOverContainer={ isHoveringOverContainer && !isInEditMode }
@@ -186,7 +186,9 @@ RowContainer.propTypes = {
   removeZone: PropTypes.func,
   insertZone: PropTypes.func,
   basePadding: PropTypes.number,
-  isDragging: PropTypes.bool
+  isDragging: PropTypes.bool,
+  rowIndex: PropTypes.number,
+  totalRows: PropTypes.number
 };
 
 const rowSource = {
@@ -224,8 +226,7 @@ const rowTarget = {
   },
   drop(targetProps, monitor) {
     const sourceProps = monitor.getItem();
-    // sourceProps.rowIndex >= 0 && targetProps.rowIndex >= 0 &&
-      targetProps.onDrop(sourceProps.rowIndex, targetProps.rowIndex);
+    targetProps.onDrop(sourceProps.rowIndex, targetProps.rowIndex);
   }
 };
 

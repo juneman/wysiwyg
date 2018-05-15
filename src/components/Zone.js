@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { DropTarget, DragSource } from 'react-dnd';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { DRAGABLE_ITEMS } from '../helpers/constants';
+import { DRAGABLE_ITEMS, MAX_ZONES } from '../helpers/constants';
 import { colors, draggingOverlayStyle } from '../helpers/styles/editor';
 
 import * as rowActions from '../actions/rowActions';
@@ -149,20 +149,20 @@ class Zone extends Component {
       userProperties,
       isOver,
       numPages,
-      removeZone
+      removeZone,
+      canDrop
     } = this.props;
     const { isHover } = this.state;
 
 
     const hoverStateStyle = (isHover && !isDragging && !isEditingAny) ? this.baseHoverStateStyle : null;
     const activeStateStyle = (isEditing) ? this.baseActiveStateStyle : null;
-    const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? { opacity: 1} : {}};
-    const isMovableStyle = isMovable ? this.isMovableStyle : null;
+    const moveZoneBarStyle = {...zoneBarStyle, ...(isOver && !isHover) ? {opacity: 1} : {}};
     const isDraggingStyle = isDragging ? { opacity: 0 } : {};
 
     const adjustedContainerStyle = { ...this.baseContainerStyle, width: `${ 100/row.get('zones').size }%` };
-    const containerStyle = (isEditing || isHover) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
-    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, isMovableStyle, activeStateStyle, isDraggingStyle);
+    const containerStyle = (isEditing || (isHover && !isEditingAny)) ? { ...adjustedContainerStyle, position: "relative", zIndex: 10 } : adjustedContainerStyle;
+    const zoneStyle = Object.assign({}, this.zoneStyle, hoverStateStyle, activeStateStyle, isDraggingStyle);
 
 
     // Common props across all editors
@@ -313,7 +313,22 @@ class Zone extends Component {
                 >
                   {editorNode}
                 </EditorWrapper>
-                <div style={moveZoneBarStyle}></div>
+                  { canDrop && <div style={moveZoneBarStyle}></div> }
+                  { !canDrop &&
+                    <span style={{
+                      zIndex: 101,
+                      width: 200,
+                      position: 'absolute',
+                      background: '#e2e2e2',
+                      borderRadius: 4,
+                      pointerEvents: 'none',
+                      boxShadow: '0 0 12px rgba(30, 30, 70, 0.3)',
+                      transition: 'opacity 0.15s ease-out',
+                      opacity: (isOver) ? 1 : 0,
+                      padding: 4}}>
+                      Cannot exceed {MAX_ZONES} items per row
+                    </span>
+                  }
               </div>
           )
 
@@ -427,7 +442,8 @@ Zone.propTypes = {
   isOver: PropTypes.bool,
   numPages: PropTypes.number,
   removeZone: PropTypes.func,
-  insertZone: PropTypes.func
+  insertZone: PropTypes.func,
+  canDrop: PropTypes.bool
 };
 
 function mapStateToProps(state, ownProps) {
@@ -463,6 +479,7 @@ const zoneSource = {
     props.setIsHoveringOverRowContainer(false);
     return {
       row: props.row,
+      isInLastRow: props.rowIndex == props.totalRows - 1,
       zone: props.zone,
       columnIndex: props.columnIndex
     };
@@ -478,7 +495,11 @@ function collectSource(connect, monitor) {
 }
 
 const zoneTarget = {
-  hover(targetProps, monitor, component) {
+  canDrop(props, monitor) {
+    const sourceProps = monitor.getItem();
+    return (sourceProps.row.get('id') == props.row.get('id') || props.row.get('zones').size < MAX_ZONES)
+  },
+  hover(targetProps, monitor) {
     const sourceProps = monitor.getItem();
     if(targetProps.row.get('id') == sourceProps.row.get('id') && sourceProps.columnIndex < targetProps.columnIndex) {
       zoneBarStyle.right = 0;
@@ -500,7 +521,8 @@ const zoneTarget = {
 function collectTarget(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
   };
 }
 
