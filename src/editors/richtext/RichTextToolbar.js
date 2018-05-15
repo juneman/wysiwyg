@@ -54,8 +54,8 @@ const actions = [
     name: 'user-property'
   },
   {
-      Component: Margin,
-      name: 'margin'
+    Component: Margin,
+    name: 'margin'
   }
 ];
 
