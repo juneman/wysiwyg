@@ -130,7 +130,10 @@ export default class DropDownMenu extends React.Component {
         color: '#666'
       },
       label: {
-        textAlign: 'left'
+        textAlign: 'left',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       },
       dropDownButton: {}
     };
@@ -222,16 +225,15 @@ export default class DropDownMenu extends React.Component {
             <div style={ styles.label }>
               <span>{ label && `${ label }: ` }
                 <span>{ selectedOption ? selectedOption.label : defaultValue }</span>
-                <span style={{
+              </span>
+              <span style={{
                   display: 'inline-flex',
-                  right: '0px',
-                  height: '20px',
-                  position: 'absolute',
-                  cursor: 'pointer'
+                  width: 16,
+                  cursor: 'pointer',
+                  transform: 'scale(0.8)'
                 }}>
                   <DownButton iconStyle={{color: 'grey'}} smallButton/>
                 </span>
-              </span>
 
             </div>
           </div>
