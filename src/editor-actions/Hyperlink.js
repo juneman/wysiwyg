@@ -82,12 +82,14 @@ export default class Hyperlink extends React.Component {
   }
 
   toggleDropdown() {
-    const { onToggleActive, isActive } = this.props;
+    const { onToggleActive, isActive, focusEditor } = this.props;
+
     this.setState({
       isMenuOpen: !this.state.isMenuOpen
     });
 
     if(isActive) {
+      focusEditor();
       setTimeout(() => onToggleActive(!isActive), 200);
     } else {
       onToggleActive(!isActive);
@@ -128,5 +130,6 @@ Hyperlink.propTypes = {
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   isUpdatingExistingLink: PropTypes.bool.isRequired,
-  hasRoomToRenderBelow: PropTypes.bool
+  hasRoomToRenderBelow: PropTypes.bool,
+  focusEditor: PropTypes.func.isRequired
 };

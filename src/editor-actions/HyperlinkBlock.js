@@ -7,7 +7,13 @@ import Hyperlink from './Hyperlink';
 export default class HyperlinkBlock extends React.Component {
 
   render() {
-    const { persistedState, isActive, onToggleActive, hasRoomToRenderBelow } = this.props;
+    const {
+      persistedState,
+      isActive,
+      onToggleActive,
+      hasRoomToRenderBelow,
+      focusEditor
+    } = this.props;
     const { href, isNewWindow } = persistedState.toJS();
 
     return (
@@ -18,6 +24,7 @@ export default class HyperlinkBlock extends React.Component {
         onToggleActive={ onToggleActive }
         hasRoomToRenderBelow={ hasRoomToRenderBelow }
         onChange={ (href, isNewWindow) => this.handleLink(href, isNewWindow) }
+        focusEditor={ focusEditor }
       />);
   }
 
@@ -43,5 +50,6 @@ HyperlinkBlock.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  hasRoomToRenderBelow: PropTypes.bool.isRequired
+  hasRoomToRenderBelow: PropTypes.bool.isRequired,
+  focusEditor: PropTypes.func.isRequired
 };
