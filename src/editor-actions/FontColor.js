@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import { ColorPicker } from '../components/ColorPicker';
-import { RichUtils, EditorState } from 'draft-js';
+import { RichUtils, EditorState, Modifier } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 import tinyColor from 'tinycolor2';
 
 import { secondaryMenuTitleStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getBlocksFromSelection } from '../helpers/draft/selection';
 import Menu from '../components/Menu';
 
 import FontColorButton from '../icons/FontColorButton';
@@ -120,17 +121,43 @@ export default class FontColor extends React.Component {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-    const styles = editorState.getCurrentInlineStyle().toJS();
-    let nextEditorState = styles.reduce((state, styleKey) => {
-      if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
-        return RichUtils.toggleInlineStyle(state, styleKey);
-      }
-      return state;
-    }, editorState);
 
+    // Get all of the styles from this chunk that begin with the
+    // `CUSTOM_STYLE_PREFIX_COLOR` prefix and add them to the running set of
+    // style strings.
+    const styles = getBlocksFromSelection(editorState).reduce((styleSet, block) => {
+      block.findStyleRanges(
+        () => true,
+        (start, end) => {
+          styleSet = styleSet.union(
+            block
+              .getInlineStyleAt(start)
+              .filter((val) => val.startsWith(CUSTOM_STYLE_PREFIX_COLOR))
+          );
+        }
+      );
+      return styleSet;
+    }, Set());
+
+    // We should only allow one color per character, so remove any existing
+    // colors from selected content before we apply the new color.
+    const selection = editorState.getSelection();
+    let nextContentState = styles.reduce((contentState, color) => {
+      return Modifier.removeInlineStyle(contentState, selection, color);
+    }, editorState.getCurrentContent());
+
+    // Apply the color removal
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+
+    // Apply the new color
     nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
 
-    let nextContentState = nextEditorState.getCurrentContent();
+    // Apply color changes to link entities within the selected range
+    nextContentState = nextEditorState.getCurrentContent();
     const startKey = nextEditorState.getSelection().getStartKey();
     const startOffset = nextEditorState.getSelection().getStartOffset();
     const blockWithLinkAtBeginning = nextContentState.getBlockForKey(startKey);
