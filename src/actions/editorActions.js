@@ -36,21 +36,6 @@ export function updateDraft(update) {
   };
 }
 
-export function toggleZoneHover(zone, isOver) {
-  return {
-    type: Actions.EDITOR_ZONE_HOVER_TOGGLE,
-    zone,
-    isOver
-  };
-}
-
-export function toggleRowHover(row, isOver) {
-  return {
-    type: Actions.EDITOR_ROW_HOVER_TOGGLE,
-    row,
-    isOver
-  };
-}
 
 export function toggleEditorAction(name, isActive) {
   return {

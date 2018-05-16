@@ -61,26 +61,6 @@ describe('Editor Actions', () => {
     expect(editorActions.updateDraft({draftPersistedState})).to.eql(expectedAction);
   });
 
-  it('should create an action to toggle zone hover', () => {
-    const zone = Map();
-    const expectedAction = {
-      type: types.EDITOR_ZONE_HOVER_TOGGLE,
-      zone,
-      isOver: true
-    };
-    expect(editorActions.toggleZoneHover(zone, true)).to.eql(expectedAction);
-  });
-
-  it('should create an action to toggle row hover', () => {
-    const row = Map();
-    const expectedAction = {
-      type: types.EDITOR_ROW_HOVER_TOGGLE,
-      row,
-      isOver: true
-    };
-    expect(editorActions.toggleRowHover(row, true)).to.eql(expectedAction);
-  });
-
   it('should create an action to toggle editor action', () => {
     const expectedAction = {
       type: types.EDITOR_ACTIONS_TOGGLE,

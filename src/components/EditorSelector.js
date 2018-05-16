@@ -128,7 +128,7 @@ export default class EditorSelector extends React.Component {
       zIndex: 100,
       position: 'absolute',
       width: 160,
-      left: 'calc(-90px + 50%)',
+      left: 'calc(-80px + 50%)',
       animationName: `editor-slide-${(showEditorSelector) ? 'in' : 'out'}-${(hasRoomToRenderBelow) ? 'bottom' : 'top'}`,
       animationTimingFunction: 'ease-out',
       animationDuration: '0.15s',
@@ -156,9 +156,9 @@ export default class EditorSelector extends React.Component {
         name: category.name,
         icon: category.icon,
         items: category.content.filter((editor) => {
-          return allowedEditorTypes.includes(editor)
+          return allowedEditorTypes.includes(editor);
         })
-      }
+      };
     });
 
     return (
@@ -167,7 +167,7 @@ export default class EditorSelector extends React.Component {
           {
             editorMenu.map((category) => {
               if (category.items.length === 1) {
-                return this.renderSubMenuItems(category.items)
+                return this.renderSubMenuItems(category.items);
               }
               else {
                 return ( category.items.length ?
@@ -200,7 +200,7 @@ export default class EditorSelector extends React.Component {
                       }
                     </div>
                   </div> : null
-                )
+                );
               }
             })
           }
@@ -240,7 +240,7 @@ export default class EditorSelector extends React.Component {
           </div>
         </a>
       );
-    })
+    });
 
     return contents;
   }
@@ -249,7 +249,7 @@ export default class EditorSelector extends React.Component {
     const { openSubMenu } = this.state;
     if (openSubMenu !== category) {
       this.setState({openSubMenu: category});
-    };
+    }
   }
 
   setHover(primaryHoverMenu, isOver) {

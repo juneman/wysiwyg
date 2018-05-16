@@ -134,6 +134,8 @@ export const INPUT_TYPES_LIST = [{
   }
 ];
 
+export const MAX_ZONES = 6;
+
 export const DEFAULT_USER_PROPS = [
   "userId",
   "_userAgent",

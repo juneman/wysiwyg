@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
+import { colors } from '../helpers/styles/editor';
 
 import ImageUploader from './ImageUploader';
-import AddButtonHorizRule from './AddButtonHorizRule';
+import AddButtonArea from './AddButtonArea';
 import AddButtonContainer from './AddButtonContainer';
 
 /**
@@ -56,9 +57,9 @@ export default class FullAddElement extends React.Component {
     const fullScreenStyles = {
       backgroundColor: `rgba(9,248,113, ${(isHoveringOverAddButton) ? '0.15' : '0.05'})`,
       transition: 'background-color 0.15s ease-out',
-      color: '#0bdc66',
+      color: colors.green,
       textAlign: 'center',
-      border: '2px dashed #0bdc66',
+      border: `2px dashed ${colors.green}`,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -111,7 +112,7 @@ export default class FullAddElement extends React.Component {
             </ImageUploader>
           </div>
         ): (
-          <AddButtonHorizRule
+          <AddButtonArea
             onSelectEditorType={ onSelectEditorType }
             internalAllowedEditorTypes={ internalAllowedEditorTypes }
           />

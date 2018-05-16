@@ -29,6 +29,19 @@ export function removeRow(id) {
   };
 }
 
+export function insertZone(
+  row,
+  zone,
+  columnIndex
+) {
+  return {
+    type: Actions.ROWS_INSERT_ZONE,
+    row,
+    zone,
+    columnIndex
+  };
+}
+
 export function removeZone(row, zone) {
   return {
     type: Actions.ROWS_REMOVE_ONE_ZONE,

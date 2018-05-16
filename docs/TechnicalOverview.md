@@ -19,7 +19,7 @@ They break down like this:
 ```jsx
 <Wysiwyg>
   <Canvas>
-    <AddButtonHorizRule />
+    <AddButtonArea />
     <EditorSelector />
     <FullAddElement>
       <ImageUploader />

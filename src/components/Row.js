@@ -1,18 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { DragSource } from 'react-dnd';
-import { connect } from 'react-redux';
 
 import { convertBoundingBox } from '../helpers/domHelpers';
-import { DRAGABLE_ITEMS } from '../helpers/constants';
 import Zone from './Zone';
 
 /**
  * A React component for each row of the editor
  * @class
  */
-export class Row extends React.Component {
+export default class Row extends React.Component {
   constructor(props) {
     super(props);
 
@@ -26,16 +23,21 @@ export class Row extends React.Component {
   }
 
   render() {
-    const { row, connectDragSource, isMovable, isOver, numPages } = this.props;
+    const { row, isOver, numPages, removeZone, insertZone, setIsHoveringOverRowContainer, rowIndex, totalRows } = this.props;
     const { position } = this.state;
 
     const zoneNodes = row.get('zones').map((zone, i) => {
       return (
         <Zone
+          setIsHoveringOverRowContainer={setIsHoveringOverRowContainer}
           numPages={numPages}
           key={zone.get('id')}
           zone={zone}
+          removeZone={ removeZone }
+          insertZone={ insertZone }
           row={row}
+          rowIndex={rowIndex}
+          totalRows={totalRows}
           isOver={isOver}
           rowPosition={position}
           columnIndex={i}
@@ -44,16 +46,11 @@ export class Row extends React.Component {
     });
 
     const gridStyle = {
-      gridTemplateColumns: `repeat(${zoneNodes.length}, 1fr)`
+      display: 'flex',
+      flexGrow: 1
     };
 
-    return (isMovable) ? (
-      connectDragSource(
-        <div className="row" style={gridStyle} ref={(el) => this.wrapper = el}>
-          {zoneNodes}
-        </div>
-      )
-    ) : (
+    return (
       <div
         className="row"
         style={gridStyle}
@@ -78,32 +75,12 @@ export class Row extends React.Component {
 
 Row.propTypes = {
   row: PropTypes.instanceOf(Map).isRequired,
-  connectDragSource: PropTypes.func,
   isDragging: PropTypes.bool,
-  isMovable: PropTypes.bool.isRequired,
-  isOver: PropTypes.bool.isRequired
+  isOver: PropTypes.bool.isRequired,
+  removeZone: PropTypes.func.isRequired,
+  insertZone: PropTypes.func.isRequired,
+  numPages: PropTypes.number,
+  setIsHoveringOverRowContainer: PropTypes.func,
+  rowIndex: PropTypes.number,
+  totalRows: PropTypes.number
 };
-
-const rowSource = {
-  beginDrag(props) {
-    return {
-      row: props.row,
-      rowIndex: props.rowIndex
-    };
-  }
-};
-
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-function mapStateToProps(state) {
-  return {
-    isMovable: (!state.editor.get('isCanvasInEditMode') && state.rows.size > 1) ? true : false
-  };
-}
-
-export default connect(mapStateToProps)(DragSource(DRAGABLE_ITEMS.ROW, rowSource, collect)(Row));

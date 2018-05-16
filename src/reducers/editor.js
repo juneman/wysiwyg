@@ -5,9 +5,7 @@ const initialState = fromJS({
   canvasPosition: {},
   basePadding: 0,
   activeZoneId: null,
-  hoverZoneId: null,
   movableRowId: null,
-  hoverRowId: null,
   activeEditorAction: null,
   activeEditorInlineAction: {
     name: null,
@@ -51,8 +49,6 @@ export default function editorSelector(state = initialState, action) {
       newState = newState
         .set('isCanvasInEditMode', false)
         .set('activeZoneId', null)
-        .set('hoverZoneId', null)
-        .set('hoverRowId', null)
         .set('movableRowId', null)
         .set('activeEditorAction', null)
         .set('draftPersistedState', Map())
@@ -68,12 +64,6 @@ export default function editorSelector(state = initialState, action) {
         .set('draftHtml', action.html)
         .set('draftPersistedState', action.draftPersistedState);
       break;
-    case Actions.EDITOR_ZONE_HOVER_TOGGLE:
-      newState = newState.set('hoverZoneId', (action.isOver) ? action.zone.get('id') : null);
-      break;
-    case Actions.EDITOR_ROW_HOVER_TOGGLE:
-      newState = newState.set('hoverRowId', (action.isOver) ? action.row.get('id') : null);
-      break;
     case Actions.EDITOR_ACTIONS_TOGGLE:
       newState = newState.set('activeEditorAction', (action.isActive) ? action.name : null);
       break;
@@ -88,7 +78,7 @@ export default function editorSelector(state = initialState, action) {
         newInlineActionState = newInlineActionState.set('name', action.name).set('state', action.state || Map());
       }
       else {
-        newInlineActionState = newInlineActionState.set('name', null).set('state', null)
+        newInlineActionState = newInlineActionState.set('name', null).set('state', null);
       }
       newState = newState.set('activeEditorInlineAction', newInlineActionState);
       break;

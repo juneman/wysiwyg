@@ -41,6 +41,22 @@ export default function rows(state = List(), action) {
           return row.deleteIn(['zones', zoneIndex]);
         });
       break;
+    case Actions.ROWS_INSERT_ZONE:
+      newState = newState
+        .map((row) => {
+          let rowId = row.get('id');
+          if (rowId === action.row.get('id')) {
+            //insert source zone into source target location
+            let targetZones = row.get('zones');
+            if(!isNaN(Number(action.columnIndex))) {
+              return row.set('zones', targetZones.insert(action.columnIndex, action.zone));
+            } else {
+              return row.set('zones', targetZones.push(action.zone));
+            }
+          }
+          return row;
+        });
+      break;
     case Actions.EDITOR_UPDATE_ZONE:
       newState = newState
         .map((row) => {
