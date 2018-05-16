@@ -55,7 +55,7 @@ export default class BackgroundColor extends React.Component {
       animationFillMode: 'both'
     };
     if (!hasRoomToRenderBelow) {
-      dropdownStyles.bottom = dropdownStyles.top + 55;
+      dropdownStyles.bottom = dropdownStyles.top;
       delete dropdownStyles.top;
     }
 

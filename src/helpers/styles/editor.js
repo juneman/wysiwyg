@@ -9,6 +9,25 @@ export function getButtonProps(isActive) {
   };
 }
 
+export const flexStyle = {
+  display: 'flex'
+};
+
+export const flexColumn = {
+  ...flexStyle,
+  flexDirection: 'column'
+};
+
+export const flexRow = {
+  ...flexStyle,
+  flexDirection: 'row'
+};
+
+export const flexJustifyContentSpaceBetween = {
+  ...flexStyle,
+  justifyContent: 'space-between'
+};
+
 export const tabStyle = {
   flexGrow: 1,
   cursor: 'pointer',
@@ -75,20 +94,16 @@ export const buttonNavTypeWrapperStyle = {
 export const labelStyle = {
   fontSize: '14px',
   display: 'flex',
-  paddingTop: 5,
+  paddingTop: 4,
   marginBottom: 8,
   fontWeight: 400,
   color: '#888',
   lineHeight: 'normal'
 };
 
-export const fieldGroupStyle = {
-  display: 'flex',
-  flexDirection: 'column'
-};
-
 export const buttonNavTypeMenuStyle = {
-  margin: '16px 8px'
+  margin: '16px 8px',
+  flexShrink: 0
 };
 
 export const inputStyle = {
@@ -112,13 +127,13 @@ export const marginBoxRowStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  margin: '5px 0'
+  margin: '4px 0'
 };
 
 export const marginBoxStyle = {
   height: '50px',
   width: '60px',
-  margin: '5px 15px',
+  margin: '4px 16px',
   border: '2px dashed #808080'
 };
 
@@ -126,7 +141,7 @@ export const dropdownStyle = {
   position: 'absolute',
   top: 45,
   left: 0,
-  padding: '12px 15px 15px',
+  padding: '16px',
   animationTimingFunction: 'ease-out',
   animationDuration: '0.15s',
   animationIterationCount: 1,

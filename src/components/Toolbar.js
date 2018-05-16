@@ -28,7 +28,7 @@ export class Toolbar extends React.Component {
   }
 
   setHasRoomToRenderBelow() {
-    const hasRoomToRenderBelow = ((window.innerHeight - this.toolbar.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    const hasRoomToRenderBelow = ((window.innerHeight - this.toolbar.getBoundingClientRect().bottom) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
     }

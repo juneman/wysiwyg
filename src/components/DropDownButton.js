@@ -11,7 +11,7 @@ export default class DropDownButton extends React.Component {
 
     render() {
         const { isHovering } = this.state;
-        const { className, title, label, onClick, draggable, style, create, dark, danger, success, secondary, disabled, block, icon, toggle, external, forceHover, trash, children } = this.props;
+        const { title, label, style, children } = this.props;
 
         const dropDownButtonStyle = {
             display: 'flex',
@@ -19,6 +19,7 @@ export default class DropDownButton extends React.Component {
             alignItems: 'center',
             position: 'relative',
             flexShrink: 0,
+            flexGrow: 1,
             padding: '9px 12px 8px',
             textAlign: 'center',
             cursor: 'pointer',
@@ -27,7 +28,8 @@ export default class DropDownButton extends React.Component {
             border: '1px solid #CCC',
             fontSize: '15px',
             fontWeight: '500',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            ...style
         };
 
         if (isHovering) {
@@ -44,7 +46,7 @@ export default class DropDownButton extends React.Component {
                 onClick={ (e) => this.onClick(e) }
                 onMouseDown={ (e) => this.onMouseDown(e) }>
                 { label &&
-                    <div className={ styles.label }>
+                    <div>
                         { label }
                     </div>
                 }
@@ -85,12 +87,14 @@ export default class DropDownButton extends React.Component {
     }
 }
 
+DropDownButton.defaultProps = {
+    style: {}
+};
+
 DropDownButton.propTypes = {
-    className: PropTypes.string,
     title: PropTypes.string,
     label: PropTypes.string,
     onClick: PropTypes.func.isRequired,
     style: PropTypes.object,
     children: PropTypes.node,
-    forceHover: PropTypes.bool,
 };
