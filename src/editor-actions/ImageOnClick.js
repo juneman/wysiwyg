@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, fieldGroupStyle, tabStyle, selectedTabStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getButtonProps, inputStyle, checkboxStyle, labelStyle, secondaryMenuTitleStyle, flexColumn, tabStyle, selectedTabStyle, buttonNavTypeWrapperStyle, buttonNavTypeMenuStyle, dropdownStyle } from '../helpers/styles/editor';
 import {IMG_ACTION_TYPES } from '../helpers/constants';
 import Menu from '../components/Menu';
 import DropDownMenu from '../components/DropDownMenu';
@@ -97,7 +97,7 @@ export default class ImageOnClick extends React.Component {
             }
             { actionType === IMG_ACTION_TYPES.SHOW_APPCUES_FLOW &&
               <div>
-                <div style={ fieldGroupStyle }>
+                <div style={ flexColumn }>
                   <label style={ labelStyle }>Flow ID</label>
                   <input type="text" value={ flowId } style={ inputStyle } onChange={(e) => this.handleFlowIdInput(e)}/>
                 </div>

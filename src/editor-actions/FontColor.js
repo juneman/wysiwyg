@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, Set, is } from 'immutable';
 import { ColorPicker } from '../components/ColorPicker';
-import { RichUtils, EditorState } from 'draft-js';
+import { RichUtils, EditorState, Modifier } from 'draft-js';
 import { CUSTOM_STYLE_PREFIX_COLOR } from '../helpers/draft/convert';
 import tinyColor from 'tinycolor2';
 
 import { secondaryMenuTitleStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getBlocksFromSelection } from '../helpers/draft/selection';
+import { findLinkEntities } from '../helpers/draft/LinkDecorator';
 import Menu from '../components/Menu';
 
 import FontColorButton from '../icons/FontColorButton';
@@ -81,17 +83,18 @@ export default class FontColor extends React.Component {
   }
 
   toggleDropdown() {
-    const { onToggleActive, isActive } = this.props;
+    const {onToggleActive, isActive, focusEditor} = this.props;
+
     this.setState({
       isMenuOpen: !this.state.isMenuOpen
     });
 
     if(isActive) {
+      focusEditor();
       setTimeout(() => onToggleActive(!isActive), 200);
     } else {
       onToggleActive(!isActive);
     }
-
   }
 
 
@@ -119,28 +122,71 @@ export default class FontColor extends React.Component {
     const { localState, persistedState, onChange } = this.props;
     const editorState = localState.get('editorState');
     const toggledColor = color.hex;
-    const styles = editorState.getCurrentInlineStyle().toJS();
-    let nextEditorState = styles.reduce((state, styleKey) => {
-      if (styleKey.startsWith(CUSTOM_STYLE_PREFIX_COLOR)) {
-        return RichUtils.toggleInlineStyle(state, styleKey);
-      }
-      return state;
-    }, editorState);
 
+    // Get all of the styles from this chunk that begin with the
+    // `CUSTOM_STYLE_PREFIX_COLOR` prefix and add them to the running set of
+    // style strings.
+    const styles = getBlocksFromSelection(editorState).reduce((styleSet, block) => {
+      block.findStyleRanges(
+        () => true,
+        (start, end) => {
+          styleSet = styleSet.union(
+            block
+              .getInlineStyleAt(start)
+              .filter((val) => val.startsWith(CUSTOM_STYLE_PREFIX_COLOR))
+          );
+        }
+      );
+      return styleSet;
+    }, Set());
+
+    // We should only allow one color per character, so remove any existing
+    // colors from selected content before we apply the new color.
+    const selection = editorState.getSelection();
+    let nextContentState = styles.reduce((contentState, color) => {
+      return Modifier.removeInlineStyle(contentState, selection, color);
+    }, editorState.getCurrentContent());
+
+    // Apply the color removal
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+
+    // Apply the new color
     nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, CUSTOM_STYLE_PREFIX_COLOR + toggledColor);
 
-    const contentState = editorState.getCurrentContent();
-    const startKey = editorState.getSelection().getStartKey();
-    const startOffset = editorState.getSelection().getStartOffset();
-    const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
-    const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-    if (linkKey) {
-      const linkInstance = contentState.getEntity(linkKey);
-      if (linkInstance) {
-        const nextContentState = contentState.mergeEntityData(linkKey, { color: color.hex });
-
-        nextEditorState = EditorState.push(nextEditorState, nextContentState, 'apply-inline-style');
-      }
+    // Apply color changes to link entities within the selected range
+    const nextEditorSelection = nextEditorState.getSelection();
+    const startOffset = nextEditorSelection.getStartOffset();
+    const startKey = nextEditorSelection.getStartKey();
+    const endOffset = nextEditorSelection.getEndOffset();
+    const endKey = nextEditorSelection.getEndKey();
+    nextContentState = nextEditorState.getCurrentContent();
+    getBlocksFromSelection(nextEditorState).forEach((block) => {
+      findLinkEntities(block, (start, end) => {
+        if (
+          (block.getKey() === startKey && end <= startOffset) ||
+          (block.getKey() === endKey && start >= endOffset)
+        ) {
+          return;
+        }
+        const linkKey = block.getEntityAt(start);
+        if (linkKey) {
+          nextContentState = nextContentState.mergeEntityData(
+            linkKey,
+            { color: toggledColor }
+          );
+        }
+      }, nextContentState);
+    });
+    if (!is(nextEditorState.getCurrentContent(), nextContentState)) {
+      nextEditorState = EditorState.push(
+        nextEditorState,
+        nextContentState,
+        'apply-inline-style'
+      );
     }
 
     const newLocalState = localState.set('editorState', nextEditorState);
@@ -158,5 +204,6 @@ FontColor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  hasRoomToRenderBelow: PropTypes.bool
+  hasRoomToRenderBelow: PropTypes.bool,
+  focusEditor: PropTypes.func.isRequired
 };

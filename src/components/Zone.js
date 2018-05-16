@@ -211,7 +211,11 @@ class Zone extends Component {
       zonePosition: position,
       cloudinary,
       userProperties,
-      onChange: updateDraftWithChanges
+      onChange: updateDraftWithChanges,
+      focusEditor: () => {
+        const ed = this.activeEditor;
+        ed && ed.focus && ed.focus();
+      }
     };
 
     const inlineActionsProps = {

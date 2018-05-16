@@ -16,6 +16,7 @@ export default class IconButton extends React.Component {
   render() {
     const {
       title,
+      disabled,
       pathNode,
       iconStyle,
       viewBox,
@@ -138,6 +139,12 @@ export default class IconButton extends React.Component {
     };
     if (cursor) linkStyle.cursor = cursor;
 
+
+    if (disabled) {
+      linkStyle.cursor =  'disabled';
+      linkStyle.opacity =  0.5;
+    }
+
     return (onClick || onMouseDown || onMouseUp) ? (
       <a href="#"
         style={linkStyle}
@@ -154,7 +161,8 @@ export default class IconButton extends React.Component {
 
   handleClick(e) {
     e.preventDefault();
-    const { onClick } = this.props;
+    const { onClick, disabled } = this.props;
+    if(disabled) return;
     if (onClick) {
       onClick(e);
     }
@@ -202,7 +210,9 @@ export default class IconButton extends React.Component {
 
   handleMouseDown(e) {
     e.preventDefault();
-    const { clickColor, onMouseDown } = this.props;
+    const { clickColor, onMouseDown, disabled } = this.props;
+
+    if(disabled) return;
 
     if (clickColor) {
       this.setState({
@@ -215,7 +225,10 @@ export default class IconButton extends React.Component {
   }
 
   handleMouseUp() {
-    const { clickColor, onMouseUp } = this.props;
+    const { clickColor, onMouseUp, disabled } = this.props;
+
+    if(disabled) return;
+
     if (clickColor) {
       this.setState({
         colorOverride: null
@@ -238,6 +251,7 @@ IconButton.propTypes = {
   title: PropTypes.string.isRequired,
   pathNode: PropTypes.node.isRequired,
   viewBox: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
   iconStyle: PropTypes.object,
   text: PropTypes.string,
   color: PropTypes.string,

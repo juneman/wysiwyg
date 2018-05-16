@@ -35,7 +35,13 @@ class HyperlinkInline extends React.Component {
   }
 
   render() {
-    const { localState, isActive, onToggleActive, hasRoomToRenderBelow } = this.props;
+    const {
+      localState,
+      isActive,
+      onToggleActive,
+      hasRoomToRenderBelow,
+      focusEditor
+    } = this.props;
     const { linkKey } = this.state;
 
     let href = '';
@@ -66,6 +72,7 @@ class HyperlinkInline extends React.Component {
         hasRoomToRenderBelow={ hasRoomToRenderBelow }
         isUpdatingExistingLink={ isUpdatingExistingLink }
         onChange={ (href, isNewWindow) => this.handleLink(href, isNewWindow) }
+        focusEditor={ focusEditor }
       />);
   }
 
@@ -142,7 +149,8 @@ HyperlinkInline.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  hasRoomToRenderBelow: PropTypes.bool
+  hasRoomToRenderBelow: PropTypes.bool,
+  focusEditor: PropTypes.func.isRequired
 };
 
 HyperlinkInline.actionName = 'hyperlink-inline';

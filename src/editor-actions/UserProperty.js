@@ -126,12 +126,14 @@ export default class UserProperty extends React.Component {
   }
 
   toggleDropdown() {
-    const { onToggleActive, isActive } = this.props;
+    const { onToggleActive, isActive, focusEditor } = this.props;
+
     this.setState({
       isMenuOpen: !this.state.isMenuOpen
     });
 
     if(isActive) {
+      focusEditor();
       setTimeout(() => onToggleActive(!isActive), 200);
     } else {
       onToggleActive(!isActive);
@@ -184,6 +186,7 @@ UserProperty.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggleActive: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
-  userProperties: PropTypes.instanceOf(List).isRequired
+  userProperties: PropTypes.instanceOf(List).isRequired,
+  focusEditor: PropTypes.func.isRequired
 };
 

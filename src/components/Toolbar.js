@@ -28,7 +28,7 @@ export class Toolbar extends React.Component {
   }
 
   setHasRoomToRenderBelow() {
-    const hasRoomToRenderBelow = ((window.innerHeight - this.toolbar.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
+    const hasRoomToRenderBelow = ((window.innerHeight - this.toolbar.getBoundingClientRect().bottom) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
     }
@@ -46,7 +46,8 @@ export class Toolbar extends React.Component {
       userProperties,
       shouldDisableXSS,
       sanitizeHtmlConfig,
-      numPages
+      numPages,
+      focusEditor
     } = this.props;
 
     const { hasRoomToRenderBelow } = this.state;
@@ -81,6 +82,7 @@ export class Toolbar extends React.Component {
             sanitizeHtmlConfig,
             shouldDisableXSS,
             hasRoomToRenderBelow,
+            focusEditor,
             ...(numPages && {numPages}),
             isActive: (selectedAction === editorAction.name),
             onToggleActive: (isActive) => {
@@ -108,7 +110,8 @@ Toolbar.propTypes = {
   userProperties: PropTypes.instanceOf(List).isRequired,
   selectedAction: PropTypes.string,
   sanitizeHtmlConfig: PropTypes.instanceOf(Map).isRequired,
-  shouldDisableXSS: PropTypes.bool.isRequired
+  shouldDisableXSS: PropTypes.bool.isRequired,
+  focusEditor: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {

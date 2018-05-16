@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 
-import { getButtonProps, secondaryMenuTitleStyle, inputStyle, fieldGroupStyle, labelStyle, dropdownStyle } from '../helpers/styles/editor';
+import { getButtonProps, secondaryMenuTitleStyle, inputStyle, flexColumn, labelStyle, dropdownStyle } from '../helpers/styles/editor';
 import Menu from '../components/Menu';
 import ZoomSlider from '../components/ZoomSlider';
 
@@ -57,7 +57,7 @@ export default class ImageSize extends React.Component {
       <Menu style={dropdownStyles}>
         <div style={titleStyles}>Set Image {attributeText} (number in pixels)</div>
         <div style={{marginTop: 20}}>
-          <div style={ fieldGroupStyle }>
+          <div style={ flexColumn }>
             <label style={ labelStyle }>{attributeText}:</label>
             <input style={ inputStyle } value={attributeCurrentValue} placeholder="auto" onChange={(e) => this.handleInputChange(e, this.state.attributeToEdit)} />
             { heroImage && <ZoomSlider handleChange={(e) => this.handleInputChange(e, 'zoom')} zoom={this.state.zoom} /> }
@@ -101,7 +101,7 @@ export default class ImageSize extends React.Component {
 
   handleSave() {
     const { localState, persistedState, onChange } = this.props;
-    
+
     const { attributeToEdit } = this.state;
 
     const newPersistedState = persistedState
