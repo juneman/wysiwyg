@@ -128,7 +128,7 @@ export default class ButtonAction extends React.Component {
       height: 32,
       marginLeft: 8,
       flexShrink: 1,
-      flexBasis: '55%'
+      flexBasis: '45%'
     };
 
     const hasMoreThanOneStep = numPages > 1;
