@@ -110,6 +110,10 @@ class Zone extends Component {
       transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
     };
 
+
+    this.cancelEditing = this.cancelEditing.bind(this);
+    this.removeZone = this.removeZone.bind(this);
+
   }
 
   componentDidMount() {
@@ -304,8 +308,8 @@ class Zone extends Component {
                     this.save();
                     this.cancelEditing();
                   }}
-                  onCancel={() => this.clickedCancel()}
-                  onRemove={() => removeZone(row, zone, true)}
+                  onCancel={this.cancelEditing}
+                  onRemove={this.removeZone}
                   onMoveRowStart={() => {
                     dispatch(editorActions.startMoving(row));
                   }}
@@ -355,6 +359,11 @@ class Zone extends Component {
     }
   }
 
+  removeZone() {
+    const { row, zone, removeZone } = this.props;
+    removeZone(row, zone, true);
+  }
+
   toggleHover(isHover) {
     this.setState({
       isHover
@@ -381,31 +390,9 @@ class Zone extends Component {
     dispatch(editorActions.startEditing(zone));
   }
 
-  clickedCancel() {
-    const { dispatch, row, zone } = this.props;
-    const persistedState = zone.get('persistedState');
-    const isComponentNew = !persistedState || !persistedState.size;
-
-    if (isComponentNew) {
-      dispatch(rowActions.removeRow(row.get('id')));
-    } else {
-      this.cancelEditing();
-    }
-  }
-
   cancelEditing() {
     const { dispatch, zone } = this.props;
     dispatch(editorActions.cancelEditing(zone));
-  }
-
-  removeRow() {
-    const { row, dispatch, persistedState } = this.props;
-    const persistedContent = persistedState.get('url') || persistedState.get('content') || persistedState.get('label');
-    const isComponentEmpty = !persistedContent || (persistedContent === '<p></p>' || persistedContent === '');
-
-    if (isComponentEmpty || confirm("Are you sure you want to delete this?")) {
-        dispatch(rowActions.removeRow(row.get('id')));
-    }
   }
 
   setBoundingBox() {
@@ -501,7 +488,7 @@ function collectSource(connect, monitor) {
 const zoneTarget = {
   canDrop(props, monitor) {
     const sourceProps = monitor.getItem();
-    return (sourceProps.row.get('id') == props.row.get('id') || props.row.get('zones').size < MAX_ZONES)
+    return (sourceProps.row.get('id') == props.row.get('id') || props.row.get('zones').size < MAX_ZONES);
   },
   hover(targetProps, monitor) {
     const sourceProps = monitor.getItem();
