@@ -128,13 +128,13 @@ export default class ButtonAction extends React.Component {
       height: 32,
       marginLeft: 8,
       flexShrink: 1,
-      flexBasis: '55%'
+      flexBasis: '45%'
     };
 
     const hasMoreThanOneStep = numPages > 1;
     const remainingUserProperties = userPropertiesDropdown.filter((property) => userPropertiesToUpdate.get(property.value) == undefined);
     const propertyDropdownExample = keyToAdd && userPropertiesDropdown.find((property) => property.value == keyToAdd);
-    const exampleInput = (propertyDropdownExample && propertyDropdownExample.options.length > 0) ? propertyDropdownExample.options[0].name : 'Enter Value';
+    const exampleInput = (propertyDropdownExample && propertyDropdownExample.options.length > 0) ? propertyDropdownExample.options[0].name : null;
     const inputFieldType = this.getUserPropertyType(keyToAdd, userPropertiesDropdown);
 
     const dropdownNodes = isActive ? (
@@ -193,10 +193,12 @@ export default class ButtonAction extends React.Component {
           </div>
         }
 
-        <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', marginBottom: 8, width: 'fit-content'}}>
-          <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
-          Update User Properties
-        </label>
+        { (remainingUserProperties.length > 0 || userPropertiesToUpdate.size > 0) &&
+            <label htmlFor="user-properties-checkbox" style={{cursor: 'pointer', marginBottom: 8, width: 'fit-content'}}>
+              <input id="user-properties-checkbox" type="checkbox" style={checkboxStyle} checked={updateUserProperties} onChange={(e) => this.handleUpdateUserProperties(e)} />
+              Update User Properties
+            </label>
+        }
 
         { updateUserProperties &&
           <div style={subsectionBorderLeft}>
@@ -225,7 +227,7 @@ export default class ButtonAction extends React.Component {
             { remainingUserProperties.length > 0 &&
               <div style={{...flexColumn, alignItems: 'center'}}>
                 <div style={ {...flexJustifyContentSpaceBetween, alignItems: 'center', position: 'relative', width: '100%', paddingRight: 8} }>
-                  <div style={{ flexBasis: '50%' }}>
+                  <div style={{ flexBasis: '55%' }}>
                     <DropDownMenu
                       className="form-control"
                       defaultValue="Choose property"
@@ -245,7 +247,7 @@ export default class ButtonAction extends React.Component {
                       onChange={(e) => this.setValueToAdd(e.target.value)}/>
                   }
                   { inputFieldType === 'checkbox' &&
-                    <div style={{marginLeft: 8, flexBasis: '55%'}} >
+                    <div style={{marginLeft: 8, flexBasis: '45%'}} >
                       <DropDownMenu
                       className="form-control"
                       defaultValue="Set value"
