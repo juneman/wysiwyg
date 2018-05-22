@@ -84,7 +84,7 @@ export class Canvas extends React.Component {
     const { dispatch, isInEditMode } = this.props;
     const { rowsLoaded } = this.state;
 
-    if (rowsLoaded && !is(nextProps.internalRows, this.props.internalRows)) {
+    if (rowsLoaded && (!is(nextProps.internalRows, this.props.internalRows) || !is(nextProps.internalZones, this.props.internalZones))) {
       this.save(nextProps.internalRows, nextProps.internalZones);
     }
     if (!is(nextProps.cloudinary, this.props.cloudinary)) {
