@@ -110,6 +110,10 @@ class Zone extends Component {
       transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out, outline-color 0.15s ease-out'
     };
 
+
+    this.cancelEditing = this.cancelEditing.bind(this);
+    this.removeZone = this.removeZone.bind(this);
+
   }
 
   componentDidMount() {
@@ -304,8 +308,8 @@ class Zone extends Component {
                     this.save();
                     this.cancelEditing();
                   }}
-                  onCancel={this.cancelEditing.bind(this)}
-                  onRemove={this.removeZone.bind(this)}
+                  onCancel={this.cancelEditing}
+                  onRemove={this.removeZone}
                   onMoveRowStart={() => {
                     dispatch(editorActions.startMoving(row));
                   }}
