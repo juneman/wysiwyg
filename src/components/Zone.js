@@ -153,7 +153,6 @@ class Zone extends Component {
       userProperties,
       isOver,
       numPages,
-      removeZone,
       canDrop
     } = this.props;
     const { isHover } = this.state;
@@ -306,7 +305,6 @@ class Zone extends Component {
                   onEdit={() => this.startEditing()}
                   onSave={() => {
                     this.save();
-                    this.cancelEditing();
                   }}
                   onCancel={this.cancelEditing}
                   onRemove={this.removeZone}
@@ -383,6 +381,8 @@ class Zone extends Component {
 
     dispatch(zoneActions.updateZoneHtml(zone.get('id'), html));
     dispatch(editorActions.updateZone(row, updatedZone));
+
+    dispatch(editorActions.cancelEditing(zone));
   }
 
   startEditing() {
@@ -391,7 +391,10 @@ class Zone extends Component {
   }
 
   cancelEditing() {
-    const { dispatch, zone } = this.props;
+    const { dispatch, row, zone, removeZone } = this.props;
+    if(zone.get('persistedState').isEmpty()) {
+      removeZone(row, zone, false);
+    }
     dispatch(editorActions.cancelEditing(zone));
   }
 
