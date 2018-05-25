@@ -470,7 +470,7 @@ const zoneSource = {
     props.setIsHoveringOverRowContainer(false);
     return {
       row: props.row,
-      isInLastRow: props.rowIndex == props.totalRows - 1,
+      isInLastRow: props.row.get('zones').size == 1 && props.rowIndex == props.totalRows - 1,
       zone: props.zone,
       columnIndex: props.columnIndex
     };
