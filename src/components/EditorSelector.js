@@ -24,6 +24,7 @@ import { EDITOR_TYPES, categories } from '../helpers/constants';
 
 const MENU_HEIGHT_ALLOWANCE = 300;
 const MENU_WIDTH_ALLOWANCE = 160;
+const SUBMENU_WIDTH_ALLOWANCE = 160;
 
 const editors = {
   [EDITOR_TYPES.TEXT]: {
@@ -109,23 +110,33 @@ export default class EditorSelector extends React.Component {
     this.state = {
       primaryHoverMenu: '',
       openSubMenu: '',
-      hasRoomToRenderBelow: true
+      hasRoomToRenderBelow: true,
+      hasRoomToRenderToRight: true,
+      subMenuHasRoomToRight: true
     };
   }
 
   componentDidMount() {
     this.setHasRoomToRenderBelow();
     this.setHasRoomToRenderToRight();
+    this.setSubMenuHasRoomToRight();
   }
 
   componentDidUpdate() {
     this.setHasRoomToRenderBelow();
     this.setHasRoomToRenderToRight();
+    this.setSubMenuHasRoomToRight();
   }
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, hasRoomToRenderToRight, primaryHoverMenu, openSubMenu } = this.state;
+    const {
+      hasRoomToRenderBelow,
+      hasRoomToRenderToRight,
+      subMenuHasRoomToRight,
+      primaryHoverMenu,
+      openSubMenu
+    } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -158,6 +169,11 @@ export default class EditorSelector extends React.Component {
       bottom: 0,
       left: 150
     };
+
+    if (!subMenuHasRoomToRight) {
+      secondaryMenuStyle.left = 'initial';
+      secondaryMenuStyle.right = 155;
+    }
 
     const editorMenu = categories.map((category) => {
       return {
@@ -200,7 +216,7 @@ export default class EditorSelector extends React.Component {
                         color={openSubMenu === category.name ? '#fff' : '#C0C0C0'}
                         textColor={openSubMenu === category.name ? '#fff' : '#606060'}/>
                     </div>
-                    <div style={secondaryMenuStyle}>
+                    <div ref={(el) => this.submenuWrapper = el} style={secondaryMenuStyle}>
                       { openSubMenu === category.name &&
                         <Menu style={{overflow: 'hidden'}}>
                           { this.renderSubMenuItems(category.items) }
@@ -273,15 +289,22 @@ export default class EditorSelector extends React.Component {
 
   setHasRoomToRenderBelow() {
     const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
-    if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
+    if (hasRoomToRenderBelow !== this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
     }
   }
 
   setHasRoomToRenderToRight() {
     const hasRoomToRenderToRight = ((window.innerWidth - this.wrapper.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
-    if (hasRoomToRenderToRight != this.state.hasRoomToRenderToRight){
+    if (hasRoomToRenderToRight !== this.state.hasRoomToRenderToRight){
       this.setState({ hasRoomToRenderToRight });
+    }
+  }
+
+  setSubMenuHasRoomToRight() {
+    const subMenuHasRoomToRight = ((window.innerWidth - this.submenuWrapper.parentElement.getBoundingClientRect().right) > SUBMENU_WIDTH_ALLOWANCE);
+    if (subMenuHasRoomToRight !== this.state.subMenuHasRoomToRight) {
+      this.setState({ subMenuHasRoomToRight });
     }
   }
 
