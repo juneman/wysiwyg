@@ -23,6 +23,7 @@ import PrevNextButton from '../icons/PrevNextButton';
 import { EDITOR_TYPES, categories } from '../helpers/constants';
 
 const MENU_HEIGHT_ALLOWANCE = 300;
+const MENU_WIDTH_ALLOWANCE = 160;
 
 const editors = {
   [EDITOR_TYPES.TEXT]: {
@@ -114,15 +115,17 @@ export default class EditorSelector extends React.Component {
 
   componentDidMount() {
     this.setHasRoomToRenderBelow();
+    this.setHasRoomToRenderToRight();
   }
 
   componentDidUpdate() {
     this.setHasRoomToRenderBelow();
+    this.setHasRoomToRenderToRight();
   }
 
   render() {
     const { onSelect, allowedEditorTypes, showEditorSelector } = this.props;
-    const { hasRoomToRenderBelow, primaryHoverMenu, openSubMenu } = this.state;
+    const { hasRoomToRenderBelow, hasRoomToRenderToRight, primaryHoverMenu, openSubMenu } = this.state;
 
     const menuStyle = {
       zIndex: 100,
@@ -141,6 +144,11 @@ export default class EditorSelector extends React.Component {
       menuStyle.top = 5;
     } else {
       menuStyle.bottom = 48;
+    }
+
+    if (!hasRoomToRenderToRight) {
+      menuStyle.left = 'initial';
+      menuStyle.right = 10;
     }
 
     const secondaryMenuStyle = {
@@ -267,6 +275,13 @@ export default class EditorSelector extends React.Component {
     const hasRoomToRenderBelow = ((window.innerHeight - this.wrapper.parentElement.getBoundingClientRect().top) > MENU_HEIGHT_ALLOWANCE);
     if (hasRoomToRenderBelow != this.state.hasRoomToRenderBelow){
       this.setState({ hasRoomToRenderBelow });
+    }
+  }
+
+  setHasRoomToRenderToRight() {
+    const hasRoomToRenderToRight = ((window.innerWidth - this.wrapper.parentElement.getBoundingClientRect().right) > MENU_WIDTH_ALLOWANCE);
+    if (hasRoomToRenderToRight != this.state.hasRoomToRenderToRight){
+      this.setState({ hasRoomToRenderToRight });
     }
   }
 

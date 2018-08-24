@@ -36,7 +36,6 @@ class AddButtonArea extends React.Component {
   }
 
   componentDidMount() {
-    this.setBoundingBox();
     this.setState({
       win: this.getWindow()
     });
@@ -282,12 +281,6 @@ class AddButtonArea extends React.Component {
         onEditorMenuClose && onEditorMenuClose();
     } else {
         onEditorMenuOpen && onEditorMenuOpen();
-    }
-  }
-
-  setBoundingBox() {
-    if (!this.addButton) {
-      return;
     }
   }
 }
